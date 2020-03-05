@@ -50,6 +50,8 @@ for xtag, tolog in zip(x_tags, logs):
             xaxis_dict[reg] = E.read_array('SUBFIND', path, snap, xtag, noH=False)
 
     xs = np.concatenate(list(xaxis_dict.values()))
+    if xtag[-4:] == 'Mass':
+        xs *= 10**10
     save_dict[xtag] = xs
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -60,13 +62,16 @@ for xtag, tolog in zip(x_tags, logs):
     xs = xs[xs > 0]
 
     if tolog:
-        ax.hexbin(xs, half_mass_rads_plt, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
-                  yscale='log', linewidths=0.2, cmap='viridis')
+        cbar = ax.hexbin(xs, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(),
+                         yscale='log', linewidths=0.2, cmap='viridis')
     else:
-        ax.hexbin(xs, half_mass_rads_plt, gridsize=50, mincnt=1, norm=LogNorm(), linewidths=0.2, cmap='viridis')
+        cbar = ax.hexbin(xs, half_mass_rads_plt, gridsize=100, mincnt=1, norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     ax.set_xlabel(xtag)
     ax.set_ylabel('$R_{1/2}/$ckpc')
+
+    cax = fig.colorbar(cbar, ax=ax)
+    cax.ax.set_ylabel(r'$N$')
 
     fig.savefig('plots/' + 'HalfMassRadiusCorrleations_' + xtag.replace('/', '-') + '_' + snap + '.png',
                 bbox_inches='tight')
