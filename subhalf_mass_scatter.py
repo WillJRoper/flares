@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+import astropy.units as u
 from matplotlib.colors import LogNorm
 import eagle_IO as E
 import seaborn as sns
@@ -22,9 +23,9 @@ for reg in range(0, 40):
 snap = '010_z005p000'
 # x_tags = ['Subhalo/StarFormationRate', 'Subhalo/Stars/Mass', 'Subhalo/Stars/Metallicity', 'Stars/SmoothedMetallicity',
 #           'Subhalo/VmaxRadius', 'Subhalo/SF/Mass', 'Subhalo/Mass']
-x_tags = ['Subhalo/StarFormationRate', 'Subhalo/Stars/Mass', 'Subhalo/SF/Mass', 'Subhalo/Mass']
+x_tags = ['Subhalo/StarFormationRate', 'Subhalo/Stars/Mass', 'Subhalo/SF/Mass', 'Subhalo/Mass', 'Subhalo/SF/Mass']
 xlabels = ['$\mathrm{SRF}/[M_{\odot}/\mathrm{yr}]$ ', '$M_{*}/M_\odot$', '$M_{\mathrm{SF}}/M_\odot$',
-           '$M_{\mathrm{sub}}/M_\odot$']
+           '$M_{\mathrm{sub}}/M_\odot$', '$M_{\mathrm{NSF}}/M_\odot$']
 logs = [True, True, True, True, True, True, True]
 
 half_mass_rads_dict = {}
@@ -36,7 +37,7 @@ for reg in regions:
 
     half_mass_rads_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True)[:, 4]
 
-half_mass_rads = np.concatenate(list(half_mass_rads_dict.values()))
+half_mass_rads = np.concatenate(list(half_mass_rads_dict.values())) * u.cm.to(u.kpc)
 
 save_dict = {}
 
