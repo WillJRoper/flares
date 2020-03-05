@@ -56,13 +56,13 @@ for tagx, tagy in combos:
         fig = plt.figure()
         ax = fig.add_subplot(111)
 
-        if xs.max() / xs.min() > 100 and ys.max() / ys.min() > 100:
+        if xs.max() / xs.min() > 100 and ys.max() / ys.min() > 100 and x.min() >= 0 and y.min() >= 0:
             ax.hexbin(xs, ys, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
                       yscale='log', linewidths=0.2, cmap='viridis')
-        elif xs.max() / xs.min() > 100 and ys.max() / ys.min() <= 100:
+        elif xs.max() / xs.min() > 100 and ys.max() / ys.min() <= 100 and x.min() >= 0:
             ax.hexbin(xs, ys, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
                       linewidths=0.2, cmap='viridis')
-        elif xs.max() / xs.min() <= 100 and ys.max() / ys.min() > 100:
+        elif xs.max() / xs.min() <= 100 and ys.max() / ys.min() > 100 and y.min() >= 0:
             ax.hexbin(xs, ys, gridsize=50, mincnt=1, yscale='log', norm=LogNorm(),
                       linewidths=0.2, cmap='viridis')
         else:
