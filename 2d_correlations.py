@@ -72,7 +72,8 @@ for tagx, tagy in combos:
         ax.set_xlabel(tagx)
         ax.set_ylabel(tagy)
 
-        fig.savefig('plots/' + tagy + 'vs' + tagx + '_' + snap + '.png', bbox_inches='tight')
+        fig.savefig('plots/' + tagy.replace('/', '_') + 'vs' + tagx.replace('/', '_') + '_' + snap + '.png',
+                    bbox_inches='tight')
 
         plt.close(fig)
 
