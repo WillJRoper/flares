@@ -20,9 +20,12 @@ for reg in range(0, 40):
         regions.append('00' + str(reg))
 
 snap = '010_z005p000'
-x_tags = ['Subhalo/StarFormationRate', 'Subhalo/Stars/Mass', 'Subhalo/Stars/Metallicity', 'Stars/SmoothedMetallicity',
-          'Subhalo/VmaxRadius', 'Subhalo/SF/Mass', 'Subhalo/Mass']
-logs = [False, True, False, False, True, True, True]
+# x_tags = ['Subhalo/StarFormationRate', 'Subhalo/Stars/Mass', 'Subhalo/Stars/Metallicity', 'Stars/SmoothedMetallicity',
+#           'Subhalo/VmaxRadius', 'Subhalo/SF/Mass', 'Subhalo/Mass']
+x_tags = ['Subhalo/StarFormationRate', 'Subhalo/Stars/Mass', 'Subhalo/SF/Mass', 'Subhalo/Mass']
+xlabels = ['$\mathrm{SRF}/[M_{\odot}/\mathrm{yr}]$ ', '$M_{*}/M_\odot$', '$M_{\mathrm{SF}}/M_\odot$',
+           '$M_{\mathrm{sub}}/M_\odot$']
+logs = [True, True, True, True, True, True, True]
 
 half_mass_rads_dict = {}
 for reg in regions:
@@ -37,7 +40,7 @@ half_mass_rads = np.concatenate(list(half_mass_rads_dict.values()))
 
 save_dict = {}
 
-for xtag, tolog in zip(x_tags, logs):
+for xtag, tolog, xlab in zip(x_tags, logs, xlabels):
 
     xaxis_dict = {}
     for reg in regions:
@@ -67,7 +70,7 @@ for xtag, tolog in zip(x_tags, logs):
     else:
         cbar = ax.hexbin(xs, half_mass_rads_plt, gridsize=100, mincnt=1, norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
-    ax.set_xlabel(xtag)
+    ax.set_xlabel(xlab)
     ax.set_ylabel('$R_{1/2}/$ckpc')
 
     cax = fig.colorbar(cbar, ax=ax)
