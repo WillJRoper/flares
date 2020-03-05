@@ -10,6 +10,14 @@ matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
 
+regions = []
+for reg in range(0, 40):
+
+    if reg < 10:
+        regions.append('000' + str(reg))
+    else:
+        regions.append('00' + str(reg))
+
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032/data/'
 snap = '010_z005p000'
 
