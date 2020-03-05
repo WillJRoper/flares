@@ -50,7 +50,9 @@ for tagx, tagy in combos:
 
         print(tagx, tagy)
 
-        if len(xs) != len(ys):
+        if xs.shape != ys.shape:
+            continue
+        elif len(xs.shape) != 1 or len(xs.shape) != 1:
             continue
 
         fig = plt.figure()
