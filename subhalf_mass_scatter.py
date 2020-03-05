@@ -26,7 +26,7 @@ logs = [False, True, False, False, True, True, True]
 half_mass_rads_dict = {}
 for reg in regions:
 
-    path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032/data/'
+    path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_00' + reg + '/data/'
 
     half_mass_rads_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True)
 
@@ -37,7 +37,7 @@ for xtag, tolog in zip(x_tags, logs):
 
     xaxis_dict = {}
     for reg in regions:
-        path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032/data/'
+        path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
         xaxis_dict[reg] = E.read_array('SUBFIND', path, snap, xtag, noH=True)
 
@@ -60,7 +60,7 @@ for xtag, tolog in zip(x_tags, logs):
     ax.set_xlabel(xtag)
     ax.set_ylabel('$R_{1/2}/ckpc')
 
-    fig.savefig('plots/' + 'HalfMassRadiusCorrleations_' + xtag +  '_' + snap + '.png',
+    fig.savefig('plots/' + 'HalfMassRadiusCorrleations_' + xtag.replace('/', '-') +  '_' + snap + '.png',
                 bbox_inches='tight')
 
     plt.close(fig)
