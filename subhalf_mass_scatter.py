@@ -31,9 +31,7 @@ for reg in regions:
 
     path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-    half_mass_rads_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True)
-
-    print(half_mass_rads_dict[reg])
+    half_mass_rads_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True)[:, 4]
 
 half_mass_rads = np.concatenate(list(half_mass_rads_dict.values()))
 
