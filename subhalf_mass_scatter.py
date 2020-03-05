@@ -60,7 +60,7 @@ for xtag, tolog in zip(x_tags, logs):
     ax.set_xlabel(xtag)
     ax.set_ylabel('$R_{1/2}/ckpc')
 
-    fig.savefig('plots/' + 'HalfMassRadiusCorrleations_' + xtag +  '_' + snap + '.png',
+    fig.savefig('plots/' + 'HalfMassRadiusCorrleations_' + xtag.replace('/', '-') +  '_' + snap + '.png',
                 bbox_inches='tight')
 
     plt.close(fig)
