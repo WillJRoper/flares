@@ -46,7 +46,7 @@ for xtag, tolog in zip(x_tags, logs):
 
         xaxis_dict[reg] = E.read_array('SUBFIND', path, snap, xtag, noH=True)
 
-    xs = np.concatenate(list(half_mass_rads_dict.values()))
+    xs = np.concatenate(list(xaxis_dict.values()))
     save_dict[xtag] = xs
     fig = plt.figure()
     ax = fig.add_subplot(111)
