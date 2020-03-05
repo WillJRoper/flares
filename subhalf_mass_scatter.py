@@ -41,7 +41,7 @@ for xtag, tolog in zip(x_tags, logs):
 
     xaxis_dict = {}
     for reg in regions:
-        print(reg)
+        print(reg)srun
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
         xaxis_dict[reg] = E.read_array('SUBFIND', path, snap, xtag, noH=True)
