@@ -41,10 +41,13 @@ for xtag, tolog in zip(x_tags, logs):
 
     xaxis_dict = {}
     for reg in regions:
-        print(reg)srun
+        print(reg)
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-        xaxis_dict[reg] = E.read_array('SUBFIND', path, snap, xtag, noH=True)
+        try:
+            xaxis_dict[reg] = E.read_array('SUBFIND', path, snap, xtag, noH=True)
+        except KeyError:
+            xaxis_dict[reg] = E.read_array('SUBFIND', path, snap, xtag, noH=False)
 
     xs = np.concatenate(list(xaxis_dict.values()))
     save_dict[xtag] = xs
@@ -63,7 +66,7 @@ for xtag, tolog in zip(x_tags, logs):
         ax.hexbin(xs, half_mass_rads_plt, gridsize=50, mincnt=1, norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     ax.set_xlabel(xtag)
-    ax.set_ylabel('$R_{1/2}/ckpc')
+    ax.set_ylabel('$R_{1/2}/$ckpc')
 
     fig.savefig('plots/' + 'HalfMassRadiusCorrleations_' + xtag.replace('/', '-') + '_' + snap + '.png',
                 bbox_inches='tight')
