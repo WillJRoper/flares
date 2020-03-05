@@ -32,6 +32,8 @@ for tagx, tagy in combos:
             print('x', group)
         except KeyError:
             continue
+        except ValueError:
+            continue
 
     for group in groups:
 
@@ -40,6 +42,8 @@ for tagx, tagy in combos:
             existy = True
             print('y', group)
         except KeyError:
+            continue
+        except ValueError:
             continue
 
     if existy and existx:
