@@ -29,6 +29,7 @@ for tagx, tagy in combos:
         try:
             xs = E.read_array(group, path, snap, tagx, noH=True)
             existx = True
+            print('x', group)
         except KeyError:
             continue
 
@@ -37,10 +38,13 @@ for tagx, tagy in combos:
         try:
             ys = E.read_array(group, path, snap, tagy, noH=True)
             existy = True
+            print('y', group)
         except KeyError:
             continue
 
     if existy and existx:
+
+        print(tagx, tagy)
 
         if len(xs) != len(ys):
             continue
