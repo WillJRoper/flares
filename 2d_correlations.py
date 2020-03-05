@@ -2,21 +2,71 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-import astropy.units as u
-import astropy.constants as const
+from matplotlib.colors import LogNorm
 import eagle_IO as E
 import seaborn as sns
-from flares import flares
+import itertools
 matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
 
+path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032/data/'
+snap = '010_z005p000'
+
 # Load the groups and arrays names
-groups = np.genfromtxt('HDF5_Groups.txt', dtype=str, delimiter='\n')
-arrnames = np.genfromtxt('HDF5_ArrNames.txt', dtype=str, delimiter='\n')
+tags = np.genfromtxt('HDF5_tags.txt', dtype=str, delimiter='\n')
+groups = ['FOF', 'FOF_PARTICLES', 'SNIP_FOF', 'SNIP_FOF_PARTICLES', 'SUBFIND', 'SUBFIND_GROUP', 'SUBFIND_IDS',
+          'SNIP_SUBFIND', 'SNIP_SUBFIND_GROUP', 'SNIP_SUBFIND_IDS', 'SNIP', 'SNAP', 'PARTDATA', 'SNIP_PARTDATA']
+combos = itertools.combinations(tags, 2)
 
-for g, an in zip(groups, arrnames):
+for tagx, tagy in combos:
 
-    print(g[2:-1] + '/' + an[2:-1])
+    existx = False
+    existy = False
 
-    if g[2:-1]
+    for group in groups:
+
+        try:
+            xs = E.read_array(group, path, snap, tagx, noH=True)
+            existx = True
+        except KeyError:
+            continue
+
+    for group in groups:
+
+        try:
+            ys = E.read_array(group, path, snap, tagy, noH=True)
+            existy = True
+        except KeyError:
+            continue
+
+    if existy and existx:
+
+        if len(xs) != len(ys):
+            continue
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+
+        if xs.max() / xs.min() > 100 and ys.max() / ys.min() > 100:
+            ax.hexbin(xs, ys, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
+                      yscale='log', linewidths=0.2, cmap='viridis')
+        elif xs.max() / xs.min() > 100 and ys.max() / ys.min() <= 100:
+            ax.hexbin(xs, ys, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
+                      linewidths=0.2, cmap='viridis')
+        elif xs.max() / xs.min() <= 100 and ys.max() / ys.min() > 100:
+            ax.hexbin(xs, ys, gridsize=50, mincnt=1, yscale='log', norm=LogNorm(),
+                      linewidths=0.2, cmap='viridis')
+        else:
+            ax.hexbin(xs, ys, gridsize=50, mincnt=1, norm=LogNorm(),
+                      linewidths=0.2, cmap='viridis')
+
+        ax.set_xlabel(tagx)
+        ax.set_ylabel(tagy)
+
+        fig.savefig(tagy + 'vs' + tagx + '_' + snap + '.png', bbox_inches='tight')
+
+        plt.close(fig)
+
+    else:
+        continue
