@@ -27,7 +27,7 @@ for reg in regions:
 
     path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-    starmass_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True)[:, 4]
+    starmass_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/010kpc', noH=True)[:, 4]
     submass_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/Mass', noH=True)
 
 submass = np.concatenate(list(submass_dict.values())) * 10**10
