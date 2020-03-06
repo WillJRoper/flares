@@ -12,6 +12,7 @@ matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
 
+
 regions = []
 for reg in range(0, 40):
 
@@ -57,6 +58,7 @@ for xtag, tolog, xlab in zip(x_tags, logs, xlabels):
     if xtag[-4:] == 'Mass':
         xs *= 10**10
     save_dict[xtag] = xs
+
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
