@@ -37,7 +37,7 @@ for reg in regions:
 
     half_mass_rads_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True)[:, 4]
 
-half_mass_rads = np.concatenate(list(half_mass_rads_dict.values())) * u.cm.to(u.kpc)
+half_mass_rads = np.concatenate(list(half_mass_rads_dict.values()))
 
 save_dict = {}
 
