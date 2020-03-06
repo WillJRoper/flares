@@ -23,7 +23,7 @@ for reg in range(0, 40):
 snap = '010_z005p000'
 # x_tags = ['Subhalo/StarFormationRate', 'Subhalo/Stars/Mass', 'Subhalo/Stars/Metallicity', 'Stars/SmoothedMetallicity',
 #           'Subhalo/VmaxRadius', 'Subhalo/SF/Mass', 'Subhalo/Mass']
-x_tags = ['Subhalo/StarFormationRate', 'Subhalo/Stars/Mass', 'Subhalo/SF/Mass', 'Subhalo/Mass', 'Subhalo/SF/Mass']
+x_tags = ['Subhalo/StarFormationRate', 'Subhalo/Stars/Mass', 'Subhalo/SF/Mass', 'Subhalo/Mass', 'Subhalo/NSF/Mass']
 xlabels = ['$\mathrm{SRF}/[M_{\odot}/\mathrm{yr}]$ ', '$M_{*}/M_\odot$', '$M_{\mathrm{SF}}/M_\odot$',
            '$M_{\mathrm{sub}}/M_\odot$', '$M_{\mathrm{NSF}}/M_\odot$']
 logs = [True, True, True, True, True, True, True]
