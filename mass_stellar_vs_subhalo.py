@@ -10,7 +10,7 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 10):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -27,7 +27,7 @@ for reg in regions:
 
     path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-    starmass_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/Stars/Mass', noH=True)
+    starmass_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True)
     submass_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/Mass', noH=True)
 
 submass = np.concatenate(list(submass_dict.values())) * 10**10
