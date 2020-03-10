@@ -10,7 +10,7 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 regions = []
-for reg in range(0, 1):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -68,13 +68,15 @@ for part, ax, title in zip([0, 1, 4, 5], [ax1, ax2, ax3, ax4], ['Gas', 'DM', 'St
 
     ax.set_title(title)
 
+    ax.set_ylim(10**6.5, 10**13)
+
 ax1.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
 ax2.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
 ax3.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
 ax4.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
 ax1.set_ylabel('$M/M_\odot$')
 
-cax = fig.colorbar(cbars[0], ax=ax3)
+cax = fig.colorbar(cbars[0], ax=ax4)
 cax.ax.set_ylabel(r'$N$')
 
 fig.savefig('plots/starvssubhalo_mass_' + snap + '.png', bbox_inches='tight')
