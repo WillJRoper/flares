@@ -52,14 +52,15 @@ for part, ax, title in zip([0, 1, 4, 5], [ax1, ax2, ax3, ax4], ['Gas', 'DM', 'St
     starmass = np.concatenate(list(starmass_dict.values())) * 10**10
 
     submass_plt = submass[starmass > 0]
-    starmass = starmass[starmass > 0]
-    starmass = starmass[submass_plt > 0]
-    submass_plt = submass_plt[submass > 0]
+    starmass_plt = starmass[starmass > 0]
+    starmass_plt = starmass_plt[submass_plt > 0]
+    submass_plt = submass_plt[submass_plt > 0]
 
-    ax.plot(np.linspace(submass.min(), submass.max(), 100), np.linspace(submass.min(), submass.max(), 100),
+    ax.plot(np.linspace(submass_plt.min(), submass_plt.max(), 100),
+            np.linspace(submass_plt.min(), submass_plt.max(), 100),
             linestyle='--', zorder=0)
 
-    cbars[part] = ax.hexbin(submass+1, starmass+1, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(1, 10**4.5),
+    cbars[part] = ax.hexbin(submass_plt, starmass_plt, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(1, 10**4.5),
                      yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
 
     ax.set_xscale('log')
@@ -67,11 +68,11 @@ for part, ax, title in zip([0, 1, 4, 5], [ax1, ax2, ax3, ax4], ['Gas', 'DM', 'St
 
     ax.set_title(title)
 
-ax1.set_xlabel('$M_{\mathrm{tot}}/M_\odot+1$')
-ax2.set_xlabel('$M_{\mathrm{tot}}/M_\odot+1$')
-ax3.set_xlabel('$M_{\mathrm{tot}}/M_\odot+1$')
-ax4.set_xlabel('$M_{\mathrm{tot}}/M_\odot+1$')
-ax1.set_ylabel('$M/M_\odot+1$')
+ax1.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
+ax2.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
+ax3.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
+ax4.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
+ax1.set_ylabel('$M/M_\odot$')
 
 cax = fig.colorbar(cbars[0], ax=ax3)
 cax.ax.set_ylabel(r'$N$')
