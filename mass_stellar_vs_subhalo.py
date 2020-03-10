@@ -30,7 +30,7 @@ for reg in regions:
 
 submass = np.concatenate(list(submass_dict.values())) * 10**10
 
-fig = plt.figure(figsize=(4, 12))
+fig = plt.figure(figsize=(12, 4))
 ax1 = fig.add_subplot(131)
 ax2 = fig.add_subplot(132)
 ax3 = fig.add_subplot(133)
