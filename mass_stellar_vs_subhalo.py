@@ -54,17 +54,19 @@ for part, ax in zip([0, 4, 5], [ax1, ax2, ax3]):
     # starmass = starmass[submass > 0]
     # submass = submass[submass > 0]
 
-    cbar = ax.hexbin(submass+1, starmass+1, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(),
+    cbar = ax.hexbin(submass+1, starmass+1, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(1, 10**4.5),
                      yscale='log', linewidths=0.2, cmap='viridis')
 
     ax.plot(np.linspace(submass.min(), submass.max(), 100), np.linspace(submass.min(), submass.max(), 100),
             linestyle='--')
+    
+    ax.set_title('Part Type' + str(part))
 
-    ax.set_xlabel('$M_{\mathrm{sub}}/M_\odot+1$')
-    ax.set_ylabel('$M_{*}/M_\odot+1$')
+ax2.set_xlabel('$M_{\mathrm{tot}}/M_\odot+1$')
+ax1.set_ylabel('$M/M_\odot+1$')
 
-    cax = fig.colorbar(cbar, ax=ax)
-    cax.ax.set_ylabel(r'$N$')
+cax = fig.colorbar(cbar, ax=ax3)
+cax.ax.set_ylabel(r'$N$')
 
 fig.savefig('plots/starvssubhalo_mass_' + snap + '.png', bbox_inches='tight')
 
