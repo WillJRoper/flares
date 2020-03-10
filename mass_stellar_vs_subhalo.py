@@ -36,16 +36,16 @@ starmass = np.concatenate(list(starmass_dict.values())) * 10**10
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-submass = submass[starmass > 0]
-starmass_plt = starmass[starmass > 0]
-starmass_plt = starmass_plt[submass > 0]
-submass = submass[submass > 0]
+# submass = submass[starmass > 0]
+# starmass = starmass[starmass > 0]
+# starmass = starmass[submass > 0]
+# submass = submass[submass > 0]
 
-cbar = ax.hexbin(submass, starmass_plt, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(),
+cbar = ax.hexbin(submass+1, starmass+1, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(),
                  yscale='log', linewidths=0.2, cmap='viridis')
 
-ax.set_xlabel('$M_{\mathrm{sub}}/M_\odot$')
-ax.set_ylabel('$M_{*}/M_\odot$')
+ax.set_xlabel('$M_{\mathrm{sub}}/M_\odot+1$')
+ax.set_ylabel('$M_{*}/M_\odot+1$')
 
 cax = fig.colorbar(cbar, ax=ax)
 cax.ax.set_ylabel(r'$N$')
