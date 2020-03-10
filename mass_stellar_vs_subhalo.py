@@ -30,13 +30,15 @@ for reg in regions:
 
 submass = np.concatenate(list(submass_dict.values())) * 10**10
 
-fig = plt.figure(figsize=(12, 4))
-ax1 = fig.add_subplot(131)
-ax2 = fig.add_subplot(132)
-ax3 = fig.add_subplot(133)
+fig = plt.figure(figsize=(16, 4))
+ax1 = fig.add_subplot(141)
+ax2 = fig.add_subplot(142)
+ax3 = fig.add_subplot(143)
+ax4 = fig.add_subplot(144)
 
 starmass_dict = {}
-for part, ax in zip([0, 4, 5], [ax1, ax2, ax3]):
+cbars = {}
+for part, ax, title in zip([0, 1, 4, 5], [ax1, ax2, ax3, ax4], ['Gas', 'DM', 'Stars', 'BH']):
 
     for reg in regions:
 
@@ -49,23 +51,29 @@ for part, ax in zip([0, 4, 5], [ax1, ax2, ax3]):
 
     starmass = np.concatenate(list(starmass_dict.values())) * 10**10
 
-    # submass = submass[starmass > 0]
-    # starmass = starmass[starmass > 0]
-    # starmass = starmass[submass > 0]
-    # submass = submass[submass > 0]
-
-    cbar = ax.hexbin(submass+1, starmass+1, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(1, 10**4.5),
-                     yscale='log', linewidths=0.2, cmap='viridis')
+    submass_plt = submass[starmass > 0]
+    starmass = starmass[starmass > 0]
+    starmass = starmass[submass_plt > 0]
+    submass_plt = submass_plt[submass > 0]
 
     ax.plot(np.linspace(submass.min(), submass.max(), 100), np.linspace(submass.min(), submass.max(), 100),
-            linestyle='--')
+            linestyle='--', zorder=0)
 
-    ax.set_title('Part Type' + str(part))
+    cbars[part] = ax.hexbin(submass+1, starmass+1, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(1, 10**4.5),
+                     yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
 
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+
+    ax.set_title(title)
+
+ax1.set_xlabel('$M_{\mathrm{tot}}/M_\odot+1$')
 ax2.set_xlabel('$M_{\mathrm{tot}}/M_\odot+1$')
+ax3.set_xlabel('$M_{\mathrm{tot}}/M_\odot+1$')
+ax4.set_xlabel('$M_{\mathrm{tot}}/M_\odot+1$')
 ax1.set_ylabel('$M/M_\odot+1$')
 
-cax = fig.colorbar(cbar, ax=ax3)
+cax = fig.colorbar(cbars[0], ax=ax3)
 cax.ax.set_ylabel(r'$N$')
 
 fig.savefig('plots/starvssubhalo_mass_' + snap + '.png', bbox_inches='tight')
