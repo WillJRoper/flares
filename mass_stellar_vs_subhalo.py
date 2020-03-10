@@ -44,6 +44,8 @@ ax = fig.add_subplot(111)
 cbar = ax.hexbin(submass+1, starmass+1, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(),
                  yscale='log', linewidths=0.2, cmap='viridis')
 
+ax.plot(np.linspace(submass.min(), submass.max(), 100), np.linspace(submass.min(), submass.max(), 100), linestyle='--')
+
 ax.set_xlabel('$M_{\mathrm{sub}}/M_\odot+1$')
 ax.set_ylabel('$M_{*}/M_\odot+1$')
 
