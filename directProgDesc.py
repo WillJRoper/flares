@@ -149,37 +149,51 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     # =============== Progenitor Snapshot ===============
 
-    if rank == 0:
-        prog_snap_haloIDs = E.read_array('PartData', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
-                                         numThreads=8)
-    else:
-        prog_snap_haloIDs = E.read_array('PartData', path, prog_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
-                                         numThreads=8)
+    # Only look for descendant data if there is a descendant snapshot
+    if prog_snap != None:
 
-    # Get all the unique halo IDs in this snapshot and the number of times they appear
-    prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
+        if rank == 0:
+            prog_snap_haloIDs = E.read_array('PartData', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
+                                             numThreads=8)
+        else:
+            prog_snap_haloIDs = E.read_array('PartData', path, prog_snap, 'PartType' + str(part_type) +
+                                             '/SubGroupNumber', numThreads=8)
 
-    # Remove single particle halos (ID=-2), since np.unique returns a sorted array this can be
-    # done by removing the first value
-    prog_unique = prog_unique[1:]
-    prog_counts = prog_counts[1:]
+        # Get all the unique halo IDs in this snapshot and the number of times they appear
+        prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
+
+        # Remove single particle halos (ID=-2), since np.unique returns a sorted array this can be
+        # done by removing the first value
+        prog_unique = prog_unique[1:]
+        prog_counts = prog_counts[1:]
+
+    else:  # Assign an empty array if the snapshot is less than the earliest (000)
+        prog_snap_haloIDs = np.array([], copy=False)
+        prog_counts = []
 
     # =============== Descendant Snapshot ===============
 
-    if rank == 0:
-        desc_snap_haloIDs = E.read_array('PartData', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
-                                         numThreads=8)
-    else:
-        desc_snap_haloIDs = E.read_array('PartData', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
-                                         numThreads=8)
+    # Only look for descendant data if there is a descendant snapshot
+    if desc_snap != None:
 
-    # Get all the unique halo IDs in this snapshot and the number of times they appear
-    desc_unique, desc_counts = np.unique(desc_snap_haloIDs, return_counts=True)
+        if rank == 0:
+            desc_snap_haloIDs = E.read_array('PartData', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
+                                             numThreads=8)
+        else:
+            desc_snap_haloIDs = E.read_array('PartData', path, desc_snap, 'PartType' + str(part_type) +
+                                             '/SubGroupNumber', numThreads=8)
 
-    # Remove single particle halos (ID=-2), since np.unique returns a sorted array this can be
-    # done by removing the first value
-    desc_unique = desc_unique[1:]
-    desc_counts = desc_counts[1:]
+        # Get all the unique halo IDs in this snapshot and the number of times they appear
+        desc_unique, desc_counts = np.unique(desc_snap_haloIDs, return_counts=True)
+
+        # Remove single particle halos (ID=-2), since np.unique returns a sorted array this can be
+        # done by removing the first value
+        desc_unique = desc_unique[1:]
+        desc_counts = desc_counts[1:]
+
+    else:  # Assign an empty array if the snapshot is less than the earliest (000)
+        desc_snap_haloIDs = np.array([], copy=False)
+        desc_counts = []
 
     # =============== Find all Direct Progenitors And Descendant Of Halos In This Snapshot ===============
 
@@ -235,9 +249,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             halo.attrs['current_halo_nPart'] = current_halo_pids.size  # mass of the halo
             halo.create_dataset('current_halo_partIDs', data=current_halo_pids, dtype=int,
                                 compression='gzip')  # particle ids in this halo
-            halo.create_dataset('prog_mass_contribution', data=prog_mass_contribution, dtype=int,
+            halo.create_dataset('prog_npart_contribution', data=prog_mass_contribution, dtype=int,
                                 compression='gzip')  # Mass contribution
-            halo.create_dataset('desc_mass_contribution', data=desc_mass_contribution, dtype=int,
+            halo.create_dataset('desc_npart_contribution', data=desc_mass_contribution, dtype=int,
                                 compression='gzip')  # Mass contribution
             halo.create_dataset('Prog_nPart', data=prog_npart, dtype=int,
                                 compression='gzip')  # number of particles in each progenitor
@@ -249,3 +263,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
                                 compression='gzip')  # descendant IDs
 
         hdf.close()
+
+if __name__ == '__main__':
+    mainDirectProgDesc(snap='001_z014p000', prog_snap='000_z015p000', desc_snap='002_z013p000',
+                       path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_38', part_type=0,
+                       rank=1, savepath='MergerGraphs/')
