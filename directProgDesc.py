@@ -207,7 +207,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         #         prog_snap_haloIDs[ind] = internalID
         #     print('Mapping progenitor halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
 
-        prog_snap_haloIDs = prog_halo_ids
+        prog_snap_haloIDs = np.int32(prog_halo_ids)
             
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
@@ -256,7 +256,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         #         desc_snap_haloIDs[ind] = internalID
         #     print('Mapping descendant halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
 
-        desc_snap_haloIDs = desc_halo_ids
+        desc_snap_haloIDs = np.int32(desc_halo_ids)
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         desc_unique, desc_counts = np.unique(desc_snap_haloIDs, return_counts=True)
@@ -353,4 +353,4 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 if __name__ == '__main__':
     mainDirectProgDesc(snap='001_z014p000', prog_snap='000_z015p000', desc_snap='002_z013p000',
                        path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_38/data', part_type=1,
-                       rank=0, savepath='/cosma/home/dp004/dc-rope1/cosma7/FLARES/MergerGraphs/')
+                       rank=1, savepath='/cosma/home/dp004/dc-rope1/cosma7/FLARES/MergerGraphs/')
