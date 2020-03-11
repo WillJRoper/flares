@@ -144,8 +144,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         raise ValueError("Incompatible rank")
 
     halo_id_part_inds = {}
-    print(np.max(halo_ids))
-    internal_to_sim_haloid = np.full(int(np.max(halo_ids)), -2)
+    internal_to_sim_haloid = np.full(int(np.max(halo_ids)) + 1, -2)
     internalIDcount = -1
     for ind, simid in enumerate(halo_ids):
         simid = int(simid)
