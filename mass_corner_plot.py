@@ -39,8 +39,15 @@ def hexbin(x, y, max_series=None, min_series=None, **kwargs):
     ax = plt.gca()
     xmin, xmax = min_series[x.name], max_series[x.name]
     ymin, ymax = min_series[y.name], max_series[y.name]
-    plt.hexbin(x, y, gridsize=100, mincnt=1, cmap="viridis", norm=LogNorm(1, 10**4.5),
+    plt.hexbin(x, y, gridsize=100, mincnt=1, cmap="viridis", norm=LogNorm(1, 10**4.5), linewidths=0.2,
                extent=[xmin, xmax, ymin, ymax], **kwargs)
+
+def hist(x, max_series=None, min_series=None, **kwargs):
+    ax = plt.gca()
+    H, bins = np.histogram(x, bins=100)
+    bin_wid = bins[1] - bins[0]
+    bin_cents = bins[1:] - bin_wid / 2
+    plt.bar(bin_cents, H, width=bin_cents, alpha=0.8)
 
 # Define pandas table
 df = pd.DataFrame(np.vstack((np.log10(submass + 1), np.log10(starmass[:, 0] + 1), np.log10(starmass[:, 1] + 1),
@@ -51,7 +58,7 @@ df = pd.DataFrame(np.vstack((np.log10(submass + 1), np.log10(starmass[:, 0] + 1)
 
 # Plot prior
 g = sns.PairGrid(data=df, size=2.5, diag_sharey=False)
-g.map_diag(plt.hist, color='Green', alpha=0.8, bins=100)
+g.map_diag(hist)
 g.map_lower(hexbin, alpha=0.8, min_series=df.min(), max_series=df.max())
 
 for i in range(5):
