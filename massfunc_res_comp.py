@@ -15,7 +15,7 @@ sns.set_style('whitegrid')
 
 
 # @jit
-def _sphere(self, coords, a, b, c, r):
+def _sphere(coords, a, b, c, r):
     # Equation of a sphere
 
     x, y, z = coords[:, 0], coords[:, 1], coords[:, 2]
