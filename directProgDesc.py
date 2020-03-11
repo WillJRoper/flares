@@ -144,7 +144,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         raise ValueError("Incompatible rank")
 
     halo_id_part_inds = {}
-    sim_to_internal_haloid = np.full(int(np.max(halo_ids)) + 1, -2, dtype=int)
+    sim_to_internal_haloid = np.full(int(np.max(halo_ids)), -2, dtype=int)
     internal_to_sim_haloid = np.zeros(len(np.unique(halo_ids)), dtype=int)
     internalIDcount = -1
     for ind, simid in enumerate(halo_ids):
@@ -153,6 +153,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             internalIDcount += 1
             internalID = internalIDcount
             internal_to_sim_haloid[internalID] = simid
+            sim_to_internal_haloid[simid] = internalID
         else:
             internalID = sim_to_internal_haloid[simid]
         print('Creating halo to contained particle mapping:', ind, 'of', len(halo_ids), end='\r')
@@ -170,7 +171,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             prog_halo_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) +
                                          '/SubGroupNumber', numThreads=8)
 
-        sim_to_internal_haloid_prog = np.full(int(np.max(halo_ids)) + 1, -2, dtype=int)
+        sim_to_internal_haloid_prog = np.full(int(np.max(halo_ids)), -2, dtype=int)
         internal_to_sim_haloid_prog = np.zeros(len(np.unique(halo_ids)), dtype=int)
         prog_snap_haloIDs = np.full_like(prog_halo_ids, -2)
         internalIDcount = -1
@@ -180,6 +181,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
                 internalIDcount += 1
                 internalID = internalIDcount
                 internal_to_sim_haloid_prog[internalID] = simid
+                sim_to_internal_haloid_prog[simid] = internalID
             else:
                 internalID = sim_to_internal_haloid_prog[simid]
             print('Mapping progenitor halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
@@ -210,7 +212,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) +
                                          '/SubGroupNumber', numThreads=8)
             
-        sim_to_internal_haloid_desc = np.full(int(np.max(halo_ids)) + 1, -2, dtype=int)
+        sim_to_internal_haloid_desc = np.full(int(np.max(halo_ids)), -2, dtype=int)
         internal_to_sim_haloid_desc = np.zeros(len(np.unique(halo_ids)), dtype=int)
         desc_snap_haloIDs = np.full_like(desc_halo_ids, -2)
         internalIDcount = -1
@@ -220,6 +222,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
                 internalIDcount += 1
                 internalID = internalIDcount
                 internal_to_sim_haloid_desc[internalID] = simid
+                sim_to_internal_haloid_desc[simid] = internalID
             else:
                 internalID = sim_to_internal_haloid_desc[simid]
             print('Mapping descendant halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
