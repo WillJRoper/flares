@@ -68,7 +68,7 @@ for part, ax, title in zip([0, 1, 4, 5], [ax1, ax2, ax3, ax4], ['Gas', 'DM', 'St
 
     ax.set_title(title)
 
-    ax.set_ylim(10**6.5, 10**13)
+    ax.set_ylim(10**6, 10**13)
 
 ax1.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
 ax2.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
