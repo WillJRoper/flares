@@ -8,7 +8,7 @@ import scipy.stats
 import h5py
 import schwimmbad
 from functools import partial
-import eagle_IO.eagle_IO as E
+from eagle_IO import eagle_IO as E
 from numba import jit, njit
 
 norm = np.linalg.norm
