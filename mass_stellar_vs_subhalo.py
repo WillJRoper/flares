@@ -26,7 +26,7 @@ for reg in regions:
 
     path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-    submass_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/Mass', noH=True)
+    submass_dict[reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/Mass', noH=True, numThreads=8)
 
 submass = np.concatenate(list(submass_dict.values())) * 10**10
 
@@ -47,7 +47,7 @@ for part, ax, title in zip([0, 1, 4, 5], [ax1, ax2, ax3, ax4], ['Gas', 'DM', 'St
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
         starmass_dict[reg] = E.read_array('SUBFIND', path, snap,
-                                          'Subhalo/ApertureMeasurements/Mass/010kpc', noH=True)[:, part]
+                                          'Subhalo/ApertureMeasurements/Mass/010kpc', noH=True, numThreads=8)[:, part]
 
     starmass = np.concatenate(list(starmass_dict.values())) * 10**10
 
