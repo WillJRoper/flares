@@ -148,6 +148,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     internal_to_sim_haloid = np.full(int(np.max(halo_ids)), -2)
     internalIDcount = -1
     for ind, simid in enumerate(halo_ids):
+        simid = int(simid)
         if internal_to_sim_haloid[simid] == -2:
             internalIDcount += 1
             internalID = internalIDcount
