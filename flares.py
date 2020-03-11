@@ -8,12 +8,11 @@ import scipy.stats
 import h5py
 import schwimmbad
 from functools import partial
-from eagle_IO import eagle_IO as E
+import eagle_IO as E
 from numba import jit, njit
 
 norm = np.linalg.norm
 conv = (u.solMass/u.Mpc**2).to(u.solMass/u.pc**2)
-
 
 
 class flares:
