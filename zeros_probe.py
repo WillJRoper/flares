@@ -44,12 +44,12 @@ ax3 = fig.add_subplot(143)
 
 starmass_dict = {}
 cbars = {}
-labels = ['$M_{\mathrm{gas}}/M_\odot$', '$M_{\mathrm{DM}}/M_\odot$', '$M_{*}/M_\odot$']
+labels = ['$M_{\mathrm{gas}}/M_\odot + 1$', '$M_{\mathrm{DM}}/M_\odot + 1$', '$M_{*}/M_\odot + 1$']
 for drop, parts, ax, title in zip([0, 1, 4], [(1, 4), (0, 4), (0, 1)], [ax1, ax2, ax3],
                                   ['$M_{\mathrm{gas}}=0$', '$M_{\mathrm{DM}}=0$', '$M_{*}=0$', 'BH']):
 
-    x_plt = starmass[:, parts[0]][np.where(starmass[:, drop] == 0)]
-    y_plt = starmass[:, parts[1]][np.where(starmass[:, drop] == 0)]
+    x_plt = starmass[:, parts[0]][np.where(starmass[:, drop] == 0)] + 1
+    y_plt = starmass[:, parts[1]][np.where(starmass[:, drop] == 0)] + 1
 
     cbars[drop] = ax.hexbin(x_plt, y_plt, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(),
                             yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
