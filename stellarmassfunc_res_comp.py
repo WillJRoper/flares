@@ -32,7 +32,7 @@ def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=T
 
 # Extarct M_200s
 tag = "Subhalo/Stars/Mass"
-snap = '010_z0065000'
+snap = '010_z005p000'
 group = "SUBFIND"
 M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_38/data/', snap,
                       tag, group=group, noH=True, cut_bounds=False)
