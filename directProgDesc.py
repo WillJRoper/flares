@@ -135,12 +135,12 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     # =============== Current Snapshot ===============
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    # internal_to_flares_part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs')
+    part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs')
     # print(internal_to_flares_part_ids.size)
     if rank == 0:
-        halo_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+        halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     elif rank == 1:
-        halo_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+        halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
     else:
         raise ValueError("Incompatible rank")
 
@@ -166,12 +166,13 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     #     print('Creating halo to contained particle mapping:', ind, 'of', len(halo_ids), end='\r')
 
     halo_id_part_inds = {}
-    for ind, simid in enumerate(halo_ids):
+    
+    for pid, simid in zip(part_ids, halo_ids):
         simid = int(simid)
         if simid == 2**30:
             continue
-        halo_id_part_inds.setdefault(simid, set()).update({ind})
-        print('Creating halo to contained particle mapping:', ind, 'of', len(halo_ids), end='\r')
+        halo_id_part_inds.setdefault(simid, set()).update({pid})
+        print('Creating halo to contained particle mapping:', pid, 'of', len(halo_ids), end='\r')
 
     # =============== Progenitor Snapshot ===============
 
@@ -179,10 +180,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     if prog_snap != None:
 
         if rank == 0:
-            prog_halo_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
+            prog_halo_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                          numThreads=8)
         else:
-            prog_halo_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) +
+            prog_halo_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) +
                                          '/SubGroupNumber', numThreads=8)
 
         #
@@ -204,8 +205,12 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         #         internalID = sim_to_internal_haloid_prog[simid]
         #         prog_snap_haloIDs[ind] = internalID
         #     print('Mapping progenitor halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
+        
+        prog_part_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs')
 
-        prog_snap_haloIDs = np.int32(prog_halo_ids)
+        prog_snap_haloIDs = np.full_like(prog_part_ids, -2, dtype=int)
+        for pid, prog in zip(prog_part_ids, prog_halo_ids):
+            prog_snap_haloIDs[pid] = prog
             
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
@@ -226,10 +231,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     if desc_snap != None:
 
         if rank == 0:
-            desc_halo_ids = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
+            desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                          numThreads=8)
         else:
-            desc_halo_ids = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) +
+            desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) +
                                          '/SubGroupNumber', numThreads=8)
         #
         # sim_to_internal_haloid_desc = np.full(int(max_sim_id) + 1, -2, dtype=int)
@@ -251,7 +256,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         #         desc_snap_haloIDs[ind] = internalID
         #     print('Mapping descendant halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
 
-        desc_snap_haloIDs = np.int32(desc_halo_ids)
+        desc_part_ids = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs')
+
+        desc_snap_haloIDs = np.full_like(desc_part_ids, -2, dtype=int)
+        for pid, desc in zip(desc_part_ids, desc_halo_ids):
+            desc_snap_haloIDs[pid] = desc
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         desc_unique, desc_counts = np.unique(desc_snap_haloIDs, return_counts=True)
