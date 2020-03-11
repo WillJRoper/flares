@@ -87,4 +87,4 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
 # Save figure
-fig.savefig('GSMF_res_comp_' + snap + '.png', bbox_inches='tight')
+fig.savefig('plots/GSMF_res_comp_' + snap + '.png', bbox_inches='tight')
