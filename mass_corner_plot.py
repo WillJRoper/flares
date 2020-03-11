@@ -45,9 +45,9 @@ def hexbin(x, y, max_series=None, min_series=None, **kwargs):
 # Define pandas table
 df = pd.DataFrame(np.vstack((np.log10(submass + 1), np.log10(starmass[:, 0] + 1), np.log10(starmass[:, 1] + 1),
                              np.log10(starmass[:, 4] + 1), np.log10(starmass[:, 5] + 1))).T,
-                  columns=[r'\log_10($M_{\mathrm{tot}}/M_\odot + 1)$', r'$\log_10(M_{\mathrm{gas}}/M_\odot + 1)$',
-                           r'$\log_10(M_{\mathrm{DM}}/M_\odot + 1)$',
-                           r'\log_10($M_{*}/M_\odot + 1)$', r'$\log_10(M_{\mathrm{BH}}/M_\odot + 1)$'])
+                  columns=[r'$\log_{10}(M_{\mathrm{tot}}/M_\odot + 1)$', r'$\log_{10}(M_{\mathrm{gas}}/M_\odot + 1)$',
+                           r'$\log_{10}(M_{\mathrm{DM}}/M_\odot + 1)$',
+                           r'$\log_{10}(M_{*}/M_\odot + 1)$', r'$\log_{10}(M_{\mathrm{BH}}/M_\odot + 1)$'])
 
 # Plot prior
 g = sns.PairGrid(data=df, size=2.5, diag_sharey=False)
