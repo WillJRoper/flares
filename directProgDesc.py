@@ -29,7 +29,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
 
     # If any progenitor halos exist (i.e. The current snapshot ID is not 000, enforced in the main function)
     if prog_snap_haloIDs.size != 0:
-
+        print(current_halo_pids)
         # Find the halo IDs of the current halo's particles in the progenitor snapshot by indexing the
         # progenitor snapshot's particle halo IDs array with the halo's particle IDs, this can be done
         # since the particle halo IDs array is sorted by particle ID.
