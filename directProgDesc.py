@@ -144,9 +144,16 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         raise ValueError("Incompatible rank")
 
     halo_id_part_inds = {}
-    for ind, id in enumerate(halo_ids):
-        print('Creating halo to contained partile mapping:', ind, 'of', len(halo_ids), end='\r')
-        halo_id_part_inds.setdefault(id, set()).update({ind})
+    internal_to_sim_haloid = np.full(np.max(halo_ids), -2)
+    internalIDcount = -1
+    for ind, simid in enumerate(halo_ids):
+        if internal_to_sim_haloid[simid] == -2:
+            internalIDcount += 1
+            internalID = internalIDcount
+        else:
+            internalID = internal_to_sim_haloid[simid]
+        print('Creating halo to contained particle mapping:', ind, 'of', len(halo_ids), end='\r')
+        halo_id_part_inds.setdefault(internalID, set()).update({ind})
 
     # =============== Progenitor Snapshot ===============
 
@@ -159,6 +166,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         else:
             prog_snap_haloIDs = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) +
                                              '/SubGroupNumber', numThreads=8)
+
+        for i in np.argsort(np.unique(prog_snap_haloIDs)):
+            print(i)
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
