@@ -34,7 +34,7 @@ def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=T
 tag = "Subhalo/Stars/Mass"
 snap = '010_z0065000'
 group = "SUBFIND"
-M_200 = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0038/data/', snap,
+M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_38/data/', snap,
                       tag, group=group, noH=True, cut_bounds=False)
 # M_200_hrDMO = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032_hires/data/', snap,
 #                       tag, group=group, noH=True, cut_bounds=False)
