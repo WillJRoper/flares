@@ -39,14 +39,14 @@ def hexbin(x, y, cmap, max_series=None, min_series=None, **kwargs):
     ax = plt.gca()
     xmin, xmax = min_series[x.name], max_series[x.name]
     ymin, ymax = min_series[y.name], max_series[y.name]
-    plt.hexbin(x, y, gridsize=15, cmap=cmap, extent=[xmin, xmax, ymin, ymax], **kwargs)
+    plt.hexbin(x, y, gridsize=100, mincnt=1, cmap=cmap, extent=[xmin, xmax, ymin, ymax], **kwargs)
 
 # Define pandas table
 df = pd.DataFrame(np.vstack((np.log10(submass + 1), np.log10(starmass[:, 0] + 1), np.log10(starmass[:, 1] + 1),
                              np.log10(starmass[:, 4] + 1), np.log10(starmass[:, 5] + 1))).T,
-                  columns=[r'$M_{\mathrm{tot}}/M_\odot + 1$', r'$M_{\mathrm{gas}}/M_\odot + 1$',
-                           r'$M_{\mathrm{DM}}/M_\odot + 1$',
-                           r'$M_{*}/M_\odot + 1$', r'$M_{\mathrm{BH}}/M_\odot + 1$'])
+                  columns=[r'\log_10($M_{\mathrm{tot}}/M_\odot + 1)$', r'$\log_10(M_{\mathrm{gas}}/M_\odot + 1)$',
+                           r'$\log_10(M_{\mathrm{DM}}/M_\odot + 1)$',
+                           r'\log_10($M_{*}/M_\odot + 1)$', r'$\log_10(M_{\mathrm{BH}}/M_\odot + 1)$'])
 
 # Plot prior
 g = sns.PairGrid(data=df, size=2.5, diag_sharey=False)
