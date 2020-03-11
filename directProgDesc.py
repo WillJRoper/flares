@@ -145,7 +145,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     halo_id_part_inds = {}
     for ind, id in enumerate(halo_ids):
-        halo_id_part_inds.setdefault(id, {}).update(ind)
+        halo_id_part_inds.setdefault(id, {}).update({ind})
 
     # =============== Progenitor Snapshot ===============
 
