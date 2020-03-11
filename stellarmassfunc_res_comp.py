@@ -6,22 +6,24 @@ import astropy.units as u
 import astropy.constants as const
 import eagle_IO as E
 import seaborn as sns
+from flares import flares
 matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
 
 
-def get_mass_data(path, snap, tag, group="SUBFIND", noH=True, cut_bounds=True):
+def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=True):
 
     # Extract mass data
     M_dat = E.read_array(group, path, snap, tag, noH=noH)
 
     # If boundaries to be eliminated
     if cut_bounds:
+        centre, radius, mindist = flares.spherical_region(path, snap)
         R_cop = E.read_array("SUBFIND", path, snap, "FOF/GroupCentreOfPotential", noH=noH)
 
         # Get the radius of each group
-        R_cop -= np.mean(R_cop, axis=0)
+        R_cop -= centre
         radii = np.linalg.norm(R_cop, axis=1)
         M_dat = M_dat[np.where(radii < 14 / 0.677700)]
 
@@ -30,13 +32,13 @@ def get_mass_data(path, snap, tag, group="SUBFIND", noH=True, cut_bounds=True):
 
 # Extarct M_200s
 tag = "Subhalo/Stars/Mass"
-snap = '009_z006p000'
+snap = '010_z0065000'
 group = "SUBFIND"
-M_200 = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032/data/', snap,
+M_200 = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0038/data/', snap,
                       tag, group=group, noH=True, cut_bounds=False)
 # M_200_hrDMO = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032_hires/data/', snap,
 #                       tag, group=group, noH=True, cut_bounds=False)
-M_200_hr = get_mass_data('/cosma7/data/dp004/dc-rope1/G-EAGLE32_hires/data/', snap,
+M_200_hr = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-HD/FLARES_HR_EMOSAICS_38/data/', snap,
                          tag, group=group, noH=True, cut_bounds=False)
 
 M_200 = M_200[np.where(M_200 != 0.0)] * 10**10
@@ -85,4 +87,4 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
 # Save figure
-fig.savefig('GSMF_res_comp.png', bbox_inches='tight')
+fig.savefig('GSMF_res_comp_' + snap + '.png', bbox_inches='tight')
