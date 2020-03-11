@@ -30,7 +30,7 @@ def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=T
     return M_dat
 
 tag = "FOF/Group_M_Crit200"
-snap = '010_z0065000'
+snap = '010_z005p000'
 group = "SUBFIND_GROUP"
 
 # Extarct M_200s
