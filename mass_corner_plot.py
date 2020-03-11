@@ -35,6 +35,12 @@ for reg in regions:
 submass = np.concatenate(list(submass_dict.values())) * 10**10
 starmass = np.concatenate(list(starmass_dict.values())) * 10**10
 
+def hexbin(x, y, cmap, max_series=None, min_series=None, **kwargs):
+    ax = plt.gca()
+    xmin, xmax = min_series[x.name], max_series[x.name]
+    ymin, ymax = min_series[y.name], max_series[y.name]
+    plt.hexbin(x, y, gridsize=15, cmap=cmap, extent=[xmin, xmax, ymin, ymax], **kwargs)
+
 # Define pandas table
 df = pd.DataFrame(np.vstack((np.log10(submass + 1), np.log10(starmass[:, 0] + 1), np.log10(starmass[:, 1] + 1),
                              np.log10(starmass[:, 4] + 1), np.log10(starmass[:, 5] + 1))).T,
@@ -45,7 +51,7 @@ df = pd.DataFrame(np.vstack((np.log10(submass + 1), np.log10(starmass[:, 0] + 1)
 # Plot prior
 g = sns.PairGrid(data=df, size=2.5, diag_sharey=False)
 g.map_diag(plt.hist, color='Red', alpha=0.5)
-g.map_lower(sns.kdeplot, cmap="viridis", alpha=0.8, n_levels=10, normed=True, shade=True, shade_lowest=False)
+g.map_lower(hexbin, cmap="viridis", alpha=0.8, min_series=df.min(), max_series=df.max())
 
 for i in range(5):
     for j in range(5):
