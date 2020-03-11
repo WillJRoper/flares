@@ -39,7 +39,7 @@ def hexbin(x, y, max_series=None, min_series=None, **kwargs):
     ax = plt.gca()
     xmin, xmax = min_series[x.name], max_series[x.name]
     ymin, ymax = min_series[y.name], max_series[y.name]
-    plt.hexbin(x, y, gridsize=100, mincnt=1, cmap="viridis", norm=LogNorm(0, 10**4.5),
+    plt.hexbin(x, y, gridsize=100, mincnt=1, cmap="viridis", norm=LogNorm(1, 10**4.5),
                extent=[xmin, xmax, ymin, ymax], **kwargs)
 
 # Define pandas table
