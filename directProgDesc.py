@@ -145,6 +145,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     halo_id_part_inds = {}
     for ind, id in enumerate(halo_ids):
+        print('Creating halo to contained partile mapping:', ind, 'of', len(halo_ids), end='\r')
         halo_id_part_inds.setdefault(id, set()).update({ind})
 
     # =============== Progenitor Snapshot ===============
