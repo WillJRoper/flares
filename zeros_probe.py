@@ -2,9 +2,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+import astropy.units as u
+import astropy.constants as const
 from matplotlib.colors import LogNorm
 import eagle_IO as E
 import seaborn as sns
+from flares import flares
 matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
@@ -34,45 +37,36 @@ for reg in regions:
 submass = np.concatenate(list(submass_dict.values())) * 10**10
 starmass = np.concatenate(list(starmass_dict.values())) * 10**10
 
-fig = plt.figure(figsize=(16, 4))
+fig = plt.figure(figsize=(14, 4))
 ax1 = fig.add_subplot(141)
 ax2 = fig.add_subplot(142)
 ax3 = fig.add_subplot(143)
-ax4 = fig.add_subplot(144)
 
 starmass_dict = {}
 cbars = {}
-for part, ax, title in zip([0, 1, 4, 5], [ax1, ax2, ax3, ax4], ['Gas', 'DM', 'Stars', 'BH']):
+labels = ['$M_{\mathrm{gas}}/M_\odot$', '$M_{\mathrm{DM}}/M_\odot$', '$M_{*}/M_\odot$']
+for drop, parts, ax, title in zip([0, 1, 4], [(1, 4), (0, 4), (0, 1)], [ax1, ax2, ax3],
+                                  ['$M_{\mathrm{gas}}=0$', '$M_{\mathrm{DM}}=0$', '$M_{*}=0$', 'BH']):
 
-    submass_plt = submass[starmass > 0]
-    starmass_plt = starmass[starmass > 0]
-    starmass_plt = starmass_plt[submass_plt > 0]
-    submass_plt = submass_plt[submass_plt > 0]
+    x_plt = starmass[:, parts[0]][np.where(starmass[:, drop] == 0)]
+    y_plt = starmass[:, parts[1]][np.where(starmass[:, drop] == 0)]
 
-    ax.plot(np.linspace(submass_plt.min(), submass_plt.max(), 100),
-            np.linspace(submass_plt.min(), submass_plt.max(), 100),
-            linestyle='--', zorder=0)
-
-    cbars[part] = ax.hexbin(submass_plt, starmass_plt, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(1, 10**4.5),
-                     yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
+    cbars[drop] = ax.hexbin(x_plt, y_plt, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(),
+                            yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
 
     ax.set_xscale('log')
     ax.set_yscale('log')
 
     ax.set_title(title)
 
-    ax.set_ylim(10**6, 10**13)
+    # ax.set_ylim(10**6, 10**13)
 
-ax1.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
-ax2.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
-ax3.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
-ax4.set_xlabel('$M_{\mathrm{tot}}/M_\odot$')
-ax1.set_ylabel('$M/M_\odot$')
+    ax.set_xlabel(labels[parts[0]])
+    ax.set_ylabel(labels[parts[0]])
 
-cax = fig.colorbar(cbars[0], ax=ax4)
+cax = fig.colorbar(cbars[0], ax=ax3)
 cax.ax.set_ylabel(r'$N$')
 
 fig.savefig('plots/starvssubhalo_mass_' + snap + '.png', bbox_inches='tight')
 
 plt.close(fig)
-
