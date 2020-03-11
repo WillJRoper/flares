@@ -6,6 +6,8 @@ import astropy.units as u
 import astropy.constants as const
 import eagle_IO as E
 import seaborn as sns
+from scipy.optimize import curve_fit
+from scipy.spatial import ConvexHull
 # from flares import flares
 matplotlib.use('Agg')
 
@@ -34,7 +36,7 @@ def spherical_region(sim, snap):
     cen = [np.median(dm_cood[:, 0]), np.median(dm_cood[:, 1]), np.median(dm_cood[:, 2])]
     pedge = dm_cood[hull.vertices]  # edge particles
     y_obs = np.zeros(len(pedge))
-    p0 = np.append(cen, self.radius)
+    p0 = np.append(cen, 14.)
 
     popt, pcov = curve_fit(_sphere, pedge, y_obs, p0, method='lm', sigma=np.ones(len(pedge)) * 0.001)
     dist = np.sqrt(np.sum((pedge - popt[:3]) ** 2, axis=1))
@@ -119,4 +121,4 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
 # Save figure
-fig.savefig('mass_func_res_comp' + snap + '.png', bbox_inches='tight')
+fig.savefig('plots/mass_func_res_comp' + snap + '.png', bbox_inches='tight')
