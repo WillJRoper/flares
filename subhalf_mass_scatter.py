@@ -14,7 +14,7 @@ sns.set_style('whitegrid')
 
 
 regions = []
-for reg in range(0, 40):
+for reg in range(38, 39):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -79,7 +79,7 @@ for xtag, tolog, xlab in zip(x_tags, logs, xlabels):
     cax = fig.colorbar(cbar, ax=ax)
     cax.ax.set_ylabel(r'$N$')
 
-    fig.savefig('plots/' + 'HalfMassRadiusCorrleations_' + xtag.replace('/', '-') + '_' + snap + '.png',
+    fig.savefig('plots/' + 'HalfMassRadiusCorrleations_' + xtag.replace('/', '-') + '_' + snap + 'HD.png',
                 bbox_inches='tight')
 
     plt.close(fig)

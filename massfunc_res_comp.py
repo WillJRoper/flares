@@ -85,8 +85,8 @@ print('Maximums:', M_200.max(), M_200_hr.max())
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-bins = np.logspace(np.log10(np.min((M_200.min(), M_200_hr.min(), M_200_hrDMO.min()))),
-                   np.log10(np.max((M_200.max(), M_200_hr.max(), M_200_hrDMO.max()))),
+bins = np.logspace(np.log10(np.min((M_200.min(), M_200_hr.min()))),
+                   np.log10(np.max((M_200.max(), M_200_hr.max()))),
                    75)
 
 interval = bins[1:] - bins[:-1]
