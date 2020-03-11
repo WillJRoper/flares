@@ -177,7 +177,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
                                          '/SubGroupNumber', numThreads=8)
 
         max_sim_id = np.max(prog_halo_ids[np.where(prog_halo_ids != 2**30)])
-        print(max_sim_id, len(np.unique(prog_halo_ids)))
+        print(max_sim_id, len(np.unique(prog_halo_ids)), len(prog_halo_ids))
 
         sim_to_internal_haloid_prog = np.full(int(max_sim_id) + 1, -2, dtype=int)
         internal_to_sim_haloid_prog = np.zeros(len(np.unique(prog_halo_ids)) - 1, dtype=int)
