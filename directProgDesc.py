@@ -135,8 +135,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     # =============== Current Snapshot ===============
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    internal_to_flares_part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs')
-    print(internal_to_flares_part_ids.size)
+    # internal_to_flares_part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs')
+    # print(internal_to_flares_part_ids.size)
     if rank == 0:
         halo_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     elif rank == 1:
@@ -185,9 +185,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             prog_halo_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) +
                                          '/SubGroupNumber', numThreads=8)
 
-        max_sim_id = np.max(prog_halo_ids[np.where(prog_halo_ids != 2**30)])
-        print(max_sim_id, len(np.unique(prog_halo_ids)), len(prog_halo_ids))
-        print(E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs').size)
         #
         # sim_to_internal_haloid_prog = np.full(int(max_sim_id) + 1, -2, dtype=int)
         # internal_to_sim_haloid_prog = np.zeros(len(np.unique(prog_halo_ids)) - 1, dtype=int)
@@ -234,10 +231,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         else:
             desc_halo_ids = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) +
                                          '/SubGroupNumber', numThreads=8)
-
-        max_sim_id = np.max(desc_halo_ids[np.where(desc_halo_ids != 2**30)])
-        print(max_sim_id, len(np.unique(desc_halo_ids)), len(desc_halo_ids))
-        print(E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs').size)
         #
         # sim_to_internal_haloid_desc = np.full(int(max_sim_id) + 1, -2, dtype=int)
         # internal_to_sim_haloid_desc = np.zeros(len(np.unique(desc_halo_ids)) - 1, dtype=int)
