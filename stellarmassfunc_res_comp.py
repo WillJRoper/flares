@@ -78,6 +78,9 @@ bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
 ax.loglog(bin_cents, H/interval, label='"Standard" Resolution')
 ax.loglog(bin_cents, H_hr/interval, linestyle='--', label='High Resolution')
 
+ax.set_xlim(10**7.5, None)
+ax.set_ylim(None, 10**-5.5)
+
 # Label axes
 ax.set_xlabel(r'$M_{\star}/M_\odot$')
 ax.set_ylabel(r'$dN/dM$')
