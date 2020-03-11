@@ -37,7 +37,7 @@ for reg in regions:
 submass = np.concatenate(list(submass_dict.values())) * 10**10
 starmass = np.concatenate(list(starmass_dict.values())) * 10**10
 
-fig = plt.figure(figsize=(17, 4))
+fig = plt.figure(figsize=(19, 4))
 ax1 = fig.add_subplot(141)
 ax2 = fig.add_subplot(142)
 ax3 = fig.add_subplot(143)
@@ -62,7 +62,7 @@ for drop, parts, ax, title in zip([0, 1, 4], [(1, 4), (0, 4), (0, 1)], [ax1, ax2
     # ax.set_ylim(10**6, 10**13)
 
     ax.set_xlabel(labels[parts[0]])
-    ax.set_ylabel(labels[parts[0]])
+    ax.set_ylabel(labels[parts[1]])
 
 cax = fig.colorbar(cbars[0], ax=ax3)
 cax.ax.set_ylabel(r'$N$')
