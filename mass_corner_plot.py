@@ -5,7 +5,7 @@ import matplotlib
 from matplotlib.colors import LogNorm
 import eagle_IO as E
 import seaborn as sns
-import pandas
+import pandas as pd
 matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
