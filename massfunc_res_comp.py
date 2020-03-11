@@ -6,10 +6,41 @@ import astropy.units as u
 import astropy.constants as const
 import eagle_IO as E
 import seaborn as sns
-from flares import flares
+# from flares import flares
 matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
+
+
+# @jit
+def _sphere(self, coords, a, b, c, r):
+    # Equation of a sphere
+
+    x, y, z = coords[:, 0], coords[:, 1], coords[:, 2]
+
+    return (x - a) ** 2 + (y - b) ** 2 + (z - c) ** 2 - r ** 2
+
+
+def spherical_region(sim, snap):
+    """
+    Inspired from David Turner's suggestion
+    """
+
+    dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
+                           noH=False, physicalUnits=False, numThreads=4)  # dm particle coordinates
+
+    hull = ConvexHull(dm_cood)
+
+    cen = [np.median(dm_cood[:, 0]), np.median(dm_cood[:, 1]), np.median(dm_cood[:, 2])]
+    pedge = dm_cood[hull.vertices]  # edge particles
+    y_obs = np.zeros(len(pedge))
+    p0 = np.append(cen, self.radius)
+
+    popt, pcov = curve_fit(_sphere, pedge, y_obs, p0, method='lm', sigma=np.ones(len(pedge)) * 0.001)
+    dist = np.sqrt(np.sum((pedge - popt[:3]) ** 2, axis=1))
+    centre, radius, mindist = popt[:3], popt[3], np.min(dist)
+
+    return centre, radius, mindist
 
 
 def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=True):
@@ -19,7 +50,7 @@ def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=T
 
     # If boundaries to be eliminated
     if cut_bounds:
-        centre, radius, mindist = flares.spherical_region(path, snap)
+        centre, radius, mindist = spherical_region(path, snap)
         R_cop = E.read_array("SUBFIND", path, snap, "FOF/GroupCentreOfPotential", noH=noH)
 
         # Get the radius of each group

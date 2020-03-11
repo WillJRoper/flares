@@ -17,15 +17,15 @@ def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=T
     # Extract mass data
     M_dat = E.read_array(group, path, snap, tag, noH=noH)
 
-    # If boundaries to be eliminated
-    if cut_bounds:
-        centre, radius, mindist = flares.spherical_region(path, snap)
-        R_cop = E.read_array("SUBFIND", path, snap, "FOF/GroupCentreOfPotential", noH=noH)
-
-        # Get the radius of each group
-        R_cop -= centre
-        radii = np.linalg.norm(R_cop, axis=1)
-        M_dat = M_dat[np.where(radii < 14 / 0.677700)]
+    # # If boundaries to be eliminated
+    # if cut_bounds:
+    #     centre, radius, mindist = flares.spherical_region(path, snap)
+    #     R_cop = E.read_array("SUBFIND", path, snap, "FOF/GroupCentreOfPotential", noH=noH)
+    #
+    #     # Get the radius of each group
+    #     R_cop -= centre
+    #     radii = np.linalg.norm(R_cop, axis=1)
+    #     M_dat = M_dat[np.where(radii < 14 / 0.677700)]
 
     return M_dat
 
