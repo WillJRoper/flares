@@ -37,7 +37,7 @@ for reg in regions:
 submass = np.concatenate(list(submass_dict.values())) * 10**10
 starmass = np.concatenate(list(starmass_dict.values())) * 10**10
 
-fig = plt.figure(figsize=(14, 4))
+fig = plt.figure(figsize=(17, 4))
 ax1 = fig.add_subplot(141)
 ax2 = fig.add_subplot(142)
 ax3 = fig.add_subplot(143)
