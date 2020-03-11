@@ -135,11 +135,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     # =============== Current Snapshot ===============
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    # internal_to_flares_part_ids = E.read_array('PartData', path, snap, 'PartType' + str(part_type) + '/ParticleIDs')
+    # internal_to_flares_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs')
     if rank == 0:
-        halo_ids = E.read_array('PartData', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+        halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     elif rank == 1:
-        halo_ids = E.read_array('PartData', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+        halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
     else:
         raise ValueError("Incompatible rank")
 
@@ -153,10 +153,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     if prog_snap != None:
 
         if rank == 0:
-            prog_snap_haloIDs = E.read_array('PartData', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
+            prog_snap_haloIDs = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                              numThreads=8)
         else:
-            prog_snap_haloIDs = E.read_array('PartData', path, prog_snap, 'PartType' + str(part_type) +
+            prog_snap_haloIDs = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) +
                                              '/SubGroupNumber', numThreads=8)
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
@@ -177,10 +177,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     if desc_snap != None:
 
         if rank == 0:
-            desc_snap_haloIDs = E.read_array('PartData', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
+            desc_snap_haloIDs = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                              numThreads=8)
         else:
-            desc_snap_haloIDs = E.read_array('PartData', path, desc_snap, 'PartType' + str(part_type) +
+            desc_snap_haloIDs = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) +
                                              '/SubGroupNumber', numThreads=8)
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
