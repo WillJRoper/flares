@@ -151,13 +151,15 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     internalIDcount = -1
     for ind, simid in enumerate(halo_ids):
         simid = int(simid)
-        if sim_to_internal_haloid[simid] == -2 and simid != 2**30:
+        if simid == 2**30:
+            continue
+        if sim_to_internal_haloid[simid] == -2:
             internalIDcount += 1
             internalID = internalIDcount
             internal_to_sim_haloid[internalID] = simid
             sim_to_internal_haloid[simid] = internalID
             halo_id_part_inds.setdefault(internalID, set()).update({ind})
-        elif sim_to_internal_haloid[simid] != -2 and simid != 2 ** 30:
+        else:
             internalID = sim_to_internal_haloid[simid]
             halo_id_part_inds.setdefault(internalID, set()).update({ind})
         print('Creating halo to contained particle mapping:', ind, 'of', len(halo_ids), end='\r')
@@ -183,13 +185,15 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         internalIDcount = -1
         for ind, simid in enumerate(prog_halo_ids):
             simid = int(simid)
-            if sim_to_internal_haloid_prog[simid] == -2 and simid != 2**30:
+            if simid == 2 ** 30:
+                continue
+            if sim_to_internal_haloid_prog[simid] == -2:
                 internalIDcount += 1
                 internalID = internalIDcount
                 internal_to_sim_haloid_prog[internalID] = simid
                 sim_to_internal_haloid_prog[simid] = internalID
                 prog_snap_haloIDs[ind] = internalID
-            elif sim_to_internal_haloid_prog[simid] != -2 and simid != 2**30:
+            else:
                 internalID = sim_to_internal_haloid_prog[simid]
                 prog_snap_haloIDs[ind] = internalID
             print('Mapping progenitor halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
@@ -228,13 +232,15 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         internalIDcount = -1
         for ind, simid in enumerate(desc_halo_ids):
             simid = int(simid)
-            if sim_to_internal_haloid_desc[simid] == -2 and simid != 2**30:
+            if simid == 2 ** 30:
+                continue
+            if sim_to_internal_haloid_desc[simid] == -2:
                 internalIDcount += 1
                 internalID = internalIDcount
                 internal_to_sim_haloid_desc[internalID] = simid
                 sim_to_internal_haloid_desc[simid] = internalID
                 desc_snap_haloIDs[ind] = internalID
-            elif sim_to_internal_haloid_desc[simid] != -2 and simid != 2**30:
+            else:
                 internalID = sim_to_internal_haloid_desc[simid]
                 desc_snap_haloIDs[ind] = internalID
             print('Mapping descendant halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
