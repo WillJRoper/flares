@@ -67,6 +67,6 @@ for drop, parts, ax, title in zip([0, 1, 4], [(1, 4), (0, 4), (0, 1)], [ax1, ax2
 cax = fig.colorbar(cbars[0], ax=ax3)
 cax.ax.set_ylabel(r'$N$')
 
-fig.savefig('plots/starvssubhalo_mass_' + snap + '.png', bbox_inches='tight')
+fig.savefig('plots/zeromassprobe_' + snap + '.png', bbox_inches='tight')
 
 plt.close(fig)
