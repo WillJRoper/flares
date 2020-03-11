@@ -147,7 +147,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     halo_id_part_inds = {}
     sim_to_internal_haloid = np.full(int(max_sim_id) + 1, -2, dtype=int)
-    internal_to_sim_haloid = np.zeros(len(np.unique(halo_ids)), dtype=int)
+    internal_to_sim_haloid = np.zeros(len(np.unique(halo_ids)) - 1, dtype=int)
     internalIDcount = -1
     for ind, simid in enumerate(halo_ids):
         simid = int(simid)
@@ -180,7 +180,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         print(max_sim_id, len(np.unique(prog_halo_ids)))
 
         sim_to_internal_haloid_prog = np.full(int(max_sim_id) + 1, -2, dtype=int)
-        internal_to_sim_haloid_prog = np.zeros(len(np.unique(halo_ids)), dtype=int)
+        internal_to_sim_haloid_prog = np.zeros(len(np.unique(prog_halo_ids)) - 1, dtype=int)
         prog_snap_haloIDs = np.full_like(prog_halo_ids, -2)
         internalIDcount = -1
         for ind, simid in enumerate(prog_halo_ids):
@@ -227,7 +227,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         print(max_sim_id, len(np.unique(desc_halo_ids)))
 
         sim_to_internal_haloid_desc = np.full(int(max_sim_id) + 1, -2, dtype=int)
-        internal_to_sim_haloid_desc = np.zeros(len(np.unique(halo_ids)), dtype=int)
+        internal_to_sim_haloid_desc = np.zeros(len(np.unique(desc_halo_ids)) - 1, dtype=int)
         desc_snap_haloIDs = np.full_like(desc_halo_ids, -2)
         internalIDcount = -1
         for ind, simid in enumerate(desc_halo_ids):
