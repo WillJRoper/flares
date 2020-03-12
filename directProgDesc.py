@@ -215,7 +215,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         #     print('Mapping progenitor halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
         
         prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs')
-
+        print(prog_halo_ids)
         prog_snap_haloIDs = np.full_like(part_ids, -2, dtype=int)
         for pid, prog in zip(prog_part_ids, prog_halo_ids):
             prog_snap_haloIDs[pid_to_ind[pid]] = prog
@@ -364,5 +364,5 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
 if __name__ == '__main__':
     mainDirectProgDesc(snap='001_z014p000', prog_snap='000_z015p000', desc_snap='002_z013p000',
-                       path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_38/data', part_type=1,
+                       path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_38/data', part_type=0,
                        rank=1, savepath='/cosma/home/dp004/dc-rope1/cosma7/FLARES/MergerGraphs/')
