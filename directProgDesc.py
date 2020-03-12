@@ -30,7 +30,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
 
     # If any progenitor halos exist (i.e. The current snapshot ID is not 000, enforced in the main function)
     if prog_snap_haloIDs.size != 0:
-        print(current_halo_pids)
+
         # Find the halo IDs of the current halo's particles in the progenitor snapshot by indexing the
         # progenitor snapshot's particle halo IDs array with the halo's particle IDs, this can be done
         # since the particle halo IDs array is sorted by particle ID.
@@ -314,56 +314,56 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         results[haloID] = getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
                           prog_counts, desc_counts)
 
-        if rank == 0:
+    if rank == 0:
 
-            hdf = h5py.File(savepath + 'Mgraph_' + snap + '_PartType' + str(part_type) +'.hdf5', 'w')
+        hdf = h5py.File(savepath + 'Mgraph_' + snap + '_PartType' + str(part_type) +'.hdf5', 'w')
 
-        else:
+    else:
 
-            hdf = h5py.File(savepath + 'SubMgraph_' + snap + '_PartType' + str(part_type) +'.hdf5', 'w')
+        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '_PartType' + str(part_type) +'.hdf5', 'w')
 
-        for num, haloID in enumerate(results.keys()):
+    for num, haloID in enumerate(results.keys()):
 
-            (nprog, prog_haloids, prog_npart, prog_mass_contribution,
-             ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results[haloID]
-            
-            # simHaloID = internal_to_sim_haloid[int(haloID)]
-            #
-            # sim_prog_haloids = np.zeros_like(prog_haloids)
-            # for ind, prog in enumerate(prog_haloids):
-            #     sim_prog_haloids[ind] = internal_to_sim_haloid_prog[prog]
-            #
-            # sim_desc_haloids = np.zeros_like(desc_haloids)
-            # for ind, desc in enumerate(desc_haloids):
-            #     sim_desc_haloids[ind] = internal_to_sim_haloid_desc[desc]
+        (nprog, prog_haloids, prog_npart, prog_mass_contribution,
+         ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results[haloID]
 
-            # Print progress
-            previous_progress = progress
-            progress = int(num / size * 100)
-            if progress != previous_progress:
-                print('Write progress: ', progress, '%', haloID, end='\r')
+        # simHaloID = internal_to_sim_haloid[int(haloID)]
+        #
+        # sim_prog_haloids = np.zeros_like(prog_haloids)
+        # for ind, prog in enumerate(prog_haloids):
+        #     sim_prog_haloids[ind] = internal_to_sim_haloid_prog[prog]
+        #
+        # sim_desc_haloids = np.zeros_like(desc_haloids)
+        # for ind, desc in enumerate(desc_haloids):
+        #     sim_desc_haloids[ind] = internal_to_sim_haloid_desc[desc]
 
-            # Write out the data produced
-            halo = hdf.create_group(haloID)  # create halo group
-            halo.attrs['nProg'] = nprog  # number of progenitors
-            halo.attrs['nDesc'] = ndesc  # number of descendants
-            halo.attrs['current_halo_nPart'] = current_halo_pids.size  # mass of the halo
-            # halo.create_dataset('current_halo_partIDs', data=current_halo_pids, dtype=int,
-            #                     compression='gzip')  # particle ids in this halo
-            halo.create_dataset('prog_npart_contribution', data=prog_mass_contribution, dtype=int,
-                                compression='gzip')  # Mass contribution
-            halo.create_dataset('desc_npart_contribution', data=desc_mass_contribution, dtype=int,
-                                compression='gzip')  # Mass contribution
-            halo.create_dataset('Prog_nPart', data=prog_npart, dtype=int,
-                                compression='gzip')  # number of particles in each progenitor
-            halo.create_dataset('Desc_nPart', data=desc_npart, dtype=int,
-                                compression='gzip')  # number of particles in each descendant
-            halo.create_dataset('Prog_haloIDs', data=prog_haloids, dtype=int,
-                                compression='gzip')  # progenitor IDs
-            halo.create_dataset('Desc_haloIDs', data=desc_haloids, dtype=int,
-                                compression='gzip')  # descendant IDs
+        # Print progress
+        previous_progress = progress
+        progress = int(num / size * 100)
+        if progress != previous_progress:
+            print('Write progress: ', progress, '%', haloID, end='\r')
 
-        hdf.close()
+        # Write out the data produced
+        halo = hdf.create_group(str(haloID))  # create halo group
+        halo.attrs['nProg'] = nprog  # number of progenitors
+        halo.attrs['nDesc'] = ndesc  # number of descendants
+        halo.attrs['current_halo_nPart'] = current_halo_pids.size  # mass of the halo
+        # halo.create_dataset('current_halo_partIDs', data=current_halo_pids, dtype=int,
+        #                     compression='gzip')  # particle ids in this halo
+        halo.create_dataset('prog_npart_contribution', data=prog_mass_contribution, dtype=int,
+                            compression='gzip')  # Mass contribution
+        halo.create_dataset('desc_npart_contribution', data=desc_mass_contribution, dtype=int,
+                            compression='gzip')  # Mass contribution
+        halo.create_dataset('Prog_nPart', data=prog_npart, dtype=int,
+                            compression='gzip')  # number of particles in each progenitor
+        halo.create_dataset('Desc_nPart', data=desc_npart, dtype=int,
+                            compression='gzip')  # number of particles in each descendant
+        halo.create_dataset('Prog_haloIDs', data=prog_haloids, dtype=int,
+                            compression='gzip')  # progenitor IDs
+        halo.create_dataset('Desc_haloIDs', data=desc_haloids, dtype=int,
+                            compression='gzip')  # descendant IDs
+
+    hdf.close()
 
 if __name__ == '__main__':
     mainDirectProgDesc(snap='001_z014p000', prog_snap='000_z015p000', desc_snap='002_z013p000',
