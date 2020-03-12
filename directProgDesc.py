@@ -215,7 +215,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         #     print('Mapping progenitor halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
         
         prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs')
-        print(prog_halo_ids)
+        print(np.unique(prog_halo_ids))
         prog_snap_haloIDs = np.full_like(part_ids, -2, dtype=int)
         for pid, prog in zip(prog_part_ids, prog_halo_ids):
             prog_snap_haloIDs[pid_to_ind[pid]] = prog
