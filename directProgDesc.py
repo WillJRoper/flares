@@ -151,7 +151,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     for ind, pid in enumerate(part_ids):
         ind_to_pid[ind] = pid
         pid_to_ind[pid] = ind
-        if ind % 1000000 == 0:
+        if ind % 10000000 == 0:
             print('Mapping particle IDs to index:', pid, 'to', ind, end='\r')
 
     # max_sim_id = np.max(halo_ids[np.where(halo_ids != 2 ** 30)])
@@ -181,7 +181,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         if simid == 2**30:
             continue
         halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
-        print('Creating halo to contained particle mapping:', pid_to_ind[pid], 'of', len(halo_ids), end='\r')
 
     # =============== Progenitor Snapshot ===============
 
@@ -267,7 +266,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
         desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs')
 
-        desc_snap_haloIDs = np.full_like(desc_part_ids, -2, dtype=int)
+        desc_snap_haloIDs = np.full_like(part_ids, -2, dtype=int)
         for pid, desc in zip(desc_part_ids, desc_halo_ids):
             desc_snap_haloIDs[pid_to_ind[pid]] = desc
 
