@@ -8,6 +8,7 @@ import eagle_IO as E
 import seaborn as sns
 import pickle
 import itertools
+import multiprocessing as mp
 matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
@@ -136,6 +137,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
     part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs')
+    print(part_ids.min())
     group_part_ids = set(E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs'))
     # print(internal_to_flares_part_ids.size)
     if rank == 0:
@@ -150,7 +152,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     for ind, pid in enumerate(part_ids):
         ind_to_pid[ind] = pid
         pid_to_ind[pid] = ind
-        print('Mapping particle IDs to index:', pid, 'to', ind, end='\r')
+        if pid % 10000 == 0:
+            print('Mapping particle IDs to index:', pid, 'to', ind, end='\r')
 
     # max_sim_id = np.max(halo_ids[np.where(halo_ids != 2 ** 30)])
     #
@@ -178,8 +181,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         simid = int(simid)
         if simid == 2**30:
             continue
-        halo_id_part_inds.setdefault(simid, set()).update({pid})
-        print('Creating halo to contained particle mapping:', pid, 'of', len(halo_ids), end='\r')
+        halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+        print('Creating halo to contained particle mapping:', pid_to_ind[pid], 'of', len(halo_ids), end='\r')
 
     # =============== Progenitor Snapshot ===============
 
