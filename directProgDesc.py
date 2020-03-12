@@ -281,7 +281,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         desc_counts = []
 
     # =============== Find all Direct Progenitors And Descendant Of Halos In This Snapshot ===============
-
+    for i in desc_unique:
+        print(i)
     # Initialise the progress
     progress = -1
 
@@ -291,8 +292,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     # Loop through all the halos in this snapshot
     for num, haloID in enumerate(halo_id_part_inds.keys()):
-        
-        print(haloID)
 
         # Print progress
         previous_progress = progress
