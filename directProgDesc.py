@@ -137,7 +137,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
     part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs')
-    print(part_ids.min(), part_ids.max() - part_ids.min(), len(part_ids))
     group_part_ids = set(E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs'))
     # print(internal_to_flares_part_ids.size)
     if rank == 0:
@@ -177,7 +176,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     #     print('Creating halo to contained particle mapping:', ind, 'of', len(halo_ids), end='\r')
 
     halo_id_part_inds = {}
-    for pid, simid in zip(enumerate(group_part_ids), halo_ids):
+    for pid, simid in zip(group_part_ids, halo_ids):
         simid = int(simid)
         if simid == 2**30:
             continue
