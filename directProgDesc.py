@@ -291,6 +291,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     # Loop through all the halos in this snapshot
     for num, haloID in enumerate(halo_id_part_inds.keys()):
+        
+        print(haloID)
 
         # Print progress
         previous_progress = progress
