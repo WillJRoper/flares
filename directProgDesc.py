@@ -316,11 +316,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
         if rank == 0:
 
-            hdf = h5py.File(savepath + 'Mgraph_' + snap + '_PartType' + part_type +'.hdf5', 'w')
+            hdf = h5py.File(savepath + 'Mgraph_' + snap + '_PartType' + str(part_type) +'.hdf5', 'w')
 
         else:
 
-            hdf = h5py.File(savepath + 'SubMgraph_' + snap + '_PartType' + part_type +'.hdf5', 'w')
+            hdf = h5py.File(savepath + 'SubMgraph_' + snap + '_PartType' + str(part_type) +'.hdf5', 'w')
 
         for num, haloID in enumerate(results.keys()):
 
