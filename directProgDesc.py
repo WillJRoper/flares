@@ -60,10 +60,9 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
     # If there is no progenitor store Null values
     else:
         nprog = -1
-        prog_npart = np.array([-1], copy=False, dtype=int)
-        prog_haloids = np.array([-1], copy=False, dtype=int)
-        prog_mass_contribution = np.array([-1], copy=False, dtype=int)
-        preals = np.array([False], copy=False, dtype=bool)
+        prog_npart = np.array([], copy=False, dtype=int)
+        prog_haloids = np.array([], copy=False, dtype=int)
+        prog_mass_contribution = np.array([], copy=False, dtype=int)
 
     # =============== Find Descendant IDs ===============
 
@@ -106,9 +105,9 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
     # If there is no descendant snapshot store Null values
     else:
         ndesc = -1
-        desc_npart = np.array([-1], copy=False, dtype=int)
-        desc_haloids = np.array([-1], copy=False, dtype=int)
-        desc_mass_contribution = np.array([-1], copy=False, dtype=int)
+        desc_npart = np.array([], copy=False, dtype=int)
+        desc_haloids = np.array([], copy=False, dtype=int)
+        desc_mass_contribution = np.array([], copy=False, dtype=int)
 
     return (nprog, prog_haloids, prog_npart, prog_mass_contribution,
             ndesc, desc_haloids, desc_npart, desc_mass_contribution,
@@ -130,8 +129,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     # =============== Current Snapshot ===============
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs')
-    group_part_ids = set(E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs'))
+    part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+    group_part_ids = set(E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                      numThreads=8))
     # print(internal_to_flares_part_ids.size)
     if rank == 0:
         halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
@@ -167,7 +167,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             prog_halo_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) +
                                          '/SubGroupNumber', numThreads=8)
         
-        prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs')
+        prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                     numThreads=8)
         
         prog_snap_haloIDs = np.full_like(part_ids, -2, dtype=int)
         internal_to_sim_haloID_prog = {}
@@ -210,7 +211,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) +
                                          '/SubGroupNumber', numThreads=8)
 
-        desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs')
+        desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                     numThreads=8)
 
         desc_snap_haloIDs = np.full_like(part_ids, -2, dtype=int)
         internal_to_sim_haloID_desc = {}
@@ -242,8 +244,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         desc_counts = []
 
     # =============== Find all Direct Progenitors And Descendant Of Halos In This Snapshot ===============
-    for i in desc_unique:
-        print(i)
+
     # Initialise the progress
     progress = -1
 
@@ -328,7 +329,7 @@ if __name__ == '__main__':
             regions.append('0' + str(reg))
         else:
             regions.append(str(reg))
-    
+
     snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
              '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
     prog_snaps = [None, '000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
