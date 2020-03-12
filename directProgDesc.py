@@ -146,28 +146,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         ind_to_pid[ind] = pid
         pid_to_ind[pid] = ind
         if ind % 10000000 == 0:
-            print('Mapping particle IDs to index:', pid, 'to', ind, end='\r')
-
-    # max_sim_id = np.max(halo_ids[np.where(halo_ids != 2 ** 30)])
-    #
-    # halo_id_part_inds = {}
-    # sim_to_internal_haloid = np.full(int(max_sim_id) + 1, -2, dtype=int)
-    # internal_to_sim_haloid = np.zeros(len(np.unique(halo_ids)) - 1, dtype=int)
-    # internalIDcount = -1
-    # for ind, simid in enumerate(halo_ids):
-    #     simid = int(simid)
-    #     if simid == 2**30:
-    #         continue
-    #     if sim_to_internal_haloid[simid] == -2:
-    #         internalIDcount += 1
-    #         internalID = internalIDcount
-    #         internal_to_sim_haloid[internalID] = simid
-    #         sim_to_internal_haloid[simid] = internalID
-    #         halo_id_part_inds.setdefault(internalID, set()).update({ind})
-    #     else:
-    #         internalID = sim_to_internal_haloid[simid]
-    #         halo_id_part_inds.setdefault(internalID, set()).update({ind})
-    #     print('Creating halo to contained particle mapping:', ind, 'of', len(halo_ids), end='\r')
+            print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
 
     halo_id_part_inds = {}
     for pid, simid in zip(group_part_ids, halo_ids):
@@ -187,33 +166,23 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         else:
             prog_halo_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) +
                                          '/SubGroupNumber', numThreads=8)
-
-        #
-        # sim_to_internal_haloid_prog = np.full(int(max_sim_id) + 1, -2, dtype=int)
-        # internal_to_sim_haloid_prog = np.zeros(len(np.unique(prog_halo_ids)) - 1, dtype=int)
-        # prog_snap_haloIDs = np.full_like(prog_halo_ids, -2)
-        # internalIDcount = -1
-        # for ind, simid in enumerate(prog_halo_ids):
-        #     simid = int(simid)
-        #     if simid == 2 ** 30:
-        #         continue
-        #     if sim_to_internal_haloid_prog[simid] == -2:
-        #         internalIDcount += 1
-        #         internalID = internalIDcount
-        #         internal_to_sim_haloid_prog[internalID] = simid
-        #         sim_to_internal_haloid_prog[simid] = internalID
-        #         prog_snap_haloIDs[ind] = internalID
-        #     else:
-        #         internalID = sim_to_internal_haloid_prog[simid]
-        #         prog_snap_haloIDs[ind] = internalID
-        #     print('Mapping progenitor halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
         
         prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs')
+        
         prog_snap_haloIDs = np.full_like(part_ids, -2, dtype=int)
+        internal_to_sim_haloID_prog = {}
+        sim_to_internal_haloID_prog = {}
+        internalID = -1
         for pid, prog in zip(prog_part_ids, prog_halo_ids):
-            if int(prog) == 2**30:
+            if int(prog) == 2 ** 30:
                 continue
-            prog_snap_haloIDs[pid_to_ind[pid]] = int(prog)
+            if int(prog) in sim_to_internal_haloID_prog.keys():
+                prog_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_prog[int(prog)]
+            else:
+                internalID += 1
+                sim_to_internal_haloID_prog[int(prog)] = internalID
+                internal_to_sim_haloID_prog[internalID] = int(prog)
+                prog_snap_haloIDs[pid_to_ind[pid]] = internalID
             
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
@@ -225,7 +194,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     else:  # Assign an empty array if the snapshot is less than the earliest (000)
         prog_snap_haloIDs = np.array([], copy=False)
-        internal_to_sim_haloid_prog = np.array([], copy=False)
+        internal_to_sim_haloID_prog = {}
+        sim_to_internal_haloID_prog = {}
         prog_counts = []
 
     # =============== Descendant Snapshot ===============
@@ -239,33 +209,23 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         else:
             desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) +
                                          '/SubGroupNumber', numThreads=8)
-        #
-        # sim_to_internal_haloid_desc = np.full(int(max_sim_id) + 1, -2, dtype=int)
-        # internal_to_sim_haloid_desc = np.zeros(len(np.unique(desc_halo_ids)) - 1, dtype=int)
-        # desc_snap_haloIDs = np.full_like(desc_halo_ids, -2)
-        # internalIDcount = -1
-        # for ind, simid in enumerate(desc_halo_ids):
-        #     simid = int(simid)
-        #     if simid == 2 ** 30:
-        #         continue
-        #     if sim_to_internal_haloid_desc[simid] == -2:
-        #         internalIDcount += 1
-        #         internalID = internalIDcount
-        #         internal_to_sim_haloid_desc[internalID] = simid
-        #         sim_to_internal_haloid_desc[simid] = internalID
-        #         desc_snap_haloIDs[ind] = internalID
-        #     else:
-        #         internalID = sim_to_internal_haloid_desc[simid]
-        #         desc_snap_haloIDs[ind] = internalID
-        #     print('Mapping descendant halos to internal ID:', ind, 'of', len(halo_ids), end='\r')
 
         desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs')
 
         desc_snap_haloIDs = np.full_like(part_ids, -2, dtype=int)
+        internal_to_sim_haloID_desc = {}
+        sim_to_internal_haloID_desc = {}
+        internalID = -1
         for pid, desc in zip(desc_part_ids, desc_halo_ids):
             if int(desc) == 2 ** 30:
                 continue
-            desc_snap_haloIDs[pid_to_ind[pid]] = int(desc)
+            if int(desc) in sim_to_internal_haloID_desc.keys():
+                desc_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_desc[int(desc)]
+            else:
+                internalID += 1
+                sim_to_internal_haloID_desc[int(desc)] = internalID
+                internal_to_sim_haloID_desc[internalID] = int(desc)
+                desc_snap_haloIDs[pid_to_ind[pid]] = internalID
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         desc_unique, desc_counts = np.unique(desc_snap_haloIDs, return_counts=True)
@@ -277,7 +237,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     else:  # Assign an empty array if the snapshot is less than the earliest (000)
         desc_snap_haloIDs = np.array([], copy=False)
-        internal_to_sim_haloid_desc = np.array([], copy=False)
+        internal_to_sim_haloID_desc = {}
+        sim_to_internal_haloID_desc = {}
         desc_counts = []
 
     # =============== Find all Direct Progenitors And Descendant Of Halos In This Snapshot ===============
@@ -322,15 +283,13 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
          ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results[haloID]
 
-        # simHaloID = internal_to_sim_haloid[int(haloID)]
-        #
-        # sim_prog_haloids = np.zeros_like(prog_haloids)
-        # for ind, prog in enumerate(prog_haloids):
-        #     sim_prog_haloids[ind] = internal_to_sim_haloid_prog[prog]
-        #
-        # sim_desc_haloids = np.zeros_like(desc_haloids)
-        # for ind, desc in enumerate(desc_haloids):
-        #     sim_desc_haloids[ind] = internal_to_sim_haloid_desc[desc]
+        sim_prog_haloids = np.zeros_like(prog_haloids)
+        for ind, prog in enumerate(prog_haloids):
+            sim_prog_haloids[ind] = internal_to_sim_haloID_prog[prog]
+
+        sim_desc_haloids = np.zeros_like(desc_haloids)
+        for ind, desc in enumerate(desc_haloids):
+            sim_desc_haloids[ind] = internal_to_sim_haloID_desc[desc]
 
         # Print progress
         previous_progress = progress
@@ -353,9 +312,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
                             compression='gzip')  # number of particles in each progenitor
         halo.create_dataset('Desc_nPart', data=desc_npart, dtype=int,
                             compression='gzip')  # number of particles in each descendant
-        halo.create_dataset('Prog_haloIDs', data=prog_haloids, dtype=int,
+        halo.create_dataset('Prog_haloIDs', data=sim_prog_haloids, dtype=int,
                             compression='gzip')  # progenitor IDs
-        halo.create_dataset('Desc_haloIDs', data=desc_haloids, dtype=int,
+        halo.create_dataset('Desc_haloIDs', data=sim_desc_haloids, dtype=int,
                             compression='gzip')  # descendant IDs
 
     hdf.close()
