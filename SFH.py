@@ -24,7 +24,7 @@ def calc_srf(z, a_born, mass):
     t_born = cosmo.age(z_born)
 
     # Calculate the VR
-    age = ((t - t_born) * u.Gyr).to(u.yr)
+    age = ((t - t_born)).to(u.yr)
 
     # Calculate the SFR
     sfr = mass / age
