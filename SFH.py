@@ -24,7 +24,7 @@ def calc_srf(z, a_born, mass):
     t_born = cosmo.age(z_born)
 
     # Calculate the VR
-    age = ((t - t_born)).to(u.yr)
+    age = (t - t_born).to(u.yr)
 
     # Calculate the SFR
     sfr = mass / age
@@ -71,6 +71,7 @@ zs_plt = []
 sfrs = {}
 for snap in snaps:
 
+    print(snap)
     stellar_a[snap] = np.concatenate(list(stellar_a_dict[snap].values()))
     starmass[snap] = np.concatenate(list(starmass_dict[snap].values())) * 10**10
     z_str = snap.split('z')[1].split('p')
@@ -83,6 +84,8 @@ medians = np.zeros(len(snaps))
 pcent84 = np.zeros(len(snaps))
 pcent16 = np.zeros(len(snaps))
 for ind, snap in enumerate(snaps):
+
+    print(ind, snap)
 
     medians[ind] = np.median(sfrs[snap])
     pcent84[ind] = np.percentile(sfrs[snap], 84)
