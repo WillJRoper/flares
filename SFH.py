@@ -27,7 +27,7 @@ def calc_srf(z, a_born, mass):
     age = (t - t_born).to(u.yr)
 
     # Calculate the SFR
-    sfr = mass / age
+    sfr = mass / age.value
 
     return sfr
 
