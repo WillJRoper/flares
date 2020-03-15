@@ -95,7 +95,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 ax.plot(zs_plt, medians, linestyle='--', color='r')
-ax.fill_between(zs_plt, pcent16, pcent84, alpha=0.6, clor='g')
+ax.fill_between(zs_plt, pcent16, pcent84, alpha=0.6, color='g')
 
 ax.set_xlabel('$z$')
 ax.set_ylabel('SFR / $[M_\odot/\mathrm{yr}]$')
