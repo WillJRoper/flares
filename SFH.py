@@ -105,7 +105,7 @@ ax.fill_between(zs_plt, pcent16, pcent84, alpha=0.4, color='g')
 ax.set_xlabel('$z$')
 ax.set_ylabel('SFR / $[M_\odot/\mathrm{yr}]$')
 
-cax = fig.colorbar(cbars[0], ax=ax4)
+cax = fig.colorbar(cbar, ax=ax)
 cax.ax.set_ylabel(r'$N$')
 
 fig.savefig('plots/SFH.png')
