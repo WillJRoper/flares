@@ -33,7 +33,7 @@ def calc_srf(z, a_born, mass):
 
 
 regions = []
-for reg in range(30, 31):
+for reg in range(32, 33):
 
     if reg < 10:
         regions.append('000' + str(reg))
