@@ -33,7 +33,7 @@ def calc_srf(z, a_born, mass):
 
 
 regions = []
-for reg in range(32, 33):
+for reg in range(0, 10):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -97,13 +97,15 @@ for ind, snap in enumerate(snaps):
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-cbar = ax.hexbin(hex_zs, hex_sfrs, gridsize=100, mincnt=1, norm=LogNorm(), xscale='log', yscale='log',
-                 linewidths=0.2, cmap='Greys_r', zorder=0)
+cbar = ax.hexbin(hex_zs, hex_sfrs, gridsize=100, mincnt=1, norm=LogNorm(), yscale='log',
+                 linewidths=0.2, cmap='Greys', zorder=0)
 ax.plot(zs_plt, medians, linestyle='--', color='r')
 ax.fill_between(zs_plt, pcent16, pcent84, alpha=0.4, color='g')
 
-
 ax.set_xlabel('$z$')
 ax.set_ylabel('SFR / $[M_\odot/\mathrm{yr}]$')
+
+cax = fig.colorbar(cbars[0], ax=ax4)
+cax.ax.set_ylabel(r'$N$')
 
 fig.savefig('plots/SFH.png')
