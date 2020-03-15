@@ -97,8 +97,8 @@ for ind, snap in enumerate(snaps):
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-cbar = ax.hexbin(hex_zs, hex_sfrs, gridsize=100, mincnt=1, norm=LogNorm(),
-                 linewidths=0.2, cmap='Greys', zorder=0)
+cbar = ax.hexbin(hex_zs, hex_sfrs, gridsize=100, mincnt=1, norm=LogNorm(), xscale='log', yscale='log',
+                 linewidths=0.2, cmap='Greys_r', zorder=0)
 ax.plot(zs_plt, medians, linestyle='--', color='r')
 ax.fill_between(zs_plt, pcent16, pcent84, alpha=0.4, color='g')
 
