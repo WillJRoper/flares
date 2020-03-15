@@ -80,6 +80,9 @@ for snap in snaps:
     zs_plt.append(z)
     sfrs[snap] = calc_srf(z, stellar_a[snap], starmass[snap])
 
+hex_sfrs = np.concatenate(list(sfrs.values()))
+hex_zs = np.concatenate(list(zs.values()))
+
 medians = np.zeros(len(snaps))
 pcent84 = np.zeros(len(snaps))
 pcent16 = np.zeros(len(snaps))
@@ -94,8 +97,11 @@ for ind, snap in enumerate(snaps):
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
+cbar = ax.hexbin(hex_zs, hex_sfrs, gridsize=100, mincnt=1, norm=LogNorm(),
+                 linewidths=0.2, cmap='Greys', zorder=0)
 ax.plot(zs_plt, medians, linestyle='--', color='r')
-ax.fill_between(zs_plt, pcent16, pcent84, alpha=0.6, color='g')
+ax.fill_between(zs_plt, pcent16, pcent84, alpha=0.4, color='g')
+
 
 ax.set_xlabel('$z$')
 ax.set_ylabel('SFR / $[M_\odot/\mathrm{yr}]$')
