@@ -26,7 +26,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
     # Calculate the VR
     age = (t - t_born).to(u.Myr)
 
-    ok = np.where(age <= t_bin)[0]
+    ok = np.where(age.value <= t_bin)[0]
     if len(ok) > 0:
 
         # Calculate the SFR
