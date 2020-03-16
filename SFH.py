@@ -96,13 +96,13 @@ for reg in regions:
                 pid_to_ind[pid] = ind + 1
                 halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
-# Get halos which are in the distribution at the z=4.77
-halos_in_pop = {}
-for reg in regions:
-    for grp in halo_id_part_inds['011_z004p770'][reg].keys():
-        parts = list(halo_id_part_inds['011_z004p770'][reg][grp])
-        if np.sum(starmass_dict['011_z004p770'][reg][parts]) > 10**9:
-            halos_in_pop.setdefault(reg, []).append(grp)
+# # Get halos which are in the distribution at the z=4.77
+# halos_in_pop = {}
+# for reg in regions:
+#     for grp in halo_id_part_inds['011_z004p770'][reg].keys():
+#         parts = list(halo_id_part_inds['011_z004p770'][reg][grp])
+#         if np.sum(starmass_dict['011_z004p770'][reg][parts]) > 10**9:
+#             halos_in_pop.setdefault(reg, []).append(grp)
 
 sfrs_gals = {}
 for snap in halo_id_part_inds.keys():
