@@ -131,7 +131,7 @@ for reg, greg in zip(regions, gregions):
 
             hdf = h5py.File('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + greg +
                             '/SubMgraph_' + snap + '_PartType1.hdf5', 'r')
-            progs = [hdf[halo]['Prog_haloIDs'][...] for halo in halos]
+            progs = [hdf[str(halo)]['Prog_haloIDs'][...] for halo in halos]
             halos = progs
             hdf.close()
 
