@@ -84,17 +84,16 @@ for reg in regions:
             if ind % 10000000 == 0:
                 print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
 
-        halo_id_part_inds = {}
         for pid, simid in zip(part_ids, group_ids):
             simid = int(simid)
             if simid == 2 ** 30:
                 continue
             try:
-                halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+                halo_id_part_inds[snap].setdefault(simid, set()).update({pid_to_ind[pid]})
             except KeyError:
                 ind_to_pid[ind + 1] = pid
                 pid_to_ind[pid] = ind + 1
-                halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+                halo_id_part_inds[snap].setdefault(simid, set()).update({pid_to_ind[pid]})
 
 # # Get halos which are in the distribution at the z=4.77
 # halos_in_pop = {}
@@ -105,7 +104,7 @@ for reg in regions:
 #             halos_in_pop.setdefault(reg, []).append(grp)
 
 sfrs_gals = {}
-for snap in snaps:
+for snap in halo_id_part_inds:
     sfrs_gals[snap] = {}
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
