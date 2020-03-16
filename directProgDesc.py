@@ -160,6 +160,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             pid_to_ind[pid] = ind + 1
             halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
+    print(len(pid_to_ind.keys()))
+
     # =============== Progenitor Snapshot ===============
 
     # Only look for descendant data if there is a descendant snapshot
