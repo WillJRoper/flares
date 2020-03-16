@@ -71,24 +71,36 @@ for reg in regions:
                                                     noH=True, numThreads=8) * 10**10
             stellar_a_dict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime',
                                                      noH=True, numThreads=8)
+            part_ids = E.read_array('SNAP', path, snap, 'PartType4/ParticleIDs', numThreads=8)
             group_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
-            print(len(stellar_a_dict[snap][reg]), len(group_ids))
         except:
             continue
 
-        # Get IDs of each subhalo
-        halo_id_part_inds[snap][reg] = {}
-        for pid, simid in enumerate(group_ids):
+        ind_to_pid = {}
+        pid_to_ind = {}
+        for ind, pid in enumerate(part_ids):
+            ind_to_pid[ind] = pid
+            pid_to_ind[pid] = ind
+            if ind % 10000000 == 0:
+                print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
+
+        halo_id_part_inds = {}
+        for pid, simid in zip(part_ids, group_ids):
             simid = int(simid)
-            if simid == 2**30:
+            if simid == 2 ** 30:
                 continue
-            halo_id_part_inds[snap][reg].setdefault(simid, set()).update({pid})
+            try:
+                halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+            except KeyError:
+                ind_to_pid[ind + 1] = pid
+                pid_to_ind[pid] = ind + 1
+                halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
 # Get halos which are in the distribution at the z=4.77
 halos_in_pop = {}
 for reg in regions:
     for grp in halo_id_part_inds['011_z004p770'][reg].keys():
-        parts = halo_id_part_inds['011_z004p770'][reg][grp]
+        parts = list(halo_id_part_inds['011_z004p770'][reg][grp])
         if np.sum(starmass_dict['011_z004p770'][reg][parts]) > 10**9:
             halos_in_pop.setdefault(reg, []).append(grp)
 
