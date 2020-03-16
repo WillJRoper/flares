@@ -33,7 +33,7 @@ def calc_srf(z, a_born, mass):
 
 
 regions = []
-for reg in range(0, 8):
+for reg in range(0, 1):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -58,7 +58,8 @@ for reg in regions:
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
         sfrdict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate',
-                                                  noH=True, numThreads=8)
+                                          noH=True, numThreads=8)
+        print(sfrdict[snap][reg].max())
 
 zs = {}
 zs_plt = []
