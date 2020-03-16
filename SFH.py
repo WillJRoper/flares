@@ -8,6 +8,7 @@ from astropy.cosmology import Planck13 as cosmo
 from matplotlib.colors import LogNorm
 import eagle_IO as E
 import seaborn as sns
+import h5py
 from flares import flares
 matplotlib.use('Agg')
 
@@ -46,8 +47,20 @@ for reg in range(0, 1):
     else:
         regions.append('00' + str(reg))
 
+gregions = []
+for reg in range(0, 1):
+
+    if reg < 10:
+        regions.append('0' + str(reg))
+    else:
+        regions.append(str(reg))
+
 snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+gsnaps = reversed(snaps)
+
+#Define mass threshold for roots
+thresh = 10**9
 
 zs_dict = {}
 stellar_a_dict = {}
@@ -96,13 +109,31 @@ for reg in regions:
                 pid_to_ind[pid] = ind + 1
                 halo_id_part_inds[snap][reg].setdefault(simid, set()).update({pid_to_ind[pid]})
 
-# # Get halos which are in the distribution at the z=4.77
-# halos_in_pop = {}
-# for reg in regions:
-#     for grp in halo_id_part_inds['011_z004p770'][reg].keys():
-#         parts = list(halo_id_part_inds['011_z004p770'][reg][grp])
-#         if np.sum(starmass_dict['011_z004p770'][reg][parts]) > 10**9:
-#             halos_in_pop.setdefault(reg, []).append(grp)
+# Get halos which are in the distribution at the z=4.77
+halos_in_pop = {}
+for reg in regions:
+    for grp in halo_id_part_inds['011_z004p770'][reg].keys():
+        parts = list(halo_id_part_inds['011_z004p770'][reg][grp])
+        if np.sum(starmass_dict['011_z004p770'][reg][parts]) > thresh:
+            halos_in_pop.setdefault(reg, []).append(grp)
+
+# Get the halos from the graph that make up these halos
+graphs = {}
+halos_included = {}
+for reg, greg in zip(regions, gregions):
+    halos_included[reg] = {}
+    for grp in halos_in_pop[reg]:
+        halos = [grp, ]
+        for snap in gsnaps:
+
+            # Add halos to dictionary
+            halos_included[reg].setdefault(snap, set()).update(set(halos))
+
+            hdf = h5py.File('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + greg +
+                            '/SubMgraph_' + snap + '_PartType1.hdf5', 'r')
+            progs = [hdf[halo]['Prog_haloIDs'][...] for halo in halos]
+            halos = progs
+            hdf.close()
 
 sfrs_gals = {}
 for snap in halo_id_part_inds.keys():
@@ -112,8 +143,10 @@ for snap in halo_id_part_inds.keys():
     for reg in halo_id_part_inds[snap].keys():
         sfrs_gals[snap][reg] = {}
         for grp in halo_id_part_inds[snap][reg].keys():
-            parts = list(halo_id_part_inds[snap][reg][grp])
-            sfrs_gals[snap][reg][grp] = calc_srf(z, stellar_a_dict[snap][reg][parts], starmass_dict[snap][reg][parts])
+            if grp in halos_included[reg][snap]:
+                parts = list(halo_id_part_inds[snap][reg][grp])
+                sfrs_gals[snap][reg][grp] = calc_srf(z, stellar_a_dict[snap][reg][parts],
+                                                     starmass_dict[snap][reg][parts])
 
 zs = {}
 zs_plt = []
