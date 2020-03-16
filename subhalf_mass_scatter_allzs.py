@@ -64,12 +64,12 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6], snaps, [(0, 0), (0, 
     xs = np.concatenate(list(xaxis_dict[snap].values()))
     half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
     
-    # xs_plt = xs[half_mass_rads_plt > 0]
-    # half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
-    # half_mass_rads_plt = half_mass_rads_plt[xs_plt > 0]
-    # xs_plt = xs_plt[xs_plt > 0]
+    xs_plt = xs[half_mass_rads_plt > 0]
+    half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
+    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 0]
+    xs_plt = xs_plt[xs_plt > 0]
     
-    cbar = ax.hexbin(xs + 1, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(),
+    cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(),
                      linewidths=0.2, cmap='viridis')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -80,7 +80,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6], snaps, [(0, 0), (0, 
 
     # Label axes
     if i == 1:
-        ax.set_xlabel(r'$M_{\star}/M_\odot + 1$')
+        ax.set_xlabel(r'$M_{\star}/M_\odot$')
     if j == 0:
         ax.set_ylabel('$R_{1/2}/$ckpc')
 
