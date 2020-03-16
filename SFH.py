@@ -26,6 +26,20 @@ def calc_srf(z, a_born, mass):
     # Calculate the VR
     age = (t - t_born).to(u.yr)
 
+    begin = np.zeros(len(a_born), dtype=np.int64)
+    end = np.zeros(len(a_born), dtype=np.int64)
+    begin[1:] = np.cumsum(a_born)[:-1]
+    end = np.cumsum(S_len)
+
+    SFR = np.zeros(len(begin))
+
+    for jj, kk in enumerate(begin):
+
+        this_age = S_age[begin[jj]:end[jj]]
+        this_mass = S_mass[begin[jj]:end[jj]]
+        ok = np.where(this_age <= t)[0]
+        if len(ok) > 0:
+
     # Calculate the SFR
     sfr = mass / age.value
 
