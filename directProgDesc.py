@@ -153,7 +153,12 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         simid = int(simid)
         if simid == 2**30:
             continue
-        halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+        try:
+            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+        except KeyError:
+            ind_to_pid[ind + 1] = pid
+            pid_to_ind[pid] = ind + 1
+            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
     # =============== Progenitor Snapshot ===============
 
@@ -323,8 +328,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 if __name__ == '__main__':
 
     regions = []
-    for reg in range(19, 40):
-
+    for reg in range(18, 40):
+        if 19 <= reg <= 23:
+            continue
         if reg < 10:
             regions.append('0' + str(reg))
         else:
