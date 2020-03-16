@@ -68,6 +68,7 @@ for snap in snaps:
 
     print(snap)
     sfrs[snap] = np.concatenate(list(sfrdict[snap].values()))
+    print(sfrs[snap])
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
     # zs[snap] = np.full_like(starmass[snap], z)

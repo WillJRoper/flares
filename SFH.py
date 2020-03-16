@@ -96,7 +96,7 @@ for snap in snaps:
     z = float(z_str[0] + '.' + z_str[1])
     # zs[snap] = np.full_like(starmass[snap], z)
     zs_plt.append(z)
-    sfrs[snap] =
+    sfrs[snap] = np.concatenate([list(sfrs_gals[snap][reg].values()) for reg in sfrs_gals[snap].keys()])
 
 # hex_sfrs = np.concatenate(list(sfrs.values()))
 # hex_zs = np.concatenate(list(zs.values()))
