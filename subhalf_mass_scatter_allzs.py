@@ -48,7 +48,7 @@ for reg in regions:
                                              noH=True, numThreads=8)[:, 4] * 10**10
 
 # Set up plot
-fig = plt.figure(figsize=(18, 18))
+fig = plt.figure(figsize=(18, 10))
 gs = gridspec.GridSpec(3, 6)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
