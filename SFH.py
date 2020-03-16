@@ -84,16 +84,17 @@ for reg in regions:
             if ind % 10000000 == 0:
                 print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
 
+        halo_id_part_inds[snap][reg] = {}
         for pid, simid in zip(part_ids, group_ids):
             simid = int(simid)
             if simid == 2 ** 30:
                 continue
             try:
-                halo_id_part_inds[snap].setdefault(simid, set()).update({pid_to_ind[pid]})
+                halo_id_part_inds[snap][reg].setdefault(simid, set()).update({pid_to_ind[pid]})
             except KeyError:
                 ind_to_pid[ind + 1] = pid
                 pid_to_ind[pid] = ind + 1
-                halo_id_part_inds[snap].setdefault(simid, set()).update({pid_to_ind[pid]})
+                halo_id_part_inds[snap][reg].setdefault(simid, set()).update({pid_to_ind[pid]})
 
 # # Get halos which are in the distribution at the z=4.77
 # halos_in_pop = {}
@@ -104,7 +105,7 @@ for reg in regions:
 #             halos_in_pop.setdefault(reg, []).append(grp)
 
 sfrs_gals = {}
-for snap in halo_id_part_inds:
+for snap in halo_id_part_inds.keys():
     sfrs_gals[snap] = {}
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
@@ -113,6 +114,7 @@ for snap in halo_id_part_inds:
         for grp in halo_id_part_inds[snap][reg].keys():
             parts = list(halo_id_part_inds[snap][reg][grp])
             sfrs_gals[snap][reg][grp] = calc_srf(z, stellar_a_dict[snap][reg][parts], starmass_dict[snap][reg][parts])
+
 zs = {}
 zs_plt = []
 sfrs = {}
