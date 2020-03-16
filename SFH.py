@@ -127,7 +127,7 @@ for reg, greg in zip(regions, gregions):
         for snap in gsnaps:
 
             # Add halos to dictionary
-            halos_included[reg].setdefault(snap, set()).update(set(halos))
+            halos_included[reg].setdefault(snap, set()).update(set(list(halos)))
 
             hdf = h5py.File('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + greg +
                             '/SubMgraph_' + snap + '_PartType1.hdf5', 'r')
