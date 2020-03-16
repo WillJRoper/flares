@@ -105,7 +105,7 @@ for reg in regions:
 #             halos_in_pop.setdefault(reg, []).append(grp)
 
 sfrs_gals = {}
-for snap in halo_id_part_inds.keys():
+for snap in snaps:
     sfrs_gals[snap] = {}
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
