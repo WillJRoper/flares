@@ -46,10 +46,12 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 zs_dict = {}
 stellar_a_dict = {}
 starmass_dict = {}
+halo_id_part_inds = {}
 for snap in snaps:
 
     stellar_a_dict[snap] = {}
     starmass_dict[snap] = {}
+    halo_id_part_inds[snap] = {}
 
 for reg in regions:
 
@@ -63,22 +65,38 @@ for reg in regions:
                                                   noH=True, numThreads=8)
         starmass_dict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType4/Mass',
                                                 noH=True, numThreads=8)
+        group_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
 
-stellar_a = {}
-starmass = {}
+        # Get IDs of each subhalo
+        halo_id_part_inds[snap][reg] = {}
+        for pid, simid in enumerate(group_ids):
+            simid = int(simid)
+            if simid == 2**30:
+                continue
+            halo_id_part_inds[snap][reg].setdefault(simid, set()).update({pid})
+
+
+sfrs_gals = {}
+for snap in halo_id_part_inds.keys():
+    sfrs_gals[snap] = {}
+    z_str = snap.split('z')[1].split('p')
+    z = float(z_str[0] + '.' + z_str[1])
+    for reg in halo_id_part_inds[snap].keys():
+        sfrs_gals[snap][reg] = {}
+        for grp in halo_id_part_inds[snap][reg].keys():
+            parts = list(halo_id_part_inds[snap][reg][grp])
+            sfrs_gals[snap][reg][grp] = calc_srf(z, stellar_a_dict[snap][reg][parts], starmass_dict[snap][reg][parts])
 zs = {}
 zs_plt = []
 sfrs = {}
 for snap in snaps:
 
     print(snap)
-    stellar_a[snap] = np.concatenate(list(stellar_a_dict[snap].values()))
-    starmass[snap] = np.concatenate(list(starmass_dict[snap].values())) * 10**10
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
     # zs[snap] = np.full_like(starmass[snap], z)
     zs_plt.append(z)
-    sfrs[snap] = calc_srf(z, stellar_a[snap], starmass[snap])
+    sfrs[snap] =
 
 # hex_sfrs = np.concatenate(list(sfrs.values()))
 # hex_zs = np.concatenate(list(zs.values()))
