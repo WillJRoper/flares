@@ -44,12 +44,10 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
              '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 
 zs_dict = {}
-stellar_a_dict = {}
-starmass_dict = {}
+sfrdict = {}
 for snap in snaps:
 
-    stellar_a_dict[snap] = {}
-    starmass_dict[snap] = {}
+    sfrdict[snap] = {}
 
 for reg in regions:
 
@@ -59,26 +57,20 @@ for reg in regions:
 
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-        stellar_a_dict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime',
+        sfrdict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate',
                                                   noH=True, numThreads=8)
-        starmass_dict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType4/Mass',
-                                                noH=True, numThreads=8)
 
-stellar_a = {}
-starmass = {}
 zs = {}
 zs_plt = []
 sfrs = {}
 for snap in snaps:
 
     print(snap)
-    stellar_a[snap] = np.concatenate(list(stellar_a_dict[snap].values()))
-    starmass[snap] = np.concatenate(list(starmass_dict[snap].values())) * 10**10
+    sfrs[snap] = np.concatenate(list(sfrdict[snap].values()))
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
     # zs[snap] = np.full_like(starmass[snap], z)
     zs_plt.append(z)
-    sfrs[snap] = calc_srf(z, stellar_a[snap], starmass[snap])
 
 # hex_sfrs = np.concatenate(list(sfrs.values()))
 # hex_zs = np.concatenate(list(zs.values()))
@@ -108,4 +100,4 @@ ax.set_ylabel('SFR / $[M_\odot/\mathrm{yr}]$')
 # cax = fig.colorbar(cbar, ax=ax)
 # cax.ax.set_ylabel(r'$N$')
 
-fig.savefig('plots/SFH.png')
+fig.savefig('plots/SFH_instantaneous.png')
