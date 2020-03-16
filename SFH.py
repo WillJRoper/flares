@@ -39,7 +39,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
 
 
 regions = []
-for reg in range(0, 1):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -66,12 +66,14 @@ for reg in regions:
         print(reg, snap)
 
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
-
-        stellar_a_dict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime',
-                                                  noH=True, numThreads=8)
-        starmass_dict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType4/Mass',
-                                                noH=True, numThreads=8)
-        group_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+        try:
+            starmass_dict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType4/Mass',
+                                                    noH=True, numThreads=8) * 10**10
+            stellar_a_dict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime',
+                                                      noH=True, numThreads=8)
+            group_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+        except:
+            continue
 
         # Get IDs of each subhalo
         halo_id_part_inds[snap][reg] = {}
@@ -80,7 +82,6 @@ for reg in regions:
             if simid == 2**30:
                 continue
             halo_id_part_inds[snap][reg].setdefault(simid, set()).update({pid})
-
 
 sfrs_gals = {}
 for snap in halo_id_part_inds.keys():
@@ -128,6 +129,8 @@ ax.fill_between(zs_plt, pcent16, pcent84, alpha=0.4, color='g')
 
 ax.set_xlabel('$z$')
 ax.set_ylabel('SFR / $[M_\odot/\mathrm{yr}]$')
+
+ax.set_yscale('log')
 
 # cax = fig.colorbar(cbar, ax=ax)
 # cax.ax.set_ylabel(r'$N$')
