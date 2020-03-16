@@ -58,7 +58,7 @@ for reg in range(0, 1):
 snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 gsnaps = reversed(snaps)
-
+print(gsnaps)
 #Define mass threshold for roots
 thresh = 10**9
 
@@ -127,12 +127,14 @@ for reg, greg in zip(regions, gregions):
         for snap in gsnaps:
 
             # Add halos to dictionary
-            halos_included[reg].setdefault(snap, set()).update(set(list(halos)))
+            halos_included[reg].setdefault(snap, set()).update(set(halos))
 
             hdf = h5py.File('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + greg +
                             '/SubMgraph_' + snap + '_PartType1.hdf5', 'r')
             progs = [hdf[str(halo)]['Prog_haloIDs'][...] for halo in halos]
-            halos = progs
+            halos = list(progs)
+            if len(halos) == 0:
+                break
             hdf.close()
 
 sfrs_gals = {}
