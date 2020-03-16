@@ -65,8 +65,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6], snaps, [(0, 0), (0, 
     half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
     
     xs_plt = xs[half_mass_rads_plt > 0]
-    half_mass_rads_plt_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
-    half_mass_rads_plt_plt = half_mass_rads_plt_plt[xs_plt > 0]
+    half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
+    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 0]
     xs_plt = xs_plt[xs_plt > 0]
     
     cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', norm=LogNorm(),
