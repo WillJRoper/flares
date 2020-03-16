@@ -22,7 +22,9 @@ for reg in range(0, 1):
     else:
         regions.append('00' + str(reg))
 
-snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000']
+snaps = ['001_z014p000', '003_z012p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000',
+         '009_z006p000', '010_z005p000', '011_z004p770']
 axlims_x = []
 axlims_y = []
 
@@ -46,8 +48,8 @@ for reg in regions:
                                              noH=True, numThreads=8)[:, 4] * 10**10
 
 # Set up plot
-fig = plt.figure(figsize=(18, 6))
-gs = gridspec.GridSpec(2, 6)
+fig = plt.figure(figsize=(18, 18))
+gs = gridspec.GridSpec(3, 6)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
 ax2 = fig.add_subplot(gs[0, 1])
@@ -55,8 +57,12 @@ ax3 = fig.add_subplot(gs[0, 2])
 ax4 = fig.add_subplot(gs[1, 0])
 ax5 = fig.add_subplot(gs[1, 1])
 ax6 = fig.add_subplot(gs[1, 2])
+ax7 = fig.add_subplot(gs[2, 0])
+ax8 = fig.add_subplot(gs[2, 1])
+ax9 = fig.add_subplot(gs[2, 2])
 
-for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6], snaps, [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]):
+for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps,
+                            [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
 
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
@@ -79,7 +85,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6], snaps, [(0, 0), (0, 
     axlims_y.extend(ax.get_ylim())
 
     # Label axes
-    if i == 1:
+    if i == 2:
         ax.set_xlabel(r'$M_{\star}/M_\odot$')
     if j == 0:
         ax.set_ylabel('$R_{1/2}/$ckpc')
