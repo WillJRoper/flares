@@ -71,10 +71,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     xs = np.concatenate(list(xaxis_dict[snap].values()))
     half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
     
-    xs_plt = xs[half_mass_rads_plt > 0]
-    half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
-    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 0]
-    xs_plt = xs_plt[xs_plt > 0]
+    xs_plt = xs[half_mass_rads_plt > 1e8]
+    half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 1e8]
+    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
+    xs_plt = xs_plt[xs_plt > 1e8]
     
     cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                      linewidths=0.2, cmap='viridis')

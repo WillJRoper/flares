@@ -39,7 +39,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
 
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 1):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -70,8 +70,9 @@ for reg in regions:
             starmass_dict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType4/Mass',
                                                     noH=True, numThreads=8) * 10**10
             stellar_a_dict[snap][reg] = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime',
-                                                      noH=True, numThreads=8)
+                                                     noH=True, numThreads=8)
             group_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+            print(len(stellar_a_dict[snap][reg]), len(group_ids))
         except:
             continue
 
@@ -82,6 +83,14 @@ for reg in regions:
             if simid == 2**30:
                 continue
             halo_id_part_inds[snap][reg].setdefault(simid, set()).update({pid})
+
+# Get halos which are in the distribution at the z=4.77
+halos_in_pop = {}
+for reg in regions:
+    for grp in halo_id_part_inds['011_z004p770'][reg].keys():
+        parts = halo_id_part_inds['011_z004p770'][reg][grp]
+        if np.sum(starmass_dict['011_z004p770'][reg][parts]) > 10**9:
+            halos_in_pop.setdefault(reg, []).append(grp)
 
 sfrs_gals = {}
 for snap in halo_id_part_inds.keys():
