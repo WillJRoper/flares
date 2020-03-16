@@ -14,7 +14,7 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 
-def calc_srf(z, a_born, mass):
+def calc_srf(z, a_born, mass, t_bin=100):
 
     # Convert scale factor into redshift
     z_born = 1 / a_born - 1
@@ -24,13 +24,14 @@ def calc_srf(z, a_born, mass):
     t_born = cosmo.age(z_born)
 
     # Calculate the VR
-    age = (t - t_born).to(u.yr)
+    age = (t - t_born).to(u.Myr)
 
-    ok = np.where(age <= t)[0]
+    ok = np.where(age <= t_bin)[0]
     if len(ok) > 0:
 
         # Calculate the SFR
-        sfr = mass / age.value
+        sfr = np.sum(mass[ok]) / (t_bin * 1e6)
+
     else:
         sfr = 0.0
 
@@ -38,7 +39,7 @@ def calc_srf(z, a_born, mass):
 
 
 regions = []
-for reg in range(0, 8):
+for reg in range(0, 1):
 
     if reg < 10:
         regions.append('000' + str(reg))
