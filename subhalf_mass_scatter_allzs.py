@@ -22,7 +22,7 @@ for reg in range(0, 40):
     else:
         regions.append('00' + str(reg))
 
-snaps = ['002_z013p000', '003_z012p000', '005_z010p000',
+snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000',
          '009_z006p000', '010_z005p000', '011_z004p770']
 axlims_x = []
@@ -102,8 +102,13 @@ ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
                 labelright=False, labelbottom=False)
 ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
                 labelright=False, labelbottom=False)
-ax5.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
-ax6.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                labelright=False, labelbottom=False)
+ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                labelright=False, labelbottom=False)
+ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
 fig.savefig('plots/HalfMassRadius_all_snaps.png',
             bbox_inches='tight')
