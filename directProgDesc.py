@@ -228,7 +228,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         for pid, desc in zip(desc_part_ids, desc_halo_ids):
             if int(desc) == 2 ** 30:
                 continue
-            print(pid, pid_to_ind[pid])
             if int(desc) in sim_to_internal_haloID_desc.keys():
                 desc_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_desc[int(desc)]
             else:
