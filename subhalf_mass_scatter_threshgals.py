@@ -67,13 +67,16 @@ for reg in regions:
                                                       numThreads=8)[:, 4] * 1e3
         xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                              noH=True, numThreads=8)[:, 4] * 10**10
-        group_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        subgroup_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        group_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+        halo_ids = np.zeros_like(grp_ids, dtype=float)
+        for (ind, g), sg in zip(enumerate(group_ids), subgroup_ids):
+            halo_ids[ind] = float(str(g) + '.' + str(sg))
 
         ms[snap][reg] = {}
         rs[snap][reg] = {}
-        for simid, m, r in zip(group_ids, xaxis_dict[snap][reg], half_mass_rads_dict[snap][reg]):
+        for simid, m, r in zip(halo_ids, xaxis_dict[snap][reg], half_mass_rads_dict[snap][reg]):
             if m != 0.0:
-
                 print(simid, m, r)
             ms[snap][reg][simid] = m
             rs[snap][reg][simid] = r
