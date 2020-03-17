@@ -62,14 +62,12 @@ for reg in regions:
         print(reg, snap)
 
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
-        try:
-            half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                          numThreads=8)[:, 4] * 1e3
-            xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                                 noH=True, numThreads=8)[:, 4] * 10**10
-            group_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        except:
-            continue
+
+        half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                                      numThreads=8)[:, 4] * 1e3
+        xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                             noH=True, numThreads=8)[:, 4] * 10**10
+        group_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
 
         ms[snap][reg] = {}
         rs[snap][reg] = {}
