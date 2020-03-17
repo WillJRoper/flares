@@ -95,13 +95,10 @@ for reg, greg in zip(regions, gregions):
     halos_included[reg] = {}
     for grp in halos_in_pop[reg]:
         halos = [grp, ]
-
+        print(grp)
         for snap in gsnaps:
 
             print(reg, grp, snap)
-
-            if len(halos) == 0:
-                continue
 
             # Add halos to dictionary
             halos_included[reg].setdefault(snap, set()).update(set(halos))
