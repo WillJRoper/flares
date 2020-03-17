@@ -88,17 +88,16 @@ for reg in regions:
         #     print(ms['011_z004p770'][reg][grp], thresh)
         if ms['011_z004p770'][reg][grp] >= mthresh and rs['011_z004p770'][reg][grp] <= rthresh:
             halos_in_pop.setdefault(reg, []).append(grp)
-print(halos_in_pop)
+
 # Get the halos from the graph that make up these halos
 halos_included = {}
 for reg, greg in zip(regions, gregions):
     halos_included[reg] = {}
     for grp in halos_in_pop[reg]:
         halos = [grp, ]
-        print(grp, list(gsnaps))
         for snap in list(gsnaps):
 
-            print(reg, grp, snap)
+            # print(reg, grp, snap)
 
             # Add halos to dictionary
             halos_included[reg].setdefault(snap, set()).update(set(halos))

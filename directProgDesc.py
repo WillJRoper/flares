@@ -141,7 +141,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
         halo_ids = np.zeros_like(grp_ids, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            halo_ids[ind] = float(str(g) + '.' + str(sg))
+            halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
     else:
         raise ValueError("Incompatible rank")
 
@@ -178,7 +178,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
                                       numThreads=8)
             prog_halo_ids = np.zeros_like(grp_ids, dtype=float)
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-                prog_halo_ids[ind] = float(str(g) + '.' + str(sg))
+                prog_halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
         
         prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
@@ -226,7 +226,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
                                       numThreads=8)
             desc_halo_ids = np.zeros_like(grp_ids, dtype=float)
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-                desc_halo_ids[ind] = float(str(g) + '.' + str(sg))
+                desc_halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
 
         desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
