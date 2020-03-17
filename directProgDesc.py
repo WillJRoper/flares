@@ -358,7 +358,7 @@ for reg in regions:
 
         reg_snaps.append((reg, snap, prog_snap, desc_snap))
         print(len(reg_snaps))
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
     # ind = int(sys.argv[1])
     #
