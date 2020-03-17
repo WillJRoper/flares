@@ -136,7 +136,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     if rank == 0:
         halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     elif rank == 1:
-        halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+        halo_ids = np.zeros_like(grp_ids, dtype=float)
+        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+            halo_ids[ind] = float(str(g) + '.' + str(sg))
     else:
         raise ValueError("Incompatible rank")
 
@@ -160,8 +164,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             pid_to_ind[pid] = len(part_ids) + 1
             halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
-    print('hmmmm', len(pid_to_ind.keys()))
-
     # =============== Progenitor Snapshot ===============
 
     # Only look for descendant data if there is a descendant snapshot
@@ -171,8 +173,12 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             prog_halo_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                          numThreads=8)
         else:
-            prog_halo_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) +
-                                         '/SubGroupNumber', numThreads=8)
+            grp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+            subgrp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
+                                      numThreads=8)
+            prog_halo_ids = np.zeros_like(grp_ids, dtype=float)
+            for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+                prog_halo_ids[ind] = float(str(g) + '.' + str(sg))
         
         prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
@@ -182,14 +188,14 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         sim_to_internal_haloID_prog = {}
         internalID = -1
         for pid, prog in zip(prog_part_ids, prog_halo_ids):
-            if int(prog) == 2 ** 30:
+            if int(str(prog).split('.')[rank]) == 2 ** 30:
                 continue
-            if int(prog) in sim_to_internal_haloID_prog.keys():
-                prog_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_prog[int(prog)]
+            if prog in sim_to_internal_haloID_prog.keys():
+                prog_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_prog[prog]
             else:
                 internalID += 1
-                sim_to_internal_haloID_prog[int(prog)] = internalID
-                internal_to_sim_haloID_prog[internalID] = int(prog)
+                sim_to_internal_haloID_prog[prog] = internalID
+                internal_to_sim_haloID_prog[internalID] = prog
                 prog_snap_haloIDs[pid_to_ind[pid]] = internalID
             
         # Get all the unique halo IDs in this snapshot and the number of times they appear
@@ -215,8 +221,12 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                          numThreads=8)
         else:
-            desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) +
-                                         '/SubGroupNumber', numThreads=8)
+            grp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+            subgrp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
+                                      numThreads=8)
+            desc_halo_ids = np.zeros_like(grp_ids, dtype=float)
+            for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+                desc_halo_ids[ind] = float(str(g) + '.' + str(sg))
 
         desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
@@ -226,14 +236,14 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         sim_to_internal_haloID_desc = {}
         internalID = -1
         for pid, desc in zip(desc_part_ids, desc_halo_ids):
-            if int(desc) == 2 ** 30:
+            if int(str(desc).split('.')[rank]) == 2 ** 30:
                 continue
-            if int(desc) in sim_to_internal_haloID_desc.keys():
-                desc_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_desc[int(desc)]
+            if desc in sim_to_internal_haloID_desc.keys():
+                desc_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_desc[desc]
             else:
                 internalID += 1
-                sim_to_internal_haloID_desc[int(desc)] = internalID
-                internal_to_sim_haloID_desc[internalID] = int(desc)
+                sim_to_internal_haloID_desc[desc] = internalID
+                internal_to_sim_haloID_desc[internalID] = desc
                 desc_snap_haloIDs[pid_to_ind[pid]] = internalID
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
@@ -330,9 +340,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 if __name__ == '__main__':
 
     regions = []
-    for reg in range(18, 40):
-        if 19 <= reg <= 23:
-            continue
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
