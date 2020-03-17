@@ -354,16 +354,20 @@ desc_snaps = ['001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '0
 reg_snaps = []
 for reg in regions:
 
+    try:
+        os.mkdir('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg)
+    except OSError:
+        pass
+
     for snap, prog_snap, desc_snap in zip(snaps, prog_snaps, desc_snaps):
 
         reg_snaps.append((reg, snap, prog_snap, desc_snap))
-print(len(reg_snaps))
+
 if __name__ == '__main__':
 
     ind = int(sys.argv[1])
-    print(ind)
-    #
-    # mainDirectProgDesc(snap=reg_snaps[ind][1], prog_snap=reg_snaps[ind][2], desc_snap=reg_snaps[ind][3],
-    #                    path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
-    #                    part_type=1, rank=1, savepath='/cosma/home/dp004/dc-rope1/FLARES/'
-    #                                                  'FLARES-1/MergerGraphs/GEAGLE_' + reg_snaps[ind][0] + '/')
+
+    mainDirectProgDesc(snap=reg_snaps[ind][1], prog_snap=reg_snaps[ind][2], desc_snap=reg_snaps[ind][3],
+                       path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
+                       part_type=1, rank=1, savepath='/cosma/home/dp004/dc-rope1/FLARES/'
+                                                     'FLARES-1/MergerGraphs/GEAGLE_' + reg_snaps[ind][0] + '/')
