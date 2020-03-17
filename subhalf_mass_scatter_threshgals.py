@@ -70,7 +70,7 @@ for reg in regions:
                                              noH=True, numThreads=8)[:, 4] * 10**10
         subgroup_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
         group_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-        halo_ids = np.zeros_like(grp_ids, dtype=float)
+        halo_ids = np.zeros_like(group_ids, dtype=float)
         for (ind, g), sg in zip(enumerate(group_ids), subgroup_ids):
             halo_ids[ind] = float(str(g) + '.' + str(sg))
 
