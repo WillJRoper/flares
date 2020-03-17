@@ -104,9 +104,16 @@ for reg, greg in zip(regions, gregions):
 
             hdf = h5py.File('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + greg +
                             '/SubMgraph_' + snap + '_PartType1.hdf5', 'r')
-            progs = np.concatenate([hdf[str(halo)]['Prog_haloIDs'][...]
-                                    for halo in halos if str(halo).split('.')[1] != '0'])
-            halos = list(set(progs))
+            # progs = np.concatenate([hdf[str(halo)]['Prog_haloIDs'][...]
+            #                         for halo in halos if str(halo).split('.')[1] != '0'])
+            progs = []
+            for halo in halos:
+                try:
+                    progs.append(hdf[str(halo)]['Prog_haloIDs'][...])
+                except KeyError:
+                    continue
+
+            halos = list(set(np.concatenate(progs)))
             hdf.close()
 
 ms_plt = {}
