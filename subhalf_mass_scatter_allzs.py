@@ -42,11 +42,13 @@ for reg in regions:
         print(reg, snap)
 
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
-
-        half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                      numThreads=8)[:, 4] * 1e3
-        xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                             noH=True, numThreads=8)[:, 4] * 10**10
+        try:
+            half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                                          numThreads=8)[:, 4] * 1e3
+            xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                                 noH=True, numThreads=8)[:, 4] * 10**10
+        except OSError:
+            continue
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
