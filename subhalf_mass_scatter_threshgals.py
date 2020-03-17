@@ -76,8 +76,6 @@ for reg in regions:
         ms[snap][reg] = {}
         rs[snap][reg] = {}
         for simid, m, r in zip(halo_ids, xaxis_dict[snap][reg], half_mass_rads_dict[snap][reg]):
-            if m != 0.0:
-                print(simid, m, r)
             ms[snap][reg][simid] = m
             rs[snap][reg][simid] = r
 
@@ -122,8 +120,8 @@ for snap in snaps:
     for reg in regions:
         for grp in halos_included[reg][snap]:
             print(snap, reg, grp)
-            ms_plt[snap].append(ms[snap][reg][int(grp)])
-            rs_plt[snap].append(rs[snap][reg][int(grp)])
+            ms_plt[snap].append(ms[snap][reg][grp])
+            rs_plt[snap].append(rs[snap][reg][grp])
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))

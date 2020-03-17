@@ -154,8 +154,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     halo_id_part_inds = {}
     for pid, simid in zip(group_part_ids, halo_ids):
-        simid = int(simid)
-        if simid == 2**30:
+        if int(str(simid).split('.')[rank]) == 2**30:
             continue
         try:
             halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
