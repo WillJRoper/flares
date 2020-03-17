@@ -98,7 +98,7 @@ for reg, greg in zip(regions, gregions):
 
         for snap in gsnaps:
 
-            # print(reg, grp, snap)
+            print(reg, grp, snap)
 
             if len(halos) == 0:
                 continue
@@ -195,7 +195,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/HalfMassRadius_all_snaps_compact.png',
+fig.savefig('plots/HalfMassRadius_all_snaps_compact.png', dpi=300,
             bbox_inches='tight')
 
 plt.close(fig)
