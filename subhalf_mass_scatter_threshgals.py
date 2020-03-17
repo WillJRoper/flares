@@ -88,7 +88,7 @@ for reg in regions:
         #     print(ms['011_z004p770'][reg][grp], thresh)
         if ms['011_z004p770'][reg][grp] >= mthresh and rs['011_z004p770'][reg][grp] <= rthresh:
             halos_in_pop.setdefault(reg, []).append(grp)
-
+print(halos_in_pop)
 # Get the halos from the graph that make up these halos
 halos_included = {}
 for reg, greg in zip(regions, gregions):
@@ -97,7 +97,7 @@ for reg, greg in zip(regions, gregions):
         halos = [grp, ]
         for snap in gsnaps:
 
-            print(reg, grp, snap)
+            # print(reg, grp, snap)
 
             if len(halos) == 0:
                 continue
@@ -148,6 +148,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     thrsh_ms = ms_plt[snap]
     thrsh_rs = rs_plt[snap]
     
+    thrsh_ms_plt = thrsh_ms[thrsh_rs > 0]
+    thrsh_rs = thrsh_rs[thrsh_rs > 0]
+    thrsh_rs = thrsh_rs[thrsh_ms_plt > 1e8]
+    thrsh_ms_plt = thrsh_ms_plt[thrsh_ms_plt > 1e8]
+    
     xs_plt = xs[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
@@ -155,7 +160,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     
     cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                      linewidths=0.2, cmap='Greys', alpha=0.6)
-    ax.hexbin(thrsh_ms, thrsh_rs, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
+    ax.hexbin(thrsh_ms_plt, thrsh_rs, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
               linewidths=0.2, cmap='viridis', alpha=0.9)
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
