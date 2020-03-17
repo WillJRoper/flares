@@ -338,7 +338,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     hdf.close()
 
 regions = []
-for reg in range(1, 40):
+for reg in range(0, 40):
     if reg < 10:
         regions.append('0' + str(reg))
     else:
