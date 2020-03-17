@@ -72,8 +72,7 @@ for reg in regions:
         ms[snap][reg] = {}
         rs[snap][reg] = {}
         for simid, m, r in zip(group_ids, xaxis_dict[snap][reg], half_mass_rads_dict[snap][reg]):
-            simid = int(simid)
-            print(simid)
+            print(simid, m, r)
             ms[snap][reg][simid] = m
             rs[snap][reg][simid] = r
 
