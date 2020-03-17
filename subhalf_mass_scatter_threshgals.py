@@ -68,11 +68,12 @@ for reg in regions:
         xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                              noH=True, numThreads=8)[:, 4] * 10**10
         group_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        print(len(group_ids), len(half_mass_rads_dict[snap][reg]), len(xaxis_dict[snap][reg]))
+
         ms[snap][reg] = {}
         rs[snap][reg] = {}
         for simid, m, r in zip(group_ids, xaxis_dict[snap][reg], half_mass_rads_dict[snap][reg]):
             simid = int(simid)
+            print(simid)
             ms[snap][reg][simid] = m
             rs[snap][reg][simid] = r
 
