@@ -41,8 +41,9 @@ gsnaps = reversed(['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000
 axlims_x = []
 axlims_y = []
 
-#Define mass threshold for roots
-thresh = 10**10
+# Define thresholds for roots
+mthresh = 10**9
+rthresh = 1.1
 
 half_mass_rads_dict = {}
 xaxis_dict = {}
@@ -85,10 +86,8 @@ for reg in regions:
     for grp in ms['011_z004p770'][reg].keys():
         # if ms['011_z004p770'][reg][grp] > 0:
         #     print(ms['011_z004p770'][reg][grp], thresh)
-        if ms['011_z004p770'][reg][grp] < thresh:
-            continue
-        # print(reg, grp)
-        halos_in_pop.setdefault(reg, []).append(grp)
+        if ms['011_z004p770'][reg][grp] >= mthresh and rs['011_z004p770'][reg][grp] <= rthresh:
+            halos_in_pop.setdefault(reg, []).append(grp)
 
 # Get the halos from the graph that make up these halos
 halos_included = {}
