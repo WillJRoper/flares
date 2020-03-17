@@ -103,7 +103,7 @@ for reg, greg in zip(regions, gregions):
             hdf = h5py.File('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + greg +
                             '/SubMgraph_' + snap + '_PartType1.hdf5', 'r')
             progs = np.concatenate([hdf[str(halo)]['Prog_haloIDs'][...] for halo in halos])
-            halos = progs
+            halos = list(set(progs))
             hdf.close()
             if len(halos) == 0:
                 break
