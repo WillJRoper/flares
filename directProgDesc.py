@@ -177,7 +177,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
         
-        prog_snap_haloIDs = np.full_like(len(pid_to_ind.keys()), -2, dtype=int)
+        prog_snap_haloIDs = np.full(len(pid_to_ind.keys()), -2, dtype=int)
         internal_to_sim_haloID_prog = {}
         sim_to_internal_haloID_prog = {}
         internalID = -1
@@ -221,7 +221,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
 
-        desc_snap_haloIDs = np.full_like(len(pid_to_ind.keys()), -2, dtype=int)
+        desc_snap_haloIDs = np.full(len(pid_to_ind.keys()), -2, dtype=int)
         internal_to_sim_haloID_desc = {}
         sim_to_internal_haloID_desc = {}
         internalID = -1
