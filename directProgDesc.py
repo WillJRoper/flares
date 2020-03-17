@@ -149,8 +149,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     for ind, pid in enumerate(part_ids):
         ind_to_pid[ind] = pid
         pid_to_ind[pid] = ind
-        if ind % 10000000 == 0:
-            print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
+        # if ind % 10000000 == 0:
+        #     print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
 
     halo_id_part_inds = {}
     for pid, simid in zip(group_part_ids, halo_ids):
@@ -360,10 +360,8 @@ if __name__ == '__main__':
             pass
 
         for snap, prog_snap, desc_snap in zip(snaps, prog_snaps, desc_snaps):
-            try:
-                mainDirectProgDesc(snap=snap, prog_snap=prog_snap, desc_snap=desc_snap,
-                                   path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data',
-                                   part_type=1, rank=1, savepath='/cosma/home/dp004/dc-rope1/FLARES/'
-                                                                 'FLARES-1/MergerGraphs/GEAGLE_' + reg + '/')
-            except:
-                continue
+
+            mainDirectProgDesc(snap=snap, prog_snap=prog_snap, desc_snap=desc_snap,
+                               path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data',
+                               part_type=1, rank=1, savepath='/cosma/home/dp004/dc-rope1/FLARES/'
+                                                             'FLARES-1/MergerGraphs/GEAGLE_' + reg + '/')
