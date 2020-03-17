@@ -156,11 +156,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         try:
             halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
         except KeyError:
-            ind_to_pid[ind + 1] = pid
-            pid_to_ind[pid] = ind + 1
+            ind_to_pid[len(part_ids) + 1] = pid
+            pid_to_ind[pid] = len(part_ids) + 1
             halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
-    print(len(pid_to_ind.keys()))
+    print('hmmmm', len(pid_to_ind.keys()))
 
     # =============== Progenitor Snapshot ===============
 
