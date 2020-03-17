@@ -95,6 +95,7 @@ for reg, greg in zip(regions, gregions):
     halos_included[reg] = {}
     for grp in halos_in_pop[reg]:
         halos = [grp, ]
+        print(halos)
         for snap in gsnaps:
 
             # print(reg, grp, snap)
@@ -145,8 +146,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     xs = np.concatenate(list(xaxis_dict[snap].values()))
     half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
 
-    thrsh_ms = ms_plt[snap]
-    thrsh_rs = rs_plt[snap]
+    thrsh_ms = np.array(ms_plt[snap])
+    thrsh_rs = np.array(rs_plt[snap])
     
     thrsh_ms_plt = thrsh_ms[thrsh_rs > 0]
     thrsh_rs = thrsh_rs[thrsh_rs > 0]
