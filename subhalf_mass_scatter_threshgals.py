@@ -82,6 +82,7 @@ for reg in regions:
 halos_in_pop = {}
 for reg in regions:
     for grp in ms['011_z004p770'][reg].keys():
+        print(ms['011_z004p770'][reg][grp], thresh)
         if ms['011_z004p770'][reg][grp] < thresh:
             continue
         print(reg, grp)
