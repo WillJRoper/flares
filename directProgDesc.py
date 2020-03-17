@@ -357,10 +357,11 @@ for reg in regions:
     for snap, prog_snap, desc_snap in zip(snaps, prog_snaps, desc_snaps):
 
         reg_snaps.append((reg, snap, prog_snap, desc_snap))
-        print(len(reg_snaps))
-# if __name__ == '__main__':
+print(len(reg_snaps))
+if __name__ == '__main__':
 
-    # ind = int(sys.argv[1])
+    ind = int(sys.argv[1])
+    print(ind)
     #
     # mainDirectProgDesc(snap=reg_snaps[ind][1], prog_snap=reg_snaps[ind][2], desc_snap=reg_snaps[ind][3],
     #                    path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
