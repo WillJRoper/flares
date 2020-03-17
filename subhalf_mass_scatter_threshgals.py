@@ -119,7 +119,7 @@ for snap in snaps:
     rs_plt[snap] = []
     for reg in regions:
         for grp in halos_included[reg][snap]:
-            print(snap, reg, grp)
+            # print(snap, reg, grp)
             ms_plt[snap].append(ms[snap][reg][grp])
             rs_plt[snap].append(rs[snap][reg][grp])
 
