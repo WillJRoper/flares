@@ -75,8 +75,6 @@ for reg in regions:
         rs[snap][reg] = {}
         for simid, m, r in zip(group_ids, xaxis_dict[snap][reg], half_mass_rads_dict[snap][reg]):
             simid = int(simid)
-            if m < thresh:
-                continue
             ms[snap][reg][simid] = m
             rs[snap][reg][simid] = r
 
@@ -84,6 +82,8 @@ for reg in regions:
 halos_in_pop = {}
 for reg in regions:
     for grp in ms['011_z004p770'][reg].keys():
+        if ms['011_z004p770'][reg][grp] < thresh:
+            continue
         print(reg, grp)
         halos_in_pop.setdefault(reg, []).append(grp)
 
