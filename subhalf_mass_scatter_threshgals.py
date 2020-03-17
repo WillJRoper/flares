@@ -80,11 +80,11 @@ for reg in regions:
 halos_in_pop = {}
 for reg in regions:
     for grp in ms['011_z004p770'][reg].keys():
-        if ms['011_z004p770'][reg][grp] > 0:
-            print(ms['011_z004p770'][reg][grp], thresh)
+        # if ms['011_z004p770'][reg][grp] > 0:
+        #     print(ms['011_z004p770'][reg][grp], thresh)
         if ms['011_z004p770'][reg][grp] < thresh:
             continue
-        print(reg, grp)
+        # print(reg, grp)
         halos_in_pop.setdefault(reg, []).append(grp)
 
 # Get the halos from the graph that make up these halos
