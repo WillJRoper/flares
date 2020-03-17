@@ -347,11 +347,16 @@ if __name__ == '__main__':
 
     for reg in regions:
 
-        os.mkdir('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg)
+        try:
+            os.mkdir('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg)
+        except OSError:
+            pass
 
         for snap, prog_snap, desc_snap in zip(snaps, prog_snaps, desc_snaps):
-
-            mainDirectProgDesc(snap=snap, prog_snap=prog_snap, desc_snap=desc_snap,
-                               path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data',
-                               part_type=1, rank=1, savepath='/cosma/home/dp004/dc-rope1/FLARES/'
-                                                             'FLARES-1/MergerGraphs/GEAGLE_' + reg + '/')
+            try:
+                mainDirectProgDesc(snap=snap, prog_snap=prog_snap, desc_snap=desc_snap,
+                                   path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data',
+                                   part_type=1, rank=1, savepath='/cosma/home/dp004/dc-rope1/FLARES/'
+                                                                 'FLARES-1/MergerGraphs/GEAGLE_' + reg + '/')
+            except:
+                continue
