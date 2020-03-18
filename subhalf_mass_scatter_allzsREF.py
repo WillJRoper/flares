@@ -64,8 +64,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    xs = np.concatenate(list(xaxis_dict[snap].values()))
-    half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
+    xs = xaxis_dict[snap]
+    half_mass_rads_plt = half_mass_rads_dict[snap]
     
     xs_plt = xs[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
