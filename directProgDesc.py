@@ -366,6 +366,7 @@ for reg in regions:
 if __name__ == '__main__':
 
     ind = int(sys.argv[1])
+    print(reg_snaps[ind])
 
     mainDirectProgDesc(snap=reg_snaps[ind][1], prog_snap=reg_snaps[ind][2], desc_snap=reg_snaps[ind][3],
                        path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',

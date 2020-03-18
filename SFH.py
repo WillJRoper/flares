@@ -58,9 +58,10 @@ for reg in range(0, 1):
 snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 gsnaps = reversed(snaps)
-print(gsnaps)
-#Define mass threshold for roots
-thresh = 10**9
+
+# Define thresholds for roots
+mthresh = 10**10
+rthresh = 1.1
 
 zs_dict = {}
 stellar_a_dict = {}
@@ -112,30 +113,36 @@ for reg in regions:
 # Get halos which are in the distribution at the z=4.77
 halos_in_pop = {}
 for reg in regions:
-    for grp in halo_id_part_inds['011_z004p770'][reg].keys():
-        parts = list(halo_id_part_inds['011_z004p770'][reg][grp])
-        if np.sum(starmass_dict['011_z004p770'][reg][parts]) > thresh:
+    for grp in starmass_dict['011_z004p770'][reg].keys():
+        if starmass_dict['011_z004p770'][reg][grp] >= mthresh:
             halos_in_pop.setdefault(reg, []).append(grp)
 
 # Get the halos from the graph that make up these halos
-graphs = {}
 halos_included = {}
 for reg, greg in zip(regions, gregions):
     halos_included[reg] = {}
     for grp in halos_in_pop[reg]:
         halos = [grp, ]
-        for snap in gsnaps:
+        for snap in list(gsnaps):
+
+            print(reg, grp, snap)
 
             # Add halos to dictionary
             halos_included[reg].setdefault(snap, set()).update(set(halos))
 
             hdf = h5py.File('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + greg +
                             '/SubMgraph_' + snap + '_PartType1.hdf5', 'r')
-            progs = np.concatenate([hdf[str(halo)]['Prog_haloIDs'][...] for halo in halos])
-            halos = progs
+            # progs = np.concatenate([hdf[str(halo)]['Prog_haloIDs'][...]
+            #                         for halo in halos if str(halo).split('.')[1] != '0'])
+            progs = []
+            for halo in halos:
+                try:
+                    progs.append(hdf[str(halo)]['Prog_haloIDs'][...])
+                except KeyError:
+                    continue
+
+            halos = list(set(np.concatenate(progs)))
             hdf.close()
-            if len(halos) == 0:
-                break
 
 sfrs_gals = {}
 for snap in halo_id_part_inds.keys():
