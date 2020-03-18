@@ -28,6 +28,9 @@ snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
 axlims_x = []
 axlims_y = []
 
+# Define comoving softening length in kpc
+csoft = 0.001802390/0.677*1e3
+
 half_mass_rads_dict = {}
 xaxis_dict = {}
 for snap in snaps:
@@ -78,7 +81,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
     xs_plt = xs_plt[xs_plt > 1e8]
     
-    cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
+    cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                      linewidths=0.2, cmap='viridis')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -91,7 +94,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if i == 2:
         ax.set_xlabel(r'$M_{\star}/M_\odot$')
     if j == 0:
-        ax.set_ylabel('$R_{1/2}/$ckpc')
+        ax.set_ylabel('$R_{1/2}/\epsilon$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
