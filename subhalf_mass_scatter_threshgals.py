@@ -95,9 +95,10 @@ for reg, greg in zip(regions, gregions):
     halos_included[reg] = {}
     for grp in halos_in_pop[reg]:
         halos = [grp, ]
+
         for snap in list(gsnaps):
 
-            # print(reg, grp, snap)
+            print(reg, grp, snap)
 
             # Add halos to dictionary
             halos_included[reg].setdefault(snap, set()).update(set(halos))
@@ -165,8 +166,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     
     cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                      linewidths=0.2, cmap='Greys', alpha=0.6)
-    ax.hexbin(thrsh_ms_plt, thrsh_rs, gridsize=50, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
-              linewidths=0.2, cmap='viridis')
+    ax.scatter(thrsh_ms_plt, thrsh_rs, marker='+', color='r')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
