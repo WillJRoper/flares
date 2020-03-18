@@ -95,8 +95,8 @@ for reg, greg in zip(regions, gregions):
     halos_included[reg] = {}
     for grp in halos_in_pop[reg]:
         halos = [grp, ]
-        if int(grp) > 0:
-            break
+        if grp != 0.0:
+            continue
         for snap in list(gsnaps):
 
             print(reg, grp, snap)
