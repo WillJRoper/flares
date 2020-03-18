@@ -49,7 +49,7 @@ for reg in regions:
             half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                                           numThreads=8)[:, 4] * 1e3
             xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType',
-                                                 noH=True, numThreads=8)[:, 4] * 10**10
+                                                 noH=True, numThreads=8)[:, 4]
         except OSError:
             continue
 
