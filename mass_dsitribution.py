@@ -108,7 +108,7 @@ def img_main(path, snap, res, part_type, npart_lim=10**4):
     # Get the particles in the halos
     halo_id_part_inds = {}
     for pid, simid in zip(group_part_ids, subgrp_ids):
-        if simid == 2**30:
+        if simid in ids:
             continue
         try:
             halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
@@ -119,6 +119,17 @@ def img_main(path, snap, res, part_type, npart_lim=10**4):
 
     print('There are', len(ids), 'galaxies above the cutoff')
 
-    # Get the images
-    galimgs, surundimgs, extents = create_img(ID, res, all_poss, poss, subgrp_ids)
+    # Get the position of each of these galaxies
+    all_gal_poss = {}
+    for id in ids:
+
+        all_gal_poss[id] = all_poss[list(halo_id_part_inds[id]), :]
+
+    # Create images for these galaxies
+    for id in ids:
+
+        # Get the images
+        galimgs, surundimgs, extents = create_img(id, res, all_poss, all_gal_poss[id], subgrp_ids)
+
+        #
 
