@@ -70,8 +70,8 @@ def create_img(res, all_poss, gal_poss):
         # Compute extent for the 2D square image
         # dim = np.max([np.abs(mins[i]), np.abs(mins[j]), maxs[i], maxs[j]])
         dim = 0.08
-        extents[str(i) + '-' + str(j)] = [mean[i] - dim / 2, mean[i] + dim / 2, mean[j] - dim / 2, mean[j] + dim / 2]
-        posrange = ((mean[i] - dim / 2, mean[i] + dim / 2), (mean[j] - dim / 2, mean[j] + dim / 2))
+        extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
+        posrange = ((-dim, dim), (-dim, dim))
 
         # Create images
         galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i], gal_poss[:, j],
