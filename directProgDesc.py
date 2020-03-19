@@ -367,7 +367,7 @@ for reg in regions:
     for snap, prog_snap, desc_snap in zip(snaps, prog_snaps, desc_snaps):
 
         reg_snaps.append((reg, snap, prog_snap, desc_snap))
-len(reg_snaps)
+print(len(reg_snaps))
 
 # if __name__ == '__main__':
 #
