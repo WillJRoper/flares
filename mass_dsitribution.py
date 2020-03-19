@@ -106,7 +106,7 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
     # Get the particles in the halos
     halo_id_part_inds = {}
     for pid, simid in zip(group_part_ids, subgrp_ids):
-        if simid in ids:
+        if simid not in ids:
             continue
         try:
             halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
