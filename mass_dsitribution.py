@@ -166,6 +166,7 @@ csoft = 0.001802390/0.677
 
 # Define resolution
 res = csoft / 2
+print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
 reg = 00
