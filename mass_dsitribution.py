@@ -117,6 +117,7 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
 
     print('There are', len(ids), 'galaxies above the cutoff')
     print(list(halo_id_part_inds.keys()))
+    print(ids)
     # Get the position of each of these galaxies
     all_gal_poss = {}
     for id in ids:
