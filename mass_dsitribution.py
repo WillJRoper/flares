@@ -73,10 +73,10 @@ def create_img(ID, res, all_poss, gal_poss, IDs):
         posrange = ((-dim, dim), (-dim, dim))
 
         # Create images
-        galimgs[str(i) + '-' + str(j)], _, _ = np.histogram2d(gal_poss[:, [i]], gal_poss[:, [j]],
-                                                              bins=dim / res, range=posrange)
-        surundimgs[str(i) + '-' + str(j)], _, _ = np.histogram2d(surnd_poss[:, [i]], surnd_poss[:, [j]],
-                                                                 bins=dim / res, range=posrange)
+        galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i], gal_poss[:, j],
+                                                                        bins=dim / res, range=posrange)
+        surundimgs[str(i) + '-' + str(j)], sxbins, sybins = np.histogram2d(surnd_poss[:, i], surnd_poss[:, j],
+                                                                           bins=dim / res, range=posrange)
 
     return galimgs, surundimgs, extents
 
