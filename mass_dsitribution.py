@@ -176,7 +176,7 @@ def img_main(path, snap, reg, res, soft, part_type, npart_lim=10**4):
 csoft = 0.001802390/0.677
 
 # Define resolution
-res = csoft / 10
+res = csoft / 20
 print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
