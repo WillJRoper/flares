@@ -68,7 +68,8 @@ def create_img(res, all_poss, gal_poss):
     for (i, j) in [(0, 1), (0, 2), (1, 2)]:
 
         # Compute extent for the 2D square image
-        dim = np.max([np.abs(mins[i]), np.abs(mins[j]), maxs[i], maxs[j]])
+        # dim = np.max([np.abs(mins[i]), np.abs(mins[j]), maxs[i], maxs[j]])
+        dim = 0.08
         extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
         posrange = ((-dim, dim), (-dim, dim))
 
@@ -152,7 +153,7 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
             ax2 = fig.add_subplot(122)
 
             # Draw images
-            ax1.imshow(np.arcsinh(galimg), extent=extent, cmap='Greys')
+            ax1.imshow(np.arcsinh(galimg), extent=extent, cmap='viridis')
             ax2.imshow(np.arcsinh(surundimg), extent=extent, cmap='Greys')
 
             # Label axes
