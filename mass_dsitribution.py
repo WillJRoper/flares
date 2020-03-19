@@ -164,8 +164,6 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
 
             plt.close(fig)
 
-        break
-
 
 # Define comoving softening length in Mpc
 csoft = 0.001802390/0.677
