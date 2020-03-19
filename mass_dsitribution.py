@@ -52,7 +52,7 @@ def create_img(ID, res, all_poss, gal_poss, IDs):
     maxs = [xmax, ymax, ymax]
 
     # Compute extent 3D
-    lim = np.max([np.abs(xmin), np.abs(ymin), np.abs(zmin), xmax, ymax, zmax]) + 0.01
+    lim = np.max([np.abs(xmin), np.abs(ymin), np.abs(zmin), xmax, ymax, zmax]) + 0.001
 
     # Get the surrounding distribution
     surnd_poss = get_parts_around_gal(all_poss, mean, lim)
@@ -68,7 +68,7 @@ def create_img(ID, res, all_poss, gal_poss, IDs):
     for (i, j) in [(0, 1), (0, 2), (1, 2)]:
 
         # Compute extent for the 2D square image
-        dim = np.max([np.abs(mins[i]), np.abs(mins[j]), maxs[i], maxs[j]]) + 0.01
+        dim = np.max([np.abs(mins[i]), np.abs(mins[j]), maxs[i], maxs[j]]) + 0.001
         extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
         posrange = ((-dim, dim), (-dim, dim))
 
