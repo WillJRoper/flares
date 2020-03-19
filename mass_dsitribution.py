@@ -74,9 +74,9 @@ def create_img(ID, res, all_poss, gal_poss, IDs):
 
         # Create images
         galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i], gal_poss[:, j],
-                                                                        bins=dim / res, range=posrange)
+                                                                        bins=int(dim / res), range=posrange)
         surundimgs[str(i) + '-' + str(j)], sxbins, sybins = np.histogram2d(surnd_poss[:, i], surnd_poss[:, j],
-                                                                           bins=dim / res, range=posrange)
+                                                                           bins=int(dim / res), range=posrange)
 
     return galimgs, surundimgs, extents
 
@@ -147,7 +147,7 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
             # Set up figure
             fig = plt.figure()
             ax1 = fig.add_subplot(121)
-            ax2 = fig.add_subplot(121)
+            ax2 = fig.add_subplot(122)
 
             # Draw images
             ax1.imshow(np.arcsinh(galimg), extent=extent, cmap='Greys')
