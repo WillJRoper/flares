@@ -34,7 +34,7 @@ def get_parts_around_gal(all_poss, mean, lim):
     return surnd_poss
 
 
-def create_img(ID, res, all_poss, gal_poss, IDs):
+def create_img(res, all_poss, gal_poss):
 
     # Compute mean particle position
     mean = gal_poss.mean(axis=0)
@@ -49,10 +49,10 @@ def create_img(ID, res, all_poss, gal_poss, IDs):
 
     # Set up lists of mins and maximums
     mins = [xmin, ymin, zmin]
-    maxs = [xmax, ymax, ymax]
+    maxs = [xmax, ymax, zmax]
 
     # Compute extent 3D
-    lim = np.max([np.abs(xmin), np.abs(ymin), np.abs(zmin), xmax, ymax, zmax]) + 0.001
+    lim = np.max([np.abs(xmin), np.abs(ymin), np.abs(zmin), xmax, ymax, zmax])
 
     # Get the surrounding distribution
     surnd_poss = get_parts_around_gal(all_poss, mean, lim)
@@ -68,7 +68,7 @@ def create_img(ID, res, all_poss, gal_poss, IDs):
     for (i, j) in [(0, 1), (0, 2), (1, 2)]:
 
         # Compute extent for the 2D square image
-        dim = np.max([np.abs(mins[i]), np.abs(mins[j]), maxs[i], maxs[j]]) + 0.001
+        dim = np.max([np.abs(mins[i]), np.abs(mins[j]), maxs[i], maxs[j]])
         extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
         posrange = ((-dim, dim), (-dim, dim))
 
@@ -139,7 +139,7 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
         print('Computing images for', id)
 
         # Get the images
-        galimgs, surundimgs, extents = create_img(id, res, all_poss, all_gal_poss[id], subgrp_ids)
+        galimgs, surundimgs, extents = create_img(res, all_poss, all_gal_poss[id])
 
         # Loop over dimensions
         for key in galimgs.keys():
