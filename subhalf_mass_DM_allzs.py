@@ -92,9 +92,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     # Label axes
     if i == 2:
-        ax.set_xlabel(r'$M_{\star}/M_\odot$')
+        ax.set_xlabel(r'$M_{\mathrm{DM}}/M_\odot$')
     if j == 0:
-        ax.set_ylabel('$R_{1/2}/\epsilon$')
+        ax.set_ylabel('$R_{1/2,\mathrm{DM}}/\epsilon$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
