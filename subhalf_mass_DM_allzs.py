@@ -47,7 +47,7 @@ for reg in regions:
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
         try:
             half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                          numThreads=8)[:, 1] * 1e3
+                                                          numThreads=8)[:, 4] * 1e3
             xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                                  noH=True, numThreads=8)[:, 1] * 10**10
         except OSError:
@@ -94,7 +94,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if i == 2:
         ax.set_xlabel(r'$M_{\mathrm{DM}}/M_\odot$')
     if j == 0:
-        ax.set_ylabel('$R_{1/2,\mathrm{DM}}/\epsilon$')
+        ax.set_ylabel('$R_{1/2,\mathrm{*}}/\epsilon$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 

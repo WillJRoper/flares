@@ -81,17 +81,43 @@ def create_img(ID, res, all_poss, poss, IDs):
         galimgs[str(i) + '-' + str(j)], _, _ = np.histogram2d(gal_poss[:, [i, j]], bins=dim / res, range=posrange)
         surundimgs[str(i) + '-' + str(j)], _, _ = np.histogram2d(surnd_poss[:, [i, j]], bins=dim / res, range=posrange)
 
-
     return galimgs, surundimgs, extents
 
 
-def img_main(path, reg, snap, res, part_type):
+def img_main(path, snap, res, part_type, npart_lim=10**4):
 
     # Load all necessary arrays
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+    subnpart = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)[:, part_type]
+    subID = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+    all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', numThreads=8)
+    part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                  numThreads=8)
+
+    # Translate ID into indices
+    ind_to_pid = {}
+    pid_to_ind = {}
+    for ind, pid in enumerate(part_ids):
+        ind_to_pid[ind] = pid
+        pid_to_ind[pid] = ind
 
     # Get IDs
+    ids = set(subID[subnpart > npart_lim])
 
+    # Get the particles in the halos
+    halo_id_part_inds = {}
+    for pid, simid in zip(group_part_ids, subgrp_ids):
+        if simid == 2**30:
+            continue
+        try:
+            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+        except KeyError:
+            ind_to_pid[len(part_ids) + 1] = pid
+            pid_to_ind[pid] = len(part_ids) + 1
+            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+
+    print('There are', len(ids), 'galaxies above the cutoff')
 
     # Get the images
     galimgs, surundimgs, extents = create_img(ID, res, all_poss, poss, subgrp_ids)
