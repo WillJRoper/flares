@@ -34,10 +34,7 @@ def get_parts_around_gal(all_poss, mean, lim):
     return surnd_poss
 
 
-def create_img(ID, res, all_poss, poss, IDs):
-
-    # Get the galaxy particle positions
-    gal_poss = get_parts_in_gal(ID, poss, IDs)
+def create_img(ID, res, all_poss, gal_poss, IDs):
 
     # Compute mean particle position
     mean = gal_poss.mean(axis=0)
