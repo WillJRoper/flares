@@ -11,8 +11,6 @@ import pickle
 import itertools
 matplotlib.use('Agg')
 
-sns.set_style('whitegrid')
-
 
 def get_parts_in_gal(ID, poss, IDs):
 
@@ -84,7 +82,7 @@ def create_img(ID, res, all_poss, poss, IDs):
     return galimgs, surundimgs, extents
 
 
-def img_main(path, snap, res, part_type, npart_lim=10**4):
+def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
 
     # Load all necessary arrays
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
@@ -108,7 +106,7 @@ def img_main(path, snap, res, part_type, npart_lim=10**4):
     # Get the particles in the halos
     halo_id_part_inds = {}
     for pid, simid in zip(group_part_ids, subgrp_ids):
-        if simid == 2**30:
+        if simid in ids:
             continue
         try:
             halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
@@ -119,6 +117,39 @@ def img_main(path, snap, res, part_type, npart_lim=10**4):
 
     print('There are', len(ids), 'galaxies above the cutoff')
 
-    # Get the images
-    galimgs, surundimgs, extents = create_img(ID, res, all_poss, poss, subgrp_ids)
+    # Get the position of each of these galaxies
+    all_gal_poss = {}
+    for id in ids:
+
+        all_gal_poss[id] = all_poss[list(halo_id_part_inds[id]), :]
+
+    axlabels = [r'$x$', r'$y$', r'$z$']
+
+    # Create images for these galaxies
+    for id in ids:
+
+        # Get the images
+        galimgs, surundimgs, extents = create_img(id, res, all_poss, all_gal_poss[id], subgrp_ids)
+
+        # Loop over dimensions
+        for key in galimgs.keys():
+
+            # Extract data
+            i, j = key.split('-')
+            extent = extents[key]
+            galimg = galimgs[key]
+            surundimd = surundimgs[key]
+
+            # Set up figure
+            fig = plt.figure()
+            ax1 = fig.add_subplot(121)
+            ax2 = fig.add_subplot(121)
+
+            # Draw images
+            ax1.imshow(np.arcsinh(galimg), extent=extent, cmap='Greys')
+            ax2.imshow(np.arcsinh(galimg), extent=extent, cmap='Greys')
+
+            # Label axes
+            ax.set_xlabel(axlabels[i])
+            ax.set_ylabel(axlabels[j])
 
