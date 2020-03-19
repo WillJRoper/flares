@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH --ntasks 1 # The number of cores you need...
-#SBATCH --array=1-468
+#SBATCH --array=1-480
 #SBATCH --cpus-per-task=8
 #SBATCH -J MEGA-FLARES #Give it something meaningful.
 #SBATCH -o logs/output_Halo.%J.out
@@ -8,7 +8,8 @@
 #SBATCH -p cosma7 #or some other partition, e.g. cosma, cosma6, etc.
 #SBATCH -A dp004
 #SBATCH --exclusive
-#SBATCH -t 3:00:00
+#SBATCH -t 72
+:00:00
 #SBATCH --mail-type=END
 #SBATCH --mail-user=wjr21@sussex.ac.uk #PLEASE PUT YOUR EMAIL ADDRESS HERE (without the <>)
 
