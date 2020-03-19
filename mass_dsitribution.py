@@ -92,6 +92,11 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
     group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                   numThreads=8)
 
+    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+    halo_ids = np.zeros_like(grp_ids, dtype=float)
+    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+        halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+
     # Translate ID into indices
     ind_to_pid = {}
     pid_to_ind = {}
@@ -100,11 +105,12 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
         pid_to_ind[pid] = ind
 
     # Get IDs
-    ids = set(subID[subnpart > npart_lim])
+    ids, counts = np.unique(halo_ids, return_counts=True)
+    ids = set(ids[counts > npart_lim])
 
     # Get the particles in the halos
     halo_id_part_inds = {}
-    for pid, simid in zip(group_part_ids, subgrp_ids):
+    for pid, simid in zip(group_part_ids, halo_ids):
         if simid not in ids:
             continue
         try:
@@ -157,6 +163,10 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
             ax1.set_xlabel(axlabels[int(i)])
             ax1.set_ylabel(axlabels[int(j)])
             ax2.set_xlabel(axlabels[int(i)])
+
+            # Set titles
+            ax1.set_title('Surrounding particles')
+            ax2.set_title('Galaxy particles')
 
             fig.savefig('plots/massdistributions/reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id) + '_coords' + key + 'png',
