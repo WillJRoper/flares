@@ -85,13 +85,9 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
 
     # Load all necessary arrays
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
-    subnpart = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)[:, part_type]
-    subID = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
     all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
     part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                  numThreads=8)
-
+    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     halo_ids = np.zeros_like(grp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
@@ -174,14 +170,12 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
 
             plt.close(fig)
 
-        break
-
 
 # Define comoving softening length in Mpc
 csoft = 0.001802390/0.677
 
 # Define resolution
-res = csoft / 2
+res = csoft / 4
 print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
