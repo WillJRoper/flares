@@ -42,7 +42,7 @@ for snap in snaps:
     half_mass_rads_dict[snap] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                                   numThreads=8)[:, 0] * 1e3
     xaxis_dict[snap] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                         noH=True, numThreads=8)[:, 4] * 10**10
+                                         noH=True, numThreads=8)[:, 0] * 10**10
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
@@ -85,7 +85,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     # Label axes
     if i == 2:
-        ax.set_xlabel(r'$M_{\star}/M_\odot$')
+        ax.set_xlabel(r'$M_{gas}/M_\odot$')
     if j == 0:
         # ax.set_ylabel('$R_{1/2}/\epsilon$')  # uncomment to include softening
         ax.set_ylabel('$R_{1/2,gas}/\mathrm{pkpc}$')
@@ -109,7 +109,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/HalfMassRadiusGas_Stellar_all_snaps_REF.png',
+fig.savefig('plots/HalfMassRadiusGas_Gas_all_snaps_REF.png',
             bbox_inches='tight')
 
 plt.close(fig)
