@@ -153,7 +153,7 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
             ax2 = fig.add_subplot(122)
 
             # Draw images
-            ax1.imshow(np.arcsinh(galimg), extent=extent, cmap='viridis')
+            ax1.imshow(np.arcsinh(galimg), extent=extent, cmap='Greys')
             ax2.imshow(np.arcsinh(surundimg), extent=extent, cmap='Greys')
 
             # Label axes
