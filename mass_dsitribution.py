@@ -88,7 +88,7 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
     subnpart = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)[:, part_type]
     subID = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-    all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', numThreads=8)
+    all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
     part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
     group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                   numThreads=8)
@@ -138,7 +138,7 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
             i, j = key.split('-')
             extent = extents[key]
             galimg = galimgs[key]
-            surundimd = surundimgs[key]
+            surundimg = surundimgs[key]
 
             # Set up figure
             fig = plt.figure()
@@ -147,9 +147,29 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
 
             # Draw images
             ax1.imshow(np.arcsinh(galimg), extent=extent, cmap='Greys')
-            ax2.imshow(np.arcsinh(galimg), extent=extent, cmap='Greys')
+            ax2.imshow(np.arcsinh(surundimg), extent=extent, cmap='Greys')
 
             # Label axes
-            ax.set_xlabel(axlabels[i])
-            ax.set_ylabel(axlabels[j])
+            ax1.set_xlabel(axlabels[i])
+            ax1.set_ylabel(axlabels[j])
+            ax2.set_xlabel(axlabels[i])
 
+            fig.savefig('plots/massdistributions/reg' + str(reg) + '_snap' + snap +
+                        '_gal' + str(id) + '_coords' + key + 'png',
+                        bbox_inches='tight')
+
+            plt.close(fig)
+
+
+# Define comoving softening length in Mpc
+csoft = 0.001802390/0.677
+
+# Define resolution
+res = csoft / 2
+
+# Define region variables
+reg = 00
+snap = '010_z005p000'
+path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
+
+img_main(path, snap, reg, res, part_type=4, npart_lim=10**4)
