@@ -188,8 +188,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         sim_to_internal_haloID_prog = {}
         internalID = -1
         for pid, prog in zip(prog_part_ids, prog_halo_ids):
-            if int(str(prog).split('.')[rank]) == 2 ** 30:
-                continue
             if prog in sim_to_internal_haloID_prog.keys():
                 prog_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_prog[prog]
             else:
@@ -236,10 +234,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         sim_to_internal_haloID_desc = {}
         internalID = -1
         for pid, desc in zip(desc_part_ids, desc_halo_ids):
-            print(pid, desc)
-            if int(str(desc).split('.')[rank]) == 2 ** 30:
-                continue
-            print(pid, desc)
             if desc in sim_to_internal_haloID_desc.keys():
                 desc_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_desc[desc]
             else:
@@ -367,14 +361,13 @@ for reg in regions:
     for snap, prog_snap, desc_snap in zip(snaps, prog_snaps, desc_snaps):
 
         reg_snaps.append((reg, snap, prog_snap, desc_snap))
-print(len(reg_snaps))
 
-# if __name__ == '__main__':
-#
-#     ind = int(sys.argv[1])
-#     print(reg_snaps[ind])
-#
-#     mainDirectProgDesc(snap=reg_snaps[ind][1], prog_snap=reg_snaps[ind][2], desc_snap=reg_snaps[ind][3],
-#                        path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
-#                        part_type=1, rank=1, savepath='/cosma/home/dp004/dc-rope1/FLARES/'
-#                                                      'FLARES-1/MergerGraphs/GEAGLE_' + reg_snaps[ind][0] + '/')
+if __name__ == '__main__':
+
+    ind = int(sys.argv[1])
+    print(reg_snaps[ind])
+
+    mainDirectProgDesc(snap=reg_snaps[ind][1], prog_snap=reg_snaps[ind][2], desc_snap=reg_snaps[ind][3],
+                       path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
+                       part_type=1, rank=1, savepath='/cosma/home/dp004/dc-rope1/FLARES/'
+                                                     'FLARES-1/MergerGraphs/GEAGLE_' + reg_snaps[ind][0] + '/')
