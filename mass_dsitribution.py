@@ -169,10 +169,12 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
             ax2.set_title('Galaxy particles')
 
             fig.savefig('plots/massdistributions/reg' + str(reg) + '_snap' + snap +
-                        '_gal' + str(id) + '_coords' + key + 'png',
+                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + 'png',
                         bbox_inches='tight')
 
             plt.close(fig)
+
+        break
 
 
 # Define comoving softening length in Mpc
