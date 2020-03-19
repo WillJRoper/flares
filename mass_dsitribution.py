@@ -116,17 +116,21 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
             halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
     print('There are', len(ids), 'galaxies above the cutoff')
-
+    print(list(halo_id_part_inds.keys()))
     # Get the position of each of these galaxies
     all_gal_poss = {}
     for id in ids:
 
         all_gal_poss[id] = all_poss[list(halo_id_part_inds[id]), :]
 
+    print('Extracted galaxy positions')
+
     axlabels = [r'$x$', r'$y$', r'$z$']
 
     # Create images for these galaxies
     for id in ids:
+
+        print('Computing images for', id)
 
         # Get the images
         galimgs, surundimgs, extents = create_img(id, res, all_poss, all_gal_poss[id], subgrp_ids)
