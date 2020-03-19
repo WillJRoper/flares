@@ -82,7 +82,7 @@ def create_img(res, all_poss, gal_poss):
     return galimgs, surundimgs, extents
 
 
-def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
+def img_main(path, snap, reg, res, soft, part_type, npart_lim=10**4):
 
     # Load all necessary arrays
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
@@ -167,7 +167,7 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
 
             fig.savefig('plots/massdistributions/reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + 'png',
-                        bbox_inches='tight')
+                        bbox_inches='tight', dpi=300)
 
             plt.close(fig)
 
@@ -176,7 +176,7 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
 csoft = 0.001802390/0.677
 
 # Define resolution
-res = csoft / 4
+res = csoft / 10
 print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
@@ -184,4 +184,4 @@ reg = '0000'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-img_main(path, snap, reg, res, part_type=4, npart_lim=10**4)
+img_main(path, snap, reg, res, soft=csoft, part_type=4, npart_lim=10**4)
