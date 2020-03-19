@@ -154,9 +154,9 @@ def img_main(path, snap, reg, res, part_type, npart_lim=10**4):
             ax2.imshow(np.arcsinh(surundimg), extent=extent, cmap='Greys')
 
             # Label axes
-            ax1.set_xlabel(axlabels[i])
-            ax1.set_ylabel(axlabels[j])
-            ax2.set_xlabel(axlabels[i])
+            ax1.set_xlabel(axlabels[int(i)])
+            ax1.set_ylabel(axlabels[int(j)])
+            ax2.set_xlabel(axlabels[int(i)])
 
             fig.savefig('plots/massdistributions/reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id) + '_coords' + key + 'png',
