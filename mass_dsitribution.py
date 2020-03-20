@@ -148,9 +148,10 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             ids = set(ids[ids >= 0])
 
             for id in list(ids):
+                print(id, str(id).split('.')[1], str(id).split('.')[1] == '1073741825')
                 if str(id).split('.')[1] == '1073741825':
                     ids.remove(id)
-                if any(masses_dict[str(id)][[0, 1, 5]] > 0.0):
+                elif any(masses_dict[str(id)][[0, 1, 5]] > 0.0):
                     ids.remove(id)
 
         elif part_type == 4 and imgtype not in ['compact', 'DMless']:
