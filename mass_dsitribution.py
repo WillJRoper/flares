@@ -214,7 +214,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             for part_type in part_types:
                 if part_type == 4:
                     continue
-                if galimgs[part_type][key].shape == 0:
+                if galimgs[part_type][key].shape == (0,):
                     galimgs[part_type][key] = np.full(imgshape, np.nan)
 
         # Loop over dimensions
