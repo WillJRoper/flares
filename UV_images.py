@@ -107,7 +107,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, lim=0.08):
 
         print('Computing images for', id)
 
-        lumins = np.ones_like(all_gal_poss[id])
+        lumins = np.ones_like(all_gal_poss[id][:, 0])
 
         # Get the images
         galimgs, extents = create_img(res, all_gal_poss[id], means[id], lumins, lim)
