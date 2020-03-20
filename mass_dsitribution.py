@@ -73,7 +73,7 @@ def create_img(res, all_poss, gal_poss, mean, lim):
         try:
             galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i], gal_poss[:, j],
                                                                             bins=int(dim / res), range=posrange)
-        except ValueError:
+        except IndexError:
             galimgs[str(i) + '-' + str(j)] = np.array([])
         surundimgs[str(i) + '-' + str(j)], sxbins, sybins = np.histogram2d(surnd_poss[:, i], surnd_poss[:, j],
                                                                            bins=int(dim / res), range=posrange)
