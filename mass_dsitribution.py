@@ -173,7 +173,8 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3):
 
             # Get the images
             galimgs[part_type], surundimgs[part_type], extents[part_type] = create_img(res, all_poss[part_type],
-                                                                                       all_gal_poss[id], means[id])
+                                                                                       all_gal_poss[part_type][id],
+                                                                                       means[id])
 
         # Loop over dimensions
         for key in galimgs[4].keys():
