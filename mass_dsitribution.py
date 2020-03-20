@@ -37,7 +37,8 @@ def get_parts_around_gal(all_poss, mean, lim):
 def create_img(res, all_poss, gal_poss, mean, lim):
 
     # Centre galaxy on mean
-    if gal_poss.shape != 0:
+    print(gal_poss)
+    if gal_poss.shape[0] != 0:
         gal_poss -= mean
 
     # # Find the max and minimum position on each axis
@@ -263,7 +264,7 @@ print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
 reg = '0000'
-snap = '007_z008p000'
+snap = '0010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
 img_main(path, snap, reg, res, soft=csoft, npart_lim=10**4, imgtype='DMless')
