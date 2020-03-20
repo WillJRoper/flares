@@ -39,7 +39,7 @@ def create_img(res, gal_poss, mean, lumins,  dim):
     return galimgs, extents
 
 
-def img_main(path, snap, reg, res, npart_lim=10**3, lim=0.08):
+def img_main(path, snap, reg, res, npart_lim=10**3, lim=0.1):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
