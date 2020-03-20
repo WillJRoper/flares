@@ -34,25 +34,23 @@ def get_parts_around_gal(all_poss, mean, lim):
     return surnd_poss
 
 
-def create_img(res, all_poss, gal_poss, mean):
+def create_img(res, all_poss, gal_poss, mean, lim):
 
     # Centre galaxy on mean
-    gal_poss -= mean
+    if gal_poss.shape != 0:
+        gal_poss -= mean
 
-    # Find the max and minimum position on each axis
-    xmax, xmin = np.max(gal_poss[:, 0]), np.min(gal_poss[:, 0])
-    ymax, ymin = np.max(gal_poss[:, 1]), np.min(gal_poss[:, 1])
-    zmax, zmin = np.max(gal_poss[:, 2]), np.min(gal_poss[:, 2])
+    # # Find the max and minimum position on each axis
+    # xmax, xmin = np.max(gal_poss[:, 0]), np.min(gal_poss[:, 0])
+    # ymax, ymin = np.max(gal_poss[:, 1]), np.min(gal_poss[:, 1])
+    # zmax, zmin = np.max(gal_poss[:, 2]), np.min(gal_poss[:, 2])
 
-    # Set up lists of mins and maximums
-    mins = [xmin, ymin, zmin]
-    maxs = [xmax, ymax, zmax]
-
-    # Compute extent 3D
-    lim = np.max([np.abs(xmin), np.abs(ymin), np.abs(zmin), xmax, ymax, zmax])
+    # # Set up lists of mins and maximums
+    # mins = [xmin, ymin, zmin]
+    # maxs = [xmax, ymax, zmax]
 
     # Get the surrounding distribution
-    surnd_poss = get_parts_around_gal(all_poss, mean, lim)
+    surnd_poss = get_parts_around_gal(all_poss, mean, lim / 2)
 
     # Centre particle distribution
     surnd_poss -= mean
@@ -66,20 +64,23 @@ def create_img(res, all_poss, gal_poss, mean):
 
         # Compute extent for the 2D square image
         # dim = np.max([np.abs(mins[i]), np.abs(mins[j]), maxs[i], maxs[j]])
-        dim = 0.08
+        dim = lim
         extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
         posrange = ((-dim, dim), (-dim, dim))
 
         # Create images
-        galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i], gal_poss[:, j],
-                                                                        bins=int(dim / res), range=posrange)
+        try:
+            galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i], gal_poss[:, j],
+                                                                            bins=int(dim / res), range=posrange)
+        except ValueError:
+            galimgs[str(i) + '-' + str(j)] = np.array([[]])
         surundimgs[str(i) + '-' + str(j)], sxbins, sybins = np.histogram2d(surnd_poss[:, i], surnd_poss[:, j],
                                                                            bins=int(dim / res), range=posrange)
 
     return galimgs, surundimgs, extents
 
 
-def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, imgtype='compact'):
+def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, imgtype='compact', lim=0.08):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -204,7 +205,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             # Get the images
             galimgs[part_type], surundimgs[part_type], extents[part_type] = create_img(res, all_poss[part_type],
                                                                                        all_gal_poss[part_type][id],
-                                                                                       means[id])
+                                                                                       means[id], lim)
 
         # Loop over dimensions
         for key in galimgs[4].keys():
