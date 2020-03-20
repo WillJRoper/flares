@@ -148,7 +148,6 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             ids = set(ids[ids >= 0])
 
             for id in list(ids):
-                print(id, str(id).split('.')[1], str(id).split('.')[1] == '1073741825')
                 if str(id).split('.')[1] == '1073741825':
                     ids.remove(id)
                 elif any(masses_dict[str(id)][[0, 1, 5]] > 0.0):
@@ -179,7 +178,10 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
         all_gal_poss[part_type] = {}
         for id in ids:
 
-            all_gal_poss[part_type][id] = all_poss[part_type][list(halo_id_part_inds[id]), :]
+            try:
+                all_gal_poss[part_type][id] = all_poss[part_type][list(halo_id_part_inds[id]), :]
+            except KeyError:
+                all_gal_poss[part_type][id] = np.array([])
 
             if part_type == 4:
                 means[id] = all_gal_poss[part_type][id].mean(axis=0)
