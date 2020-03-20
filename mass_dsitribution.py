@@ -129,8 +129,8 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3):
             ids = set(ids[counts > npart_lim])
 
             for id in ids:
-                if half_mass_rads_dict[id] > soft / (1 + z) * 1.2:
-                    ids.remove(str(id))
+                if half_mass_rads_dict[str(id)] > soft / (1 + z) * 1.2:
+                    ids.remove(id)
 
         # Get the particles in the halos
         halo_id_part_inds = {}
