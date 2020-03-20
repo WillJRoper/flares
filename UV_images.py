@@ -122,7 +122,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, lim=0.08):
             ax1 = fig.add_subplot(111)
 
             # Draw images
-            ax1.imshow(np.arcsinh(galimgs[1][key]), extent=extents[1][key], cmap='Greys')
+            ax1.imshow(np.arcsinh(galimgs[key]), extent=extents[key], cmap='Greys')
 
             # Label axes
             ax1.set_xlabel(axlabels[int(i)])
