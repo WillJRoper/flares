@@ -55,19 +55,10 @@ def img_main(path, snap, reg, res, npart_lim=10**2.5, lim=0.5):
     # Load all necessary arrays
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
     all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
-    part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     halo_ids = np.zeros_like(grp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
-
-    # Translate ID into indices
-    ind_to_pid = {}
-    pid_to_ind = {}
-    for ind, pid in enumerate(part_ids):
-        ind_to_pid[ind] = pid
-        pid_to_ind[pid] = ind
 
     # Get the IDs above the npart threshold
     ids, counts = np.unique(halo_ids, return_counts=True)
@@ -75,15 +66,10 @@ def img_main(path, snap, reg, res, npart_lim=10**2.5, lim=0.5):
 
     # Get the particles in the halos
     halo_id_part_inds = {}
-    for pid, simid in zip(group_part_ids, halo_ids):
+    for ind, simid in enumerate(halo_ids):
         if simid not in ids:
             continue
-        try:
-            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
-        except KeyError:
-            ind_to_pid[len(part_ids) + 1] = pid
-            pid_to_ind[pid] = len(part_ids) + 1
-            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+        halo_id_part_inds.setdefault(simid, set()).update({pind})
 
     print('There are', len(ids), 'galaxies above the cutoff')
 
