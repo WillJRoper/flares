@@ -96,7 +96,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, lim=0.08):
 
         all_gal_poss[id] = all_poss[list(halo_id_part_inds[id]), :]
 
-        means[id] = all_gal_poss[part_type][id].mean(axis=0)
+        means[id] = all_gal_poss[id].mean(axis=0)
 
     print('Extracted galaxy positions')
 
