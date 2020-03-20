@@ -37,7 +37,6 @@ def get_parts_around_gal(all_poss, mean, lim):
 def create_img(res, all_poss, gal_poss, mean, lim):
 
     # Centre galaxy on mean
-    print(gal_poss)
     if gal_poss.shape[0] != 0:
         gal_poss -= mean
 
@@ -51,7 +50,7 @@ def create_img(res, all_poss, gal_poss, mean, lim):
     # maxs = [xmax, ymax, zmax]
 
     # Get the surrounding distribution
-    surnd_poss = get_parts_around_gal(all_poss, mean, lim / 2)
+    surnd_poss = get_parts_around_gal(all_poss, mean, lim)
 
     # Centre particle distribution
     surnd_poss -= mean
@@ -259,11 +258,11 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
 csoft = 0.001802390/0.677
 
 # Define resolution
-res = csoft / 20
+res = csoft / 4
 print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
-reg = '0022'
+reg = '0000'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
