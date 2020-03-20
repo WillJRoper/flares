@@ -39,7 +39,7 @@ def create_img(res, gal_poss, mean, lumins,  dim):
     return galimgs, extents
 
 
-def img_main(path, snap, reg, res, npart_lim=10**3, lim=0.1):
+def img_main(path, snap, reg, res, npart_lim=10**2.5, lim=0.5):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -96,7 +96,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, lim=0.1):
 
         all_gal_poss[id] = all_poss[list(halo_id_part_inds[id]), :]
 
-        means[id] = all_gal_poss[id].mean(axis=0)
+        means[id] = np.median(all_gal_poss[id], axis=0)
 
     print('Extracted galaxy positions')
 
