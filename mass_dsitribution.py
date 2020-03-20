@@ -151,7 +151,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3):
         all_gal_poss[part_type] = {}
         for id in ids:
 
-            all_gal_poss[part_type][id] = all_poss[list(halo_id_part_inds[id]), :]
+            all_gal_poss[part_type][id] = all_poss[part_type][list(halo_id_part_inds[id]), :]
 
             if part_type == 4:
                 means[id] = all_gal_poss[part_type][id].mean(axis=0)
