@@ -69,7 +69,7 @@ def img_main(path, snap, reg, res, npart_lim=10**2.5, lim=0.5):
     for ind, simid in enumerate(halo_ids):
         if simid not in ids:
             continue
-        halo_id_part_inds.setdefault(simid, set()).update({pind})
+        halo_id_part_inds.setdefault(simid, set()).update({ind})
 
     print('There are', len(ids), 'galaxies above the cutoff')
 
