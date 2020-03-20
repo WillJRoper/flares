@@ -128,7 +128,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3):
             ids, counts = np.unique(halo_ids, return_counts=True)
             ids = set(ids[counts > npart_lim])
 
-            for id in ids:
+            for id in list(ids):
                 if half_mass_rads_dict[str(id)] > soft / (1 + z) * 1.2:
                     ids.remove(id)
 
