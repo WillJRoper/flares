@@ -263,7 +263,7 @@ print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
 reg = '0001'
-snap = '010_z005p000'
+snap = '006_z009p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
 img_main(path, snap, reg, res, soft=csoft, npart_lim=10**4, imgtype='DMless')
