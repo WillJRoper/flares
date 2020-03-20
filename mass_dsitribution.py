@@ -73,7 +73,7 @@ def create_img(res, all_poss, gal_poss, mean, lim):
             galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i], gal_poss[:, j],
                                                                             bins=int(dim / res), range=posrange)
         except ValueError:
-            galimgs[str(i) + '-' + str(j)] = np.array([[]])
+            galimgs[str(i) + '-' + str(j)] = np.array([])
         surundimgs[str(i) + '-' + str(j)], sxbins, sybins = np.histogram2d(surnd_poss[:, i], surnd_poss[:, j],
                                                                            bins=int(dim / res), range=posrange)
 
@@ -206,6 +206,15 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             galimgs[part_type], surundimgs[part_type], extents[part_type] = create_img(res, all_poss[part_type],
                                                                                        all_gal_poss[part_type][id],
                                                                                        means[id], lim)
+
+        # Remove empty images
+        imgshape = galimgs[4]['0-1'].shape
+        for key in galimgs[4].keys():
+            for part_type in part_types:
+                if part_type == 4:
+                    continue
+                if galimgs[part_type][key].shape == 0:
+                    galimgs[part_type][key] = np.full(imgshape, np.nan)
 
         # Loop over dimensions
         for key in galimgs[4].keys():
