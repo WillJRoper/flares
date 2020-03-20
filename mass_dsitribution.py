@@ -145,10 +145,8 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
 
             # Get the IDs above the npart threshold
             ids, counts = np.unique(halo_ids, return_counts=True)
-            ids = set(ids[counts > npart_lim])
 
             for id in list(ids):
-                print()
                 if any(masses_dict[str(id)][[0, 1, 5]] > 0.0):
                     ids.remove(id)
 
@@ -168,8 +166,11 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
                 halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
         print('There are', len(ids), 'galaxies above the cutoff')
-        print(list(halo_id_part_inds.keys()))
-        print(ids)
+
+        # If there are no galaxies exit
+        if len(ids) == 0:
+            return
+
         # Get the position of each of these galaxies
         all_gal_poss[part_type] = {}
         for id in ids:
@@ -230,7 +231,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             ax2.set_title('Surrounding particles')
             ax1.set_title('Galaxy particles')
 
-            fig.savefig('plots/massdistributions/reg' + str(reg) + '_snap' + snap +
+            fig.savefig('plots/massdistributions/'+ imgtype + '_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + 'png',
                         bbox_inches='tight', dpi=300)
 
@@ -245,7 +246,7 @@ res = csoft / 20
 print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
-reg = '0000'
+reg = '0001'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
