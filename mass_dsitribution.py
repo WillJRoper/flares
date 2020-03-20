@@ -263,7 +263,7 @@ res = csoft / 20
 print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
-reg = '0030'
+reg = '0022'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
