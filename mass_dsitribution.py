@@ -79,7 +79,7 @@ def create_img(res, all_poss, gal_poss, mean):
     return galimgs, surundimgs, extents
 
 
-def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3):
+def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, imgtype='compact'):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -112,7 +112,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3):
             pid_to_ind[pid] = ind
 
         # Get IDs
-        if part_type == 4:
+        if part_type == 4 and imgtype == 'compact':
             half_mass_rads = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True, numThreads=8)[:, 4]
             grp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subgrp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
@@ -131,6 +131,28 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3):
             for id in list(ids):
                 if half_mass_rads_dict[str(id)] > soft / (1 + z) * 1.2:
                     ids.remove(id)
+
+        elif part_type == 4 and imgtype == 'DMless':
+            masses = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                                  numThreads=8)
+            grp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+            subgrp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+
+            # Get the half mass radii for each group
+            masses_dict = {}
+            for ms, g, sg in zip(masses, grp_ID, subgrp_ID):
+                masses_dict[str(g) + '.' + str(sg + 1)] = ms
+
+            # Get the IDs above the npart threshold
+            ids, counts = np.unique(halo_ids, return_counts=True)
+            ids = set(ids[counts > npart_lim])
+
+            for id in list(ids):
+                if any(masses_dict[str(id)][(0, 1, 5)] > 0.0):
+                    ids.remove(id)
+
+        elif part_type == 4 and imgtype not in ['compact', 'DMless']:
+            print('Invalid type, should be one of:', ['compact', 'DMless'])
 
         # Get the particles in the halos
         halo_id_part_inds = {}
@@ -226,4 +248,4 @@ reg = '0000'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-img_main(path, snap, reg, res, soft=csoft, npart_lim=10**4)
+img_main(path, snap, reg, res, soft=csoft, npart_lim=10**4, imgtype='DMless')
