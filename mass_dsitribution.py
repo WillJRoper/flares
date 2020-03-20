@@ -34,10 +34,7 @@ def get_parts_around_gal(all_poss, mean, lim):
     return surnd_poss
 
 
-def create_img(res, all_poss, gal_poss):
-
-    # Compute mean particle position
-    mean = gal_poss.mean(axis=0)
+def create_img(res, all_poss, gal_poss, mean):
 
     # Centre galaxy on mean
     gal_poss -= mean
@@ -82,49 +79,82 @@ def create_img(res, all_poss, gal_poss):
     return galimgs, surundimgs, extents
 
 
-def img_main(path, snap, reg, res, soft, part_type, npart_lim=10**4):
+def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3):
 
-    # Load all necessary arrays
-    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
-    all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
-    part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-    halo_ids = np.zeros_like(grp_ids, dtype=float)
-    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+    # Get the redshift
+    z_str = snap.split('z')[1].split('p')
+    z = float(z_str[0] + '.' + z_str[1])
 
-    # Translate ID into indices
-    ind_to_pid = {}
-    pid_to_ind = {}
-    for ind, pid in enumerate(part_ids):
-        ind_to_pid[ind] = pid
-        pid_to_ind[pid] = ind
-
-    # Get IDs
-    ids, counts = np.unique(halo_ids, return_counts=True)
-    ids = set(ids[counts > npart_lim])
-
-    # Get the particles in the halos
-    halo_id_part_inds = {}
-    for pid, simid in zip(group_part_ids, halo_ids):
-        if simid not in ids:
-            continue
-        try:
-            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
-        except KeyError:
-            ind_to_pid[len(part_ids) + 1] = pid
-            pid_to_ind[pid] = len(part_ids) + 1
-            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
-
-    print('There are', len(ids), 'galaxies above the cutoff')
-    print(list(halo_id_part_inds.keys()))
-    print(ids)
-    # Get the position of each of these galaxies
+    # Initialise galaxy position dictionary
     all_gal_poss = {}
-    for id in ids:
+    all_poss = {}
+    means = {}
 
-        all_gal_poss[id] = all_poss[list(halo_id_part_inds[id]), :]
+    for part_type in part_types:
+
+        print('Loading particle type', part_type)
+
+        # Load all necessary arrays
+        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+        all_poss[part_type] = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
+        part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+        group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+        halo_ids = np.zeros_like(grp_ids, dtype=float)
+        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+            halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+
+        # Translate ID into indices
+        ind_to_pid = {}
+        pid_to_ind = {}
+        for ind, pid in enumerate(part_ids):
+            ind_to_pid[ind] = pid
+            pid_to_ind[pid] = ind
+
+        # Get IDs
+        if part_type == 4:
+            half_mass_rads = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True, numThreads=8)[:, 4]
+            grp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+            subgrp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+
+            # Get the half mass radii for each group
+            half_mass_rads_dict = {}
+            for r, g, sg in zip(half_mass_rads, grp_ID, subgrp_ID):
+                half_mass_rads_dict[str(g) + '.' + str(sg + 1)] = r
+
+            print(len(half_mass_rads), len(grp_ID), len(subgrp_ID))
+
+            # Get the IDs above the npart threshold
+            ids, counts = np.unique(halo_ids, return_counts=True)
+            ids = set(ids[counts > npart_lim])
+
+            for id in ids:
+                if half_mass_rads_dict[id] > soft / (1 + z) * 1.2:
+                    ids.remove(id)
+
+        # Get the particles in the halos
+        halo_id_part_inds = {}
+        for pid, simid in zip(group_part_ids, halo_ids):
+            if simid not in ids:
+                continue
+            try:
+                halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+            except KeyError:
+                ind_to_pid[len(part_ids) + 1] = pid
+                pid_to_ind[pid] = len(part_ids) + 1
+                halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+
+        print('There are', len(ids), 'galaxies above the cutoff')
+        print(list(halo_id_part_inds.keys()))
+        print(ids)
+        # Get the position of each of these galaxies
+        all_gal_poss[part_type] = {}
+        for id in ids:
+
+            all_gal_poss[part_type][id] = all_poss[list(halo_id_part_inds[id]), :]
+
+            if part_type == 4:
+                means[id] = all_gal_poss[part_type][id].mean(axis=0)
 
     print('Extracted galaxy positions')
 
@@ -133,33 +163,44 @@ def img_main(path, snap, reg, res, soft, part_type, npart_lim=10**4):
     # Create images for these galaxies
     for id in ids:
 
-        print('Computing images for', id)
+        galimgs = {}
+        surundimgs = {}
+        extents = {}
 
-        # Get the images
-        galimgs, surundimgs, extents = create_img(res, all_poss, all_gal_poss[id])
+        for part_type in part_types:
+
+            print('Computing images for', id, 'and particle type', part_type)
+
+            # Get the images
+            galimgs[part_type], surundimgs[part_type], extents[part_type] = create_img(res, all_poss[part_type],
+                                                                                       all_gal_poss[id], means[id])
 
         # Loop over dimensions
-        for key in galimgs.keys():
+        for key in galimgs[4].keys():
 
-            # Extract data
             i, j = key.split('-')
-            extent = extents[key]
-            galimg = galimgs[key]
-            surundimg = surundimgs[key]
 
             # Set up figure
             fig = plt.figure()
-            ax1 = fig.add_subplot(121)
-            ax2 = fig.add_subplot(122)
+            ax1 = fig.add_subplot(321)
+            ax2 = fig.add_subplot(322)
+            ax3 = fig.add_subplot(323)
+            ax4 = fig.add_subplot(324)
+            ax5 = fig.add_subplot(325)
+            ax6 = fig.add_subplot(326)
 
             # Draw images
-            ax1.imshow(np.arcsinh(galimg), extent=extent, cmap='Greys')
-            ax2.imshow(np.arcsinh(surundimg), extent=extent, cmap='Greys')
+            ax1.imshow(np.arcsinh(galimgs[1][key]), extent=extents[1][key], cmap='Greys')
+            ax2.imshow(np.arcsinh(surundimgs[1][key]), extent=extents[1][key], cmap='Greys')
+            ax3.imshow(np.arcsinh(galimgs[0][key]), extent=extents[0][key], cmap='Greys')
+            ax4.imshow(np.arcsinh(surundimgs[0][key]), extent=extents[0][key], cmap='Greys')
+            ax5.imshow(np.arcsinh(galimgs[4][key]), extent=extents[4][key], cmap='Greys')
+            ax6.imshow(np.arcsinh(surundimgs[4][key]), extent=extents[4][key], cmap='Greys')
 
             # Label axes
-            ax1.set_xlabel(axlabels[int(i)])
-            ax1.set_ylabel(axlabels[int(j)])
-            ax2.set_xlabel(axlabels[int(i)])
+            ax5.set_xlabel(axlabels[int(i)])
+            ax3.set_ylabel(axlabels[int(j)])
+            ax6.set_xlabel(axlabels[int(i)])
 
             # Set titles
             ax2.set_title('Surrounding particles')
@@ -184,4 +225,4 @@ reg = '0000'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-img_main(path, snap, reg, res, soft=csoft, part_type=4, npart_lim=10**4)
+img_main(path, snap, reg, res, soft=csoft, npart_lim=10**4)
