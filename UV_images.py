@@ -92,6 +92,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
     # Centre galaxy on mean
     if gal_poss.shape[0] != 0:
         gal_poss -= mean
+        gas_poss -= mean
 
     # Set up dictionaries to store images
     galimgs = {}
