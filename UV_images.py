@@ -7,7 +7,7 @@ import eagle_IO as E
 from astropy.cosmology import Planck13 as cosmo
 from numba import jit
 import os
-os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare/data/'
+os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
 from SynthObs.SED import models
 matplotlib.use('Agg')
