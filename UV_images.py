@@ -323,9 +323,28 @@ csoft = 0.001802390/0.677
 res = csoft
 print(100 / res, 'pixels in', '100 kpc')
 
-# Define region variables
-reg = '0000'
-snap = '010_z005p000'
-path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
+regions = []
+for reg in range(0, 40):
+    if reg < 10:
+        regions.append('0' + str(reg))
+    else:
+        regions.append(str(reg))
 
-img_main(path, snap, reg, res, npart_lim=10**3, dim=0.15, load=False)
+snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+
+reg_snaps = []
+for reg in regions:
+
+    for snap in snaps:
+
+        reg_snaps.append((reg, snap))
+
+for i in range(len(reg_snaps)):
+    
+    # Define region variables
+    reg = reg_snaps[i][0]
+    snap = reg_snaps[i][1]
+    path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
+
+    img_main(path, snap, reg, res, npart_lim=10**4, dim=0.15, load=False)
