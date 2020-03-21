@@ -42,7 +42,7 @@ def calc_ages(z, a_born):
     return ages
 
 
-@jit()
+# @jit()
 def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel=0, kbins=0):
 
     """
@@ -87,7 +87,7 @@ def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel=0, kbins=0):
     return Z_los_SD
 
 
-def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_soft):
+def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml):
 
     # Centre galaxy on mean
     if gal_poss.shape[0] != 0:
@@ -107,8 +107,8 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         else:
             k = 0
         dimens = np.array([i, j, k])
-        print(gal_poss, gas_poss, gas_ms, gas_mets, gas_soft, dimens)
-        gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_soft, dimens)
+
+        gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens)
         print(gal_met_surfden[gal_met_surfden > 0])
 
         # Compute luminosities
@@ -194,6 +194,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, gas_soft=0.00180239
     ggroup_part_ids = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', numThreads=8)
     ggrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', numThreads=8)
     gas_metallicities = E.read_array('SNAP', path, snap, 'PartType0/SmoothedMetallicity', noH=True, numThreads=8)
+    gas_smooth_ls = E.read_array('SNAP', path, snap, 'PartType0/SmoothingLength', noH=True, numThreads=8)
     gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, numThreads=8) * 10**10
     ghalo_ids = np.zeros_like(ggrp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(ggrp_ids), gsubgrp_ids):
@@ -229,6 +230,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, gas_soft=0.00180239
     gal_ms = {}
     gas_mets = {}
     gas_ms = {}
+    gas_smls = {}
     all_gas_poss = {}
     for id in ids:
 
@@ -239,6 +241,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, gas_soft=0.00180239
         gal_ms[id] = masses[list(halo_id_part_inds[id])]
         gas_mets[id] = gas_metallicities[list(ghalo_id_part_inds[id])]
         gas_ms[id] = gas_masses[list(ghalo_id_part_inds[id])]
+        gas_smls[id] = gas_smooth_ls[list(ghalo_id_part_inds[id])]
 
         means[id] = np.median(all_gal_poss[id], axis=0)
 
@@ -252,7 +255,8 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, gas_soft=0.00180239
         print('Computing images for', id)
 
         # Get the images
-        galimgs, extents = create_img(res, all_gal_poss[id], means[id], dim, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id], all_gas_poss[id], gas_ms[id], gas_soft)
+        galimgs, extents = create_img(res, all_gal_poss[id], means[id], dim, gal_ms[id], gal_ages[id], gal_mets[id],
+                                      gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id])
 
         # Loop over dimensions
         for key in galimgs.keys():
