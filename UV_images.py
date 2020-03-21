@@ -43,7 +43,7 @@ def calc_ages(z, a_born):
 
 
 # @jit()
-def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel=0, kbins=0):
+def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel, kbins):
 
     """
 
@@ -78,16 +78,17 @@ def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel=0, kbins=0):
 
         ok = (boverh <= 1.)
 
-        # kernel_vals = np.array([lkernel[int(kbins*ll)] for ll in boverh[ok]])
+        kernel_vals = np.array([lkernel[int(kbins*ll)] for ll in boverh[ok]])
 
-        Z_los_SD[ii] = np.sum((thisgmass[ok]*thisgZ[ok]/(thisgsml[ok]*thisgsml[ok]))) #*kernel_vals) #in units of Msun/Mpc^2
+        Z_los_SD[ii] = np.sum((thisgmass[ok]*thisgZ[ok]/(thisgsml[ok]*thisgsml[ok]))*kernel_vals) #in units of Msun/Mpc^2
 
-    Z_los_SD *= (u.solMass/u.Mpc**2).to(u.g/u.cm**2) #in units of Msun/pc^2
+    Z_los_SD *= (u.solMass/u.Mpc**2).to(u.solMass/u.pc**2) #in units of Msun/pc^2
 
     return Z_los_SD
 
 
-def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml):
+def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
+               lkernel, kbins):
 
     # Centre galaxy on mean
     if gal_poss.shape[0] != 0:
@@ -109,7 +110,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
             k = 0
         dimens = np.array([i, j, k])
 
-        gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens)
+        gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins)
 
         # Compute luminosities
         tauVs_ISM = (10 ** 5.2) * gal_met_surfden
@@ -129,7 +130,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
     return galimgs, extents
 
 
-def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, gas_soft=0.001802390/0.677):
+def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -141,6 +142,12 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, gas_soft=0.00180239
     # Initialise galaxy position dictionaries
     all_gal_poss = {}
     means = {}
+
+    kinp = np.load('/cosma/home/dp004/dc-rope1/cosma7/FLARES/flares/los_extinction/kernel_sph-anarchy.npz',
+                   allow_pickle=True)
+    lkernel = kinp['kernel']
+    header = kinp['header']
+    kbins = header.item()['bins']
 
     # Load all necessary arrays
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
@@ -257,7 +264,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, gas_soft=0.00180239
 
         # Get the images
         galimgs, extents = create_img(res, all_gal_poss[id], means[id], dim, gal_ms[id], gal_ages[id], gal_mets[id],
-                                      gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id])
+                                      gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id], lkernel, kbins)
 
         # Loop over dimensions
         for key in galimgs.keys():
@@ -290,8 +297,8 @@ res = csoft
 print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
-reg = '0000'
+reg = '0026'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-img_main(path, snap, reg, res, npart_lim=10**4, dim=0.15)
+img_main(path, snap, reg, res, npart_lim=10**3, dim=0.15)
