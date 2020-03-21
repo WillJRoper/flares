@@ -82,7 +82,7 @@ def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel=0, kbins=0):
 
         Z_los_SD[ii] = np.sum((thisgmass[ok]*thisgZ[ok]/(thisgsml[ok]*thisgsml[ok]))) #*kernel_vals) #in units of Msun/Mpc^2
 
-    Z_los_SD *= (u.solMass/u.Mpc**2).to(u.solMass/u.pc**2).value #in units of Msun/pc^2
+    Z_los_SD *= (u.solMass/u.Mpc**2).to(u.solMass/u.pc**2) #in units of Msun/pc^2
 
     return Z_los_SD
 
