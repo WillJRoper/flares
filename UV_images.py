@@ -323,6 +323,8 @@ csoft = 0.001802390/0.677
 res = csoft
 print(100 / res, 'pixels in', '100 kpc')
 
+npart_lim = 10**4
+
 regions = []
 for reg in range(0, 40):
     if reg < 10:
@@ -350,4 +352,12 @@ for i in range(len(reg_snaps)):
     snap = reg_snaps[i][1]
     path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-    img_main(path, snap, reg, res, npart_lim=10**4, dim=0.15, load=False)
+    files = os.listdir('UVimg_data/')
+    print(files)
+
+    if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
+        load = True
+    else:
+        load = False
+
+    img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.15, load=load)
