@@ -39,7 +39,7 @@ def calc_ages(z, a_born):
     # Calculate the VR
     ages = (t - t_born).to(u.Myr)
 
-    return ages
+    return ages.value
 
 
 # @jit()
@@ -289,8 +289,8 @@ res = csoft
 print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
-reg = '0000'
+reg = '0030'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-img_main(path, snap, reg, res, npart_lim=10**4, dim=0.15)
+img_main(path, snap, reg, res, npart_lim=10**3, dim=0.15)
