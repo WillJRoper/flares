@@ -114,7 +114,8 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         # Compute luminosities
         tauVs_ISM = (10 ** 5.2) * gal_met_surfden
         tauVs_BC = 2.0 * (gal_mets / 0.01)
-        lumins = models.generate_Lnu(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F, fesc=0.0)
+        lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F,
+                                           f='FAKE.TH.NUV', fesc=0.0)
         print(lumins)
         # Compute extent for the 2D square image
         extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
