@@ -108,15 +108,14 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         else:
             k = 0
         dimens = np.array([i, j, k])
-        print(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens)
+
         gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens)
-        print(gal_met_surfden[gal_met_surfden > 0])
 
         # Compute luminosities
         tauVs_ISM = (10 ** 5.2) * gal_met_surfden
         tauVs_BC = 2.0 * (gal_mets / 0.01)
         lumins = models.generate_Lnu(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F, fesc=0.0)
-
+        print(lumins)
         # Compute extent for the 2D square image
         extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
         posrange = ((-dim, dim), (-dim, dim))
