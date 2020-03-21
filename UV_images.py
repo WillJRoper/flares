@@ -107,7 +107,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         else:
             k = 0
         dimens = np.array([i, j, k])
-
+        print(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens)
         gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens)
         print(gal_met_surfden[gal_met_surfden > 0])
 
