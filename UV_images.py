@@ -57,14 +57,14 @@ def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel=0, kbins=0):
         g_sml (1d array): gas particle smoothing length
 
     """
-    n = len(s_cood)
+    n = s_cood.shape[0]
     Z_los_SD = np.zeros(n)
     #Fixing the observer direction as z-axis. Use make_faceon() for changing the
     #particle orientation to face-on
     xdir, ydir, zdir = dimens
     for ii in range(n):
 
-        thisspos = s_cood[ii]
+        thisspos = s_cood[ii, :]
         ok = (g_cood[:,zdir] > thisspos[zdir])
         thisgpos = g_cood[ok]
         thisgsml = g_sml[ok]
@@ -107,7 +107,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         else:
             k = 0
         dimens = np.array([i, j, k])
-
+        print(gal_poss, gas_poss, gas_ms, gas_mets, gas_soft, dimens)
         gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_soft, dimens)
         print(gal_met_surfden[gal_met_surfden > 0])
 
