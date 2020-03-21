@@ -109,6 +109,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         dimens = np.array([i, j, k])
 
         gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_soft, dimens)
+        print(gal_met_surfden[gal_met_surfden > 0])
 
         # Compute luminosities
         tauVs_ISM = (10 ** 5.2) * gal_met_surfden
@@ -127,7 +128,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
     return galimgs, extents
 
 
-def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.5, gas_soft=0.001802390/0.677):
+def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, gas_soft=0.001802390/0.677):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -288,4 +289,4 @@ reg = '0000'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-img_main(path, snap, reg, res, npart_lim=10**4, lim=0.15)
+img_main(path, snap, reg, res, npart_lim=10**4, dim=0.15)
