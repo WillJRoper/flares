@@ -116,7 +116,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         tauVs_BC = 2.0 * (gal_mets / 0.01)
         lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F,
                                            f='FAKE.TH.NUV', fesc=0.0)
-        print(lumins)
+
         # Compute extent for the 2D square image
         extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
         posrange = ((-dim, dim), (-dim, dim))
@@ -276,7 +276,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, gas_soft=0.00180239
             ax1.set_ylabel(axlabels[int(j)])
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
-                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + 'png',
+                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
                         bbox_inches='tight', dpi=300)
 
             plt.close(fig)
