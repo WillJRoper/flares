@@ -43,7 +43,7 @@ def calc_ages(z, a_born):
     return ages.value
 
 
-@njit(parallel=True)
+@njit(nogil=True)
 def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel, kbins, conv):
 
     """
