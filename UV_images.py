@@ -122,6 +122,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         posrange = ((-dim, dim), (-dim, dim))
         print(extents, lumins.max(), mean)
         print((gal_poss[:, i] - mean[i]).max(), (gal_poss[:, i] - mean[i]).min(), (gal_poss[:, j] - mean[j]).max(), (gal_poss[:, j] - mean[j]).min())
+        print(gal_poss[:, i].max(), gal_poss[:, i].min(), gal_poss[:, j].max(), gal_poss[:, j].min())
         # Create images
         galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i] - mean[i],
                                                                         gal_poss[:, j] - mean[j],
