@@ -386,7 +386,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax4.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                             labeltop=False, labelright=False, labelbottom=False)
             ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                            labeltop=False, labelright=False,® labelbottom=False)
+                            labeltop=False, labelright=False, labelbottom=False)
 
             # # Label axes
             # ax1.set_xlabel(axlabels[int(i)])
