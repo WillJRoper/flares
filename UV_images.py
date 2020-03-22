@@ -16,6 +16,8 @@ from SynthObs.SED import models
 matplotlib.use('Agg')
 
 
+plt.rc_context({'axes.edgecolor':'w', 'xtick.color':'w', 'ytick.color':'w', 'figure.facecolor':'white'})
+
 # Define SED model
 model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
                             path_to_SPS_grid = FLARE.FLARE_dir + '/data/SPS/nebular/3.0/') # DEFINE SED GRID -
@@ -379,13 +381,13 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                             labeltop=False, labelright=False, labelbottom=False)
 
-            # Label axes
-            ax1.set_xlabel(axlabels[int(i)])
-            ax2.set_xlabel(axlabels[int(i)])
-            ax3.set_xlabel(axlabels[int(i)])
-            ax4.set_xlabel(axlabels[int(i)])
-            ax5.set_xlabel(axlabels[int(i)])
-            ax1.set_ylabel(axlabels[int(j)])
+            # # Label axes
+            # ax1.set_xlabel(axlabels[int(i)])
+            # ax2.set_xlabel(axlabels[int(i)])
+            # ax3.set_xlabel(axlabels[int(i)])
+            # ax4.set_xlabel(axlabels[int(i)])
+            # ax5.set_xlabel(axlabels[int(i)])
+            # ax1.set_ylabel(axlabels[int(j)])
 
             # Add colorbars
             cax1 = inset_axes(ax1, width="40%", height="5%", loc='upper left')
@@ -403,18 +405,23 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=3, color='w')
             cbar1.ax.xaxis.set_ticks_position('top')
             cbar1.ax.xaxis.set_label_position('top')
+            cbar1.ax.tick_params(axis='x', labelsize=2, color='w')
             cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=3, color='w')
             cbar2.ax.xaxis.set_ticks_position('top')
             cbar2.ax.xaxis.set_label_position('top')
+            cbar2.ax.tick_params(axis='x', labelsize=2, color='w')
             cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3, color='w')
             cbar3.ax.xaxis.set_ticks_position('top')
             cbar3.ax.xaxis.set_label_position('top')
+            cbar3.ax.tick_params(axis='x', labelsize=2, color='w')
             cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3, color='w')
             cbar4.ax.xaxis.set_ticks_position('top')
             cbar4.ax.xaxis.set_label_position('top')
+            cbar4.ax.tick_params(axis='x', labelsize=2, color='w')
             cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3, color='w')
             cbar5.ax.xaxis.set_ticks_position('top')
             cbar5.ax.xaxis.set_label_position('top')
+            cbar5.ax.tick_params(axis='x', labelsize=2, color='w')
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
