@@ -7,6 +7,7 @@ import astropy.units as u
 import eagle_IO as E
 from astropy.cosmology import Planck13 as cosmo
 from numba import njit
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import pickle
 import os
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
@@ -315,23 +316,14 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             i, j = key.split('-')
 
             # Set up figure
-            widths = [1, 1, 1, 1, 1]
-            heights = [5, 100]
             fig = plt.figure()
-            gs = gridspec.GridSpec(2, 5, width_ratios=widths, height_ratios=heights)
+            gs = gridspec.GridSpec(1, 5)
             gs.update(wspace=0.0, hspace=0.0)
-            gsc = gridspec.GridSpec(2, 5, width_ratios=widths, height_ratios=heights)
-            gsc.update(wspace=0.1, hspace=0.0)
-            cax1 = fig.add_subplot(gsc[0, 0])
-            cax2 = fig.add_subplot(gsc[0, 1])
-            cax3 = fig.add_subplot(gsc[0, 2])
-            cax4 = fig.add_subplot(gsc[0, 3])
-            cax5 = fig.add_subplot(gsc[0, 4])
-            ax1 = fig.add_subplot(gs[1, 0])
-            ax2 = fig.add_subplot(gs[1, 1])
-            ax3 = fig.add_subplot(gs[1, 2])
-            ax4 = fig.add_subplot(gs[1, 3])
-            ax5 = fig.add_subplot(gs[1, 4])
+            ax1 = fig.add_subplot(gs[0, 0])
+            ax2 = fig.add_subplot(gs[0, 1])
+            ax3 = fig.add_subplot(gs[0, 2])
+            ax4 = fig.add_subplot(gs[0, 3])
+            ax5 = fig.add_subplot(gs[0, 4])
 
             # Draw images
             im1 = ax1.imshow(np.arcsinh(galimgs[key]['mass']), extent=extents[key], cmap='Greys_r')
@@ -391,6 +383,16 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax1.set_ylabel(axlabels[int(j)])
 
             # Add colorbars
+            divider1 = make_axes_locatable(ax1)
+            cax1 = divider1.append_axes("top", size="5%", pad=0.05)
+            divider2 = make_axes_locatable(ax2)
+            cax2 = divider2.append_axes("top", size="5%", pad=0.05)
+            divider3 = make_axes_locatable(ax3)
+            cax3 = divider3.append_axes("top", size="5%", pad=0.05)
+            divider4 = make_axes_locatable(ax4)
+            cax4 = divider4.append_axes("top", size="5%", pad=0.05)
+            divider5 = make_axes_locatable(ax5)
+            cax5 = divider5.append_axes("top", size="5%", pad=0.05)
             cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal", pad=0.01)
             cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal", pad=0.01)
             cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal", pad=0.01)
