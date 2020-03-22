@@ -378,7 +378,11 @@ for i in range(len(reg_snaps)):
         load = False
 
     try:
-        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.5, load=load,
+        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.15, load=load,
                  conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2), f=f)
     except ValueError:
+        continue
+    except KeyError:
+        continue
+    except OSError:
         continue
