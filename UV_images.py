@@ -277,7 +277,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             gas_ms[id] = gas_masses[list(ghalo_id_part_inds[id])]
             gas_smls[id] = gas_smooth_ls[list(ghalo_id_part_inds[id])]
 
-            means[id] = all_gal_poss[id].mean()
+            means[id] = all_gal_poss[id].mean(axis=0)
 
         save_dict = {'gal_ages': gal_ages, 'gal_mets': gal_mets, 'gal_ms': gal_ms, 'gas_mets': gas_mets,
                      'gas_ms': gas_ms, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
