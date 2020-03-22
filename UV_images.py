@@ -397,38 +397,33 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cax3 = inset_axes(ax3, width="50%", height="5%", loc='lower left')
             cax4 = inset_axes(ax4, width="50%", height="5%", loc='lower left')
             cax5 = inset_axes(ax5, width="50%", height="5%", loc='lower left')
-            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal",
-                                 ticks=[0, ls[key]['mass'].max()])
-            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal",
-                                 ticks=[0, ls[key]['metals'].max()])
-            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal",
-                                 ticks=[0, ls[key]['FAKE.TH.V'].max()])
-            cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal",
-                                 ticks=[0, ls[key]['FAKE.TH.NUV'].max()])
-            cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal",
-                                 ticks=[0, ls[key]['FAKE.TH.FUV'].max()])
+            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
+            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
+            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
+            cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal")
+            cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
 
             # Label colorbars
             cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=2, color='w')
             cbar1.ax.xaxis.set_ticks_position('top')
-            cbar1.ax.xaxis.set_label_position('top')
-            cbar1.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=1, color='w', labelcolor='w')
+            # cbar1.ax.xaxis.set_label_position('top')
+            cbar1.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=2, color='w', labelcolor='w')
             cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=2, color='w')
             cbar2.ax.xaxis.set_ticks_position('top')
             cbar2.ax.xaxis.set_label_position('top')
-            cbar2.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=1, color='w', labelcolor='w')
+            cbar2.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=2, color='w', labelcolor='w')
             cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w')
             cbar3.ax.xaxis.set_ticks_position('top')
             cbar3.ax.xaxis.set_label_position('top')
-            cbar3.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=1, color='w', labelcolor='w')
+            cbar3.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=2, color='w', labelcolor='w')
             cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w')
             cbar4.ax.xaxis.set_ticks_position('top')
             cbar4.ax.xaxis.set_label_position('top')
-            cbar4.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=1, color='w', labelcolor='w')
+            cbar4.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=2, color='w', labelcolor='w')
             cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w')
             cbar5.ax.xaxis.set_ticks_position('top')
             cbar5.ax.xaxis.set_label_position('top')
-            cbar5.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=1, color='w', labelcolor='w')
+            cbar5.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
