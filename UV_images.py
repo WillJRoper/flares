@@ -317,7 +317,8 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax1.set_ylabel(axlabels[int(j)])
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
-                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
+                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key +
+                        '_' + f.split('.')[0] + f.split('.')[1] + f.split('.')[2] + '.png',
                         bbox_inches='tight', dpi=300)
 
             plt.close(fig)
@@ -333,9 +334,9 @@ print(100 / res, 'pixels in', '100 kpc')
 npart_lim = 10**4
 
 # f = 'FAKE.TH.V'
-f = 'FAKE.TH.FUV'
+# f = 'FAKE.TH.FUV'
 # f = 'FAKE.TH.NUV'
-# f = None
+f = None
 
 regions = []
 for reg in range(0, 40):
