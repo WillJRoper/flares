@@ -120,7 +120,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         # Compute extent for the 2D square image
         extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
         posrange = ((-dim, dim), (-dim, dim))
-        print(extents, lumins.max())
+        print(extents, lumins.max(), mean)
         print((gal_poss[:, i] - mean[i]).max(), (gal_poss[:, i] - mean[i]).min(), (gal_poss[:, j] - mean[j]).max(), (gal_poss[:, j] - mean[j]).min())
         # Create images
         galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i] - mean[i],
@@ -176,7 +176,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
         gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
         gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-        gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', numThreads=8)
+        gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8)
         halo_ids = np.zeros_like(grp_ids, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
