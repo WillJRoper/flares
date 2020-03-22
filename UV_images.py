@@ -408,12 +408,6 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal")
             cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
 
-            cax1.set_facecolor('k', alpha=0.3)
-            cax2.set_facecolor('k', alpha=0.3)
-            cax3.set_facecolor('k', alpha=0.3)
-            cax4.set_facecolor('k', alpha=0.3)
-            cax5.set_facecolor('k', alpha=0.3)
-
             # Label colorbars
             cbar1.ax.set_xlabel(r'$\log_{10}(M_{\star}/M_{\odot})$', fontsize=2, color='w', labelpad=1.0)
             cbar1.ax.xaxis.set_label_position('top')
@@ -426,19 +420,19 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar2.outline.set_edgecolor('w')
             cbar2.outline.set_linewidth(0.05)
             cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar3.ax.set_xlabel(r'$\log_{10}(L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}])$', fontsize=2, color='w',
+            cbar3.ax.set_xlabel(r'$\log_{10}(L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}/\mathrm{Hz}])$', fontsize=2, color='w',
                                 labelpad=1.0)
             cbar3.ax.xaxis.set_label_position('top')
             cbar3.outline.set_edgecolor('w')
             cbar3.outline.set_linewidth(0.05)
             cbar3.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar4.ax.set_xlabel(r'$\log_{10}(L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}])$', fontsize=2, color='w',
+            cbar4.ax.set_xlabel(r'$\log_{10}(L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}/\mathrm{Hz}])$', fontsize=2, color='w',
                                 labelpad=1.0)
             cbar4.ax.xaxis.set_label_position('top')
             cbar4.outline.set_edgecolor('w')
             cbar4.outline.set_linewidth(0.05)
             cbar4.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar5.ax.set_xlabel(r'$\log_{10}(L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}])$', fontsize=2, color='w',
+            cbar5.ax.set_xlabel(r'$\log_{10}(L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}/\mathrm{Hz}])$', fontsize=2, color='w',
                                 labelpad=1.0)
             cbar5.ax.xaxis.set_label_position('top')
             cbar5.outline.set_edgecolor('w')
@@ -497,7 +491,7 @@ for i in range(len(reg_snaps)):
 
     try:
         img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.3, load=load,
-                 conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2), scale=0.05)
+                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.05)
     except ValueError:
         continue
     except KeyError:
