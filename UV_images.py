@@ -392,21 +392,21 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             # ax1.set_ylabel(axlabels[int(j)])
 
             # Add colorbars
-            cax1 = inset_axes(ax1, width="40%", height="5%", loc='upper left')
-            cax2 = inset_axes(ax2, width="40%", height="5%", loc='upper left')
-            cax3 = inset_axes(ax3, width="40%", height="5%", loc='upper left')
-            cax4 = inset_axes(ax4, width="40%", height="5%", loc='upper left')
-            cax5 = inset_axes(ax5, width="40%", height="5%", loc='upper left')
+            cax1 = inset_axes(ax1, width="50%", height="5%", loc='lower left')
+            cax2 = inset_axes(ax2, width="50%", height="5%", loc='lower left')
+            cax3 = inset_axes(ax3, width="50%", height="5%", loc='lower left')
+            cax4 = inset_axes(ax4, width="50%", height="5%", loc='lower left')
+            cax5 = inset_axes(ax5, width="50%", height="5%", loc='lower left')
             cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal",
-                                 ticks=[ls[key]['mass'].min(), ls[key]['mass'].max()])
+                                 ticks=[0, ls[key]['mass'].max()])
             cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal",
-                                 ticks=[ls[key]['metals'].min(), ls[key]['metals'].max()])
+                                 ticks=[0, ls[key]['metals'].max()])
             cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal",
-                                 ticks=[ls[key]['FAKE.TH.V'].min(), ls[key]['FAKE.TH.V'].max()])
+                                 ticks=[0, ls[key]['FAKE.TH.V'].max()])
             cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal",
-                                 ticks=[ls[key]['FAKE.TH.NUV'].min(), ls[key]['FAKE.TH.NUV'].max()])
+                                 ticks=[0, ls[key]['FAKE.TH.NUV'].max()])
             cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal",
-                                 ticks=[ls[key]['FAKE.TH.FUV'].min(), ls[key]['FAKE.TH.FUV'].max()])
+                                 ticks=[0, ls[key]['FAKE.TH.FUV'].max()])
 
             # Label colorbars
             cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=2, color='w')
