@@ -120,7 +120,8 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         # Compute extent for the 2D square image
         extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
         posrange = ((-dim, dim), (-dim, dim))
-
+        print(extents, lumins.max())
+        print((gal_poss[:, i] - mean[i]).max(), (gal_poss[:, i] - mean[i]).min(), (gal_poss[:, j] - mean[j]).max(), (gal_poss[:, j] - mean[j]).min())
         # Create images
         galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i] - mean[i],
                                                                         gal_poss[:, j] - mean[j],
