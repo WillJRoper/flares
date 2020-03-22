@@ -5,7 +5,7 @@ import matplotlib
 import astropy.units as u
 import eagle_IO as E
 from astropy.cosmology import Planck13 as cosmo
-from numba import jit
+from numba import njit
 import pickle
 import os
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
@@ -43,7 +43,7 @@ def calc_ages(z, a_born):
     return ages.value
 
 
-# @jit()
+@njit(nogil=True, parallel=True)
 def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel, kbins):
 
     """
