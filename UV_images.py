@@ -285,7 +285,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True):
     axlabels = [r'$x$', r'$y$', r'$z$']
 
     # Create images for these galaxies
-    for id in ids:
+    for id in gal_ages.keys():
 
         print('Computing images for', id)
 
