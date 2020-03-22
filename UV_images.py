@@ -7,7 +7,7 @@ import astropy.units as u
 import eagle_IO as E
 from astropy.cosmology import Planck13 as cosmo
 from numba import njit
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import pickle
 import os
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
@@ -344,11 +344,16 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax5.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
 
             # Label scale
-            ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
-            ax2.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
-            ax3.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
-            ax4.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
-            ax5.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
+            ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+                     fontsize=2, color='w')
+            ax2.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+                     fontsize=2, color='w')
+            ax3.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+                     fontsize=2, color='w')
+            ax4.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+                     fontsize=2, color='w')
+            ax5.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+                     fontsize=2, color='w')
 
             # # Draw text
             # ax1.text(0.8, 0.9, 'Mass', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -383,38 +388,23 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax1.set_ylabel(axlabels[int(j)])
 
             # Add colorbars
-            divider1 = make_axes_locatable(ax1)
-            cax1 = divider1.append_axes("top", size="5%", pad=0.05)
-            divider2 = make_axes_locatable(ax2)
-            cax2 = divider2.append_axes("top", size="5%", pad=0.05)
-            divider3 = make_axes_locatable(ax3)
-            cax3 = divider3.append_axes("top", size="5%", pad=0.05)
-            divider4 = make_axes_locatable(ax4)
-            cax4 = divider4.append_axes("top", size="5%", pad=0.05)
-            divider5 = make_axes_locatable(ax5)
-            cax5 = divider5.append_axes("top", size="5%", pad=0.05)
-            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal", pad=0.01)
-            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal", pad=0.01)
-            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal", pad=0.01)
-            cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal", pad=0.01)
-            cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal", pad=0.01)
+            cax1 = inset_axes(ax1, width="40%", height="5%", loc='upper left')
+            cax2 = inset_axes(ax2, width="40%", height="5%", loc='upper left')
+            cax3 = inset_axes(ax3, width="40%", height="5%", loc='upper left')
+            cax4 = inset_axes(ax4, width="40%", height="5%", loc='upper left')
+            cax5 = inset_axes(ax5, width="40%", height="5%", loc='upper left')
+            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
+            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
+            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
+            cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal")
+            cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=6)
-            cbar1.ax.xaxis.set_ticks_position('top')
-            cbar1.ax.xaxis.set_label_position('top')
-            cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=6)
-            cbar2.ax.xaxis.set_ticks_position('top')
-            cbar2.ax.xaxis.set_label_position('top')
-            cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=6)
-            cbar3.ax.xaxis.set_ticks_position('top')
-            cbar3.ax.xaxis.set_label_position('top')
-            cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=6)
-            cbar4.ax.xaxis.set_ticks_position('top')
-            cbar4.ax.xaxis.set_label_position('top')
-            cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=6)
-            cbar5.ax.xaxis.set_ticks_position('top')
-            cbar5.ax.xaxis.set_label_position('top')
+            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=3)
+            cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=3)
+            cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3)
+            cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3)
+            cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3)
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
