@@ -180,7 +180,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True):
         halo_ids = np.zeros_like(grp_ids, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
-
+        print(gal_cops.shape)
         # Get centre of potentials
         gal_cop = {}
         for cop, g, sg in zip(gal_cops, gal_gids, gal_ids):
