@@ -91,11 +91,6 @@ def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel, kbins):
 def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
                lkernel, kbins):
 
-    # Centre galaxy on mean
-    if gal_poss.shape[0] != 0:
-        gal_poss -= mean
-        gas_poss -= mean
-
     # Set up dictionaries to store images
     galimgs = {}
     extents = {}
@@ -124,7 +119,8 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         posrange = ((-dim, dim), (-dim, dim))
 
         # Create images
-        galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i], gal_poss[:, j],
+        galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i] - mean[i],
+                                                                        gal_poss[:, j] - mean[j],
                                                                         bins=int(dim / res), weights=lumins,
                                                                         range=posrange)
 
@@ -180,7 +176,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True):
         halo_ids = np.zeros_like(grp_ids, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
-        print(gal_cops.shape)
+
         # Get centre of potentials
         gal_cop = {}
         for cop, g, sg in zip(gal_cops, gal_gids, gal_ids):
