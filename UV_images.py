@@ -89,7 +89,7 @@ def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel, kbins, conv):
 
 
 def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
-               lkernel, kbins, conv):
+               lkernel, kbins, conv, f):
 
     # Set up dictionaries to store images
     galimgs = {}
@@ -109,10 +109,13 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
 
         # Compute luminosities
-        tauVs_ISM = (10 ** 5.2) * gal_met_surfden
-        tauVs_BC = 2.0 * (gal_mets / 0.01)
-        lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F,
-                                           f='FAKE.TH.NUV', fesc=0.0)
+        if f is None:
+            lumins = np.ones_like(gal_ms)
+        else:
+            tauVs_ISM = (10 ** 5.2) * gal_met_surfden
+            tauVs_BC = 2.0 * (gal_mets / 0.01)
+            lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F,
+                                               f=f, fesc=0.0)
 
         # Compute extent for the 2D square image
         extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
@@ -127,7 +130,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
     return galimgs, extents
 
 
-def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1):
+def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, f=None):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -295,7 +298,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1):
 
         # Get the images
         galimgs, extents = create_img(res, all_gal_poss[id], means[id], dim, gal_ms[id], gal_ages[id], gal_mets[id],
-                                      gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv)
+                                      gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, f)
 
         # Loop over dimensions
         for key in galimgs.keys():
@@ -328,6 +331,11 @@ res = csoft
 print(100 / res, 'pixels in', '100 kpc')
 
 npart_lim = 10**4
+
+# f = 'FAKE.TH.V'
+f = 'FAKE.TH.FUV'
+# f = 'FAKE.TH.NUV'
+# f = None
 
 regions = []
 for reg in range(0, 40):
@@ -365,6 +373,6 @@ for i in range(len(reg_snaps)):
 
     try:
         img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.5, load=load,
-                 conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2))
+                 conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2), f=f)
     except ValueError:
         continue
