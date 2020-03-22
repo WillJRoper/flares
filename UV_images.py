@@ -342,21 +342,21 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 
             # Draw scale line
             right_side = dim - (dim * 0.1)
-            vert = - dim + (dim * 0.1)
+            vert = dim - (dim * 0.1)
             lab_vert = vert + (dim * 0.1) / 2
             lab_horz = right_side - scale / 2
-            ax1.plot([right_side - scale, right_side], [vert, vert], color='w')
-            ax2.plot([right_side - scale, right_side], [vert, vert], color='w')
-            ax3.plot([right_side - scale, right_side], [vert, vert], color='w')
-            ax4.plot([right_side - scale, right_side], [vert, vert], color='w')
-            ax5.plot([right_side - scale, right_side], [vert, vert], color='w')
+            ax1.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
+            ax2.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
+            ax3.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
+            ax4.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
+            ax5.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
 
             # Label scale
-            ax1.text(lab_horz, lab_vert, str(scale*1e3) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
-            ax2.text(lab_horz, lab_vert, str(scale*1e3) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
-            ax3.text(lab_horz, lab_vert, str(scale*1e3) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
-            ax4.text(lab_horz, lab_vert, str(scale*1e3) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
-            ax5.text(lab_horz, lab_vert, str(scale*1e3) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
+            ax1.text(lab_horz, lab_vert, str(scale*1e3) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
+            ax2.text(lab_horz, lab_vert, str(scale*1e3) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
+            ax3.text(lab_horz, lab_vert, str(scale*1e3) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
+            ax4.text(lab_horz, lab_vert, str(scale*1e3) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
+            ax5.text(lab_horz, lab_vert, str(scale*1e3) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
 
             # # Draw text
             # ax1.text(0.8, 0.9, 'Mass', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -391,11 +391,11 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax1.set_ylabel(axlabels[int(j)])
 
             # Add colorbars
-            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
-            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
-            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
-            cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal")
-            cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
+            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal", pad=0.01)
+            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal", pad=0.01)
+            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal", pad=0.01)
+            cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal", pad=0.01)
+            cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal", pad=0.01)
 
             # Label colorbars
             cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$')
