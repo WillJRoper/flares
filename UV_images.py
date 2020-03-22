@@ -404,7 +404,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=2, color='w', pad=0.02)
+            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=2, color='w', labelpad=0.02)
             # cbar1.ax.xaxis.set_ticks_position('top')
             cbar1.ax.xaxis.set_label_position('top')
             cbar1.outline.set_color('w')
