@@ -324,12 +324,12 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cax2 = fig.add_subplot(gs[0, 1])
             cax3 = fig.add_subplot(gs[0, 2])
             cax4 = fig.add_subplot(gs[0, 3])
-            cax5 = fig.add_subplot(gs[0, 5])
+            cax5 = fig.add_subplot(gs[0, 4])
             ax1 = fig.add_subplot(gs[1, 0])
             ax2 = fig.add_subplot(gs[1, 1])
             ax3 = fig.add_subplot(gs[1, 2])
             ax4 = fig.add_subplot(gs[1, 3])
-            ax5 = fig.add_subplot(gs[1, 5])
+            ax5 = fig.add_subplot(gs[1, 4])
 
             # Draw images
             im1 = ax1.imshow(np.arcsinh(galimgs[key]['mass']), extent=extents[key], cmap='Greys_r')
