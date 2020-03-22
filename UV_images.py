@@ -414,7 +414,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar1.outline.set_edgecolor('w')
             cbar1.outline.set_linewidth(0.05)
             cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar2.ax.set_xlabel(r'$\log_{10}(Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}])$', fontsize=2, color='w',
+            cbar2.ax.set_xlabel(r'$\log_{10}(Z_{\mathrm{los}}/[\mathrm{g}/\mathrm{ccm}^{2}])$', fontsize=2, color='w',
                                 labelpad=1.0)
             cbar2.ax.xaxis.set_label_position('top')
             cbar2.outline.set_edgecolor('w')
@@ -490,7 +490,7 @@ for i in range(len(reg_snaps)):
         load = False
 
     try:
-        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.3, load=load,
+        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.25, load=load,
                  conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.05)
     except ValueError:
         continue
