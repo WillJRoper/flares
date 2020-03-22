@@ -316,7 +316,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             i, j = key.split('-')
 
             # Set up figure
-            fig = plt.figure()
+            fig = plt.figure(figsize=(5, 22))
             gs = gridspec.GridSpec(1, 5)
             gs.update(wspace=0.0, hspace=0.0)
             ax1 = fig.add_subplot(gs[0, 0])
@@ -334,7 +334,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 
             # Draw scale line
             right_side = dim - (dim * 0.1)
-            vert = dim - (dim * 0.1)
+            vert = dim - (dim * 0.15)
             lab_vert = vert + (dim * 0.1) / 2
             lab_horz = right_side - scale / 2
             ax1.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
@@ -344,11 +344,11 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax5.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
 
             # Label scale
-            ax1.text(lab_horz, lab_vert, str(scale*1e3) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
-            ax2.text(lab_horz, lab_vert, str(scale*1e3) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
-            ax3.text(lab_horz, lab_vert, str(scale*1e3) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
-            ax4.text(lab_horz, lab_vert, str(scale*1e3) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
-            ax5.text(lab_horz, lab_vert, str(scale*1e3) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
+            ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
+            ax2.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
+            ax3.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
+            ax4.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
+            ax5.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center', fontsize=2, color='w')
 
             # # Draw text
             # ax1.text(0.8, 0.9, 'Mass', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -400,19 +400,19 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal", pad=0.01)
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=8)
+            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=6)
             cbar1.ax.xaxis.set_ticks_position('top')
             cbar1.ax.xaxis.set_label_position('top')
-            cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=8)
+            cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=6)
             cbar2.ax.xaxis.set_ticks_position('top')
             cbar2.ax.xaxis.set_label_position('top')
-            cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=8)
+            cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=6)
             cbar3.ax.xaxis.set_ticks_position('top')
             cbar3.ax.xaxis.set_label_position('top')
-            cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=8)
+            cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=6)
             cbar4.ax.xaxis.set_ticks_position('top')
             cbar4.ax.xaxis.set_label_position('top')
-            cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=8)
+            cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=6)
             cbar5.ax.xaxis.set_ticks_position('top')
             cbar5.ax.xaxis.set_label_position('top')
 
