@@ -174,9 +174,17 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True):
         part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
         group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+        gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+        gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', numThreads=8)
         halo_ids = np.zeros_like(grp_ids, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+
+        # Get centre of potentials
+        gal_cop = {}
+        for cop, g, sg in zip(gal_cops, gal_gids, gal_ids):
+            gal_cop[float(str(g) + '.' + str(sg + 1))] = cop
 
         # Translate ID into indices
         ind_to_pid = {}
@@ -270,7 +278,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True):
             gas_ms[id] = gas_masses[list(ghalo_id_part_inds[id])]
             gas_smls[id] = gas_smooth_ls[list(ghalo_id_part_inds[id])]
 
-            means[id] = np.median(all_gal_poss[id], axis=0)
+            means[id] = gal_cop[id]
 
         save_dict = {'gal_ages': gal_ages, 'gal_mets': gal_mets, 'gal_ms': gal_ms, 'gas_mets': gas_mets,
                      'gas_ms': gas_ms, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
@@ -360,4 +368,4 @@ for i in range(len(reg_snaps)):
     else:
         load = False
 
-    img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.15, load=load)
+    img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.5, load=load)
