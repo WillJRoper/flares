@@ -412,23 +412,23 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=2, color='w')
             cbar1.ax.xaxis.set_ticks_position('top')
             cbar1.ax.xaxis.set_label_position('top')
-            cbar1.ax.tick_params(axis='x', labelsize=1, color='w')
+            cbar1.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=1, color='w', labelcolor='w')
             cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=2, color='w')
             cbar2.ax.xaxis.set_ticks_position('top')
             cbar2.ax.xaxis.set_label_position('top')
-            cbar2.ax.tick_params(axis='x', labelsize=1, color='w')
+            cbar2.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=1, color='w', labelcolor='w')
             cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w')
             cbar3.ax.xaxis.set_ticks_position('top')
             cbar3.ax.xaxis.set_label_position('top')
-            cbar3.ax.tick_params(axis='x', labelsize=1, color='w')
+            cbar3.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=1, color='w', labelcolor='w')
             cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w')
             cbar4.ax.xaxis.set_ticks_position('top')
             cbar4.ax.xaxis.set_label_position('top')
-            cbar4.ax.tick_params(axis='x', labelsize=1, color='w')
+            cbar4.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=1, color='w', labelcolor='w')
             cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w')
             cbar5.ax.xaxis.set_ticks_position('top')
             cbar5.ax.xaxis.set_label_position('top')
-            cbar5.ax.tick_params(axis='x', labelsize=1, color='w')
+            cbar5.ax.tick_params(axis='x', length=2, width=1, pad=0.01, labelsize=1, color='w', labelcolor='w')
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
@@ -482,7 +482,7 @@ for i in range(len(reg_snaps)):
         continue
 
     try:
-        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.15, load=load,
+        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.2, load=load,
                  conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2), scale=0.05)
     except ValueError:
         continue
