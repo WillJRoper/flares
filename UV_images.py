@@ -316,7 +316,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 
             # Set up figure
             widths = [1, 1, 1, 1, 1]
-            heights = [10, 1]
+            heights = [5, 100]
             fig = plt.figure()
             gs = gridspec.GridSpec(2, 5, width_ratios=widths, height_ratios=heights)
             gs.update(wspace=0.0, hspace=0.0)
@@ -352,11 +352,11 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax5.plot([right_side - scale, right_side], [vert, vert], color='w')
 
             # Label scale
-            ax1.text(lab_horz, lab_vert, str(scale) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
-            ax2.text(lab_horz, lab_vert, str(scale) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
-            ax3.text(lab_horz, lab_vert, str(scale) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
-            ax4.text(lab_horz, lab_vert, str(scale) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
-            ax5.text(lab_horz, lab_vert, str(scale) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
+            ax1.text(lab_horz, lab_vert, str(scale*1e3) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
+            ax2.text(lab_horz, lab_vert, str(scale*1e3) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
+            ax3.text(lab_horz, lab_vert, str(scale*1e3) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
+            ax4.text(lab_horz, lab_vert, str(scale*1e3) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
+            ax5.text(lab_horz, lab_vert, str(scale*1e3) + ' kpc', horizontalalignment='center', fontsize=4, color='w')
 
             # # Draw text
             # ax1.text(0.8, 0.9, 'Mass', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
