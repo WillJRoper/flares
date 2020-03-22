@@ -346,11 +346,11 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             vert = dim - (dim * 0.15)
             lab_vert = vert + (dim * 0.1) * 5 / 8
             lab_horz = right_side - scale / 2
-            ax1.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
-            ax2.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
-            ax3.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
-            ax4.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
-            ax5.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
+            ax1.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+            ax2.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+            ax3.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+            ax4.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+            ax5.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
 
             # Label scale
             ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
@@ -407,6 +407,12 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
             cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal")
             cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
+
+            cax1.set_facecolor('k', alpha=0.3)
+            cax2.set_facecolor('k', alpha=0.3)
+            cax3.set_facecolor('k', alpha=0.3)
+            cax4.set_facecolor('k', alpha=0.3)
+            cax5.set_facecolor('k', alpha=0.3)
 
             # Label colorbars
             cbar1.ax.set_xlabel(r'$\log_{10}(M_{\star}/M_{\odot})$', fontsize=2, color='w', labelpad=1.0)
@@ -490,7 +496,7 @@ for i in range(len(reg_snaps)):
         load = False
 
     try:
-        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.2, load=load,
+        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.3, load=load,
                  conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2), scale=0.05)
     except ValueError:
         continue
