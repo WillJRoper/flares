@@ -1,6 +1,7 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import matplotlib
 import astropy.units as u
 import eagle_IO as E
@@ -110,13 +111,15 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
 
         galimgs[str(i) + '-' + str(j)] = {}
 
-        for f in ['mass', 'FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV']:
+        for f in ['mass', 'FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV', 'metals']:
 
             print((i, j), f)
 
             # Compute luminosities
-            if f is 'mass':
-                lumins = np.ones_like(gal_ms)
+            if f == 'mass':
+                lumins = gal_ms
+            elif f == 'metals':
+                lumins = gal_met_surfden
             else:
                 tauVs_ISM = (10 ** 5.2) * gal_met_surfden
                 tauVs_BC = 2.0 * (gal_mets / 0.01)
@@ -136,7 +139,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
     return galimgs, extents
 
 
-def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1):
+def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, scale=0.01):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -312,34 +315,102 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1):
             i, j = key.split('-')
 
             # Set up figure
+            widths = [1, 1, 1, 1, 1]
+            heights = [1, 10]
             fig = plt.figure()
-            ax1 = fig.add_subplot(141)
-            ax2 = fig.add_subplot(142)
-            ax3 = fig.add_subplot(143)
-            ax4 = fig.add_subplot(144)
+            gs = gridspec.GridSpec(2, 5, width_ratios=widths, height_ratios=heights)
+            gs.update(wspace=0.0, hspace=0.0)
+            cax1 = fig.add_subplot(gs[0, 0])
+            cax2 = fig.add_subplot(gs[0, 1])
+            cax3 = fig.add_subplot(gs[0, 2])
+            cax4 = fig.add_subplot(gs[0, 3])
+            cax5 = fig.add_subplot(gs[0, 5])
+            ax1 = fig.add_subplot(gs[1, 0])
+            ax2 = fig.add_subplot(gs[1, 1])
+            ax3 = fig.add_subplot(gs[1, 2])
+            ax4 = fig.add_subplot(gs[1, 3])
+            ax5 = fig.add_subplot(gs[1, 5])
 
             # Draw images
-            ax1.imshow(np.arcsinh(galimgs[key]['mass']), extent=extents[key], cmap='Greys')
-            ax2.imshow(np.arcsinh(galimgs[key]['FAKE.TH.V']), extent=extents[key], cmap='Greys')
-            ax3.imshow(np.arcsinh(galimgs[key]['FAKE.TH.NUV']), extent=extents[key], cmap='Greys')
-            ax4.imshow(np.arcsinh(galimgs[key]['FAKE.TH.FUV']), extent=extents[key], cmap='Greys')
+            im1 = ax1.imshow(np.arcsinh(galimgs[key]['mass']), extent=extents[key], cmap='Greys_r')
+            im2 = ax2.imshow(np.arcsinh(galimgs[key]['metals']), extent=extents[key], cmap='Greys_r')
+            im3 = ax3.imshow(np.arcsinh(galimgs[key]['FAKE.TH.V']), extent=extents[key], cmap='Greys_r')
+            im4 = ax4.imshow(np.arcsinh(galimgs[key]['FAKE.TH.NUV']), extent=extents[key], cmap='Greys_r')
+            im5 = ax5.imshow(np.arcsinh(galimgs[key]['FAKE.TH.FUV']), extent=extents[key], cmap='Greys_r')
 
-            # Draw text
-            ax1.text(0.8, 0.9, 'Mass', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                    transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
-            ax2.text(0.8, 0.9, 'FAKE.TH.V', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                    transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
-            ax3.text(0.8, 0.9, 'FAKE.TH.NUV', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                    transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
-            ax4.text(0.8, 0.9, 'FAKE.TH.FUV', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                    transform=ax4.transAxes, horizontalalignment='right', fontsize=8)
+            # Draw scale line
+            right_side = dim - (dim * 0.1)
+            vert = - dim + (dim * 0.1)
+            lab_vert = vert + (dim * 0.1) / 2
+            lab_horz = right_side - scale / 2
+            ax1.plot([right_side - scale, right_side], [vert, vert], color='w')
+            ax2.plot([right_side - scale, right_side], [vert, vert], color='w')
+            ax3.plot([right_side - scale, right_side], [vert, vert], color='w')
+            ax4.plot([right_side - scale, right_side], [vert, vert], color='w')
+            ax5.plot([right_side - scale, right_side], [vert, vert], color='w')
+
+            # Label scale
+            ax1.text(lab_horz, lab_vert, str(scale) + ' kpc', horizontalalignment='center', fontsize=4)
+            ax2.text(lab_horz, lab_vert, str(scale) + ' kpc', horizontalalignment='center', fontsize=4)
+            ax3.text(lab_horz, lab_vert, str(scale) + ' kpc', horizontalalignment='center', fontsize=4)
+            ax4.text(lab_horz, lab_vert, str(scale) + ' kpc', horizontalalignment='center', fontsize=4)
+            ax5.text(lab_horz, lab_vert, str(scale) + ' kpc', horizontalalignment='center', fontsize=4)
+
+            # # Draw text
+            # ax1.text(0.8, 0.9, 'Mass', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            #         transform=ax1.transAxes, horizontalalignment='right', fontsize=4)
+            # ax2.text(0.8, 0.9, 'LOS Metals', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            #         transform=ax2.transAxes, horizontalalignment='right', fontsize=4)
+            # ax3.text(0.8, 0.9, 'FAKE.TH.V', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            #         transform=ax3.transAxes, horizontalalignment='right', fontsize=4)
+            # ax4.text(0.8, 0.9, 'FAKE.TH.NUV', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            #         transform=ax4.transAxes, horizontalalignment='right', fontsize=4)
+            # ax5.text(0.8, 0.9, 'FAKE.TH.FUV', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            #         transform=ax5.transAxes, horizontalalignment='right', fontsize=4)
+
+            # Remove ticks
+            ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax4.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
 
             # Label axes
             ax1.set_xlabel(axlabels[int(i)])
             ax2.set_xlabel(axlabels[int(i)])
             ax3.set_xlabel(axlabels[int(i)])
             ax4.set_xlabel(axlabels[int(i)])
+            ax5.set_xlabel(axlabels[int(i)])
             ax1.set_ylabel(axlabels[int(j)])
+
+            # Add colorbars
+            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
+            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
+            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
+            cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal")
+            cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
+
+            # Label colorbars
+            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$')
+            cbar1.ax.xaxis.set_ticks_position('top')
+            cbar1.ax.xaxis.set_label_position('top')
+            cbar2.ax.set_xlabel(r'$L_{\mathrm{V}/[\mathrm{erg}/\mathrm{s}]$')
+            cbar2.ax.xaxis.set_ticks_position('top')
+            cbar2.ax.xaxis.set_label_position('top')
+            cbar3.ax.set_xlabel(r'$L_{\mathrm{NUV}/[\mathrm{erg}/\mathrm{s}]$')
+            cbar3.ax.xaxis.set_ticks_position('top')
+            cbar3.ax.xaxis.set_label_position('top')
+            cbar4.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$')
+            cbar4.ax.xaxis.set_ticks_position('top')
+            cbar4.ax.xaxis.set_label_position('top')
+            cbar5.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$')
+            cbar5.ax.xaxis.set_ticks_position('top')
+            cbar5.ax.xaxis.set_label_position('top')
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
@@ -389,11 +460,12 @@ for i in range(len(reg_snaps)):
     if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
         load = True
     else:
-        load = False
+        # load = False
+        continue
 
     try:
         img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.15, load=load,
-                 conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2))
+                 conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2), scale=0.05)
     except ValueError:
         continue
     except KeyError:
