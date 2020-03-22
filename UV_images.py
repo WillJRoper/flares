@@ -330,7 +330,7 @@ print(100 / res, 'pixels in', '100 kpc')
 npart_lim = 10**4
 
 regions = []
-for reg in range(0, 39):
+for reg in range(0, 40):
     if reg < 10:
         regions.append('0' + str(reg))
     else:
@@ -364,5 +364,8 @@ for i in range(len(reg_snaps)):
     else:
         load = False
 
-    img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.5, load=load,
-             conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2))
+    try:
+        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.5, load=load,
+                 conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2))
+    except ValueError:
+        continue
