@@ -401,10 +401,20 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 
             # Label colorbars
             cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=3)
+            cbar1.ax.xaxis.set_ticks_position('top')
+            cbar1.ax.xaxis.set_label_position('top')
             cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=3)
+            cbar2.ax.xaxis.set_ticks_position('top')
+            cbar2.ax.xaxis.set_label_position('top')
             cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3)
+            cbar3.ax.xaxis.set_ticks_position('top')
+            cbar3.ax.xaxis.set_label_position('top')
             cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3)
+            cbar4.ax.xaxis.set_ticks_position('top')
+            cbar4.ax.xaxis.set_label_position('top')
             cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3)
+            cbar5.ax.xaxis.set_ticks_position('top')
+            cbar5.ax.xaxis.set_label_position('top')
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
