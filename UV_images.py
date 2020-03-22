@@ -339,7 +339,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             # Draw scale line
             right_side = dim - (dim * 0.1)
             vert = dim - (dim * 0.15)
-            lab_vert = vert + (dim * 0.1) / 2
+            lab_vert = vert + (dim * 0.1) * 5 / 8
             lab_horz = right_side - scale / 2
             ax1.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
             ax2.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=1)
@@ -404,28 +404,28 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=2, color='w', labelpad=0.05)
+            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=2, color='w', labelpad=0.1)
             cbar1.ax.xaxis.set_label_position('top')
             cbar1.outline.set_edgecolor('w')
             cbar1.outline.set_linewidth(0.05)
             cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
             cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=2, color='w',
-                                labelpad=0.05)
+                                labelpad=0.1)
             cbar2.ax.xaxis.set_label_position('top')
             cbar2.outline.set_edgecolor('w')
             cbar2.outline.set_linewidth(0.05)
             cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w', labelpad=0.05)
+            cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w', labelpad=0.1)
             cbar3.ax.xaxis.set_label_position('top')
             cbar3.outline.set_edgecolor('w')
             cbar3.outline.set_linewidth(0.05)
             cbar3.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w', labelpad=0.05)
+            cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w', labelpad=0.1)
             cbar4.ax.xaxis.set_label_position('top')
             cbar4.outline.set_edgecolor('w')
             cbar4.outline.set_linewidth(0.05)
             cbar4.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w', labelpad=0.05)
+            cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w', labelpad=0.1)
             cbar5.ax.xaxis.set_label_position('top')
             cbar5.outline.set_edgecolor('w')
             cbar5.outline.set_linewidth(0.05)
