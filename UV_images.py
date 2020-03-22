@@ -89,7 +89,7 @@ def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel, kbins, conv):
 
 
 def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
-               lkernel, kbins, conv, f):
+               lkernel, kbins, conv):
 
     # Set up dictionaries to store images
     galimgs = {}
@@ -108,29 +108,35 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
 
         gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
 
-        # Compute luminosities
-        if f is None:
-            lumins = np.ones_like(gal_ms)
-        else:
-            tauVs_ISM = (10 ** 5.2) * gal_met_surfden
-            tauVs_BC = 2.0 * (gal_mets / 0.01)
-            lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F,
-                                               f=f, fesc=0.0)
+        galimgs[str(i) + '-' + str(j)] = {}
 
-        # Compute extent for the 2D square image
-        extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
-        posrange = ((-dim, dim), (-dim, dim))
+        for f in ['mass', 'FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV']:
 
-        # Create images
-        galimgs[str(i) + '-' + str(j)], gxbins, gybins = np.histogram2d(gal_poss[:, i] - mean[i],
-                                                                        gal_poss[:, j] - mean[j],
-                                                                        bins=int(dim / res), weights=lumins,
-                                                                        range=posrange)
+            print((i, j), f)
+
+            # Compute luminosities
+            if f is 'mass':
+                lumins = np.ones_like(gal_ms)
+            else:
+                tauVs_ISM = (10 ** 5.2) * gal_met_surfden
+                tauVs_BC = 2.0 * (gal_mets / 0.01)
+                lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F,
+                                                   f=f, fesc=0.0)
+
+            # Compute extent for the 2D square image
+            extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
+            posrange = ((-dim, dim), (-dim, dim))
+
+            # Create images
+            galimgs[str(i) + '-' + str(j)][f], gxbins, gybins = np.histogram2d(gal_poss[:, i] - mean[i],
+                                                                               gal_poss[:, j] - mean[j],
+                                                                               bins=int(dim / res), weights=lumins,
+                                                                               range=posrange)
 
     return galimgs, extents
 
 
-def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, f=None):
+def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -298,7 +304,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 
         # Get the images
         galimgs, extents = create_img(res, all_gal_poss[id], means[id], dim, gal_ms[id], gal_ages[id], gal_mets[id],
-                                      gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, f)
+                                      gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv)
 
         # Loop over dimensions
         for key in galimgs.keys():
@@ -307,24 +313,37 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 
             # Set up figure
             fig = plt.figure()
-            ax1 = fig.add_subplot(111)
+            ax1 = fig.add_subplot(141)
+            ax2 = fig.add_subplot(142)
+            ax3 = fig.add_subplot(143)
+            ax4 = fig.add_subplot(144)
 
             # Draw images
-            ax1.imshow(np.arcsinh(galimgs[key]), extent=extents[key], cmap='Greys')
+            ax1.imshow(np.arcsinh(galimgs[key]['mass']), extent=extents[key], cmap='Greys')
+            ax2.imshow(np.arcsinh(galimgs[key]['FAKE.TH.V']), extent=extents[key], cmap='Greys')
+            ax3.imshow(np.arcsinh(galimgs[key]['FAKE.TH.NUV']), extent=extents[key], cmap='Greys')
+            ax4.imshow(np.arcsinh(galimgs[key]['FAKE.TH.FUV']), extent=extents[key], cmap='Greys')
+
+            # Draw text
+            ax1.text(0.8, 0.9, 'Mass', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                    transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
+            ax2.text(0.8, 0.9, 'FAKE.TH.V', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                    transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
+            ax3.text(0.8, 0.9, 'FAKE.TH.NUV', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                    transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
+            ax4.text(0.8, 0.9, 'FAKE.TH.FUV', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                    transform=ax4.transAxes, horizontalalignment='right', fontsize=8)
 
             # Label axes
             ax1.set_xlabel(axlabels[int(i)])
+            ax2.set_xlabel(axlabels[int(i)])
+            ax3.set_xlabel(axlabels[int(i)])
+            ax4.set_xlabel(axlabels[int(i)])
             ax1.set_ylabel(axlabels[int(j)])
 
-            if f is not None:
-                fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
-                            '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key +
-                            '_' + f.split('.')[0] + f.split('.')[1] + f.split('.')[2] + '.png',
-                            bbox_inches='tight', dpi=300)
-            else:
-                fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
-                            '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
-                            bbox_inches='tight', dpi=300)
+            fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
+                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
+                        bbox_inches='tight', dpi=300)
 
             plt.close(fig)
 
@@ -337,11 +356,6 @@ res = csoft
 print(100 / res, 'pixels in', '100 kpc')
 
 npart_lim = 10**4
-
-# f = 'FAKE.TH.V'
-# f = 'FAKE.TH.FUV'
-# f = 'FAKE.TH.NUV'
-f = None
 
 regions = []
 for reg in range(0, 40):
@@ -379,7 +393,7 @@ for i in range(len(reg_snaps)):
 
     try:
         img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.15, load=load,
-                 conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2), f=f)
+                 conv=(u.solMass/u.Mpc**2).to(u.solMass/u.pc**2))
     except ValueError:
         continue
     except KeyError:
