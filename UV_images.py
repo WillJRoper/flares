@@ -479,8 +479,7 @@ for i in range(len(reg_snaps)):
     if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
         load = True
     else:
-        # load = False
-        continue
+        load = False
 
     try:
         img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.2, load=load,
