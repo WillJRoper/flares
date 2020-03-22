@@ -16,8 +16,6 @@ from SynthObs.SED import models
 matplotlib.use('Agg')
 
 
-plt.rc_context({'axes.edgecolor':'w', 'xtick.color':'w', 'ytick.color':'w', 'figure.facecolor':'white'})
-
 # Define SED model
 model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
                             path_to_SPS_grid = FLARE.FLARE_dir + '/data/SPS/nebular/3.0/') # DEFINE SED GRID -
@@ -98,6 +96,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
     # Set up dictionaries to store images
     galimgs = {}
     extents = {}
+    ls = {}
 
     for (i, j) in [(0, 1), (0, 2), (1, 2)]:
 
@@ -113,6 +112,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
 
         galimgs[str(i) + '-' + str(j)] = {}
+        ls[str(i) + '-' + str(j)] = {}
 
         for f in ['mass', 'FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV', 'metals']:
 
@@ -138,8 +138,9 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
                                                                                gal_poss[:, j] - mean[j],
                                                                                bins=int(dim / res), weights=lumins,
                                                                                range=posrange)
+            ls[str(i) + '-' + str(j)][f] = lumins
 
-    return galimgs, extents
+    return galimgs, extents, ls
 
 
 def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, scale=0.01):
@@ -309,8 +310,9 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         print('Computing images for', id)
 
         # Get the images
-        galimgs, extents = create_img(res, all_gal_poss[id], means[id], dim, gal_ms[id], gal_ages[id], gal_mets[id],
-                                      gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv)
+        galimgs, extents, ls = create_img(res, all_gal_poss[id], means[id], dim, gal_ms[id], gal_ages[id],
+                                          gal_mets[id], gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id],
+                                          lkernel, kbins, conv)
 
         # Loop over dimensions
         for key in galimgs.keys():
@@ -395,33 +397,38 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cax3 = inset_axes(ax3, width="40%", height="5%", loc='upper left')
             cax4 = inset_axes(ax4, width="40%", height="5%", loc='upper left')
             cax5 = inset_axes(ax5, width="40%", height="5%", loc='upper left')
-            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
-            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
-            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
-            cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal")
-            cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
+            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal",
+                                 ticks=[ls[key]['mass'].min(), ls[key]['mass'].max()])
+            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal",
+                                 ticks=[ls[key]['metals'].min(), ls[key]['metals'].max()])
+            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal",
+                                 ticks=[ls[key]['FAKE.TH.V'].min(), ls[key]['FAKE.TH.V'].max()])
+            cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal",
+                                 ticks=[ls[key]['FAKE.TH.NUV'].min(), ls[key]['FAKE.TH.NUV'].max()])
+            cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal",
+                                 ticks=[ls[key]['FAKE.TH.FUV'].min(), ls[key]['FAKE.TH.FUV'].max()])
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=3, color='w')
+            cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=2, color='w')
             cbar1.ax.xaxis.set_ticks_position('top')
             cbar1.ax.xaxis.set_label_position('top')
-            cbar1.ax.tick_params(axis='x', labelsize=2, color='w')
-            cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=3, color='w')
+            cbar1.ax.tick_params(axis='x', labelsize=1, color='w')
+            cbar2.ax.set_xlabel(r'$Z_{\mathrm{los}}/[M_{\odot}/\mathrm{cpc}^{2}]$', fontsize=2, color='w')
             cbar2.ax.xaxis.set_ticks_position('top')
             cbar2.ax.xaxis.set_label_position('top')
-            cbar2.ax.tick_params(axis='x', labelsize=2, color='w')
-            cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3, color='w')
+            cbar2.ax.tick_params(axis='x', labelsize=1, color='w')
+            cbar3.ax.set_xlabel(r'$L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w')
             cbar3.ax.xaxis.set_ticks_position('top')
             cbar3.ax.xaxis.set_label_position('top')
-            cbar3.ax.tick_params(axis='x', labelsize=2, color='w')
-            cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3, color='w')
+            cbar3.ax.tick_params(axis='x', labelsize=1, color='w')
+            cbar4.ax.set_xlabel(r'$L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w')
             cbar4.ax.xaxis.set_ticks_position('top')
             cbar4.ax.xaxis.set_label_position('top')
-            cbar4.ax.tick_params(axis='x', labelsize=2, color='w')
-            cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=3, color='w')
+            cbar4.ax.tick_params(axis='x', labelsize=1, color='w')
+            cbar5.ax.set_xlabel(r'$L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}]$', fontsize=2, color='w')
             cbar5.ax.xaxis.set_ticks_position('top')
             cbar5.ax.xaxis.set_label_position('top')
-            cbar5.ax.tick_params(axis='x', labelsize=2, color='w')
+            cbar5.ax.tick_params(axis='x', labelsize=1, color='w')
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
