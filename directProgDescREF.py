@@ -342,8 +342,10 @@ prog_snaps = snaps[:-1]
 prog_snaps.insert(0, None)
 desc_snaps = snaps[1:]
 desc_snaps.append(None)
-
-path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
+print(snaps)
+print(prog_snaps)
+print(desc_snaps)
+path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data/'
 
 if __name__ == '__main__':
 
