@@ -14,14 +14,6 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 
-regions = []
-for reg in range(0, 40):
-
-    if reg < 10:
-        regions.append('000' + str(reg))
-    else:
-        regions.append('00' + str(reg))
-
 snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
          '013_z002p478', '017_z001p487', '018_z001p259',
          '019_z001p004', '020_z000p865', '024_z000p366']
