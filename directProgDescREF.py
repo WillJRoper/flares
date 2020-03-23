@@ -148,8 +148,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     ind_to_pid = {}
     pid_to_ind = {}
     for ind, pid in enumerate(part_ids):
-        ind_to_pid[ind] = pid
-        pid_to_ind[pid] = ind
+        if pid in group_part_ids:
+            ind_to_pid[ind] = pid
+            pid_to_ind[pid] = ind
         # if ind % 10000000 == 0:
         #     print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
 
@@ -268,12 +269,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     # Loop through all the halos in this snapshot
     for num, haloID in enumerate(halo_id_part_inds.keys()):
 
-        # Print progress
-        previous_progress = progress
-        progress = int(num / size * 100)
-        if progress != previous_progress:
-            print('Graph progress: ', progress, '%', haloID, end='\r')
-
         if int(str(haloID).split('.')[1]) == 0:
             continue
 
@@ -307,12 +302,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         sim_desc_haloids = np.zeros_like(desc_haloids)
         for ind, desc in enumerate(desc_haloids):
             sim_desc_haloids[ind] = internal_to_sim_haloID_desc[desc]
-
-        # Print progress
-        previous_progress = progress
-        progress = int(num / size * 100)
-        if progress != previous_progress:
-            print('Write progress: ', progress, '%', haloID, end='\r')
 
         # Write out the data produced
         halo = hdf.create_group(str(haloID))  # create halo group
