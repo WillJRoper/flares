@@ -311,9 +311,12 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 # Define comoving softening length in Mpc
 csoft = 0.001802390/0.677
 
+# Define image width
+width = 10.
+
 # Define resolution
 arc_res = 0.031
-print(100 / arc_res, 'pixels in', '100 arcseconds')
+print(width / arc_res, 'pixels in', width, 'arcseconds')
 
 npart_lim = 10**4
 NIRCfs = ('F115W', 'F150W', 'F2000W')
@@ -354,7 +357,7 @@ for i in range(len(reg_snaps)):
         # load = False
 
     try:
-        img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=100, load=load,
+        img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=load,
                  conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.1, NIRCfs=NIRCfs)
     except ValueError:
         continue
