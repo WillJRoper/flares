@@ -1,6 +1,6 @@
 import os
-os.environ['WEBBPSF_PATH'] = '/Users/willroper/anaconda3/envs/webbpsf-env/share/webbpsf-data/'
-os.environ['PYSYN_CDBS'] = '/Users/willroper/anaconda3/envs/webbpsf-env/share/pysynphot-data/cdbs/'
+os.environ['WEBBPSF_PATH'] = 'webbpsf-data/'
+os.environ['PYSYN_CDBS'] = 'pysynphot-data/cdbs/'
 import webbpsf
 
 
