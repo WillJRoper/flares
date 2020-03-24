@@ -1,6 +1,7 @@
 import numpy as np
 import numba as nb
 from astropy.cosmology import Planck13 as cosmo
+import astropy.units as u
 
 
 def calc_ages(z, a_born):
