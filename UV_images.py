@@ -429,14 +429,13 @@ for i in range(len(reg_snaps)):
     snap = reg_snaps[i][1]
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
-    # files = os.listdir('UVimg_data/')
-    # print(files)
-    #
-    # if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
-    #     load = True
-    # else:
-    #     load = False
-    load = False
+    files = os.listdir('UVimg_data/')
+    print(files)
+
+    if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
+        load = True
+    else:
+        load = False
 
     try:
         img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.25, load=load,
