@@ -32,7 +32,6 @@ model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
 filters = FLARE.filters.NIRCam
 F = FLARE.filters.add_filters(filters)
-# model.create_Fnu_grid(F, 8, cosmo)
 
 
 def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_res, ini_width, 
@@ -177,7 +176,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 	if output:
 		print(NIRCf, 'Image finished')
 
-	return gsmooth_img, extent
+	return gsmooth_img, extent, L
 
 
 def createPSFdImgs(img, arc_res, filter, redshift, Ndim):

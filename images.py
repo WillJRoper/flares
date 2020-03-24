@@ -9,6 +9,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import pickle
 import os
 from utilities import calc_ages, get_Z_LOS
+from astropy.cosmology import Planck13 as cosmo
 from webb_images import createSimpleImgs
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
@@ -21,17 +22,15 @@ model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
                             path_to_SPS_grid = FLARE.FLARE_dir + '/data/SPS/nebular/3.0/') # DEFINE SED GRID -
 model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
-
-# Define the filters: FAKE.FAKE are just top-hat filters using for extracting rest-frame quantities.
-filters = ['FAKE.TH.'+f for f in ['FUV','NUV','V']]
+filters = FLARE.filters.NIRCam
 F = FLARE.filters.add_filters(filters, new_lam = model.lam)
 
 # --- create new L grid for each filter. In units of erg/s/Hz
 model.create_Lnu_grid(F)
 
 
-def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
-               lkernel, kbins, conv):
+def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
+               lkernel, kbins, conv, redshift, NIRCfs, model, F, output, psf):
 
     # Set up dictionaries to store images
     galimgs = {}
@@ -40,17 +39,37 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
 
     for (i, j) in [(0, 1), (0, 2), (1, 2)]:
 
-            createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_res, ini_width,
-                             NIRCf=None, model=model, F=F, output=False, psf_each=True)
+        # Define dimensions array
+        if i == 0 and j == 1:
+            k = 2
+        elif i == 0 and j == 2:
+            k = 1
+        else:
+            k = 0
+        dimens = np.array([i, j, k])
+
+        gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
+
+        galimgs[str(i) + '-' + str(j)] = {}
+        ls[str(i) + '-' + str(j)] = {}
+
+        for f in NIRCfs:
+
+            result = createSimpleImgs(gal_poss[:, i], gal_poss[:, j], gal_ms, gal_ages, gal_mets, gal_met_surfden,
+                                      redshift, arc_res, ini_width, f, model, F, output, psf)
+            galimgs[str(i) + '-' + str(j)][f], extents[str(i) + '-' + str(j)], ls[str(i) + '-' + str(j)][f] = result
 
     return galimgs, extents, ls
 
 
-def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, scale=0.01):
+def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=10**3, dim=0.1, load=True,
+             conv=1, scale=0.1, NIRCfs=(None, )):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
+
+    model.create_Fnu_grid(F, z, cosmo)
 
     # Define stellar particle type
     part_type = 4
@@ -213,138 +232,78 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         print('Computing images for', id)
 
         # Get the images
-        galimgs, extents, ls = create_img(res, all_gal_poss[id], means[id], dim, gal_ms[id], gal_ages[id],
+        galimgs, extents, ls = create_img(all_gal_poss[id], arc_res, dim, gal_ms[id], gal_ages[id],
                                           gal_mets[id], gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id],
-                                          lkernel, kbins, conv)
+                                          lkernel, kbins, conv, z, NIRCfs, model, F, output, psf)
 
         # Loop over dimensions
         for key in galimgs.keys():
 
-            i, j = key.split('-')
-
             # Set up figure
-            fig = plt.figure(figsize=(5, 22))
-            gs = gridspec.GridSpec(1, 5)
-            gs.update(wspace=0.0, hspace=0.0)
-            ax1 = fig.add_subplot(gs[0, 0])
-            ax2 = fig.add_subplot(gs[0, 1])
-            ax3 = fig.add_subplot(gs[0, 2])
-            ax4 = fig.add_subplot(gs[0, 3])
-            ax5 = fig.add_subplot(gs[0, 4])
+            if len(NIRCfs) == 1:
+                fig = plt.figure(111)
+                axes = [fig.add_subplot(111)]
+            elif len(NIRCfs) < 6:
+                fig = plt.figure(figsize=(5, int(len(NIRCfs) * 22/5)))
+                gs = gridspec.GridSpec(1, len(NIRCfs))
+                gs.update(wspace=0.0, hspace=0.0)
+                axes = []
+                for i in range(len(NIRCfs)):
+                    axes.append(fig.add_subplot(gs[0, i]))
+            else:
+                fig = plt.figure(figsize=(5*2, int(len(NIRCfs)/2 * 22/5)))
+                gs = gridspec.GridSpec(2, int(len(NIRCfs/2)))
+                gs.update(wspace=0.0, hspace=0.0)
+                axes = []
+                for i in range(len(NIRCfs)):
+                    if i < len(NIRCfs) / 2:
+                        axes.append(fig.add_subplot(gs[0, i]))
+                    else:
+                        axes.append(fig.add_subplot(gs[1, i]))
 
-            # Draw images
-            ax1.imshow(np.zeros_like(galimgs[key]['mass']), extent=extents[key], cmap='Greys_r')
-            ax2.imshow(np.zeros_like(galimgs[key]['metals']), extent=extents[key], cmap='Greys_r')
-            ax3.imshow(np.zeros_like(galimgs[key]['FAKE.TH.V']), extent=extents[key], cmap='Greys_r')
-            ax4.imshow(np.zeros_like(galimgs[key]['FAKE.TH.NUV']), extent=extents[key], cmap='Greys_r')
-            ax5.imshow(np.zeros_like(galimgs[key]['FAKE.TH.FUV']), extent=extents[key], cmap='Greys_r')
-            im1 = ax1.imshow(np.log10(galimgs[key]['mass']), extent=extents[key], cmap='Greys_r')
-            im2 = ax2.imshow(np.log10(galimgs[key]['metals']), extent=extents[key], cmap='Greys_r')
-            im3 = ax3.imshow(np.log10(galimgs[key]['FAKE.TH.V']), extent=extents[key], cmap='Greys_r')
-            im4 = ax4.imshow(np.log10(galimgs[key]['FAKE.TH.NUV']), extent=extents[key], cmap='Greys_r')
-            im5 = ax5.imshow(np.log10(galimgs[key]['FAKE.TH.FUV']), extent=extents[key], cmap='Greys_r')
-
-            # Draw scale line
+            # Set up parameters for drawing the scale line
             right_side = dim - (dim * 0.1)
             vert = dim - (dim * 0.15)
             lab_vert = vert + (dim * 0.1) * 5 / 8
             lab_horz = right_side - scale / 2
-            ax1.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
-            ax2.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
-            ax3.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
-            ax4.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
-            ax5.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
 
-            # Label scale
-            ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                     fontsize=2, color='w')
-            ax2.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                     fontsize=2, color='w')
-            ax3.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                     fontsize=2, color='w')
-            ax4.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                     fontsize=2, color='w')
-            ax5.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                     fontsize=2, color='w')
+            # Draw images
+            for ax, f in zip(axes, NIRCfs):
 
-            # # Draw text
-            # ax1.text(0.8, 0.9, 'Mass', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-            #         transform=ax1.transAxes, horizontalalignment='right', fontsize=4)
-            # ax2.text(0.8, 0.9, 'LOS Metals', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-            #         transform=ax2.transAxes, horizontalalignment='right', fontsize=4)
-            # ax3.text(0.8, 0.9, 'FAKE.TH.V', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-            #         transform=ax3.transAxes, horizontalalignment='right', fontsize=4)
-            # ax4.text(0.8, 0.9, 'FAKE.TH.NUV', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-            #         transform=ax4.transAxes, horizontalalignment='right', fontsize=4)
-            # ax5.text(0.8, 0.9, 'FAKE.TH.FUV', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-            #         transform=ax5.transAxes, horizontalalignment='right', fontsize=4)
+                # Plot image with zeroed background
+                ax.imshow(np.zeros_like(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
+                im = ax.imshow(np.log10(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
 
-            # Remove ticks
-            ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                            labeltop=False, labelright=False, labelbottom=False)
-            ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                            labeltop=False, labelright=False, labelbottom=False)
-            ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                            labeltop=False, labelright=False, labelbottom=False)
-            ax4.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                            labeltop=False, labelright=False, labelbottom=False)
-            ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                            labeltop=False, labelright=False, labelbottom=False)
+                # Draw scale line
+                ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
 
-            # # Label axes
-            # ax1.set_xlabel(axlabels[int(i)])
-            # ax2.set_xlabel(axlabels[int(i)])
-            # ax3.set_xlabel(axlabels[int(i)])
-            # ax4.set_xlabel(axlabels[int(i)])
-            # ax5.set_xlabel(axlabels[int(i)])
-            # ax1.set_ylabel(axlabels[int(j)])
+                # Label scale
+                ax.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+                        fontsize=2, color='w')
 
-            # Add colorbars
-            cax1 = inset_axes(ax1, width="50%", height="3%", loc='lower left')
-            cax2 = inset_axes(ax2, width="50%", height="3%", loc='lower left')
-            cax3 = inset_axes(ax3, width="50%", height="3%", loc='lower left')
-            cax4 = inset_axes(ax4, width="50%", height="3%", loc='lower left')
-            cax5 = inset_axes(ax5, width="50%", height="3%", loc='lower left')
-            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
-            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
-            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
-            cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal")
-            cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
+                # Draw text
+                ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                        transform=ax.transAxes, horizontalalignment='left', fontsize=4)
 
-            # Label colorbars
-            cbar1.ax.set_xlabel(r'$\log_{10}(M_{\star}/M_{\odot})$', fontsize=2, color='w', labelpad=1.0)
-            cbar1.ax.xaxis.set_label_position('top')
-            cbar1.outline.set_edgecolor('w')
-            cbar1.outline.set_linewidth(0.05)
-            cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar2.ax.set_xlabel(r'$\log_{10}(Z_{\mathrm{los}}/[\mathrm{g}/\mathrm{ccm}^{2}])$', fontsize=2, color='w',
-                                labelpad=1.0)
-            cbar2.ax.xaxis.set_label_position('top')
-            cbar2.outline.set_edgecolor('w')
-            cbar2.outline.set_linewidth(0.05)
-            cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar3.ax.set_xlabel(r'$\log_{10}(L_{\mathrm{V}}/[\mathrm{erg}/\mathrm{s}/\mathrm{Hz}])$', fontsize=2, color='w',
-                                labelpad=1.0)
-            cbar3.ax.xaxis.set_label_position('top')
-            cbar3.outline.set_edgecolor('w')
-            cbar3.outline.set_linewidth(0.05)
-            cbar3.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar4.ax.set_xlabel(r'$\log_{10}(L_{\mathrm{NUV}}/[\mathrm{erg}/\mathrm{s}/\mathrm{Hz}])$', fontsize=2, color='w',
-                                labelpad=1.0)
-            cbar4.ax.xaxis.set_label_position('top')
-            cbar4.outline.set_edgecolor('w')
-            cbar4.outline.set_linewidth(0.05)
-            cbar4.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar5.ax.set_xlabel(r'$\log_{10}(L_{\mathrm{FUV}}/[\mathrm{erg}/\mathrm{s}/\mathrm{Hz}])$', fontsize=2, color='w',
-                                labelpad=1.0)
-            cbar5.ax.xaxis.set_label_position('top')
-            cbar5.outline.set_edgecolor('w')
-            cbar5.outline.set_linewidth(0.05)
-            cbar5.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
-            fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
-                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
-                        bbox_inches='tight', dpi=600)
+                # Remove ticks
+                ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                                labeltop=False, labelright=False, labelbottom=False)
+
+                # Add colorbars
+                cax = inset_axes(ax, width="50%", height="3%", loc='lower left')
+                cbar = fig.colorbar(im, cax=cax, orientation="horizontal")
+
+                # Label colorbars
+                cbar.ax.set_xlabel(r'$\log_{10}(\mathrm{counts})$', fontsize=2, color='w', labelpad=1.0)
+                cbar.ax.xaxis.set_label_position('top')
+                cbar.outline.set_edgecolor('w')
+                cbar.outline.set_linewidth(0.05)
+                cbar.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
+
+            fig.savefig('plots/webbimages/Webb_reg' + str(reg) + '_snap' + snap +
+                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '_PSF'
+                        + str(psf) + '_' + '_'.join(NIRCfs) + '.png', bbox_inches='tight', dpi=600)
 
             plt.close(fig)
 
@@ -353,10 +312,11 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 csoft = 0.001802390/0.677
 
 # Define resolution
-res = csoft
-print(100 / res, 'pixels in', '100 kpc')
+arc_res = 0.031
+print(100 / arc_res, 'pixels in', '100 arcseconds')
 
 npart_lim = 10**4
+NIRCfs = ('F115W', 'F150W', 'F2000W')
 
 regions = []
 for reg in range(0, 40):
@@ -393,8 +353,8 @@ for i in range(len(reg_snaps)):
         load = False
 
     try:
-        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.25, load=load,
-                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.05)
+        img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=100, load=load,
+                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.1, NIRCfs=NIRCfs)
     except ValueError:
         continue
     except KeyError:
