@@ -10,7 +10,7 @@ import pickle
 import os
 from utilities import calc_ages, get_Z_LOS
 from astropy.cosmology import Planck13 as cosmo
-from webb_images import createSimpleImgs
+from webb_imgs import createSimpleImgs
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
 from SynthObs.SED import models
