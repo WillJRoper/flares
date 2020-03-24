@@ -124,6 +124,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         ind_to_pid = {}
         pid_to_ind = {}
         for ind, pid in enumerate(part_ids):
+            if pid in group_part_ids:
             ind_to_pid[ind] = pid
             pid_to_ind[pid] = ind
 
@@ -173,6 +174,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         gind_to_pid = {}
         gpid_to_ind = {}
         for ind, pid in enumerate(gpart_ids):
+            if pid in ggroup_part_ids:
             gind_to_pid[ind] = pid
             gpid_to_ind[pid] = ind
 
