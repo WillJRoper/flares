@@ -395,7 +395,7 @@ print(100 / res, 'pixels in', '100 kpc')
 npart_lim = 10**4
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 13):
     if reg < 10:
         regions.append('0' + str(reg))
     else:
