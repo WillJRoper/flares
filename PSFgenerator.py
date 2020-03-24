@@ -1,6 +1,6 @@
 import os
 os.environ['WEBBPSF_PATH'] = '/cosma7/data/dp004/dc-rope1/FLARES/flares/webbpsf-data'
-os.environ['PYSYN_CDBS'] = '/cosma7/data/dp004/dc-rope1/FLARES/flares/pysynphot-data/cdbs/'
+os.environ['PYSYN_CDBS'] = '/cosma7/data/dp004/dc-rope1/FLARES/flares/pysynphot-data/cdbs'
 import webbpsf
 
 
