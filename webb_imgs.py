@@ -63,7 +63,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 
 	# Calculate width in kpc to use for the extent of the image
 	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift).value
-	kpc_width = (width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin
+	kpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).value
 	extent = [-kpc_width / 2, kpc_width / 2, -kpc_width / 2, kpc_width / 2]
 
 	# Convert star positions to angular positons in arcseconds
