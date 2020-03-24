@@ -108,6 +108,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         gal_ms = save_dict['gal_ms']
         gas_mets = save_dict['gas_mets']
         gas_ms = save_dict['gas_ms']
+        gal_smls = save_dict['gal_smls']
         gas_smls = save_dict['gas_smls']
         all_gas_poss = save_dict['all_gas_poss']
         all_gal_poss = save_dict['all_gal_poss']
@@ -121,9 +122,12 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 
         # Load all necessary arrays
         subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
-        all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
+        all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
+                                numThreads=8)
         part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-        group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+        gal_sml = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength', numThreads=8)
+        group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                      numThreads=8)
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
         gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
         gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
@@ -154,7 +158,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         for pid, simid in zip(group_part_ids, halo_ids):
             if simid not in ids:
                 continue
-            if int(str(simid).split('.')[1]) == 2**30:
+            if int(str(simid).split('.')[1]) == 2 ** 30:
                 continue
             try:
                 halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
@@ -172,7 +176,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         # Load data for luminosities
         a_born = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime', noH=True, numThreads=8)
         metallicities = E.read_array('SNAP', path, snap, 'PartType4/SmoothedMetallicity', noH=True, numThreads=8)
-        masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8) * 10**10
+        masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8) * 10 ** 10
 
         # Get gas particle information
         gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
@@ -182,7 +186,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         ggrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', numThreads=8)
         gas_metallicities = E.read_array('SNAP', path, snap, 'PartType0/SmoothedMetallicity', noH=True, numThreads=8)
         gas_smooth_ls = E.read_array('SNAP', path, snap, 'PartType0/SmoothingLength', noH=True, numThreads=8)
-        gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, numThreads=8) * 10**10
+        gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, numThreads=8) * 10 ** 10
         ghalo_ids = np.zeros_like(ggrp_ids, dtype=float)
         for (ind, g), sg in zip(enumerate(ggrp_ids), gsubgrp_ids):
             ghalo_ids[ind] = float(str(g) + '.' + str(sg + 1))
@@ -200,7 +204,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         for pid, simid in zip(ggroup_part_ids, ghalo_ids):
             if simid not in ids:
                 continue
-            if int(str(simid).split('.')[1]) == 2**30:
+            if int(str(simid).split('.')[1]) == 2 ** 30:
                 continue
             try:
                 ghalo_id_part_inds.setdefault(simid, set()).update({gpid_to_ind[pid]})
@@ -219,22 +223,25 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         gas_mets = {}
         gas_ms = {}
         gas_smls = {}
+        gal_smls = {}
         all_gas_poss = {}
         for id in ids:
-
-            all_gal_poss[id] = all_poss[list(halo_id_part_inds[id]), :]
-            all_gas_poss[id] = gas_all_poss[list(ghalo_id_part_inds[id]), :]
-            gal_ages[id] = ages[list(halo_id_part_inds[id])]
-            gal_mets[id] = metallicities[list(halo_id_part_inds[id])]
-            gal_ms[id] = masses[list(halo_id_part_inds[id])]
-            gas_mets[id] = gas_metallicities[list(ghalo_id_part_inds[id])]
-            gas_ms[id] = gas_masses[list(ghalo_id_part_inds[id])]
-            gas_smls[id] = gas_smooth_ls[list(ghalo_id_part_inds[id])]
+            parts = list(halo_id_part_inds[id])
+            gparts = list(ghalo_id_part_inds[id])
+            all_gal_poss[id] = all_poss[parts, :]
+            all_gas_poss[id] = gas_all_poss[gparts, :]
+            gal_ages[id] = ages[parts]
+            gal_mets[id] = metallicities[parts]
+            gal_ms[id] = masses[parts]
+            gal_smls[id] = gal_sml[parts]
+            gas_mets[id] = gas_metallicities[gparts]
+            gas_ms[id] = gas_masses[gparts]
+            gas_smls[id] = gas_smooth_ls[gparts]
 
             means[id] = all_gal_poss[id].mean(axis=0)
 
         save_dict = {'gal_ages': gal_ages, 'gal_mets': gal_mets, 'gal_ms': gal_ms, 'gas_mets': gas_mets,
-                     'gas_ms': gas_ms, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
+                     'gas_ms': gas_ms, 'gal_smls': gal_smls, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
                      'all_gal_poss': all_gal_poss, 'means': means}
 
         with open('UVimg_data/stellardata_reg' + reg + '_snap'
@@ -422,13 +429,14 @@ for i in range(len(reg_snaps)):
     snap = reg_snaps[i][1]
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
-    files = os.listdir('UVimg_data/')
-    print(files)
-
-    if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
-        load = True
-    else:
-        load = False
+    # files = os.listdir('UVimg_data/')
+    # print(files)
+    #
+    # if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
+    #     load = True
+    # else:
+    #     load = False
+    load = False
 
     try:
         img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.25, load=load,

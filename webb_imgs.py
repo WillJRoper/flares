@@ -29,8 +29,8 @@ F = FLARE.filters.add_filters(filters)
 
 
 @nb.njit(nogil=True)
-def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_res, ini_width, 
-					 NIRCf=None, model=model, F=F, output=False, psf=True):
+def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift, arc_res, ini_width,
+					 NIRCf=None, model=model, F=F, output=False):
 	''' A function that takes simulation data and produced a image with the galaxy in the centre applying
 		smoothing based on the resolution of the simualtion.
 
@@ -61,12 +61,12 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 		print('Width= ', width, 'arcsecond')
 
 	# Find the number of arcseconds per kpc at the current redshift using astropy and 'throw away' units
-	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).value
+	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).to(u.arcsec / u.Mpc).value
 
 	# Calculate width in kpc to use for the extent of the image
-	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift).value
-	kpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).value
-	extent = [-kpc_width / 2, kpc_width / 2, -kpc_width / 2, kpc_width / 2]
+	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift)
+	mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
+	extent = [-mpc_width / 2, mpc_width / 2, -mpc_width / 2, mpc_width / 2]
 
 	# Convert star positions to angular positons in arcseconds
 	X *= arcsec_per_kpc_proper
@@ -131,7 +131,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 	gsmooth_img = np.zeros((Ndim, Ndim))
 
 	# Define the miniimum smoothing for 0.1kpc in arcseconds
-	smooth = 0.1 * cosmo.arcsec_per_kpc_proper(redshift).value
+	smooth = smls * cosmo.arcsec_per_kpc_proper(redshift).to(u.arcsec / u.Mpc).value
 
 	# Define the image reduction size for sub images
 	if arc_res == 0.031:
@@ -143,7 +143,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 	ax_coords = np.linspace(-width/2., width/2., Ndim)
 
 	# Loop over each star computing the smoothed gaussian distribution for this particle
-	for x, y, l in zip(X, Y, L):
+	for x, y, l, sml in zip(X, Y, L, smooth):
 
 		# Get this star's position within the image
 		x_img, y_img = (np.abs(ax_coords - x)).argmin(), (np.abs(ax_coords - y)).argmin()
@@ -158,9 +158,6 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 					+ (Gy[sub_ylow:sub_yhigh, sub_xlow:sub_xhigh] - y) ** 2)
 					/ (2.0 * smooth ** 2)))
 
-		if psf:
-			g = createPSFdImgs(g, arc_res, NIRCf, redshift, g.shape[0])
-
 		# Get the sum of the gaussian
 		gsum = np.sum(g)
 
@@ -171,7 +168,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 	if output:
 		print(NIRCf, 'Image finished')
 
-	return gsmooth_img, extent, L
+	return gsmooth_img, extent, L, Ndim
 
 
 def createPSFdImgs(img, arc_res, filter, redshift, Ndim):

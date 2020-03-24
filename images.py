@@ -10,7 +10,7 @@ import pickle
 import os
 from utilities import calc_ages, get_Z_LOS
 from astropy.cosmology import Planck13 as cosmo
-from webb_imgs import createSimpleImgs
+from webb_imgs import createSimpleImgs, createPSFdImgs
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
 from SynthObs.SED import models
@@ -29,7 +29,7 @@ F = FLARE.filters.add_filters(filters, new_lam = model.lam)
 model.create_Lnu_grid(F)
 
 
-def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
+def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gal_smls, gas_mets, gas_poss, gas_ms, gas_sml,
                lkernel, kbins, conv, redshift, NIRCfs, model, F, output, psf):
 
     # Set up dictionaries to store images
@@ -56,8 +56,9 @@ def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gas_met
         for f in NIRCfs:
 
             result = createSimpleImgs(gal_poss[:, i], gal_poss[:, j], gal_ms, gal_ages, gal_mets, gal_met_surfden,
-                                      redshift, arc_res, ini_width, f, model, F, output, psf)
-            galimgs[str(i) + '-' + str(j)][f], extents[str(i) + '-' + str(j)], ls[str(i) + '-' + str(j)][f] = result
+                                      gal_smls, redshift, arc_res, ini_width, f, model, F, output)
+            galimgs[str(i) + '-' + str(j)][f] = createPSFdImgs(result[0], arc_res, NIRCfs, redshift, result[-1])
+            extents[str(i) + '-' + str(j)], ls[str(i) + '-' + str(j)][f] = result[1: -1]
 
     return galimgs, extents, ls
 
@@ -91,6 +92,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         gal_ms = save_dict['gal_ms']
         gas_mets = save_dict['gas_mets']
         gas_ms = save_dict['gas_ms']
+        gal_smls = save_dict['gal_smls']
         gas_smls = save_dict['gas_smls']
         all_gas_poss = save_dict['all_gas_poss']
         all_gal_poss = save_dict['all_gal_poss']
@@ -106,6 +108,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
         all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
         part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+        gal_sml = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength', numThreads=8)
         group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
         gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
@@ -202,22 +205,26 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         gas_mets = {}
         gas_ms = {}
         gas_smls = {}
+        gal_smls = {}
         all_gas_poss = {}
         for id in ids:
-
-            all_gal_poss[id] = all_poss[list(halo_id_part_inds[id]), :]
-            all_gas_poss[id] = gas_all_poss[list(ghalo_id_part_inds[id]), :]
-            gal_ages[id] = ages[list(halo_id_part_inds[id])]
-            gal_mets[id] = metallicities[list(halo_id_part_inds[id])]
-            gal_ms[id] = masses[list(halo_id_part_inds[id])]
-            gas_mets[id] = gas_metallicities[list(ghalo_id_part_inds[id])]
-            gas_ms[id] = gas_masses[list(ghalo_id_part_inds[id])]
-            gas_smls[id] = gas_smooth_ls[list(ghalo_id_part_inds[id])]
+            
+            parts = list(halo_id_part_inds[id])
+            gparts = list(ghalo_id_part_inds[id])
+            all_gal_poss[id] = all_poss[parts, :]
+            all_gas_poss[id] = gas_all_poss[gparts, :]
+            gal_ages[id] = ages[parts]
+            gal_mets[id] = metallicities[parts]
+            gal_ms[id] = masses[parts]
+            gal_smls[id] = gal_sml[parts]
+            gas_mets[id] = gas_metallicities[gparts]
+            gas_ms[id] = gas_masses[gparts]
+            gas_smls[id] = gas_smooth_ls[gparts]
 
             means[id] = all_gal_poss[id].mean(axis=0)
 
         save_dict = {'gal_ages': gal_ages, 'gal_mets': gal_mets, 'gal_ms': gal_ms, 'gas_mets': gas_mets,
-                     'gas_ms': gas_ms, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
+                     'gas_ms': gas_ms, 'gal_smls': gal_smls, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
                      'all_gal_poss': all_gal_poss, 'means': means}
 
         with open('UVimg_data/stellardata_reg' + reg + '_snap'
@@ -235,8 +242,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 
         # Get the images
         galimgs, extents, ls = create_img(all_gal_poss[id], arc_res, dim, gal_ms[id], gal_ages[id],
-                                          gal_mets[id], gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id],
-                                          lkernel, kbins, conv, z, NIRCfs, model, F, output, psf)
+                                          gal_mets[id], gal_smls[id], gas_mets[id], all_gas_poss[id], gas_ms[id],
+                                          gas_smls[id], lkernel, kbins, conv, z, NIRCfs, model, F, output, psf)
 
         # Loop over dimensions
         for key in galimgs.keys():
@@ -287,7 +294,6 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                         transform=ax.transAxes, horizontalalignment='left', fontsize=4)
 
-
                 # Remove ticks
                 ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                                 labeltop=False, labelright=False, labelbottom=False)
@@ -314,7 +320,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 csoft = 0.001802390/0.677
 
 # Define image width
-width = 10.
+width = 3.
 
 # Define resolution
 arc_res = 0.031
