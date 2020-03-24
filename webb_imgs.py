@@ -157,7 +157,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 					/ (2.0 * smooth ** 2)))
 
 		if psf:
-			g = createPSFdImgs(g, arc_res, NIRCf, redshift, Ndim)
+			g = createPSFdImgs(g, arc_res, NIRCf, redshift, g.shape[0])
 
 		# Get the sum of the gaussian
 		gsum = np.sum(g)
