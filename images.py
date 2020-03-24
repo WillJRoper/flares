@@ -364,14 +364,15 @@ for i in range(len(reg_snaps)):
     #     load = False
     load = False
 
-    # try:
-    #     img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=load,
-    #              conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.1, NIRCfs=NIRCfs)
-    # except ValueError:
-    #     continue
-    # except KeyError:
-    #     continue
-    # except OSError:
-    #     continue
-    img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=load,
-             conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.1, NIRCfs=NIRCfs)
+    try:
+        img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=load,
+                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.1, NIRCfs=NIRCfs)
+    except ValueError:
+        print('ValueError')
+        continue
+    except KeyError:
+        print('KeyError')
+        continue
+    except OSError:
+        print('OSError')
+        continue
