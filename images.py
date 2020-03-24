@@ -319,7 +319,7 @@ arc_res = 0.031
 print(width / arc_res, 'pixels in', width, 'arcseconds')
 
 npart_lim = 10**4
-NIRCfs = ('F115W', 'F150W', 'F2000W')
+NIRCfs = ('F115W', 'F150W', 'F200W')
 
 regions = []
 for reg in range(0, 40):
