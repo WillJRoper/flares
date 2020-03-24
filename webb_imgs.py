@@ -9,6 +9,7 @@ from astropy.convolution import convolve_fft, Gaussian2DKernel
 from photutils import CircularAperture, aperture_photometry
 import matplotlib.pyplot as plt
 from astropy.cosmology import Planck13 as cosmo
+import numba as nb
 import os
 # os.environ['WEBBPSF_PATH'] = '/Users/willroper/anaconda3/envs/webbpsf-env/share/webbpsf-data/'
 # os.environ['PYSYN_CDBS'] = '/Users/willroper/anaconda3/envs/webbpsf-env/share/pysynphot-data/cdbs/'
@@ -27,6 +28,7 @@ filters = FLARE.filters.NIRCam
 F = FLARE.filters.add_filters(filters)
 
 
+@nb.njit(nogil=True)
 def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_res, ini_width, 
 					 NIRCf=None, model=model, F=F, output=False, psf=True):
 	''' A function that takes simulation data and produced a image with the galaxy in the centre applying
