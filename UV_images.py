@@ -142,8 +142,8 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         pid_to_ind = {}
         for ind, pid in enumerate(part_ids):
             if pid in group_part_ids:
-            ind_to_pid[ind] = pid
-            pid_to_ind[pid] = ind
+                ind_to_pid[ind] = pid
+                pid_to_ind[pid] = ind
 
         # Get the IDs above the npart threshold
         ids, counts = np.unique(halo_ids, return_counts=True)
@@ -192,8 +192,8 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
         gpid_to_ind = {}
         for ind, pid in enumerate(gpart_ids):
             if pid in ggroup_part_ids:
-            gind_to_pid[ind] = pid
-            gpid_to_ind[pid] = ind
+                gind_to_pid[ind] = pid
+                gpid_to_ind[pid] = ind
 
         # Get the particles in the halos
         ghalo_id_part_inds = {}
