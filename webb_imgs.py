@@ -6,12 +6,10 @@ from noisegenerator import *
 from PSFgenerator import genPSFs
 from utilities import calc_ages, get_Z_LOS
 from astropy.convolution import convolve_fft, Gaussian2DKernel
-from PIL import Image
 from photutils import CircularAperture, aperture_photometry
 import matplotlib.pyplot as plt
 from astropy.cosmology import Planck13 as cosmo
 import os
-import sewpy
 # os.environ['WEBBPSF_PATH'] = '/Users/willroper/anaconda3/envs/webbpsf-env/share/webbpsf-data/'
 # os.environ['PYSYN_CDBS'] = '/Users/willroper/anaconda3/envs/webbpsf-env/share/pysynphot-data/cdbs/'
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
