@@ -1,13 +1,8 @@
 import numpy as np
-import time
-import yaml
-import sys
-from itertools import starmap
 from astropy.io.fits import open
 import astropy.constants as const
 import astropy.units as u
 from noisegenerator import *
-from scipy.spatial import cKDTree
 from PSFgenerator import genPSFs
 from utilities import calc_ages, get_Z_LOS
 from astropy.convolution import convolve_fft, Gaussian2DKernel
@@ -19,7 +14,7 @@ import os
 import sewpy
 # os.environ['WEBBPSF_PATH'] = '/Users/willroper/anaconda3/envs/webbpsf-env/share/webbpsf-data/'
 # os.environ['PYSYN_CDBS'] = '/Users/willroper/anaconda3/envs/webbpsf-env/share/pysynphot-data/cdbs/'
-os.environ['FLARE'] = '/Users/willroper/Documents/University/JWST/webster/New_Data/'
+os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 # import webbpsf
 import FLARE.filters
 from SynthObs.SED import models
