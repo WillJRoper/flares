@@ -36,7 +36,7 @@ F = FLARE.filters.add_filters(filters)
 
 
 def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_res, ini_width, 
-					 NIRCf=None, model=model, F=F, output=False, psf_each=True):
+					 NIRCf=None, model=model, F=F, output=False, psf=True):
 	''' A function that takes simulation data and produced a image with the galaxy in the centre applying
 		smoothing based on the resolution of the simualtion.
 
@@ -68,6 +68,11 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 
 	# Find the number of arcseconds per kpc at the current redshift using astropy and 'throw away' units
 	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).value
+
+	# Calculate width in kpc to use for the extent of the image
+	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift).value
+	kpc_width = (width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin
+	extent = [-kpc_width / 2, kpc_width / 2, -kpc_width / 2, kpc_width / 2]
 
 	# Convert star positions to angular positons in arcseconds
 	X *= arcsec_per_kpc_proper
@@ -159,7 +164,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 					+ (Gy[sub_ylow:sub_yhigh, sub_xlow:sub_xhigh] - y) ** 2)
 					/ (2.0 * smooth ** 2)))
 
-		if psf_each:
+		if psf:
 			g = createPSFdImgs(g, arc_res, NIRCf, redshift, Ndim)
 
 		# Get the sum of the gaussian
@@ -172,7 +177,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, redshift, arc_
 	if output:
 		print(NIRCf, 'Image finished')
 
-	return gsmooth_img, org_nstars
+	return gsmooth_img, extent
 
 
 def createPSFdImgs(img, arc_res, filter, redshift, Ndim):
