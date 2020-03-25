@@ -317,7 +317,6 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 # Plot image with zeroed background
                 ax.imshow(np.zeros_like(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
                 im = ax.imshow(np.log10(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
-                print(np.log10(galimgs[key][f]))
 
                 # Draw scale line
                 ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
@@ -409,6 +408,6 @@ for i in range(len(reg_snaps)):
     except KeyError:
         print('KeyError')
         continue
-    except OSError:
-        print('OSError')
-        continue
+    # except OSError:
+    #     print('OSError')
+    #     continue
