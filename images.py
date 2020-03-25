@@ -42,7 +42,7 @@ def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gal_sml
     ls = {}
 
     # Convert inputs to physical kpc
-    convert_pkpc = (u.Mpc).to(u.kpc) / (1 + redshift)
+    convert_pkpc = (u.Mpc).to(u.kpc).value / (1 + redshift)
     gal_poss *= convert_pkpc
     gas_poss *= convert_pkpc
     gas_sml *= convert_pkpc
