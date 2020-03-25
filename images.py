@@ -277,7 +277,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 
         # Get the images
         galimgs, extents, ls = create_img(all_gal_poss[id], arc_res, dim, gal_ms[id], gal_ages[id],
-                                          gal_mets[id], gal_smls[id], gas_mets[id], all_gas_poss[id], gas_ms[id],
+                                          gal_mets[id], gal_smls, gas_mets[id], all_gas_poss[id], gas_ms[id],
                                           gas_smls[id], lkernel, kbins, conv, z, NIRCfs, model, F, output, psf)
 
         # Loop over dimensions
