@@ -61,10 +61,10 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 		print('Width= ', width, 'arcsecond')
 
 	# Find the number of arcseconds per kpc at the current redshift using astropy and 'throw away' units
-	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).to(u.arcsec / u.Mpc).value / (1 + redshift)
+	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift)
 
 	# Calculate width in kpc to use for the extent of the image
-	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift) / (1 + redshift)
+	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift)
 	# mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
 	mpc_width = width
 	extent = [-mpc_width / 2, mpc_width / 2, -mpc_width / 2, mpc_width / 2]
@@ -139,9 +139,9 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	print(smooth)
 	# Define the image reduction size for sub images
 	if arc_res == 0.031:
-		sub_size = 8
-	else:
 		sub_size = 4
+	else:
+		sub_size = 2
 
 	# Get the image pixel coordinates along each axis
 	ax_coords = np.linspace(-width/2., width/2., Ndim)

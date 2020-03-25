@@ -41,6 +41,13 @@ def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gal_sml
     extents = {}
     ls = {}
 
+    # Convert inputs to physical kpc
+    convert_pkpc = (u.Mpc).to(u.kpc) / (1 + redshift)
+    gal_poss *= convert_pkpc
+    gas_poss *= convert_pkpc
+    gas_sml *= convert_pkpc
+    gal_smls *= convert_pkpc
+
     for (i, j) in [(0, 1), (0, 2), (1, 2)]:
 
         # Define dimensions array
@@ -318,16 +325,16 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 ax.imshow(np.zeros_like(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
                 im = ax.imshow(np.log10(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
 
-                # Draw scale line
-                ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
-
-                # Label scale
-                ax.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                        fontsize=2, color='w')
-
-                # Draw text
-                ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                        transform=ax.transAxes, horizontalalignment='left', fontsize=4)
+                # # Draw scale line
+                # ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+                #
+                # # Label scale
+                # ax.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+                #         fontsize=2, color='w')
+                #
+                # # Draw text
+                # ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                #         transform=ax.transAxes, horizontalalignment='left', fontsize=4)
 
                 # Remove ticks
                 ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
