@@ -156,7 +156,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 		# Compute the image
 		g = np.exp(-(((Gx[sub_ylow:sub_yhigh, sub_xlow:sub_xhigh] - x) ** 2
 					+ (Gy[sub_ylow:sub_yhigh, sub_xlow:sub_xhigh] - y) ** 2)
-					/ (2.0 * smooth ** 2)))
+					/ (2.0 * sml ** 2)))
 
 		# Get the sum of the gaussian
 		gsum = np.sum(g)
