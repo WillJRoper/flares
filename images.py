@@ -111,7 +111,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
         all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
         part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-        gal_sml = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength', numThreads=8)
+        gal_sml = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength', noH=True, numThreads=8)
         group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
         # gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
@@ -355,7 +355,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 csoft = 0.001802390/0.677
 
 # Define image width
-width = 3.
+width = 10.
 
 # Define resolution
 arc_res = 0.031

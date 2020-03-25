@@ -65,7 +65,8 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 
 	# Calculate width in kpc to use for the extent of the image
 	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift)
-	mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
+	# mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
+	mpc_width = width
 	extent = [-mpc_width / 2, mpc_width / 2, -mpc_width / 2, mpc_width / 2]
 
 	# Extract the luminosity for the desired filter
@@ -132,9 +133,10 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	# Initialise the image array
 	gsmooth_img = np.zeros((Ndim, Ndim))
 
-	# Define the miniimum smoothing for 0.1kpc in arcseconds
-	smooth = smls * cosmo.arcsec_per_kpc_proper(redshift).to(u.arcsec / u.Mpc).value
-
+	# Define the minimum smoothing for 0.1kpc in arcseconds
+	smooth_Mpc = smls
+	smooth = smooth_Mpc * arcsec_per_kpc_proper
+	print(smooth)
 	# Define the image reduction size for sub images
 	if arc_res == 0.031:
 		sub_size = 8
