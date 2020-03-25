@@ -61,7 +61,7 @@ def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gal_sml
 
             result = createSimpleImgs(gal_poss[:, i], gal_poss[:, j], gal_ms, gal_ages, gal_mets, gal_met_surfden,
                                       gal_smls, redshift, arc_res, ini_width, f, model, F, output)
-            galimgs[str(i) + '-' + str(j)][f] = createPSFdImgs(result[0], arc_res, NIRCfs, redshift, result[-1])
+            galimgs[str(i) + '-' + str(j)][f] = createPSFdImgs(result[0], arc_res, f, redshift, result[-1])
             extents[str(i) + '-' + str(j)], ls[str(i) + '-' + str(j)][f] = result[1: -1]
 
     return galimgs, extents, ls
@@ -359,7 +359,7 @@ arc_res = 0.031
 print(width / arc_res, 'pixels in', width, 'arcseconds')
 
 npart_lim = 10**4
-NIRCfs = ['F115W', 'F150W', 'F200W']
+NIRCfs = ('F115W', 'F150W', 'F200W')
 
 regions = []
 for reg in range(0, 38):
