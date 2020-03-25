@@ -63,6 +63,14 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	# Find the number of arcseconds per kpc at the current redshift using astropy and 'throw away' units
 	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).value
 
+	# Convert star positions to angular positons in arcseconds
+	xs = X[::]
+	ys = Y[::]
+	print('X', xs)
+	xs *= arcsec_per_kpc_proper
+	ys *= arcsec_per_kpc_proper
+	print('X in arcseconds', xs)
+
 	# Calculate width in kpc to use for the extent of the image
 	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift).value
 	# mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
@@ -92,18 +100,12 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 		L = np.ones_like(X)
 
 	# Find the rough centre based on the distribution of the star particles weighted by observed luminosity
-	centre_x = np.sum(X * L) / np.sum(L)
-	centre_y = np.sum(Y * L) / np.sum(L)
+	centre_x = np.sum(xs * L) / np.sum(L)
+	centre_y = np.sum(ys * L) / np.sum(L)
 
 	# Compute offset from centre
-	xs = X - centre_x
-	ys = Y - centre_y
-
-	print('X', xs)
-	# Convert star positions to angular positons in arcseconds
-	xs *= arcsec_per_kpc_proper
-	ys *= arcsec_per_kpc_proper
-	print('X in arcseconds', xs)
+	xs -= centre_x
+	ys -= centre_y
 
 	# Print the number of particles for this galaxy
 	org_nstars = len(L)
@@ -134,8 +136,8 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	gsmooth_img = np.zeros((Ndim, Ndim))
 
 	# Define the smoothing length in arcseconds
-	# smooth_Mpc = smls
-	smooth_Mpc = np.full_like(L, 0.001802390/0.677 / (1 + redshift) * (u.Mpc).to(u.kpc))
+	smooth_Mpc = smls
+	# smooth_Mpc = np.full_like(L, 0.001802390/0.677 / (1 + redshift) * (u.Mpc).to(u.kpc))
 	smooth = smooth_Mpc * arcsec_per_kpc_proper
 	print(smooth)
 	# Define the image reduction size for sub images
