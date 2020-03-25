@@ -95,25 +95,25 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	centre_y = np.sum(Y * L) / np.sum(L)
 
 	# Compute offset from centre
-	X -= centre_x
-	Y -= centre_y
+	xs = X - centre_x
+	ys = Y - centre_y
 
-	print('X', X)
+	print('X', xs)
 	# Convert star positions to angular positons in arcseconds
-	X *= arcsec_per_kpc_proper
-	Y *= arcsec_per_kpc_proper
-	print('X in arcseconds', X)
+	xs *= arcsec_per_kpc_proper
+	ys *= arcsec_per_kpc_proper
+	print('X in arcseconds', xs)
 
 	# Print the number of particles for this galaxy
 	org_nstars = len(L)
 	# print('number of particles: ', org_nstars)
 
 	# Compute the boolean array for inclusion within the image dimenisons
-	s = (np.fabs(X) < width/2.) & (np.fabs(Y) < width/2.)
+	s = (np.fabs(xs) < width/2.) & (np.fabs(ys) < width/2.)
 
 	# Mask star positions and luminosities which fall outside of the inclusion region defined by Ndim
-	X = X[s]
-	Y = Y[s]
+	xs = xs[s]
+	ys = ys[s]
 	L = L[s]
 
 	# Print the number of particles within the image area
@@ -134,8 +134,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 
 	# Define the miniimum smoothing for 0.1kpc in arcseconds
 	smooth = smls * cosmo.arcsec_per_kpc_proper(redshift).to(u.arcsec / u.Mpc).value
-	print(smooth)
-	print(X)
+
 	# Define the image reduction size for sub images
 	if arc_res == 0.031:
 		sub_size = 8
@@ -146,7 +145,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	ax_coords = np.linspace(-width/2., width/2., Ndim)
 
 	# Loop over each star computing the smoothed gaussian distribution for this particle
-	for x, y, l, sml in zip(X, Y, L, smooth):
+	for x, y, l, sml in zip(xs, ys, L, smooth):
 
 		# Get this star's position within the image
 		x_img, y_img = (np.abs(ax_coords - x)).argmin(), (np.abs(ax_coords - y)).argmin()
