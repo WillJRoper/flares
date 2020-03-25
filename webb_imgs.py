@@ -134,14 +134,15 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	gsmooth_img = np.zeros((Ndim, Ndim))
 
 	# Define the smoothing length in arcseconds
-	smooth_Mpc = smls
+	# smooth_Mpc = smls
+	smooth_Mpc = np.full_like(L, 0.001802390/0.677 / (1 + redshift) * (u.Mpc).to(u.kpc))
 	smooth = smooth_Mpc * arcsec_per_kpc_proper
 	print(smooth)
 	# Define the image reduction size for sub images
 	if arc_res == 0.031:
-		sub_size = 4
+		sub_size = 8
 	else:
-		sub_size = 2
+		sub_size = 4
 
 	# Get the image pixel coordinates along each axis
 	ax_coords = np.linspace(-width/2., width/2., Ndim)
