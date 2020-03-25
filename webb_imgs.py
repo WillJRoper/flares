@@ -184,8 +184,10 @@ def createPSFdImgs(img, arc_res, filter, redshift, Ndim):
 
 	# Try to load the PSF
 	try:
-		psf = open('JWSTPSFs/' + filter + '_' + str(arc_res) + '_z=' + str(redshift) + '_' + str(Ndim) + '_PSF.fits')
+		psf = open('JWSTPSFs/' + filter + '_' + str(arc_res) + '_z=' + str(int(redshift)) + '_' + str(Ndim) + '_PSF.fits')
 
+	except OSError:  # if it doesnt exist compute the PSF, save it and load it
+		psf = genPSFs(filter, Ndim, arc_res, redshift)
 	except FileNotFoundError:  # if it doesnt exist compute the PSF, save it and load it
 		psf = genPSFs(filter, Ndim, arc_res, redshift)
 
