@@ -4,6 +4,7 @@ import matplotlib
 import h5py
 import eagle_IO as E
 import os
+import gc
 import sys
 matplotlib.use('Agg')
 
@@ -142,13 +143,18 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         halo_ids = np.zeros_like(grp_ids, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+
+        del grp_ids, subgrp_ids
+        gc.collect()
     else:
         raise ValueError("Incompatible rank")
+
+    set_group_part_ids = set(group_part_ids)
 
     ind_to_pid = {}
     pid_to_ind = {}
     for ind, pid in enumerate(part_ids):
-        if pid in group_part_ids:
+        if pid in set_group_part_ids:
             ind_to_pid[ind] = pid
             pid_to_ind[pid] = ind
         # if ind % 10000000 == 0:
@@ -180,6 +186,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             prog_halo_ids = np.zeros_like(grp_ids, dtype=float)
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                 prog_halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+
+            del grp_ids, subgrp_ids
+            gc.collect()
         
         prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
@@ -226,6 +235,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             desc_halo_ids = np.zeros_like(grp_ids, dtype=float)
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                 desc_halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+
+            del grp_ids, subgrp_ids
+            gc.collect()
 
         desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
