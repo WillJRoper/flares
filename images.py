@@ -43,10 +43,6 @@ def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gal_sml
 
     # Convert inputs to physical kpc
     convert_pkpc = (u.Mpc).to(u.kpc) / (1 + redshift)
-    gal_poss *= convert_pkpc
-    gas_poss *= convert_pkpc
-    gas_sml *= convert_pkpc
-    gal_smls *= convert_pkpc
 
     for (i, j) in [(0, 1), (0, 2), (1, 2)]:
 
@@ -66,8 +62,9 @@ def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gal_sml
 
         for f in NIRCfs:
 
-            result = createSimpleImgs(gal_poss[:, i], gal_poss[:, j], gal_ms, gal_ages, gal_mets, gal_met_surfden,
-                                      gal_smls, redshift, arc_res, ini_width, f, model, F, output)
+            result = createSimpleImgs(gal_poss[:, i] * convert_pkpc, gal_poss[:, j] * convert_pkpc, gal_ms, gal_ages,
+                                      gal_mets, gal_met_surfden, gal_smls * convert_pkpc, redshift, arc_res,
+                                      ini_width, f, model, F, output)
             if psf:
                 galimgs[str(i) + '-' + str(j)][f] = createPSFdImgs(result[0], arc_res, f, redshift, result[-1])
             else:

@@ -64,18 +64,10 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).value
 
 	# Convert star positions to angular positons in arcseconds
-	xs = X[::]
-	ys = Y[::]
-	print('X', xs)
-	xs *= arcsec_per_kpc_proper
-	ys *= arcsec_per_kpc_proper
+	print('X', X)
+	xs = X * arcsec_per_kpc_proper
+	ys = Y * arcsec_per_kpc_proper
 	print('X in arcseconds', xs)
-
-	# Calculate width in kpc to use for the extent of the image
-	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift).value
-	# mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
-	mpc_width = width
-	extent = [-mpc_width / 2, mpc_width / 2, -mpc_width / 2, mpc_width / 2]
 
 	# Extract the luminosity for the desired filter
 	if NIRCf is not None:
@@ -104,8 +96,8 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	centre_y = np.sum(ys * L) / np.sum(L)
 
 	# Compute offset from centre
-	xs -= centre_x
-	ys -= centre_y
+	xs = xs - centre_x
+	ys = ys - centre_y
 
 	# Print the number of particles for this galaxy
 	org_nstars = len(L)
@@ -142,9 +134,9 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	print(smooth)
 	# Define the image reduction size for sub images
 	if arc_res == 0.031:
-		sub_size = 8
-	else:
 		sub_size = 4
+	else:
+		sub_size = 2
 
 	# Get the image pixel coordinates along each axis
 	ax_coords = np.linspace(-width/2., width/2., Ndim)
@@ -174,6 +166,12 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 
 	if output:
 		print(NIRCf, 'Image finished')
+
+	# Calculate width in kpc to use for the extent of the image
+	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift).value
+	# mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
+	mpc_width = width
+	extent = [-mpc_width / 2, mpc_width / 2, -mpc_width / 2, mpc_width / 2]
 
 	return gsmooth_img, extent, L, Ndim
 
