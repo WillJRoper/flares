@@ -302,7 +302,6 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                         axes.append(fig.add_subplot(gs[1, i]))
 
             # Set up parameters for drawing the scale line
-            dim = extents[key][0] * 2
             right_side = dim - (dim * 0.1)
             vert = dim - (dim * 0.15)
             lab_vert = vert + (dim * 0.1) * 5 / 8
