@@ -28,7 +28,7 @@ filters = FLARE.filters.NIRCam
 F = FLARE.filters.add_filters(filters)
 
 
-@nb.njit(nogil=True)
+# @nb.njit(nogil=True)
 def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift, arc_res, ini_width,
 					 NIRCf=None, model=model, F=F, output=False):
 	''' A function that takes simulation data and produced a image with the galaxy in the centre applying
