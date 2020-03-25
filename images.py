@@ -8,6 +8,7 @@ import eagle_IO as E
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import pickle
 import os
+import gc
 from utilities import calc_ages, get_Z_LOS
 from astropy.cosmology import Planck13 as cosmo
 from webb_imgs import createSimpleImgs, createPSFdImgs
@@ -100,10 +101,6 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 
     else:
 
-        # Initialise galaxy position dictionaries
-        all_gal_poss = {}
-        means = {}
-
         # Load all necessary arrays
         subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
         all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
@@ -111,17 +108,17 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         gal_sml = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength', numThreads=8)
         group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-        gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-        gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8)
+        # gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        # gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+        # gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8)
         halo_ids = np.zeros_like(grp_ids, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
 
-        # Get centre of potentials
-        gal_cop = {}
-        for cop, g, sg in zip(gal_cops, gal_gids, gal_ids):
-            gal_cop[float(str(g) + '.' + str(sg + 1))] = cop
+        # # Get centre of potentials
+        # gal_cop = {}
+        # for cop, g, sg in zip(gal_cops, gal_gids, gal_ids):
+        #     gal_cop[float(str(g) + '.' + str(sg + 1))] = cop
 
         # Translate ID into indices
         ind_to_pid = {}
@@ -149,6 +146,10 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 pid_to_ind[pid] = len(part_ids) + 1
                 halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
+        del group_part_ids, halo_ids, pid_to_ind, ind_to_pid, subgrp_ids, part_ids
+
+        gc.collect()
+
         print('There are', len(ids), 'galaxies above the cutoff')
 
         # If there are no galaxies exit
@@ -159,6 +160,29 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         a_born = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime', noH=True, numThreads=8)
         metallicities = E.read_array('SNAP', path, snap, 'PartType4/SmoothedMetallicity', noH=True, numThreads=8)
         masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8) * 10**10
+
+        # Calculate ages
+        ages = calc_ages(z, a_born)
+
+        # Get the position of each of these galaxies
+        gal_ages = {}
+        gal_mets = {}
+        gal_ms = {}
+        gal_smls = {}
+        all_gal_poss = {}
+        means = {}
+        for id in ids:
+            parts = list(halo_id_part_inds[id])
+            all_gal_poss[id] = all_poss[parts, :]
+            gal_ages[id] = ages[parts]
+            gal_mets[id] = metallicities[parts]
+            gal_ms[id] = masses[parts]
+            gal_smls[id] = gal_sml[parts]
+            means[id] = all_gal_poss[id].mean(axis=0)
+
+        del ages, all_poss, metallicities, masses, gal_sml, halo_id_part_inds, a_born
+
+        gc.collect()
 
         # Get gas particle information
         gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
@@ -195,33 +219,25 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 gpid_to_ind[pid] = len(gpart_ids) + 1
                 ghalo_id_part_inds.setdefault(simid, set()).update({gpid_to_ind[pid]})
 
-        # Calculate ages
-        ages = calc_ages(z, a_born)
+        del ggroup_part_ids, ghalo_ids, gpid_to_ind, gind_to_pid, gsubgrp_ids, gpart_ids
+
+        gc.collect()
 
         # Get the position of each of these galaxies
-        gal_ages = {}
-        gal_mets = {}
-        gal_ms = {}
         gas_mets = {}
         gas_ms = {}
         gas_smls = {}
-        gal_smls = {}
         all_gas_poss = {}
         for id in ids:
-            
-            parts = list(halo_id_part_inds[id])
             gparts = list(ghalo_id_part_inds[id])
-            all_gal_poss[id] = all_poss[parts, :]
             all_gas_poss[id] = gas_all_poss[gparts, :]
-            gal_ages[id] = ages[parts]
-            gal_mets[id] = metallicities[parts]
-            gal_ms[id] = masses[parts]
-            gal_smls[id] = gal_sml[parts]
             gas_mets[id] = gas_metallicities[gparts]
             gas_ms[id] = gas_masses[gparts]
             gas_smls[id] = gas_smooth_ls[gparts]
 
-            means[id] = all_gal_poss[id].mean(axis=0)
+        del gas_smooth_ls, gas_masses, gas_metallicities, gas_all_poss, ghalo_id_part_inds
+
+        gc.collect()
 
         save_dict = {'gal_ages': gal_ages, 'gal_mets': gal_mets, 'gal_ms': gal_ms, 'gas_mets': gas_mets,
                      'gas_ms': gas_ms, 'gal_smls': gal_smls, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
