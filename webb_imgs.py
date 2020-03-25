@@ -30,7 +30,7 @@ F = FLARE.filters.add_filters(filters)
 
 # @nb.njit(nogil=True)
 def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift, arc_res, ini_width,
-					 NIRCf=None, model=model, F=F, output=False):
+					 NIRCf=None, model=model, F=F, output=False, pkpc_conv=None):
 	''' A function that takes simulation data and produced a image with the galaxy in the centre applying
 		smoothing based on the resolution of the simualtion.
 
@@ -55,6 +55,12 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	else:
 		Ndim = ini_Ndim + 1
 
+	# Convert distance to pkpc if necessary
+	if pkpc_conv != None:
+		xs = X * pkpc_conv
+		ys = Y * pkpc_conv
+		smls = smls * pkpc_conv
+
 	# Compute the width from the number of pixels along a single dimension (Ndim)
 	width = Ndim * arc_res
 	if output:
@@ -65,8 +71,9 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 
 	# Convert star positions to angular positons in arcseconds
 	print('X', X)
-	xs = X * arcsec_per_kpc_proper
-	ys = Y * arcsec_per_kpc_proper
+	print('X', xs)
+	xs = xs * arcsec_per_kpc_proper
+	ys = ys * arcsec_per_kpc_proper
 	print('X in arcseconds', xs)
 
 	# Extract the luminosity for the desired filter

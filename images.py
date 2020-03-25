@@ -62,9 +62,9 @@ def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gal_sml
 
         for f in NIRCfs:
 
-            result = createSimpleImgs(gal_poss[:, i] * convert_pkpc, gal_poss[:, j] * convert_pkpc, gal_ms, gal_ages,
-                                      gal_mets, gal_met_surfden, gal_smls * convert_pkpc, redshift, arc_res,
-                                      ini_width, f, model, F, output)
+            result = createSimpleImgs(gal_poss[:, i], gal_poss[:, j], gal_ms, gal_ages,
+                                      gal_mets, gal_met_surfden, gal_smls, redshift, arc_res,
+                                      ini_width, f, model, F, output, convert_pkpc)
             if psf:
                 galimgs[str(i) + '-' + str(j)][f] = createPSFdImgs(result[0], arc_res, f, redshift, result[-1])
             else:
@@ -319,8 +319,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
             for ax, f in zip(axes, NIRCfs):
 
                 # Plot image with zeroed background
-                ax.imshow(np.zeros_like(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
-                im = ax.imshow(np.log10(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
+                # ax.imshow(np.zeros_like(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
+                im = ax.imshow(galimgs[key][f], extent=extents[key], cmap='Greys_r')
 
                 # # Draw scale line
                 # ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
