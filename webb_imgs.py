@@ -67,11 +67,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift)
 	mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
 	extent = [-mpc_width / 2, mpc_width / 2, -mpc_width / 2, mpc_width / 2]
-	print('X', X)
-	# Convert star positions to angular positons in arcseconds
-	X *= arcsec_per_kpc_proper
-	Y *= arcsec_per_kpc_proper
-	print('X in arcseconds', X)
+
 	# Extract the luminosity for the desired filter
 	if NIRCf is not None:
 		
@@ -97,10 +93,16 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	# Find the rough centre based on the distribution of the star particles weighted by observed luminosity
 	centre_x = np.sum(X * L) / np.sum(L)
 	centre_y = np.sum(Y * L) / np.sum(L)
-	print('L', L)
+
 	# Compute offset from centre
 	X -= centre_x
 	Y -= centre_y
+
+	print('X', X)
+	# Convert star positions to angular positons in arcseconds
+	X *= arcsec_per_kpc_proper
+	Y *= arcsec_per_kpc_proper
+	print('X in arcseconds', X)
 
 	# Print the number of particles for this galaxy
 	org_nstars = len(L)
@@ -189,8 +191,6 @@ def createPSFdImgs(img, arc_res, filter, redshift, Ndim):
 				   + str(Ndim) + '_PSF.fits')
 
 	except OSError:  # if it doesnt exist compute the PSF, save it and load it
-		psf = genPSFs(filter, Ndim, arc_res, redshift)
-	except FileNotFoundError:  # if it doesnt exist compute the PSF, save it and load it
 		psf = genPSFs(filter, Ndim, arc_res, redshift)
 
 	# Convolve the PSF with the image
