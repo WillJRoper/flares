@@ -319,17 +319,17 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 im = ax.imshow(np.log10(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
                 print(np.log10(galimgs[key][f]))
 
-                # # Draw scale line
-                # ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
-                #
-                # # Label scale
-                # ax.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                #         fontsize=2, color='w')
-                #
-                # # Draw text
-                # ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                #         transform=ax.transAxes, horizontalalignment='left', fontsize=4)
-                #
+                # Draw scale line
+                ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+
+                # Label scale
+                ax.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+                        fontsize=2, color='w')
+
+                # Draw text
+                ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                        transform=ax.transAxes, horizontalalignment='left', fontsize=4)
+
                 # Remove ticks
                 ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                                 labeltop=False, labelright=False, labelbottom=False)
@@ -401,7 +401,7 @@ for i in range(len(reg_snaps)):
         # load = False
 
     try:
-        img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=load,
+        img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width, load=load,
                  conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.1, NIRCfs=NIRCfs)
     except ValueError:
         print('ValueError')
