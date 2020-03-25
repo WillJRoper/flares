@@ -313,32 +313,33 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 # Plot image with zeroed background
                 ax.imshow(np.zeros_like(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
                 im = ax.imshow(np.log10(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
+                print(np.where(np.log10(galimgs[key][f]) != 0))
 
-                # Draw scale line
-                ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
-
-                # Label scale
-                ax.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                        fontsize=2, color='w')
-
-                # Draw text
-                ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                        transform=ax.transAxes, horizontalalignment='left', fontsize=4)
-
-                # Remove ticks
-                ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                                labeltop=False, labelright=False, labelbottom=False)
-
-                # Add colorbars
-                cax = inset_axes(ax, width="50%", height="3%", loc='lower left')
-                cbar = fig.colorbar(im, cax=cax, orientation="horizontal")
-
-                # Label colorbars
-                cbar.ax.set_xlabel(r'$\log_{10}(\mathrm{counts})$', fontsize=2, color='w', labelpad=1.0)
-                cbar.ax.xaxis.set_label_position('top')
-                cbar.outline.set_edgecolor('w')
-                cbar.outline.set_linewidth(0.05)
-                cbar.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
+                # # Draw scale line
+                # ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+                #
+                # # Label scale
+                # ax.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+                #         fontsize=2, color='w')
+                #
+                # # Draw text
+                # ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                #         transform=ax.transAxes, horizontalalignment='left', fontsize=4)
+                #
+                # # Remove ticks
+                # ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                #                 labeltop=False, labelright=False, labelbottom=False)
+                #
+                # # Add colorbars
+                # cax = inset_axes(ax, width="50%", height="3%", loc='lower left')
+                # cbar = fig.colorbar(im, cax=cax, orientation="horizontal")
+                #
+                # # Label colorbars
+                # cbar.ax.set_xlabel(r'$\log_{10}(\mathrm{counts})$', fontsize=2, color='w', labelpad=1.0)
+                # cbar.ax.xaxis.set_label_position('top')
+                # cbar.outline.set_edgecolor('w')
+                # cbar.outline.set_linewidth(0.05)
+                # cbar.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
             fig.savefig('plots/webbimages/Webb_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '_PSF'
