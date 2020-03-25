@@ -180,6 +180,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
             gal_smls[id] = gal_sml[parts]
             means[id] = all_gal_poss[id].mean(axis=0)
 
+        print('Got galaxy properties')
+
         del ages, all_poss, metallicities, masses, gal_sml, halo_id_part_inds, a_born
 
         gc.collect()
@@ -197,6 +199,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         for (ind, g), sg in zip(enumerate(ggrp_ids), gsubgrp_ids):
             ghalo_ids[ind] = float(str(g) + '.' + str(sg + 1))
 
+        print('Got halo IDs')
+
         # Translate ID into indices
         gind_to_pid = {}
         gpid_to_ind = {}
@@ -204,6 +208,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
             if pid in ggroup_part_ids:
                 gind_to_pid[ind] = pid
                 gpid_to_ind[pid] = ind
+
+        print('Made ID dicts')
 
         # Get the particles in the halos
         ghalo_id_part_inds = {}
@@ -218,6 +224,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 gind_to_pid[len(gpart_ids) + 1] = pid
                 gpid_to_ind[pid] = len(gpart_ids) + 1
                 ghalo_id_part_inds.setdefault(simid, set()).update({gpid_to_ind[pid]})
+
+        print('Got particle IDs')
 
         del ggroup_part_ids, ghalo_ids, gpid_to_ind, gind_to_pid, gsubgrp_ids, gpart_ids
 
@@ -235,6 +243,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
             gas_ms[id] = gas_masses[gparts]
             gas_smls[id] = gas_smooth_ls[gparts]
 
+        print('Got gas properties')
+
         del gas_smooth_ls, gas_masses, gas_metallicities, gas_all_poss, ghalo_id_part_inds
 
         gc.collect()
@@ -246,6 +256,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         with open('UVimg_data/stellardata_reg' + reg + '_snap'
                   + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'wb') as pfile1:
             pickle.dump(save_dict, pfile1)
+
+        print('Written out properties')
 
     print('Extracted galaxy positions')
 
