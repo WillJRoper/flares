@@ -99,8 +99,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         gal_ms = save_dict['gal_ms']
         gas_mets = save_dict['gas_mets']
         gas_ms = save_dict['gas_ms']
-        # gal_smls = save_dict['gal_smls']
-        gal_smls = []
+        gal_smls = save_dict['gal_smls']
+        # gal_smls = []
         gas_smls = save_dict['gas_smls']
         all_gas_poss = save_dict['all_gas_poss']
         all_gal_poss = save_dict['all_gal_poss']
@@ -277,7 +277,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 
         # Get the images
         galimgs, extents, ls = create_img(all_gal_poss[id], arc_res, dim, gal_ms[id], gal_ages[id],
-                                          gal_mets[id], gal_smls, gas_mets[id], all_gas_poss[id], gas_ms[id],
+                                          gal_mets[id], gal_smls[id], gas_mets[id], all_gas_poss[id], gas_ms[id],
                                           gas_smls[id], lkernel, kbins, conv, z, NIRCfs, model, F, output, psf)
 
         # Loop over dimensions

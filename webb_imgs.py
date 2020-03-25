@@ -61,12 +61,12 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 		print('Width= ', width, 'arcsecond')
 
 	# Find the number of arcseconds per kpc at the current redshift using astropy and 'throw away' units
-	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).to(u.arcsec / u.Mpc).value * (1 + redshift)
+	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).to(u.arcsec / u.Mpc).value / (1 + redshift)
 
 	# Calculate width in kpc to use for the extent of the image
-	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift) * (1 + redshift)
-	mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
-	# mpc_width = width
+	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift) / (1 + redshift)
+	# mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
+	mpc_width = width
 	extent = [-mpc_width / 2, mpc_width / 2, -mpc_width / 2, mpc_width / 2]
 
 	# Extract the luminosity for the desired filter
@@ -133,8 +133,8 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	# Initialise the image array
 	gsmooth_img = np.zeros((Ndim, Ndim))
 
-	# Define the minimum smoothing for 0.1kpc in arcseconds
-	smooth_Mpc = 0.001802390/0.677
+	# Define the smoothing length in arcseconds
+	smooth_Mpc = smls
 	smooth = smooth_Mpc * arcsec_per_kpc_proper
 	print(smooth)
 	# Define the image reduction size for sub images
@@ -147,7 +147,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	ax_coords = np.linspace(-width/2., width/2., Ndim)
 
 	# Loop over each star computing the smoothed gaussian distribution for this particle
-	for x, y, l in zip(xs, ys, L):
+	for x, y, l, sml in zip(xs, ys, L):
 
 		# Get this star's position within the image
 		x_img, y_img = (np.abs(ax_coords - x)).argmin(), (np.abs(ax_coords - y)).argmin()
@@ -160,7 +160,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 		# Compute the image
 		g = np.exp(-(((Gx[sub_ylow:sub_yhigh, sub_xlow:sub_xhigh] - x) ** 2
 					+ (Gy[sub_ylow:sub_yhigh, sub_xlow:sub_xhigh] - y) ** 2)
-					/ (2.0 * smooth ** 2)))
+					/ (2.0 * sml ** 2)))
 
 		# Get the sum of the gaussian
 		gsum = np.sum(g)
