@@ -12,11 +12,14 @@ import gc
 from utilities import calc_ages, get_Z_LOS
 from astropy.cosmology import Planck13 as cosmo
 from webb_imgs import createSimpleImgs, createPSFdImgs
+import seaborn as sns
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
 from SynthObs.SED import models
 matplotlib.use('Agg')
 
+
+sns.set_style('white')
 
 # Define SED model
 model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
@@ -200,12 +203,12 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
             ghalo_ids[ind] = float(str(g) + '.' + str(sg + 1))
 
         print('Got halo IDs')
-
+        set_ggroup_part_ids = set(ggroup_part_ids)
         # Translate ID into indices
         gind_to_pid = {}
         gpid_to_ind = {}
         for ind, pid in enumerate(gpart_ids):
-            if pid in ggroup_part_ids:
+            if pid in set_ggroup_part_ids:
                 gind_to_pid[ind] = pid
                 gpid_to_ind[pid] = ind
 
@@ -358,7 +361,7 @@ npart_lim = 10**4
 NIRCfs = ('F115W', 'F150W', 'F200W')
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 38):
     if reg < 10:
         regions.append('0' + str(reg))
     else:
