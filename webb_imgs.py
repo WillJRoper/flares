@@ -61,12 +61,12 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 		print('Width= ', width, 'arcsecond')
 
 	# Find the number of arcseconds per kpc at the current redshift using astropy and 'throw away' units
-	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).to(u.arcsec / u.Mpc).value
+	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).to(u.arcsec / u.Mpc).value * (1 + redshift)
 
 	# Calculate width in kpc to use for the extent of the image
-	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift)
-	# mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
-	mpc_width = width
+	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift) * (1 + redshift)
+	mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
+	# mpc_width = width
 	extent = [-mpc_width / 2, mpc_width / 2, -mpc_width / 2, mpc_width / 2]
 
 	# Extract the luminosity for the desired filter
