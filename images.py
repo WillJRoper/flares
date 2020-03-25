@@ -99,7 +99,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         gal_ms = save_dict['gal_ms']
         gas_mets = save_dict['gas_mets']
         gas_ms = save_dict['gas_ms']
-        gal_smls = save_dict['gal_smls']
+        # gal_smls = save_dict['gal_smls']
+        gal_smls = []
         gas_smls = save_dict['gas_smls']
         all_gas_poss = save_dict['all_gas_poss']
         all_gal_poss = save_dict['all_gal_poss']
@@ -396,20 +397,17 @@ for i in range(len(reg_snaps)):
     if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
         load = True
     else:
-        continue
-        # load = False
+        load = False
 
-    # try:
-    #     img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=load,
-    #              conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.1, NIRCfs=NIRCfs)
-    # except ValueError:
-    #     print('ValueError')
-    #     continue
-    # except KeyError:
-    #     print('KeyError')
-    #     continue
-    # except OSError:
-    #     print('OSError')
-    #     continue
-    img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width, load=load,
-             conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.1, NIRCfs=NIRCfs)
+    try:
+        img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=load,
+                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.1, NIRCfs=NIRCfs)
+    except ValueError:
+        print('ValueError')
+        continue
+    except KeyError:
+        print('KeyError')
+        continue
+    except OSError:
+        print('OSError')
+        continue

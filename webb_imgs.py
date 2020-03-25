@@ -134,7 +134,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	gsmooth_img = np.zeros((Ndim, Ndim))
 
 	# Define the minimum smoothing for 0.1kpc in arcseconds
-	smooth_Mpc = smls
+	smooth_Mpc = 0.001802390/0.677
 	smooth = smooth_Mpc * arcsec_per_kpc_proper
 	print(smooth)
 	# Define the image reduction size for sub images
