@@ -326,7 +326,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
 
                 # Label scale
-                ax.text(lab_horz, lab_vert, str(int(scale)) + '"', horizontalalignment='center',
+                ax.text(lab_horz, lab_vert, str(scale) + '"', horizontalalignment='center',
                         fontsize=2, color='w')
 
                 # Draw text
@@ -404,8 +404,8 @@ for i in range(len(reg_snaps)):
         # load = False
 
     try:
-        img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width, load=load,
-                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.1, NIRCfs=NIRCfs)
+        img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=load,
+                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.5, NIRCfs=NIRCfs)
     except ValueError:
         print('ValueError')
         continue
