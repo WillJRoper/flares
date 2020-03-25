@@ -67,7 +67,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	kpc_proper_per_arcmin = cosmo.kpc_proper_per_arcmin(redshift)
 	mpc_width = ((width * u.arcsec).to(u.arcmin) * kpc_proper_per_arcmin).to(u.Mpc).value
 	extent = [-mpc_width / 2, mpc_width / 2, -mpc_width / 2, mpc_width / 2]
-	print('X', x)
+	print('X', X)
 	# Convert star positions to angular positons in arcseconds
 	X *= arcsec_per_kpc_proper
 	Y *= arcsec_per_kpc_proper
