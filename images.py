@@ -310,9 +310,9 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                         axes.append(fig.add_subplot(gs[1, i]))
 
             # Set up parameters for drawing the scale line
-            right_side = dim - (dim * 0.1)
-            vert = dim - (dim * 0.15)
-            lab_vert = vert + (dim * 0.1) * 5 / 8
+            right_side = dim / 2 - (dim / 2 * 0.1)
+            vert = dim / 2 - (dim / 2 * 0.15)
+            lab_vert = vert + (dim / 2 * 0.1) * 5 / 8
             lab_horz = right_side - scale / 2
 
             # Draw images
@@ -322,16 +322,16 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 # ax.imshow(np.zeros_like(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
                 im = ax.imshow(galimgs[key][f], extent=extents[key], cmap='Greys_r')
 
-                # # Draw scale line
-                # ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
-                #
-                # # Label scale
-                # ax.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                #         fontsize=2, color='w')
-                #
-                # # Draw text
-                # ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                #         transform=ax.transAxes, horizontalalignment='left', fontsize=4)
+                # Draw scale line
+                ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+
+                # Label scale
+                ax.text(lab_horz, lab_vert, str(int(scale)) + '"', horizontalalignment='center',
+                        fontsize=2, color='w')
+
+                # Draw text
+                ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                        transform=ax.transAxes, horizontalalignment='left', fontsize=4)
 
                 # Remove ticks
                 ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
@@ -342,7 +342,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 cbar = fig.colorbar(im, cax=cax, orientation="horizontal")
 
                 # Label colorbars
-                cbar.ax.set_xlabel(r'$\log_{10}(\mathrm{counts})$', fontsize=2, color='w', labelpad=1.0)
+                cbar.ax.set_xlabel(r'$\mathrm{counts}$', fontsize=2, color='w', labelpad=1.0)
                 cbar.ax.xaxis.set_label_position('top')
                 cbar.outline.set_edgecolor('w')
                 cbar.outline.set_linewidth(0.05)
@@ -359,7 +359,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 csoft = 0.001802390/0.677
 
 # Define image width
-width = 10.
+width = 3.
 
 # Define resolution
 arc_res = 0.031
