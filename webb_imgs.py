@@ -147,7 +147,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	ax_coords = np.linspace(-width/2., width/2., Ndim)
 
 	# Loop over each star computing the smoothed gaussian distribution for this particle
-	for x, y, l, sml in zip(xs, ys, L):
+	for x, y, l, sml in zip(xs, ys, L, smooth):
 
 		# Get this star's position within the image
 		x_img, y_img = (np.abs(ax_coords - x)).argmin(), (np.abs(ax_coords - y)).argmin()
