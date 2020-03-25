@@ -132,7 +132,8 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 
 	# Define the miniimum smoothing for 0.1kpc in arcseconds
 	smooth = smls * cosmo.arcsec_per_kpc_proper(redshift).to(u.arcsec / u.Mpc).value
-
+	print(smooth)
+	print(X)
 	# Define the image reduction size for sub images
 	if arc_res == 0.031:
 		sub_size = 8
