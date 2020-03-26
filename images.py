@@ -347,7 +347,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 cbar = fig.colorbar(im, cax=cax, orientation="horizontal")
 
                 # Label colorbars
-                cbar.ax.set_xlabel(r'$\mathrm{counts}$', fontsize=3, color='w', labelpad=1.0)
+                cbar.ax.set_xlabel(r'$\mathrm{counts}/\mathrm{s}$', fontsize=3, color='w', labelpad=1.0)
                 cbar.ax.xaxis.set_label_position('top')
                 cbar.outline.set_edgecolor('w')
                 cbar.outline.set_linewidth(0.05)
