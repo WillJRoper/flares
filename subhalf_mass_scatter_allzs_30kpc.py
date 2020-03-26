@@ -88,11 +88,11 @@ for reg in regions:
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
         try:
             all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
-                                    physical=True, numThreads=8)
+                                    physicalUnits=True, numThreads=8)
             masses = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                    physical=True, numThreads=8)
+                                    physicalUnits=True, numThreads=8)
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
-                                    physical=True, numThreads=8)
+                                    physicalUnits=True, numThreads=8)
 
             # Loop over galaxies centres
             for cop in gal_cops:
