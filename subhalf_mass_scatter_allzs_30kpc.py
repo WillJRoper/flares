@@ -94,11 +94,14 @@ for reg in regions:
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                     physicalUnits=True, numThreads=8)
 
+            print(all_poss)
+            print(gal_cops)
             # Loop over galaxies centres
             for cop in gal_cops:
 
                 # Get particles and masses
                 gal_poss, gal_masses = get_parts_in_aperture(all_poss, masses, cop, app=0.03)
+                prinnt(gal_poss, gal_masses)
                 half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = calc_half_mass_rad(gal_poss, gal_masses)
 
         except OSError:
