@@ -23,7 +23,7 @@ def get_parts_in_aperture(all_poss, masses, cent, app):
 
     # Get particle positions and masses
     gal_poss = all_poss[cond, :]
-    gal_masses = masses[cond, :]
+    gal_masses = masses[cond]
 
     return gal_poss - cent, gal_masses
 
