@@ -51,6 +51,7 @@ def calc_half_mass_rad(poss, masses):
     # Get the half mass radius particle
     hmr_ind = np.argmin(np.abs(m_profile - half_mass))
     hmr = rs[hmr_ind]
+    print(hmr, np.median(np.cumsum(rs*masses)))
 
     return hmr, tot_mass
 
