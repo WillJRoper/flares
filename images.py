@@ -304,7 +304,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 for i in range(len(NIRCfs)):
                     axes.append(fig.add_subplot(gs[0, i]))
             else:
-                fig = plt.figure(figsize=(6.4, 3.4))
+                fig = plt.figure(figsize=(6.4, 3.2))
                 gs = gridspec.GridSpec(2, int(len(NIRCfs)/2))
                 gs.update(wspace=0.0, hspace=0.0)
                 axes = []
@@ -335,8 +335,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                         fontsize=3, color='w')
 
                 # Draw text
-                ax.text(0.06, 0.95, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.7),
-                        transform=ax.transAxes, horizontalalignment='left', fontsize=4)
+                ax.text(0.06, 0.925, f, bbox=dict(boxstyle="round,pad=0.3", fc='k', ec="w", lw=1, alpha=0.5),
+                        transform=ax.transAxes, horizontalalignment='left', fontsize=4, color='w')
 
                 # Remove ticks
                 ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
