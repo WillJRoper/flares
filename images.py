@@ -312,7 +312,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                     if i < len(NIRCfs) / 2:
                         axes.append(fig.add_subplot(gs[0, i]))
                     else:
-                        axes.append(fig.add_subplot(gs[1, i]))
+                        axes.append(fig.add_subplot(gs[1, i - len(NIRCfs) / 2]))
 
             # Set up parameters for drawing the scale line
             right_side = dim / 2 - (dim / 2 * 0.1)
