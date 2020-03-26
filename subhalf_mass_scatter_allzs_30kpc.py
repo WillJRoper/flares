@@ -55,6 +55,22 @@ def calc_half_mass_rad(poss, masses):
     return hmr, tot_mass
 
 
+@nb.njit(nogil=True, parallel=True)
+def get_hmr_and_tm(all_poss, masses, gal_cops):
+
+    # Loop over galaxies centres
+    hmr_arr = np.full_like(gal_cops, -2)
+    tms_arr = np.full_like(gal_cops, -2)
+    for ind, cop in enumerate(gal_cops):
+
+        # Get particles and masses
+        gal_poss, gal_masses = get_parts_in_aperture(all_poss, masses, cop, app=0.03)
+        hmr, tm = calc_half_mass_rad(gal_poss, gal_masses)
+        if hmr != -2:
+            hmr_arr[ind], tms_arr[ind] = hmr, tm
+
+    return hmr_arr[np.where(hmr_arr != -2)], tms_arr[np.where(hmr_arr != -2)]
+
 regions = []
 for reg in range(0, 1):
 
@@ -97,14 +113,7 @@ for reg in regions:
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                     physicalUnits=True, numThreads=8)
 
-            # Loop over galaxies centres
-            for cop in gal_cops:
-
-                # Get particles and masses
-                gal_poss, gal_masses = get_parts_in_aperture(all_poss, masses, cop, app=0.03)
-                hmr, tm = calc_half_mass_rad(gal_poss, gal_masses)
-                if hmr != -2:
-                    half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = hmr, tm
+            half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = get_hmr_and_tm(all_poss, masses, gal_cops)
 
         except OSError:
             continue
