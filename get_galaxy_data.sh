@@ -24,11 +24,12 @@ source activate DMLJ-env
 i=$(($SLURM_ARRAY_TASK_ID - 1))
 
 # Run the program
-./directProgDesc.py $i
+./get_galaxy_data.py $i
 
 source deactivate
 
 echo "Job done, info follows..."
 sacct -j $SLURM_JOBID --format=JobID,JobName,Partition,MaxRSS,Elapsed,ExitCode
 exit
+
 

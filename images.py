@@ -374,7 +374,7 @@ npart_lim = 10**4
 NIRCfs = ('F070W', 'F090W', 'F115W', 'F150W', 'F200W', 'F277W', 'F356W', 'F444W')
 
 regions = []
-for reg in range(0, 38):
+for reg in range(0, 40):
     if reg < 10:
         regions.append('0' + str(reg))
     else:
@@ -390,36 +390,30 @@ for reg in reversed(regions):
 
         reg_snaps.append((reg, snap))
 
-for i in range(len(reg_snaps)):
+if __name__ == '__main__':
 
-    print(reg_snaps[i][0], reg_snaps[i][1])
+    ind = int(sys.argv[1])
+    print(reg_snaps[ind])
+    reg, snap = reg_snaps[ind]
 
     # Define region variables
-    reg = reg_snaps[i][0]
-    snap = reg_snaps[i][1]
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
-    # files = os.listdir('UVimg_data/')
-    # print(files)
-    #
-    # if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
-    #     load = True
-    # else:
-    #     continue
-    #     # load = False
-    load = False
+    files = os.listdir('UVimg_data/')
+    print(files)
 
-    try:
-        img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width, load=load,
-                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.5, NIRCfs=NIRCfs)
-        img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=True,
-                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.5, NIRCfs=NIRCfs)
-    except ValueError:
-        print('ValueError')
-        continue
-    except KeyError:
-        print('KeyError')
-        continue
-    except OSError:
-        print('OSError')
-        continue
+    if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
+        load = True
+        try:
+            img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width,
+                     load=load,
+                     conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
+            img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width,
+                     load=True,
+                     conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
+        except ValueError:
+            print('ValueError')
+        except KeyError:
+            print('KeyError')
+        except OSError:
+            print('OSError')
