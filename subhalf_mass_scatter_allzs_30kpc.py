@@ -51,7 +51,6 @@ def calc_half_mass_rad(poss, masses):
     # Get the half mass radius particle
     hmr_ind = np.argmin(np.abs(m_profile - half_mass))
     hmr = rs[hmr_ind]
-    print(hmr, np.median(np.cumsum(rs*masses)))
 
     return hmr, tot_mass
 
@@ -94,7 +93,7 @@ for reg in regions:
             all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
                                     physicalUnits=True, numThreads=8)
             masses = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                    physicalUnits=True, numThreads=8)
+                                    physicalUnits=True, numThreads=8) * 10**10
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                     physicalUnits=True, numThreads=8)
 
