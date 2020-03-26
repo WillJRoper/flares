@@ -335,7 +335,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                         fontsize=3, color='w')
 
                 # Draw text
-                ax.text(0.05, 0.95, f, bbox=dict(boxstyle="round,pad=0.3", fc='k', ec="w", lw=0.25, alpha=0.5),
+                ax.text(0.05, 0.945, f, bbox=dict(boxstyle="round,pad=0.3", fc='k', ec="w", lw=0.25, alpha=0.5),
                         transform=ax.transAxes, horizontalalignment='left', fontsize=3, color='w')
 
                 # Remove ticks
@@ -399,19 +399,19 @@ for i in range(len(reg_snaps)):
     snap = reg_snaps[i][1]
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
-    files = os.listdir('UVimg_data/')
-    print(files)
-
-    if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
-        load = True
-    else:
-        continue
-        # load = False
-    # load = False
+    # files = os.listdir('UVimg_data/')
+    # print(files)
+    #
+    # if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
+    #     load = True
+    # else:
+    #     continue
+    #     # load = False
+    load = False
 
     try:
-        # img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width, load=load,
-        #          conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.5, NIRCfs=NIRCfs)
+        img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width, load=load,
+                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.5, NIRCfs=NIRCfs)
         img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=load,
                  conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.5, NIRCfs=NIRCfs)
     except ValueError:
