@@ -304,7 +304,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 for i in range(len(NIRCfs)):
                     axes.append(fig.add_subplot(gs[0, i]))
             else:
-                fig = plt.figure(figsize=(5*2, int(len(NIRCfs)/2 * 22/5)))
+                fig = plt.figure(figsize=(7, int(len(NIRCfs)/2 * 22/5)))
                 gs = gridspec.GridSpec(2, int(len(NIRCfs)/2))
                 gs.update(wspace=0.0, hspace=0.0)
                 axes = []
@@ -374,7 +374,7 @@ npart_lim = 10**4
 NIRCfs = ('F070W', 'F090W', 'F115W', 'F150W', 'F200W', 'F277W', 'F356W', 'F444W')
 
 regions = []
-for reg in range(0, 37):
+for reg in range(0, 38):
     if reg < 10:
         regions.append('0' + str(reg))
     else:
@@ -399,15 +399,15 @@ for i in range(len(reg_snaps)):
     snap = reg_snaps[i][1]
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
-    # files = os.listdir('UVimg_data/')
-    # print(files)
-    #
-    # if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
-    #     load = True
-    # else:
-    #     continue
-    #     # load = False
-    load = False
+    files = os.listdir('UVimg_data/')
+    print(files)
+
+    if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
+        load = True
+    else:
+        continue
+        # load = False
+    # load = False
 
     try:
         img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width, load=load,
