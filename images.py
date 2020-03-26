@@ -304,7 +304,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 for i in range(len(NIRCfs)):
                     axes.append(fig.add_subplot(gs[0, i]))
             else:
-                fig = plt.figure(figsize=(7, 4))
+                fig = plt.figure(figsize=(6.4, 3.6))
                 gs = gridspec.GridSpec(2, int(len(NIRCfs)/2))
                 gs.update(wspace=0.0, hspace=0.0)
                 axes = []
@@ -410,8 +410,8 @@ for i in range(len(reg_snaps)):
     # load = False
 
     try:
-        img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width, load=load,
-                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.5, NIRCfs=NIRCfs)
+        # img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width, load=load,
+        #          conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.5, NIRCfs=NIRCfs)
         img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width, load=load,
                  conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.5, NIRCfs=NIRCfs)
     except ValueError:
