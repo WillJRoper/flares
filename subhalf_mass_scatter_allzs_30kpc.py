@@ -101,7 +101,7 @@ for reg in regions:
 
                 # Get particles and masses
                 gal_poss, gal_masses = get_parts_in_aperture(all_poss, masses, cop, app=0.03)
-                prinnt(gal_poss, gal_masses)
+                print(gal_poss, gal_masses)
                 half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = calc_half_mass_rad(gal_poss, gal_masses)
 
         except OSError:
