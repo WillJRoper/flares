@@ -7,7 +7,6 @@ from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
 import eagle_IO as E
 import seaborn as sns
-from scipy
 import pickle
 import itertools
 matplotlib.use('Agg')
