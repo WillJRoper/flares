@@ -171,8 +171,8 @@ def img_main(path, snap, reg, npart_lim=10**3):
                  'gas_ms': gas_ms, 'gal_smls': gal_smls, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
                  'all_gal_poss': all_gal_poss, 'means': means}
 
-    with open('UVimg_data/stellardata_reg' + reg + '_snap'
-              + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'wb') as pfile1:
+    with open('UVimg_data/stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan'
+              + str(npart_lim) + '.pck', 'wb') as pfile1:
         pickle.dump(save_dict, pfile1)
 
 
@@ -207,7 +207,7 @@ if __name__ == '__main__':
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
     try:
-        img_main(path, snap, reg=10**4)
+        img_main(path, snap, reg, npart_lim=10**4)
     except ValueError:
         print('ValueError')
     except KeyError:
