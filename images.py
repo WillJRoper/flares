@@ -304,7 +304,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 for i in range(len(NIRCfs)):
                     axes.append(fig.add_subplot(gs[0, i]))
             else:
-                fig = plt.figure(figsize=(6.4, 3.6))
+                fig = plt.figure(figsize=(6.4, 3.4))
                 gs = gridspec.GridSpec(2, int(len(NIRCfs)/2))
                 gs.update(wspace=0.0, hspace=0.0)
                 axes = []
@@ -332,7 +332,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 
                 # Label scale
                 ax.text(lab_horz, lab_vert, str(scale) + '"', horizontalalignment='center',
-                        fontsize=2, color='w')
+                        fontsize=3, color='w')
 
                 # Draw text
                 ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -347,7 +347,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 cbar = fig.colorbar(im, cax=cax, orientation="horizontal")
 
                 # Label colorbars
-                cbar.ax.set_xlabel(r'$\mathrm{counts}$', fontsize=2, color='w', labelpad=1.0)
+                cbar.ax.set_xlabel(r'$\mathrm{counts}$', fontsize=3, color='w', labelpad=1.0)
                 cbar.ax.xaxis.set_label_position('top')
                 cbar.outline.set_edgecolor('w')
                 cbar.outline.set_linewidth(0.05)
