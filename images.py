@@ -279,6 +279,9 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 
     axlabels = [r'$x$', r'$y$', r'$z$']
 
+    # Initialise image save dictionary
+    img_save_dict = {}
+
     # Create images for these galaxies
     for id in gal_ages.keys():
 
@@ -288,6 +291,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
         galimgs, extents, ls = create_img(all_gal_poss[id], arc_res, dim, gal_ms[id], gal_ages[id],
                                           gal_mets[id], gal_smls[id], gas_mets[id], all_gas_poss[id], gas_ms[id],
                                           gas_smls[id], lkernel, kbins, conv, z, NIRCfs, model, F, output, psf)
+
+        img_save_dict[id] = {'galimgs': galimgs, 'extents': extents}
 
         # Loop over dimensions
         for key in galimgs.keys():
@@ -358,6 +363,11 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                         + str(psf) + '_' + '_'.join(NIRCfs) + '.png', bbox_inches='tight', dpi=600)
 
             plt.close(fig)
+
+        with open('Webb_img_data/Webbdata_reg' + reg + '_snap'
+                  + snap + '_npartgreaterthan' + str(npart_lim) + '_width' + str(width)
+                  + '_'.join(NIRCfs) + '.pck', 'wb') as pfile1:
+            pickle.dump(img_save_dict, pfile1)
 
 
 # Define comoving softening length in Mpc
