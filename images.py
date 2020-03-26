@@ -335,8 +335,8 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                         fontsize=3, color='w')
 
                 # Draw text
-                ax.text(0.06, 0.925, f, bbox=dict(boxstyle="round,pad=0.3", fc='k', ec="w", lw=1, alpha=0.5),
-                        transform=ax.transAxes, horizontalalignment='left', fontsize=4, color='w')
+                ax.text(0.05, 0.95, f, bbox=dict(boxstyle="round,pad=0.3", fc='k', ec="w", lw=0.25, alpha=0.5),
+                        transform=ax.transAxes, horizontalalignment='left', fontsize=3, color='w')
 
                 # Remove ticks
                 ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
