@@ -30,6 +30,9 @@ def get_parts_in_aperture(all_poss, masses, cent, app):
 
 def calc_half_mass_rad(poss, masses):
 
+    if len(masses) == 0:
+        return -2, -2
+
     # Get galaxy particle indices
     rs = np.sqrt(poss[:, 0]**2 + poss[:, 1]**2 + poss[:, 2]**2)
 
@@ -94,15 +97,14 @@ for reg in regions:
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                     physicalUnits=True, numThreads=8)
 
-            print(all_poss)
-            print(gal_cops)
             # Loop over galaxies centres
             for cop in gal_cops:
 
                 # Get particles and masses
                 gal_poss, gal_masses = get_parts_in_aperture(all_poss, masses, cop, app=0.03)
-                print(gal_poss, gal_masses)
-                half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = calc_half_mass_rad(gal_poss, gal_masses)
+                hmr, tm = calc_half_mass_rad(gal_poss, gal_masses)
+                if hmr != -2:
+                    half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = hmr, tm
 
         except OSError:
             continue
