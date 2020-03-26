@@ -304,7 +304,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 for i in range(len(NIRCfs)):
                     axes.append(fig.add_subplot(gs[0, i]))
             else:
-                fig = plt.figure(figsize=(7, int(len(NIRCfs)/2 * 22/5)))
+                fig = plt.figure(figsize=(int(len(NIRCfs)/2 * 22/5), 7))
                 gs = gridspec.GridSpec(2, int(len(NIRCfs)/2))
                 gs.update(wspace=0.0, hspace=0.0)
                 axes = []
