@@ -9,6 +9,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import pickle
 import os
 import gc
+import sys
 from utilities import calc_ages, get_Z_LOS
 from astropy.cosmology import Planck13 as cosmo
 from webb_imgs import createSimpleImgs, createPSFdImgs
