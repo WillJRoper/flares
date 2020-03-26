@@ -62,6 +62,11 @@ def create_img(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gal_sml
 
         for f in NIRCfs:
 
+            if int(f[1:4]) < 250:
+                arc_res = 0.031
+            else:
+                arc_res = 0.063
+
             result = createSimpleImgs(gal_poss[:, i], gal_poss[:, j], gal_ms, gal_ages,
                                       gal_mets, gal_met_surfden, gal_smls, redshift, arc_res,
                                       ini_width, f, model, F, output, convert_pkpc)
@@ -366,7 +371,7 @@ arc_res = 0.031
 print(width / arc_res, 'pixels in', width, 'arcseconds')
 
 npart_lim = 10**4
-NIRCfs = ('F115W', 'F150W', 'F200W')
+NIRCfs = ('F070W', 'F090W', 'F115W', 'F150W', 'F200W', 'F277W', 'F356W', 'F444W')
 
 regions = []
 for reg in range(0, 38):
