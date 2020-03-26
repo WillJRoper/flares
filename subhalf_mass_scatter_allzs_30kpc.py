@@ -2,18 +2,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-import astropy.units as u
+import numba as nb
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
 import eagle_IO as E
 import seaborn as sns
-import pickle
-import itertools
 matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
 
 
+@nb.njit(nogil=True, parallel=True)
 def get_parts_in_aperture(all_poss, masses, cent, app):
 
     # Get galaxy particle indices
@@ -28,6 +27,7 @@ def get_parts_in_aperture(all_poss, masses, cent, app):
     return gal_poss - cent, gal_masses
 
 
+@nb.njit(nogil=True, parallel=True)
 def calc_half_mass_rad(poss, masses):
 
     if len(masses) == 0:
