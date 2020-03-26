@@ -317,7 +317,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
             # Set up parameters for drawing the scale line
             right_side = dim / 2 - (dim / 2 * 0.1)
             vert = dim / 2 - (dim / 2 * 0.15)
-            lab_vert = vert + (dim / 2 * 0.1) * 5 / 8
+            lab_vert = vert + (dim / 2 * 0.1) * 4 / 8
             lab_horz = right_side - scale / 2
 
             # Draw images
@@ -335,7 +335,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                         fontsize=3, color='w')
 
                 # Draw text
-                ax.text(0.1, 0.9, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                ax.text(0.06, 0.95, f, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.7),
                         transform=ax.transAxes, horizontalalignment='left', fontsize=4)
 
                 # Remove ticks
