@@ -72,7 +72,7 @@ def get_hmr_and_tm(all_poss, masses, gal_cops):
     return hmr_arr[hmr_arr != -2], tms_arr[hmr_arr != -2]
 
 regions = []
-for reg in range(0, 1):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -86,7 +86,7 @@ axlims_x = []
 axlims_y = []
 
 # Define comoving softening length in kpc
-csoft = 0.001802390/0.677*1e3
+csoft = 0.001802390/0.677
 
 # Define part type
 part_type = 4
@@ -152,8 +152,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
     xs_plt = xs_plt[xs_plt > 1e8]
     
-    cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
-                     linewidths=0.2, cmap='viridis')
+    cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log',
+                     norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
