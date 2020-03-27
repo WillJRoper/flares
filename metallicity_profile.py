@@ -13,7 +13,7 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 
-# @nb.njit(nogil=True, parallel=True)
+@nb.njit(nogil=True, parallel=True)
 def get_parts_in_aperture(all_poss, mets, cent, app):
 
     # Get galaxy particle indices
@@ -22,7 +22,7 @@ def get_parts_in_aperture(all_poss, mets, cent, app):
     cond = rs2 < app ** 2
 
     # Get particle positions and masses
-    gal_rs = np.sqrt(rs2[cond, :])
+    gal_rs = np.sqrt(rs2[cond])
     gal_mets = mets[cond]
 
     return gal_rs, gal_mets
