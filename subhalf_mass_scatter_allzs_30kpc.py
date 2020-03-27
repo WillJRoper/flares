@@ -69,7 +69,7 @@ def get_hmr_and_tm(all_poss, masses, gal_cops):
         if hmr != -2:
             hmr_arr[ind], tms_arr[ind] = hmr, tm
 
-    return hmr_arr[np.where(hmr_arr != -2)], tms_arr[np.where(hmr_arr != -2)]
+    return hmr_arr[hmr_arr != -2], tms_arr[hmr_arr != -2]
 
 regions = []
 for reg in range(0, 1):
