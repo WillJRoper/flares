@@ -113,7 +113,7 @@ for reg in regions:
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                     physicalUnits=True, numThreads=8)
             gal_masses = E.read_array('SUBFIND', path, snap, 'Subhalo/Stars/Mass', noH=True,
-                                     physicalUnits=True, numThreads=8)
+                                     physicalUnits=True, numThreads=8) * 10**10
 
             print(len(gal_cops), 'before cut')
             gal_cops = gal_cops[gal_masses > 1e8]
