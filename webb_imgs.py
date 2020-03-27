@@ -139,37 +139,30 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	# smooth_Mpc = np.full_like(L, 0.001802390/0.677 / (1 + redshift) * (u.Mpc).to(u.kpc))
 	smooth = smooth_Mpc * arcsec_per_kpc_proper
 	print(smooth)
-	# Define the image reduction size for sub images
-	if arc_res == 0.031:
-		sub_size = 4
-	else:
-		sub_size = 2
 
-	# Get the image pixel coordinates along each axis
-	ax_coords = np.linspace(-width/2., width/2., Ndim)
+	# # Get the image pixel coordinates along each axis
+	# ax_coords = np.linspace(-width/2., width/2., Ndim)
 
 	# Loop over each star computing the smoothed gaussian distribution for this particle
 	for x, y, l, sml in zip(xs, ys, L, smooth):
 
-		# Get this star's position within the image
-		x_img, y_img = (np.abs(ax_coords - x)).argmin(), (np.abs(ax_coords - y)).argmin()
-
-		# Define sub image over which to compute the smooothing for this star (1/4 of the images size)
-		# NOTE: this drastically speeds up image creation
-		sub_xlow, sub_xhigh = x_img-int(Ndim/sub_size), x_img+int(Ndim/sub_size) + 1
-		sub_ylow, sub_yhigh = y_img-int(Ndim/sub_size), y_img+int(Ndim/sub_size) + 1
+		# # Get this star's position within the image
+		# x_img, y_img = (np.abs(ax_coords - x)).argmin(), (np.abs(ax_coords - y)).argmin()
+		#
+		# # Define sub image over which to compute the smooothing for this star (1/4 of the images size)
+		# # NOTE: this drastically speeds up image creation
+		# sub_xlow, sub_xhigh = x_img-int(Ndim/sub_size), x_img+int(Ndim/sub_size) + 1
+		# sub_ylow, sub_yhigh = y_img-int(Ndim/sub_size), y_img+int(Ndim/sub_size) + 1
 
 		# Compute the image
-		g = np.exp(-(((Gx[sub_ylow:sub_yhigh, sub_xlow:sub_xhigh] - x) ** 2
-					+ (Gy[sub_ylow:sub_yhigh, sub_xlow:sub_xhigh] - y) ** 2)
-					/ (2.0 * sml ** 2)))
+		g = np.exp(-(((Gx - x) ** 2 + (Gy - y) ** 2) / (2.0 * sml ** 2)))
 
 		# Get the sum of the gaussian
 		gsum = np.sum(g)
 
 		# If there are stars within the image in this gaussian add it to the image array
 		if gsum > 0:
-			gsmooth_img[sub_ylow:sub_yhigh, sub_xlow:sub_xhigh] += g * l / gsum
+			gsmooth_img += g * l / gsum
 
 	if output:
 		print(NIRCf, 'Image finished')
