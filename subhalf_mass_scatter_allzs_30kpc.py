@@ -55,7 +55,7 @@ def calc_half_mass_rad(poss, masses):
     return hmr, tot_mass
 
 
-@nb.jit(nogil=True, parallel=True)
+# @nb.jit(nogil=True, parallel=True)
 def get_hmr_and_tm(all_poss, masses, gal_cops):
 
     # Loop over galaxies centres
