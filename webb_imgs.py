@@ -138,7 +138,6 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	smooth_Mpc = smls
 	# smooth_Mpc = np.full_like(L, 0.001802390/0.677 / (1 + redshift) * (u.Mpc).to(u.kpc))
 	smooth = smooth_Mpc * arcsec_per_kpc_proper
-	print(smooth)
 
 	# # Get the image pixel coordinates along each axis
 	# ax_coords = np.linspace(-width/2., width/2., Ndim)

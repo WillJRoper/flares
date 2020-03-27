@@ -123,6 +123,8 @@ for reg in regions:
 
         except OSError:
             continue
+        except ValueError:
+            continue
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
