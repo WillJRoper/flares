@@ -96,7 +96,8 @@ for reg in regions:
             gal_hmr = gal_hmr[gal_hmr < 1.1]
             print(len(gal_cops), 'after cut')
 
-            half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = get_r_and_met(all_poss, mets, gal_cops, gal_hmr)
+            if gal_cops.shape[0] != 0:
+                half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = get_r_and_met(all_poss, mets, gal_cops, gal_hmr)
 
         except OSError:
             continue
