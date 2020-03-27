@@ -45,7 +45,7 @@ def get_r_and_met(all_poss, mets, gal_cops, gal_hmr):
 
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 2):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -143,9 +143,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     # Label axes
     if i == 2:
-        ax.set_xlabel(r'$M_{\star}/M_\odot$')
+        ax.set_xlabel(r'$R/R_{1/2,\star}$')
     if j == 0:
-        ax.set_ylabel('$R_{1/2,*}/\epsilon$')
+        ax.set_ylabel('$Z_{mathrm{smooth}$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
