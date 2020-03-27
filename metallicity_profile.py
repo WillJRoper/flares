@@ -35,7 +35,7 @@ def get_r_and_met(all_poss, mets, gal_cops, gal_hmr):
     rs_dict = {}
     mets_dict = {}
     for (ind, cop), hmr in zip(enumerate(gal_cops), gal_hmr):
-
+        print(ind, cop, hmr)
         # Get particles and masses
         gal_rs, gal_mets = get_parts_in_aperture(all_poss, mets, cop, app=0.03)
         if len(gal_rs) != 0:
