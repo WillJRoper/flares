@@ -37,7 +37,7 @@ def get_m(all_poss, masses, gal_cops):
     return ms
 
 
-def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=True):
+def get_mass_data(path, snap, tag, reg, group="SUBFIND_GROUP", noH=True):
 
     # Extract mass data
     M_dat = E.read_array(group, path, snap, tag, noH=noH)
@@ -65,15 +65,29 @@ def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=T
 tag = "Subhalo/Stars/Mass"
 snap = '010_z005p000'
 group = "SUBFIND"
-M_subfind, M_30kpc = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_38/data/', snap,
-                      tag, group=group, noH=True, cut_bounds=False)
+regions = []
+for reg in range(0, 40):
 
-M_subfind = M_subfind[np.where(M_subfind != 0.0)] * 10**10
-M_30kpc = M_30kpc[np.where(M_30kpc != 0.0)] * 10**10
+    if reg < 10:
+        regions.append('0' + str(reg))
+    else:
+        regions.append(str(reg))
 
-print('Minimums:', M_subfind.min(), M_30kpc.min())
-print('Maximums:', M_subfind.max(), M_30kpc.max())
-print('Sums:', np.sum(M_subfind), np.sum(M_30kpc), np.sum(M_subfind) / np.sum(M_30kpc) * 100)
+M_subfind_dict = {}
+M_30kpc_dict = {}
+for reg in regions:
+    M_subfind, M_30kpc = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/', snap,
+                          tag, reg, group=group, noH=True)
+
+    M_subfind_dict[reg] = M_subfind[np.where(M_subfind != 0.0)] * 10**10
+    M_30kpc_dict[reg] = M_30kpc[np.where(M_30kpc != 0.0)] * 10**10
+
+    print('Minimums:', M_subfind.min(), M_30kpc.min())
+    print('Maximums:', M_subfind.max(), M_30kpc.max())
+    print('Sums:', np.sum(M_subfind), np.sum(M_30kpc), np.sum(M_subfind) / np.sum(M_30kpc) * 100)
+
+M_subfind = np.concatenate(list(M_subfind_dict.values()))
+M_30kpc = np.concatenate(list(M_30kpc_dict.values()))
 
 # Set up plot
 fig = plt.figure()
