@@ -2,8 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-import astropy.units as u
-import astropy.constants as const
+import numba as nb
 import eagle_IO as E
 import seaborn as sns
 from flares import flares
