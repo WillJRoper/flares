@@ -151,7 +151,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     set_group_part_ids = set(group_part_ids)
     print(len(part_ids), 'particles')
-    ascend(part_ids)
+    print(len(set_group_part_ids), 'particles in halos')
+    print(len(halo_ids), 'halos')
 
     ind_to_pid = np.full_like(part_ids, len(part_ids))
     pid_to_ind = {}
