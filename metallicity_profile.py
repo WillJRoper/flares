@@ -39,13 +39,13 @@ def get_r_and_met(all_poss, mets, gal_cops, gal_hmr):
         # Get particles and masses
         gal_rs, gal_mets = get_parts_in_aperture(all_poss, mets, cop, app=0.03)
         if len(gal_rs) != 0:
-            rs_dict[ind], mets_dict[ind] = gal_rs, gal_mets
+            rs_dict[ind], mets_dict[ind] = gal_rs / hmr, gal_mets
 
-    return np.concatenate(list(rs_dict.values())), np.concatenate(list(mets_dict.values()))
+    return np.concatenate(list(mets_dict.values())), np.concatenate(list(rs_dict.values()))
 
 
 regions = []
-for reg in range(0, 2):
+for reg in range(0, 1):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -64,11 +64,11 @@ csoft = 0.001802390 / 0.677
 # Define part type
 part_type = 4
 
-half_mass_rads_dict = {}
-xaxis_dict = {}
+metallicity_dict = {}
+rads_dict = {}
 for snap in snaps:
-    half_mass_rads_dict[snap] = {}
-    xaxis_dict[snap] = {}
+    metallicity_dict[snap] = {}
+    rads_dict[snap] = {}
 
 for reg in regions:
 
@@ -85,7 +85,7 @@ for reg in regions:
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                     physicalUnits=True, numThreads=8)
             gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                    physicalUnits=True, numThreads=8)[:, 1]
+                                    physicalUnits=True, numThreads=8)[:, 4]
             gal_masses = E.read_array('SUBFIND', path, snap, 'Subhalo/Stars/Mass', noH=True,
                                       physicalUnits=True, numThreads=8) * 10 ** 10
 
@@ -97,7 +97,7 @@ for reg in regions:
             print(len(gal_cops), 'after cut')
 
             if gal_cops.shape[0] != 0:
-                half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = get_r_and_met(all_poss, mets, gal_cops, gal_hmr)
+                metallicity_dict[snap][reg], rads_dict[snap][reg] = get_r_and_met(all_poss, mets, gal_cops, gal_hmr)
 
         except OSError:
             continue
@@ -124,15 +124,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    xs = np.concatenate(list(xaxis_dict[snap].values()))
-    half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
+    xs = np.concatenate(list(rads_dict[snap].values()))
+    metallicity_plt = np.concatenate(list(metallicity_dict[snap].values()))
 
-    xs_plt = xs[half_mass_rads_plt > 0]
-    half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
-    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
-    xs_plt = xs_plt[xs_plt > 1e8]
-
-    cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log',
+    cbar = ax.hexbin(xs, metallicity_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                      norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -145,7 +140,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if i == 2:
         ax.set_xlabel(r'$R/R_{1/2,\star}$')
     if j == 0:
-        ax.set_ylabel('$Z_{mathrm{smooth}}$')
+        ax.set_ylabel('$Z_{\mathrm{smooth}}$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
