@@ -342,6 +342,7 @@ def ascend(a):
     count = 0
     for i in sa:
         count += 1
+        print(i)
         if i != start + count:
             print(i, count, start+count)
             return
