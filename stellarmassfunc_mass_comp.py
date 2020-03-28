@@ -42,7 +42,7 @@ def get_mass_data(path, snap, tag, reg, group="SUBFIND_GROUP", noH=True):
     # Extract mass data
     M_dat = E.read_array(group, path, snap, tag, noH=noH)
 
-    path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
+    path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_00' + reg + '/data/'
     try:
         all_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True,
                                 physicalUnits=True, numThreads=8)
@@ -54,9 +54,9 @@ def get_mass_data(path, snap, tag, reg, group="SUBFIND_GROUP", noH=True):
         M_30 = get_m(all_poss, masses, gal_cops)
 
     except OSError:
-        M_30 = 0.
+        M_30 = np.full_like(M_dat, 0.0)
     except ValueError:
-        M_30 = 0.
+        M_30 = np.full_like(M_dat, 0.0)
 
     return M_dat, M_30
 
