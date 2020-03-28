@@ -341,11 +341,11 @@ def ascend(a):
     start = sa[0]
     count = 0
     for i in sa:
-        count += 1
         print(i)
         if i != start + count:
             print(i, count, start+count)
             return
+        count += 1
 
     print('There are no gaps')
 
