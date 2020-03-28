@@ -150,8 +150,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         raise ValueError("Incompatible rank")
 
     set_group_part_ids = set(group_part_ids)
+    print(len(part_ids), 'particles')
 
-    ind_to_pid = {}
+    ind_to_pid = np.full_like(part_ids, len(part_ids))
     pid_to_ind = {}
     for ind, pid in enumerate(part_ids):
         if pid in set_group_part_ids:
@@ -164,12 +165,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     for pid, simid in zip(group_part_ids, halo_ids):
         if int(str(simid).split('.')[rank]) == 2**30:
             continue
-        try:
-            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
-        except KeyError:
-            ind_to_pid[len(part_ids) + 1] = pid
-            pid_to_ind[pid] = len(part_ids) + 1
-            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+        halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
     # =============== Progenitor Snapshot ===============
 
