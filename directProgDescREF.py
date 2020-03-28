@@ -344,7 +344,7 @@ pre_snaps = ['000_z020p000', '003_z008p988', '006_z005p971', '009_z004p485', '01
              '025_z000p271', '028_z000p000', '002_z009p993', '005_z007p050', '008_z005p037', '011_z003p528',
              '014_z002p237', '017_z001p487', '020_z000p865', '023_z000p503', '026_z000p183']
 
-snaps = np.zeros(29, dtype=str)
+snaps = np.zeros(29, dtype=object)
 for s in pre_snaps:
     print(s, s.split('_'), s.split('_')[0], int(s.split('_')[0]))
     ind = int(s.split('_')[0])
