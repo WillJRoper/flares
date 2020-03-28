@@ -151,6 +151,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     set_group_part_ids = set(group_part_ids)
     print(len(part_ids), 'particles')
+    ascend(part_ids)
 
     ind_to_pid = np.full_like(part_ids, len(part_ids))
     pid_to_ind = {}
@@ -333,6 +334,21 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     hdf.close()
 
+
+def ascend(a):
+
+    sa = np.sort(a)
+    start = sa[0]
+    count = 0
+    for i in sa:
+        count += 1
+        if i != start + count:
+            print(i, count, start+count)
+            return
+
+    print('There are no gaps')
+
+    return
 
 pre_snaps = ['000_z020p000', '003_z008p988', '006_z005p971', '009_z004p485', '012_z003p017', '015_z002p012',
              '018_z001p259', '021_z000p736', '024_z000p366', '027_z000p101', '001_z015p132', '004_z008p075',
