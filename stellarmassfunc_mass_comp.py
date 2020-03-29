@@ -31,7 +31,7 @@ def get_m(masses, gal_cops, tree):
     for ind, cop in enumerate(gal_cops):
 
         # Get particles and masses
-        ms[ind] = get_parts_in_aperture(masses, cop, tree, app=0.03)
+        ms[ind] = get_parts_in_aperture(masses, cop, tree, app=0.015)
 
     return ms
 
@@ -120,4 +120,4 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
 # Save figure
-fig.savefig('plots/GSMF_mass_comp_' + snap + '.png', bbox_inches='tight')
+fig.savefig('plots/GSMF_mass_comp_' + snap + '15kpc.png', bbox_inches='tight')
