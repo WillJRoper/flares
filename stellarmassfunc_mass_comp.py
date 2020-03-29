@@ -47,7 +47,7 @@ def get_mass_data(path, snap, tag, reg, group="SUBFIND_GROUP", noH=True):
         all_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True,
                                 physicalUnits=True, numThreads=8)
         masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True,
-                              physicalUnits=True, numThreads=8) * 10 ** 10
+                              physicalUnits=True, numThreads=8)
         gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                 physicalUnits=True, numThreads=8)
 
