@@ -155,25 +155,24 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     print(len(set(halo_ids)), 'halos')
     print(np.max(group_part_ids), np.min(group_part_ids))
 
-    for pid in group_part_ids:
-        print(part_ids - pid)
-        print(np.argmin(part_ids))
+    # ind_to_pid = np.full_like(part_ids, len(part_ids))
+    # pid_to_ind = {}
+    # for ind, pid in enumerate(part_ids):
+    #     print(ind, pid)
+    #     if pid in set_group_part_ids:
+    #         ind_to_pid[ind] = pid
+    #         pid_to_ind[pid] = ind
+    #     # if ind % 10000000 == 0:
+    #     #     print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
 
-    ind_to_pid = np.full_like(part_ids, len(part_ids))
-    pid_to_ind = {}
+    halo_id_part_inds = {}
     for ind, pid in enumerate(part_ids):
         print(ind, pid)
         if pid in set_group_part_ids:
-            ind_to_pid[ind] = pid
-            pid_to_ind[pid] = ind
-        # if ind % 10000000 == 0:
-        #     print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
-
-    halo_id_part_inds = {}
-    for pid, simid in zip(group_part_ids, halo_ids):
-        if int(str(simid).split('.')[rank]) == 2**30:
-            continue
-        halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+            simid = halo_ids[group_part_ids == pid]
+            if int(str(simid).split('.')[rank]) == 2**30:
+                continue
+            halo_id_part_inds.setdefault(simid, set()).update({ind})
 
     # =============== Progenitor Snapshot ===============
 
