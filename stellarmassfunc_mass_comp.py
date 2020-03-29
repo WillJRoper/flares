@@ -31,7 +31,7 @@ def get_m(masses, gal_cops, tree):
     for ind, cop in enumerate(gal_cops):
 
         # Get particles and masses
-        ms[ind] = get_parts_in_aperture(masses, cop, tree, app=0.015)
+        ms[ind] = get_parts_in_aperture(masses, cop, tree, app=0.03)
 
     return ms
 
@@ -49,6 +49,12 @@ def get_mass_data(path, snap, tag, reg, group="SUBFIND_GROUP", noH=True):
                               physicalUnits=True, numThreads=8)
         gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                 physicalUnits=True, numThreads=8)
+        gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/Stars/Mass', noH=True,
+                                physicalUnits=True, numThreads=8)
+
+        print(len(gal_cops), 'before cut')
+        gal_cops = gal_cops[gal_ms > 1e8]
+        print(len(gal_cops), 'after cut')
 
         tree = cKDTree(all_poss, leafsize=16, compact_nodes=False, balanced_tree=False)
 
@@ -59,7 +65,7 @@ def get_mass_data(path, snap, tag, reg, group="SUBFIND_GROUP", noH=True):
     except ValueError:
         M_30 = np.full_like(M_dat, 0.0)
 
-    return M_dat, M_30
+    return M_dat[M_dat > 1e8], M_30[M_30 > 1e8]
 
 
 # Extarct M_subfinds
@@ -108,7 +114,7 @@ H_hr, _ = np.histogram(M_30kpc, bins=bins)
 bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
 
 # Plot each histogram
-ax.loglog(bin_cents, H/interval, label='"SUBFIND')
+ax.loglog(bin_cents, H/interval, label='SUBFIND')
 ax.loglog(bin_cents, H_hr/interval, linestyle='--', label='All particles in 30 pkpc')
 
 # Label axes
