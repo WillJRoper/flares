@@ -6,6 +6,7 @@ import eagle_IO as E
 import os
 import gc
 import sys
+import time
 matplotlib.use('Agg')
 
 
@@ -153,7 +154,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     print(len(part_ids), 'particles')
     print(len(group_part_ids), 'particles in halos')
     print(len(set(halo_ids)), 'halos')
-    print(np.max(group_part_ids), np.min(group_part_ids))
+    start = time.time()
+    print(np.where(halo_ids == 0.1))
+    print('where took', time.time()-start, 'seconds')
 
     # ind_to_pid = np.full_like(part_ids, len(part_ids))
     # pid_to_ind = {}
