@@ -39,14 +39,14 @@ def get_m(masses, gal_cops, tree):
 def get_mass_data(path, snap, tag, reg, group="SUBFIND_GROUP", noH=True):
 
     # Extract mass data
-    M_dat = E.read_array(group, path, snap, tag, noH=noH)
+    M_dat = E.read_array(group, path, snap, tag, noH=noH) * 10**10
 
     path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_00' + reg + '/data/'
     try:
         all_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True,
                                 physicalUnits=True, numThreads=8)
         masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True,
-                              physicalUnits=True, numThreads=8)
+                              physicalUnits=True, numThreads=8) * 10**10
         gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                 physicalUnits=True, numThreads=8)
         gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/Stars/Mass', noH=True,
@@ -86,8 +86,8 @@ for reg in regions:
     M_subfind, M_30kpc = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/', snap,
                           tag, reg, group=group, noH=True)
 
-    M_subfind_dict[reg] = M_subfind[np.where(M_subfind != 0.0)] * 10**10
-    M_30kpc_dict[reg] = M_30kpc[np.where(M_30kpc != 0.0)] * 10**10
+    M_subfind_dict[reg] = M_subfind[np.where(M_subfind != 0.0)]
+    M_30kpc_dict[reg] = M_30kpc[np.where(M_30kpc != 0.0)]
 
     # print('Minimums:', M_subfind.min(), M_30kpc.min())
     # print('Maximums:', M_subfind.max(), M_30kpc.max())
