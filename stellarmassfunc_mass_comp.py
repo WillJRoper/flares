@@ -12,7 +12,7 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 
-@nb.njit(nogil=True, parallel=True)
+# @nb.jit(nogil=True, parallel=True)
 def get_parts_in_aperture(masses, cent, tree, app):
 
     # Get galaxy particle indices
