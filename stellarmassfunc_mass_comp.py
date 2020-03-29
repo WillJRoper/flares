@@ -1,6 +1,7 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.spatial import cKDTree
 import matplotlib
 import numba as nb
 import eagle_IO as E
@@ -12,12 +13,11 @@ sns.set_style('whitegrid')
 
 
 @nb.njit(nogil=True, parallel=True)
-def get_parts_in_aperture(all_poss, masses, cent, app):
+def get_parts_in_aperture(masses, cent, tree, app):
 
     # Get galaxy particle indices
-    seps = all_poss - cent
-    rs2 = seps[:, 0]**2 + seps[:, 1]**2 + seps[:, 2]**2
-    cond = rs2 < app**2
+    query = tree.query_ball_point(cent, r=app)
+    cond = np.concatenate([q for q in query if len(q) != 0])
 
     # Get particle positions and masses
     gal_masses = masses[cond]
@@ -25,14 +25,14 @@ def get_parts_in_aperture(all_poss, masses, cent, app):
     return np.sum(gal_masses)
 
 
-def get_m(all_poss, masses, gal_cops):
+def get_m(masses, gal_cops, tree):
 
     # Loop over galaxies centres
     ms = np.full_like(gal_cops, -2)
     for ind, cop in enumerate(gal_cops):
 
         # Get particles and masses
-        ms[ind] = get_parts_in_aperture(all_poss, masses, cop, app=0.03)
+        ms[ind] = get_parts_in_aperture(masses, cop, tree, app=0.03)
 
     return ms
 
@@ -51,7 +51,9 @@ def get_mass_data(path, snap, tag, reg, group="SUBFIND_GROUP", noH=True):
         gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                 physicalUnits=True, numThreads=8)
 
-        M_30 = get_m(all_poss, masses, gal_cops)
+        tree = cKDTree(all_poss, leafsize=16, compact_nodes=False, balanced_tree=False)
+
+        M_30 = get_m(masses, gal_cops, tree)
 
     except OSError:
         M_30 = np.full_like(M_dat, 0.0)
