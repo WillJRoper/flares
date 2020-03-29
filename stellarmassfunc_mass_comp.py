@@ -89,9 +89,9 @@ for reg in regions:
     M_subfind_dict[reg] = M_subfind[np.where(M_subfind != 0.0)] * 10**10
     M_30kpc_dict[reg] = M_30kpc[np.where(M_30kpc != 0.0)] * 10**10
 
-    print('Minimums:', M_subfind.min(), M_30kpc.min())
-    print('Maximums:', M_subfind.max(), M_30kpc.max())
-    print('Sums:', np.sum(M_subfind), np.sum(M_30kpc), np.sum(M_subfind) / np.sum(M_30kpc) * 100)
+    # print('Minimums:', M_subfind.min(), M_30kpc.min())
+    # print('Maximums:', M_subfind.max(), M_30kpc.max())
+    # print('Sums:', np.sum(M_subfind), np.sum(M_30kpc), np.sum(M_subfind) / np.sum(M_30kpc) * 100)
 
 M_subfind = np.concatenate(list(M_subfind_dict.values()))
 M_30kpc = np.concatenate(list(M_30kpc_dict.values()))
