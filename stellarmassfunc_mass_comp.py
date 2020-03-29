@@ -17,10 +17,9 @@ def get_parts_in_aperture(masses, cent, tree, app):
 
     # Get galaxy particle indices
     query = tree.query_ball_point(cent, r=app)
-    cond = np.concatenate([q for q in query if len(q) != 0])
 
     # Get particle positions and masses
-    gal_masses = masses[cond]
+    gal_masses = masses[query]
 
     return np.sum(gal_masses)
 
