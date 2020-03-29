@@ -5,6 +5,7 @@ import matplotlib
 import numba as nb
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
+from scipy.spatial import cKDTree
 import eagle_IO as E
 import seaborn as sns
 
@@ -14,22 +15,24 @@ sns.set_style('whitegrid')
 
 
 @nb.njit(nogil=True, parallel=True)
-def get_parts_in_aperture(all_poss, mets, cent, app):
+def get_parts_in_aperture(all_poss, mets, cent, tree, app):
 
     # Get galaxy particle indices
-    seps = all_poss - cent
+    query = tree.query_ball_point(cent, r=app)
+
+    # Get galaxy particle indices
+    seps = all_poss[query, :] - cent
     rs2 = seps[:, 0] ** 2 + seps[:, 1] ** 2 + seps[:, 2] ** 2
-    cond = rs2 < app ** 2
 
     # Get particle positions and masses
-    gal_rs = np.sqrt(rs2[cond])
-    gal_mets = mets[cond]
+    gal_rs = np.sqrt(rs2)
+    gal_mets = mets[query]
 
     return gal_rs, gal_mets
 
 
 # @nb.jit(nogil=True, parallel=True)
-def get_r_and_met(all_poss, mets, gal_cops, gal_hmr):
+def get_r_and_met(all_poss, mets, gal_cops, gal_hmr, tree):
 
     # Loop over galaxies centres
     rs_dict = {}
@@ -96,8 +99,11 @@ for reg in regions:
             gal_hmr = gal_hmr[gal_hmr < 1.1]
             print(len(gal_cops), 'after cut')
 
+            tree = cKDTree(all_poss, leafsize=16, compact_nodes=False, balanced_tree=False)
+
             if gal_cops.shape[0] != 0:
-                metallicity_dict[snap][reg], rads_dict[snap][reg] = get_r_and_met(all_poss, mets, gal_cops, gal_hmr)
+                metallicity_dict[snap][reg], rads_dict[snap][reg] = get_r_and_met(all_poss, mets, gal_cops,
+                                                                                  gal_hmr, tree)
 
         except OSError:
             continue
