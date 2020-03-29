@@ -131,9 +131,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     # =============== Current Snapshot ===============
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                  numThreads=8)
+    part_ids = np.uint64(E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8))
+    group_part_ids = np.uint64(E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                            numThreads=8))
     # print(internal_to_flares_part_ids.size)
     if rank == 0:
         halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
@@ -158,6 +158,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     ind_to_pid = np.full_like(part_ids, len(part_ids))
     pid_to_ind = {}
     for ind, pid in enumerate(part_ids):
+        print(ind, pid)
         if pid in set_group_part_ids:
             ind_to_pid[ind] = pid
             pid_to_ind[pid] = ind
