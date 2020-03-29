@@ -155,6 +155,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     print(len(set(halo_ids)), 'halos')
     print(np.max(group_part_ids), np.min(group_part_ids))
 
+    for pid in group_part_ids:
+        print(part_ids - pid)
+        print(np.argmin(part_ids))
+
     ind_to_pid = np.full_like(part_ids, len(part_ids))
     pid_to_ind = {}
     for ind, pid in enumerate(part_ids):
