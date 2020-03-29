@@ -40,7 +40,7 @@ def get_r_and_met(all_poss, mets, gal_cops, gal_hmr, tree):
     for (ind, cop), hmr in zip(enumerate(gal_cops), gal_hmr):
 
         # Get particles and masses
-        gal_rs, gal_mets = get_parts_in_aperture(all_poss, mets, cop, app=0.03)
+        gal_rs, gal_mets = get_parts_in_aperture(all_poss, mets, cop, tree, app=0.03)
         if len(gal_rs) != 0:
             rs_dict[ind], mets_dict[ind] = gal_rs / hmr, gal_mets
 
