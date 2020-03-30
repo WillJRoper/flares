@@ -139,7 +139,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     # xs = xs[[metallicity_plt > 0]]
     # metallicity_plt = metallicity_plt[metallicity_plt > 0]
 
-    cbar = ax.hexbin(xs, 10**-1 * (metallicity_plt/0.002)**-0.64, gridsize=100, mincnt=1, xscale='log',
+    cbar = ax.hexbin(xs, nH, gridsize=100, mincnt=1, xscale='log',
                      norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -172,7 +172,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/Metallicity_profile.png',
+fig.savefig('plots/nH_profile.png',
             bbox_inches='tight')
 
 plt.close(fig)
