@@ -27,7 +27,7 @@ def get_parts_in_aperture(masses, cent, tree, app):
 def get_m(masses, gal_cops, tree):
 
     # Loop over galaxies centres
-    ms = np.zeros_like(gal_cops)
+    ms = np.zeros(gal_cops.size)
     for ind, cop in enumerate(gal_cops):
 
         # Get particles and masses
