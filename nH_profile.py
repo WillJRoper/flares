@@ -133,6 +133,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     xs = np.concatenate(list(rads_dict[snap].values()))
     metallicity_plt = np.concatenate(list(metallicity_dict[snap].values()))
 
+    nH = 10**-1 * (metallicity_plt/0.002)**-0.64
+    nH[np.where(nH > 10)] = 10
+
     # xs = xs[[metallicity_plt > 0]]
     # metallicity_plt = metallicity_plt[metallicity_plt > 0]
 
