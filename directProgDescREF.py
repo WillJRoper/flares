@@ -136,24 +136,19 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     group_part_ids = np.uint64(E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                             numThreads=8))
     # print(internal_to_flares_part_ids.size)
-    if rank == 0:
-        halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-    elif rank == 1:
-        kth_grp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-        kth_subgrp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
-        halo_ids_dict = {}
-        for (ind, g), sg in zip(enumerate(kth_grp_ids), kth_subgrp_ids):
-            halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)] = ind
-        partgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-        partsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
-        halo_ids = np.zeros_like(partgrp_ids, dtype=float)
-        for (ind, g), sg in zip(enumerate(partgrp_ids), partsubgrp_ids):
-            halo_ids[ind] = halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)]
+    kth_grp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+    kth_subgrp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+    halo_ids_dict = {}
+    for (ind, g), sg in zip(enumerate(kth_grp_ids), kth_subgrp_ids):
+        halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)] = ind
+    partgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+    partsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+    halo_ids = np.zeros_like(partgrp_ids, dtype=float)
+    for (ind, g), sg in zip(enumerate(partgrp_ids), partsubgrp_ids):
+        halo_ids[ind] = halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)]
 
-        del grp_ids, subgrp_ids, partgrp_ids, partsubgrp_ids
-        gc.collect()
-    else:
-        raise ValueError("Incompatible rank")
+    del partgrp_ids, partsubgrp_ids
+    gc.collect()
 
     set_group_part_ids = set(group_part_ids)
     print(len(part_ids), 'particles')
@@ -245,7 +240,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     if desc_snap != None:
 
         alldesc_part_ids = np.uint64(E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                               numThreads=8))
+                                                  numThreads=8))
 
         # Sort particle IDS
         alldesc_part_ids = np.sort(alldesc_part_ids)
@@ -254,31 +249,44 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                          numThreads=8)
         else:
-            grp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-            subgrp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
+            grp_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
+                                   numThreads=8)
+            subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
                                       numThreads=8)
-            desc_halo_ids = np.zeros_like(grp_ids, dtype=float)
+            halo_ids_dict = {}
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-                desc_halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+                halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)] = ind
 
-            del grp_ids, subgrp_ids
+            partgrp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
+                                       numThreads=8)
+            partsubgrp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
+                                          numThreads=8)
+            desc_halo_ids = np.zeros_like(partgrp_ids, dtype=float)
+            for (ind, g), sg in zip(enumerate(partgrp_ids), partsubgrp_ids):
+                desc_halo_ids[ind] = halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)]
+
+            del grp_ids, subgrp_ids, partgrp_ids, partsubgrp_ids
             gc.collect()
 
         desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
 
+        set_desc_part_ids = set(desc_part_ids)
+
         desc_snap_haloIDs = np.full(len(alldesc_part_ids), -2, dtype=int)
         internal_to_sim_haloID_desc = {}
         sim_to_internal_haloID_desc = {}
         internalID = -1
-        for pid, desc in zip(desc_part_ids, desc_halo_ids):
-            if desc in sim_to_internal_haloID_desc.keys():
-                desc_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_desc[desc]
-            else:
-                internalID += 1
-                sim_to_internal_haloID_desc[desc] = internalID
-                internal_to_sim_haloID_desc[internalID] = desc
-                desc_snap_haloIDs[pid_to_ind[pid]] = internalID
+        for ind, pid in enumerate(part_ids):
+            if pid in set_group_part_ids:
+                desc = desc_halo_ids[set_desc_part_ids == pid]
+                if desc in sim_to_internal_haloID_desc.keys():
+                    desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
+                else:
+                    internalID += 1
+                    sim_to_internal_haloID_desc[desc] = internalID
+                    internal_to_sim_haloID_desc[internalID] = desc
+                    desc_snap_haloIDs[ind] = internalID
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         desc_unique, desc_counts = np.unique(desc_snap_haloIDs, return_counts=True)
