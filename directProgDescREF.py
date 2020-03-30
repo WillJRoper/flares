@@ -139,10 +139,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     if rank == 0:
         halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     elif rank == 1:
-        grp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-        subgrp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+        kth_grp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+        kth_subgrp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
         halo_ids_dict = {}
-        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+        for (ind, g), sg in zip(enumerate(kth_grp_ids), kth_subgrp_ids):
             halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)] = ind
         partgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
         partsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
@@ -304,7 +304,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     results = {}
 
     # Loop through all the halos in this snapshot
-    for num, haloID in enumerate(halo_id_part_inds.keys()):
+    for num, ihaloID in enumerate(halo_id_part_inds.keys()):
+
+        haloID = str(int(kth_grp_ids[int(ihaloID)])) + '.' + str(int(kth_subgrp_ids[int(ihaloID)]) + 1)
 
         if int(str(haloID).split('.')[1]) == 0:
             continue

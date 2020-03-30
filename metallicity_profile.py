@@ -48,7 +48,7 @@ def get_r_and_met(all_poss, mets, gal_cops, gal_hmr, tree):
 
 
 regions = []
-for reg in range(0, 2):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
