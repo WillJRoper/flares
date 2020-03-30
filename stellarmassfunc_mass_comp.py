@@ -27,7 +27,7 @@ def get_parts_in_aperture(masses, cent, tree, app):
 def get_m(masses, gal_cops, tree):
 
     # Loop over galaxies centres
-    ms = np.full_like(gal_cops, -2)
+    ms = np.zeros_like(gal_cops)
     for ind, cop in enumerate(gal_cops):
 
         # Get particles and masses
@@ -83,11 +83,14 @@ for reg in range(0, 40):
 M_subfind_dict = {}
 M_30kpc_dict = {}
 for reg in regions:
+
     M_subfind, M_30kpc = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/', snap,
                           tag, reg, group=group, noH=True)
 
-    M_subfind_dict[reg] = M_subfind[np.where(M_subfind != 0.0)]
-    M_30kpc_dict[reg] = M_30kpc[np.where(M_30kpc != 0.0)]
+    print('Nhalos', len(M_subfind), len(M_30kpc))
+
+    M_subfind_dict[reg] = M_subfind
+    M_30kpc_dict[reg] = M_30kpc
 
     # print('Minimums:', M_subfind.min(), M_30kpc.min())
     # print('Maximums:', M_subfind.max(), M_30kpc.max())
@@ -95,6 +98,8 @@ for reg in regions:
 
 M_subfind = np.concatenate(list(M_subfind_dict.values()))
 M_30kpc = np.concatenate(list(M_30kpc_dict.values()))
+M_subfind = M_subfind[np.where(M_subfind != 0.0)]
+M_30kpc = M_30kpc[np.where(M_30kpc != 0.0)]
 print('Nhalos', len(M_subfind), len(M_30kpc))
 # Set up plot
 fig = plt.figure()

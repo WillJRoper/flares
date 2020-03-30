@@ -139,13 +139,18 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     if rank == 0:
         halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     elif rank == 1:
-        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
-        halo_ids = np.zeros_like(grp_ids, dtype=float)
+        grp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+        subgrp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+        halo_ids_dict = {}
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+            halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)] = ind
+        partgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+        partsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+        halo_ids = np.zeros_like(partgrp_ids, dtype=float)
+        for (ind, g), sg in zip(enumerate(partgrp_ids), partsubgrp_ids):
+            halo_ids[ind] = halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)]
 
-        del grp_ids, subgrp_ids
+        del grp_ids, subgrp_ids, partgrp_ids, partsubgrp_ids
         gc.collect()
     else:
         raise ValueError("Incompatible rank")
@@ -160,7 +165,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     halo_id_part_inds = {}
     for ind, pid in enumerate(part_ids):
-        print(ind, pid)
         if pid in set_group_part_ids:
             simid = halo_ids[group_part_ids == pid]
             print(simid)
@@ -176,18 +180,29 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         allprog_part_ids = np.uint64(E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                                   numThreads=8))
 
+        # Sort particle IDS
+        allprog_part_ids = np.sort(allprog_part_ids)
+
         if rank == 0:
             prog_halo_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                          numThreads=8)
         else:
-            grp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-            subgrp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
+            grp_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+            subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
                                       numThreads=8)
-            prog_halo_ids = np.zeros_like(grp_ids, dtype=float)
+            halo_ids_dict = {}
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-                prog_halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+                halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)] = ind
 
-            del grp_ids, subgrp_ids
+            partgrp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
+                                       numThreads=8)
+            partsubgrp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
+                                          numThreads=8)
+            prog_halo_ids = np.zeros_like(partgrp_ids, dtype=float)
+            for (ind, g), sg in zip(enumerate(partgrp_ids), partsubgrp_ids):
+                prog_halo_ids[ind] = halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)]
+
+            del grp_ids, subgrp_ids, partgrp_ids, partsubgrp_ids
             gc.collect()
         
         prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
@@ -199,14 +214,16 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         internal_to_sim_haloID_prog = {}
         sim_to_internal_haloID_prog = {}
         internalID = -1
-        for pid, prog in zip(prog_part_ids, prog_halo_ids):
-            if prog in sim_to_internal_haloID_prog.keys():
-                prog_snap_haloIDs[pid_to_ind[pid]] = sim_to_internal_haloID_prog[prog]
-            else:
-                internalID += 1
-                sim_to_internal_haloID_prog[prog] = internalID
-                internal_to_sim_haloID_prog[internalID] = prog
-                prog_snap_haloIDs[pid_to_ind[pid]] = internalID
+        for ind, pid in enumerate(part_ids):
+            if pid in set_group_part_ids:
+                prog = prog_halo_ids[set_prog_part_ids == pid]
+                if prog in sim_to_internal_haloID_prog.keys():
+                    prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
+                else:
+                    internalID += 1
+                    sim_to_internal_haloID_prog[prog] = internalID
+                    internal_to_sim_haloID_prog[internalID] = prog
+                    prog_snap_haloIDs[ind] = internalID
             
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
@@ -229,6 +246,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
         alldesc_part_ids = np.uint64(E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                                numThreads=8))
+
+        # Sort particle IDS
+        alldesc_part_ids = np.sort(alldesc_part_ids)
 
         if rank == 0:
             desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
