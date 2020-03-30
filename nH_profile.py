@@ -83,7 +83,7 @@ for reg in regions:
         try:
             all_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', noH=True,
                                     physicalUnits=True, numThreads=8)
-            mets = E.read_array('SNAP', path, snap, 'PartType0/SmoothedMetallicity', noH=True,
+            mets = E.read_array('SNAP', path, snap, 'PartType0/Metallicity', noH=True,
                                   physicalUnits=True, numThreads=8)
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                     physicalUnits=True, numThreads=8)
