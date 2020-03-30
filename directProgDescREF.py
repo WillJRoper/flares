@@ -154,19 +154,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     print(len(part_ids), 'particles')
     print(len(group_part_ids), 'particles in halos')
     print(len(set(halo_ids)), 'halos')
-    start = time.time()
-    print(np.where(halo_ids == 0.1))
-    print('where took', time.time()-start, 'seconds')
 
-    # ind_to_pid = np.full_like(part_ids, len(part_ids))
-    # pid_to_ind = {}
-    # for ind, pid in enumerate(part_ids):
-    #     print(ind, pid)
-    #     if pid in set_group_part_ids:
-    #         ind_to_pid[ind] = pid
-    #         pid_to_ind[pid] = ind
-    #     # if ind % 10000000 == 0:
-    #     #     print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
+    # Sort particle IDS
+    part_ids = np.sort(part_ids)
 
     halo_id_part_inds = {}
     for ind, pid in enumerate(part_ids):
@@ -182,6 +172,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     # Only look for descendant data if there is a descendant snapshot
     if prog_snap != None:
+
+        allprog_part_ids = np.uint64(E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                                  numThreads=8))
 
         if rank == 0:
             prog_halo_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
@@ -199,8 +192,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         
         prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
+
+        set_prog_part_ids = set(prog_part_ids)
         
-        prog_snap_haloIDs = np.full(len(pid_to_ind.keys()), -2, dtype=int)
+        prog_snap_haloIDs = np.full(len(allprog_part_ids), -2, dtype=int)
         internal_to_sim_haloID_prog = {}
         sim_to_internal_haloID_prog = {}
         internalID = -1
@@ -232,6 +227,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     # Only look for descendant data if there is a descendant snapshot
     if desc_snap != None:
 
+        alldesc_part_ids = np.uint64(E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                               numThreads=8))
+
         if rank == 0:
             desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                          numThreads=8)
@@ -249,7 +247,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
 
-        desc_snap_haloIDs = np.full(len(pid_to_ind.keys()), -2, dtype=int)
+        desc_snap_haloIDs = np.full(len(alldesc_part_ids), -2, dtype=int)
         internal_to_sim_haloID_desc = {}
         sim_to_internal_haloID_desc = {}
         internalID = -1

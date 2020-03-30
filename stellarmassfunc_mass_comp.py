@@ -95,7 +95,7 @@ for reg in regions:
 
 M_subfind = np.concatenate(list(M_subfind_dict.values()))
 M_30kpc = np.concatenate(list(M_30kpc_dict.values()))
-
+print('Nhalos', len(M_subfind), len(M_30kpc))
 # Set up plot
 fig = plt.figure()
 ax = fig.add_subplot(111)
