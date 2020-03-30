@@ -140,12 +140,14 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     kth_subgrp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
     halo_ids_dict = {}
     for (ind, g), sg in zip(enumerate(kth_grp_ids), kth_subgrp_ids):
-        halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)] = ind
+        print(ind, g, sg)
+        halo_ids_dict[str(int(g)) + '.' + str(int(sg))] = ind
     partgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     partsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
     halo_ids = np.zeros_like(partgrp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(partgrp_ids), partsubgrp_ids):
-        halo_ids[ind] = halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)]
+        print(ind, g, sg)
+        halo_ids[ind] = halo_ids_dict[str(int(g)) + '.' + str(int(sg))]
 
     del partgrp_ids, partsubgrp_ids
     gc.collect()
