@@ -133,7 +133,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
     part_ids = np.uint64(E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8))
-    group_part_ids = np.uint64(E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
+    group_part_ids = np.uint64(E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                             numThreads=8))
     # print(internal_to_flares_part_ids.size)
     kth_grp_ids = E.read_array('SUBFIND', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
@@ -181,7 +181,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         allprog_part_ids = np.sort(allprog_part_ids)
 
         if rank == 0:
-            prog_halo_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
+            prog_halo_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                          numThreads=8)
         else:
             grp_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
@@ -191,9 +191,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                 halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)] = ind
 
-            partgrp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
+            partgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                        numThreads=8)
-            partsubgrp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
+            partsubgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
                                           numThreads=8)
             prog_halo_ids = np.zeros_like(partgrp_ids, dtype=float)
             for (ind, g), sg in zip(enumerate(partgrp_ids), partsubgrp_ids):
@@ -202,7 +202,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             del grp_ids, subgrp_ids, partgrp_ids, partsubgrp_ids
             gc.collect()
         
-        prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+        prog_part_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
 
         set_prog_part_ids = set(prog_part_ids)
@@ -248,7 +248,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
         alldesc_part_ids = np.sort(alldesc_part_ids)
 
         if rank == 0:
-            desc_halo_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
+            desc_halo_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                          numThreads=8)
         else:
             grp_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
@@ -259,9 +259,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                 halo_ids_dict[str(int(g)) + '.' + str(int(sg) + 1)] = ind
 
-            partgrp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
+            partgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                        numThreads=8)
-            partsubgrp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
+            partsubgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
                                           numThreads=8)
             desc_halo_ids = np.zeros_like(partgrp_ids, dtype=float)
             for (ind, g), sg in zip(enumerate(partgrp_ids), partsubgrp_ids):
@@ -270,7 +270,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
             del grp_ids, subgrp_ids, partgrp_ids, partsubgrp_ids
             gc.collect()
 
-        desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+        desc_part_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
 
         set_desc_part_ids = set(desc_part_ids)
