@@ -87,7 +87,7 @@ for reg in regions:
     M_subfind, M_30kpc = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/', snap,
                           tag, reg, group=group, noH=True)
 
-    print('Nhalos', len(M_subfind), len(M_30kpc))
+    print('Nhalos', M_subfind.shape, M_30kpc.shape)
 
     M_subfind_dict[reg] = M_subfind
     M_30kpc_dict[reg] = M_30kpc
