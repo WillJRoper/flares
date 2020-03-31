@@ -149,7 +149,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if i == 2:
         ax.set_xlabel(r'$R/R_{1/2,\star}$')
     if j == 0:
-        ax.set_ylabel('$n_{H}^{*}/\mathrm{cm}^{-3}$')
+        ax.set_ylabel(r'$\rho/\mathrm{g cm}^{-3}$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
@@ -169,7 +169,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/nH_profile.png',
+fig.savefig('plots/rho_profile.png',
             bbox_inches='tight')
 
 plt.close(fig)
