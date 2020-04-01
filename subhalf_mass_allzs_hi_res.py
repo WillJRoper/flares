@@ -47,7 +47,7 @@ for reg in regions:
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-HD/G-EAGLE' + str(reg) + '_hires_AGNdT9/data/'
         try:
             half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                          numThreads=8)[:, 4] * 1e3
+                                                          numThreads=8)[:, 0] * 1e3
             xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                                  noH=True, numThreads=8)[:, 4] * 10**10
         except OSError:
@@ -115,7 +115,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/HalfMassRadius_all_snaps_hires.png',
+fig.savefig('plots/HalfMassRadiusGas_allStellar_snaps_hires.png',
             bbox_inches='tight')
 
 plt.close(fig)
