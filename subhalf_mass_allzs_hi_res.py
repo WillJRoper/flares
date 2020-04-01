@@ -47,7 +47,7 @@ for reg in regions:
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-HD/G-EAGLE' + str(reg) + '_hires_AGNdT9/data/'
         try:
             half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                          numThreads=8)[:, 0] * 1e3
+                                                          numThreads=8)[:, 1] * 1e3
             xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                                  noH=True, numThreads=8)[:, 4] * 10**10
         except OSError:
@@ -94,7 +94,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if i == 2:
         ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
     if j == 0:
-        ax.set_ylabel('$R_{1/2,\mathrm{gas}}/\epsilon$')
+        ax.set_ylabel('$R_{1/2,\mathrm{DM}}/\epsilon$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
@@ -115,7 +115,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/HalfMassRadiusGas_allStellar_snaps_hires.png',
+fig.savefig('plots/HalfMassRadiusDM_allStellar_snaps_hires.png',
             bbox_inches='tight')
 
 plt.close(fig)
