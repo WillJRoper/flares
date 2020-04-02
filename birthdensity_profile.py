@@ -48,7 +48,7 @@ def get_r_and_met(all_poss, mets, gal_cops, gal_hmr, tree):
 
 
 regions = []
-for reg in range(0, 2):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -149,7 +149,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if i == 2:
         ax.set_xlabel(r'$R/R_{1/2,\star}$')
     if j == 0:
-        ax.set_ylabel(r'$\rho_{\mathrm{birth}}}/\mathrm{g cm}^{-3}$')
+        ax.set_ylabel(r'$\rho_{\mathrm{birth}}/\mathrm{g cm}^{-3}$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
