@@ -135,9 +135,9 @@ regions = []
 for reg in range(0, 40):
 
     if reg < 10:
-        regions.append('000' + str(reg))
+        regions.append('0' + str(reg))
     else:
-        regions.append('00' + str(reg))
+        regions.append(str(reg))
 
 fs = ['F150W', ]
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
