@@ -118,7 +118,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**4, conv=1, i=0, j=1):
     ms = np.zeros(len(gal_ages))
     for ind, id in enumerate(gal_ages.keys()):
 
-        print('Computing images for', id)
+        print('Computing luminosities for', id)
 
         # Get the luminosities
         ls = get_lumins(all_gal_poss[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id], all_gas_poss[id],
@@ -163,8 +163,12 @@ for f in fs:
         for snap in snaps:
 
             print(reg, snap)
+            try:
+                half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = hl_main(snap, reg, model, F, f,
+                                                                                conv=conv, i=i, j=j)
+            except FileNotFoundError:
+                continue
 
-            half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = hl_main(snap, reg, model, F, f, conv=conv, i=i, j=j)
 
     # Set up plot
     fig = plt.figure(figsize=(18, 10))
