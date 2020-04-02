@@ -81,7 +81,7 @@ def calc_light_mass_rad(poss, ls):
     hmr_ind = np.argmin(np.abs(l_profile - half_l))
     hmr = rs[hmr_ind]
 
-    return hmr, tot_l
+    return hmr
 
 
 def hl_main(snap, reg, model, F, f, npart_lim=10**4, conv=1, i=0, j=1):
