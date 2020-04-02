@@ -81,9 +81,9 @@ for reg in regions:
 
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
         try:
-            all_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', noH=True,
+            all_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True,
                                     physicalUnits=True, numThreads=8)
-            mets = E.read_array('SNAP', path, snap, 'PartType0/BirthDensity', noH=True,
+            mets = E.read_array('SNAP', path, snap, 'PartType4/BirthDensity', noH=True,
                                   physicalUnits=True, numThreads=8)
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                     physicalUnits=True, numThreads=8)
