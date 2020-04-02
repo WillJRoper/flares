@@ -10,6 +10,7 @@ import pickle
 import os
 import gc
 import sys
+import nb
 from utilities import calc_ages, get_Z_LOS
 from astropy.cosmology import Planck13 as cosmo
 from webb_imgs import createSimpleImgs, createPSFdImgs
@@ -35,10 +36,7 @@ model.create_Lnu_grid(F)
 
 
 def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
-               lkernel, kbins, conv, NIRCfs, model, F, i, j):
-
-    # Set up dictionaries to store images
-    ls = {}
+               lkernel, kbins, conv, model, F, i, j, f):
 
     # Define dimensions array
     if i == 0 and j == 1:
@@ -51,23 +49,46 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
 
     gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
 
-    for f in NIRCfs:
+    # Calculate optical depth of ISM and birth cloud
+    tauVs_ISM = (10 ** 5.2) * gal_met_surfden
+    tauVs_BC = 2.0 * (gal_mets / 0.01)
 
-        # Calculate optical depth of ISM and birth cloud
-        tauVs_ISM = (10 ** 5.2) * gal_met_surfden
-        tauVs_BC = 2.0 * (gal_mets / 0.01)
+    # Extract the flux in nanoJansky
+    L = (models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
+                                   tauVs_BC, F, 'JWST.NIRCAM.' + f) * u.nJy).decompose()
 
-        # Extract the flux in nanoJansky
-        L = (models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
-                                       tauVs_BC, F, 'JWST.NIRCAM.' + f) * u.nJy).decompose()
-
-        ls[f] = L
-
-    return ls
+    return L
 
 
-def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=10**3, dim=0.1, load=True,
-             conv=1, scale=0.1, NIRCfs=(None, )):
+@nb.njit(nogil=True, parallel=True)
+def calc_light_mass_rad(poss, ls):
+
+    if len(ls) == 0:
+        return -2, -2
+
+    # Get galaxy particle indices
+    rs = np.sqrt(poss[:, 0]**2 + poss[:, 1]**2 + poss[:, 2]**2)
+
+    # Sort the radii and masses
+    sinds = np.argsort(rs)
+    rs = rs[sinds]
+    ls = ls[sinds]
+
+    # Get the cumalative sum of masses
+    l_profile = np.cumsum(ls)
+
+    # Get the total mass and half the total mass
+    tot_l = l_profile[-1]
+    half_l = tot_l / 2
+
+    # Get the half mass radius particle
+    hmr_ind = np.argmin(np.abs(l_profile - half_l))
+    hmr = rs[hmr_ind]
+
+    return hmr, tot_l
+
+
+def hl_main(snap, reg, model, F, f, npart_lim=10**4, conv=1, i=0, j=1):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -75,342 +96,143 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 
     model.create_Fnu_grid(F, z, cosmo)
 
-    # Define stellar particle type
-    part_type = 4
-
     kinp = np.load('/cosma/home/dp004/dc-rope1/cosma7/FLARES/flares/los_extinction/kernel_sph-anarchy.npz',
                    allow_pickle=True)
     lkernel = kinp['kernel']
     header = kinp['header']
     kbins = header.item()['bins']
 
-    if load:
+    with open('UVimg_data/stellardata_reg' + reg + '_snap'
+              + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'rb') as pfile1:
+        save_dict = pickle.load(pfile1)
 
-        with open('UVimg_data/stellardata_reg' + reg + '_snap'
-                  + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'rb') as pfile1:
-            save_dict = pickle.load(pfile1)
-
-        gal_ages = save_dict['gal_ages']
-        gal_mets = save_dict['gal_mets']
-        gal_ms = save_dict['gal_ms']
-        gas_mets = save_dict['gas_mets']
-        gas_ms = save_dict['gas_ms']
-        gal_smls = save_dict['gal_smls']
-        # gal_smls = []
-        gas_smls = save_dict['gas_smls']
-        all_gas_poss = save_dict['all_gas_poss']
-        all_gal_poss = save_dict['all_gal_poss']
-        means = save_dict['means']
-
-    else:
-
-        # Load all necessary arrays
-        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
-        all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
-        part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-        gal_sml = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength', noH=True, numThreads=8)
-        group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-        # gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        # gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-        # gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8)
-        halo_ids = np.zeros_like(grp_ids, dtype=float)
-        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
-
-        # # Get centre of potentials
-        # gal_cop = {}
-        # for cop, g, sg in zip(gal_cops, gal_gids, gal_ids):
-        #     gal_cop[float(str(g) + '.' + str(sg + 1))] = cop
-
-        # Translate ID into indices
-        ind_to_pid = {}
-        pid_to_ind = {}
-        for ind, pid in enumerate(part_ids):
-            if pid in group_part_ids:
-                ind_to_pid[ind] = pid
-                pid_to_ind[pid] = ind
-
-        # Get the IDs above the npart threshold
-        ids, counts = np.unique(halo_ids, return_counts=True)
-        ids = set(ids[counts > npart_lim])
-
-        # Get the particles in the halos
-        halo_id_part_inds = {}
-        for pid, simid in zip(group_part_ids, halo_ids):
-            if simid not in ids:
-                continue
-            if int(str(simid).split('.')[1]) == 2**30:
-                continue
-            try:
-                halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
-            except KeyError:
-                ind_to_pid[len(part_ids) + 1] = pid
-                pid_to_ind[pid] = len(part_ids) + 1
-                halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
-
-        del group_part_ids, halo_ids, pid_to_ind, ind_to_pid, subgrp_ids, part_ids
-
-        gc.collect()
-
-        print('There are', len(ids), 'galaxies above the cutoff')
-
-        # If there are no galaxies exit
-        if len(ids) == 0:
-            return
-
-        # Load data for luminosities
-        a_born = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime', noH=True, numThreads=8)
-        metallicities = E.read_array('SNAP', path, snap, 'PartType4/SmoothedMetallicity', noH=True, numThreads=8)
-        masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8) * 10**10
-
-        # Calculate ages
-        ages = calc_ages(z, a_born)
-
-        # Get the position of each of these galaxies
-        gal_ages = {}
-        gal_mets = {}
-        gal_ms = {}
-        gal_smls = {}
-        all_gal_poss = {}
-        means = {}
-        for id in ids:
-            parts = list(halo_id_part_inds[id])
-            all_gal_poss[id] = all_poss[parts, :]
-            gal_ages[id] = ages[parts]
-            gal_mets[id] = metallicities[parts]
-            gal_ms[id] = masses[parts]
-            gal_smls[id] = gal_sml[parts]
-            means[id] = all_gal_poss[id].mean(axis=0)
-
-        print('Got galaxy properties')
-
-        del ages, all_poss, metallicities, masses, gal_sml, halo_id_part_inds, a_born
-
-        gc.collect()
-
-        # Get gas particle information
-        gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
-        gas_all_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', noH=True, numThreads=8)
-        gpart_ids = E.read_array('SNAP', path, snap, 'PartType0/ParticleIDs', numThreads=8)
-        ggroup_part_ids = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', numThreads=8)
-        ggrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', numThreads=8)
-        gas_metallicities = E.read_array('SNAP', path, snap, 'PartType0/SmoothedMetallicity', noH=True, numThreads=8)
-        gas_smooth_ls = E.read_array('SNAP', path, snap, 'PartType0/SmoothingLength', noH=True, numThreads=8)
-        gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, numThreads=8) * 10**10
-        ghalo_ids = np.zeros_like(ggrp_ids, dtype=float)
-        for (ind, g), sg in zip(enumerate(ggrp_ids), gsubgrp_ids):
-            ghalo_ids[ind] = float(str(g) + '.' + str(sg + 1))
-
-        print('Got halo IDs')
-        set_ggroup_part_ids = set(ggroup_part_ids)
-        # Translate ID into indices
-        gind_to_pid = {}
-        gpid_to_ind = {}
-        for ind, pid in enumerate(gpart_ids):
-            if pid in set_ggroup_part_ids:
-                gind_to_pid[ind] = pid
-                gpid_to_ind[pid] = ind
-
-        print('Made ID dicts')
-
-        # Get the particles in the halos
-        ghalo_id_part_inds = {}
-        for pid, simid in zip(ggroup_part_ids, ghalo_ids):
-            if simid not in ids:
-                continue
-            if int(str(simid).split('.')[1]) == 2**30:
-                continue
-            try:
-                ghalo_id_part_inds.setdefault(simid, set()).update({gpid_to_ind[pid]})
-            except KeyError:
-                gind_to_pid[len(gpart_ids) + 1] = pid
-                gpid_to_ind[pid] = len(gpart_ids) + 1
-                ghalo_id_part_inds.setdefault(simid, set()).update({gpid_to_ind[pid]})
-
-        print('Got particle IDs')
-
-        del ggroup_part_ids, ghalo_ids, gpid_to_ind, gind_to_pid, gsubgrp_ids, gpart_ids
-
-        gc.collect()
-
-        # Get the position of each of these galaxies
-        gas_mets = {}
-        gas_ms = {}
-        gas_smls = {}
-        all_gas_poss = {}
-        for id in ids:
-            gparts = list(ghalo_id_part_inds[id])
-            all_gas_poss[id] = gas_all_poss[gparts, :]
-            gas_mets[id] = gas_metallicities[gparts]
-            gas_ms[id] = gas_masses[gparts]
-            gas_smls[id] = gas_smooth_ls[gparts]
-
-        print('Got gas properties')
-
-        del gas_smooth_ls, gas_masses, gas_metallicities, gas_all_poss, ghalo_id_part_inds
-
-        gc.collect()
-
-        save_dict = {'gal_ages': gal_ages, 'gal_mets': gal_mets, 'gal_ms': gal_ms, 'gas_mets': gas_mets,
-                     'gas_ms': gas_ms, 'gal_smls': gal_smls, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
-                     'all_gal_poss': all_gal_poss, 'means': means}
-
-        with open('UVimg_data/stellardata_reg' + reg + '_snap'
-                  + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'wb') as pfile1:
-            pickle.dump(save_dict, pfile1)
-
-        print('Written out properties')
+    gal_ages = save_dict['gal_ages']
+    gal_mets = save_dict['gal_mets']
+    gal_ms = save_dict['gal_ms']
+    gas_mets = save_dict['gas_mets']
+    gas_ms = save_dict['gas_ms']
+    gas_smls = save_dict['gas_smls']
+    all_gas_poss = save_dict['all_gas_poss']
+    all_gal_poss = save_dict['all_gal_poss']
 
     print('Extracted galaxy positions')
 
-    axlabels = [r'$x$', r'$y$', r'$z$']
-
-    # Initialise image save dictionary
-    img_save_dict = {}
-
     # Create images for these galaxies
-    for id in gal_ages.keys():
+    hls = np.zeros(len(gal_ages))
+    ms = np.zeros(len(gal_ages))
+    for ind, id in enumerate(gal_ages.keys()):
 
         print('Computing images for', id)
 
-        # Get the images
-        galimgs, extents, ls = create_img(all_gal_poss[id], arc_res, dim, gal_ms[id], gal_ages[id],
-                                          gal_mets[id], gal_smls[id], gas_mets[id], all_gas_poss[id], gas_ms[id],
-                                          gas_smls[id], lkernel, kbins, conv, z, NIRCfs, model, F, output, psf)
+        # Get the luminosities
+        ls = get_lumins(all_gal_poss[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id], all_gas_poss[id],
+                        gas_ms[id], gas_smls[id], lkernel, kbins, conv, model, F, i, j, f)
 
-        img_save_dict[id] = {'galimgs': galimgs, 'extents': extents}
+        # Compute half mass radii
+        hls[ind] = calc_light_mass_rad(all_gal_poss[id], ls)
+        ms[ind] = np.sum(gal_ms[id])
 
-        # Loop over dimensions
-        for key in galimgs.keys():
+    return hls, ms
 
-            # Set up figure
-            if len(NIRCfs) == 1:
-                fig = plt.figure()
-                axes = [fig.add_subplot(111)]
-            elif len(NIRCfs) < 6:
-                fig = plt.figure()
-                gs = gridspec.GridSpec(1, len(NIRCfs))
-                gs.update(wspace=0.0, hspace=0.0)
-                axes = []
-                for i in range(len(NIRCfs)):
-                    axes.append(fig.add_subplot(gs[0, i]))
-            else:
-                fig = plt.figure(figsize=(6.4, 3.2))
-                gs = gridspec.GridSpec(2, int(len(NIRCfs)/2))
-                gs.update(wspace=0.0, hspace=0.0)
-                axes = []
-                for i in range(len(NIRCfs)):
-                    if i < len(NIRCfs) / 2:
-                        axes.append(fig.add_subplot(gs[0, i]))
-                    else:
-                        axes.append(fig.add_subplot(gs[1, int(i - len(NIRCfs) / 2)]))
-
-            # Set up parameters for drawing the scale line
-            right_side = dim / 2 - (dim / 2 * 0.1)
-            vert = dim / 2 - (dim / 2 * 0.15)
-            lab_vert = vert + (dim / 2 * 0.1) * 4 / 8
-            lab_horz = right_side - scale / 2
-
-            # Draw images
-            for ax, f in zip(axes, NIRCfs):
-
-                # Plot image with zeroed background
-                # ax.imshow(np.zeros_like(galimgs[key][f]), extent=extents[key], cmap='Greys_r')
-                im = ax.imshow(galimgs[key][f], extent=extents[key], cmap='Greys_r')
-
-                # Draw scale line
-                ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
-
-                # Label scale
-                ax.text(lab_horz, lab_vert, str(scale) + '"', horizontalalignment='center',
-                        fontsize=3, color='w')
-
-                # Draw text
-                ax.text(0.05, 0.945, f, bbox=dict(boxstyle="round,pad=0.3", fc='k', ec="w", lw=0.25, alpha=0.5),
-                        transform=ax.transAxes, horizontalalignment='left', fontsize=3, color='w')
-
-                # Remove ticks
-                ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                                labeltop=False, labelright=False, labelbottom=False)
-
-                # Add colorbars
-                cax = inset_axes(ax, width="50%", height="3%", loc='lower left')
-                cbar = fig.colorbar(im, cax=cax, orientation="horizontal")
-
-                # Label colorbars
-                cbar.ax.set_xlabel(r'$\mathrm{counts}/\mathrm{s}$', fontsize=3, color='w', labelpad=1.0)
-                cbar.ax.xaxis.set_label_position('top')
-                cbar.outline.set_edgecolor('w')
-                cbar.outline.set_linewidth(0.05)
-                cbar.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-
-            fig.savefig('plots/webbimages/Webb_reg' + str(reg) + '_snap' + snap +
-                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '_PSF'
-                        + str(psf) + '_' + '_'.join(NIRCfs) + '.png', bbox_inches='tight', dpi=600)
-
-            plt.close(fig)
-
-        with open('Webb_img_data/Webbdata_reg' + reg + '_snap'
-                  + snap + '_npartgreaterthan' + str(npart_lim) + '_width' + str(width)
-                  + '_'.join(NIRCfs) + '.pck', 'wb') as pfile1:
-            pickle.dump(img_save_dict, pfile1)
-
-
-# Define comoving softening length in Mpc
-csoft = 0.001802390/0.677
-
-# Define image width
-width = 3.
-
-# Define resolution
-arc_res = 0.031
-print(width / arc_res, 'pixels in', width, 'arcseconds')
-
-npart_lim = 10**4
-NIRCfs = ('F070W', 'F090W', 'F115W', 'F150W', 'F200W', 'F277W', 'F356W', 'F444W')
 
 regions = []
 for reg in range(0, 40):
+
     if reg < 10:
-        regions.append('0' + str(reg))
+        regions.append('000' + str(reg))
     else:
-        regions.append(str(reg))
+        regions.append('00' + str(reg))
 
-snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
-         '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+fs = ['F150W', ]
+conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
+i, j = 0, 1
 
-reg_snaps = []
-for reg in reversed(regions):
+snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000',
+         '009_z006p000', '010_z005p000', '011_z004p770']
+axlims_x = []
+axlims_y = []
 
+# Define comoving softening length in kpc
+csoft = 0.001802390 / 0.677 * 1e3
+for f in fs:
+    half_mass_rads_dict = {}
+    xaxis_dict = {}
     for snap in snaps:
+        half_mass_rads_dict[snap] = {}
+        xaxis_dict[snap] = {}
 
-        reg_snaps.append((reg, snap))
+    for reg in regions:
 
-if __name__ == '__main__':
+        for snap in snaps:
 
-    ind = int(sys.argv[1])
-    print(reg_snaps[ind])
-    reg, snap = reg_snaps[ind]
+            print(reg, snap)
 
-    # Define region variables
-    path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
+            half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = hl_main(snap, reg, model, F, f, conv=conv, i=i, j=j)
 
-    files = os.listdir('UVimg_data/')
-    print(files)
+    # Set up plot
+    fig = plt.figure(figsize=(18, 10))
+    gs = gridspec.GridSpec(3, 6)
+    gs.update(wspace=0.0, hspace=0.0)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax3 = fig.add_subplot(gs[0, 2])
+    ax4 = fig.add_subplot(gs[1, 0])
+    ax5 = fig.add_subplot(gs[1, 1])
+    ax6 = fig.add_subplot(gs[1, 2])
+    ax7 = fig.add_subplot(gs[2, 0])
+    ax8 = fig.add_subplot(gs[2, 1])
+    ax9 = fig.add_subplot(gs[2, 2])
 
-    if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
-        load = True
-        try:
-            img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width,
-                     load=load,
-                     conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
-            img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width,
-                     load=True,
-                     conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
-        except ValueError:
-            print('ValueError')
-        except KeyError:
-            print('KeyError')
-        except OSError:
-            print('OSError')
+    for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps,
+                                [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
+
+        z_str = snap.split('z')[1].split('p')
+        z = float(z_str[0] + '.' + z_str[1])
+
+        xs = np.concatenate(list(xaxis_dict[snap].values()))
+        half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
+
+        xs_plt = xs[half_mass_rads_plt > 0]
+        half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
+        half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
+        xs_plt = xs_plt[xs_plt > 1e8]
+
+        cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log',
+                         norm=LogNorm(),
+                         linewidths=0.2, cmap='viridis')
+
+        ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                transform=ax.transAxes, horizontalalignment='right', fontsize=8)
+
+        axlims_x.extend(ax.get_xlim())
+        axlims_y.extend(ax.get_ylim())
+
+        # Label axes
+        if i == 2:
+            ax.set_xlabel(r'$M_{\mathrm{DM}}/M_\odot$')
+        if j == 0:
+            ax.set_ylabel('$R_{1/2,\mathrm{DM}}/\epsilon$')
+
+    for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
+        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
+        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+
+    # Remove axis labels
+    ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+    ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+
+    fig.savefig('plots/HalfLightRadius_all_snaps_' + f + '_coords' + str(i) + '-' + str(j) + '.png',
+                bbox_inches='tight')
+
+    plt.close(fig)
