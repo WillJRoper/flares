@@ -139,7 +139,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     # xs = xs[[metallicity_plt > 0]]
     # metallicity_plt = metallicity_plt[metallicity_plt > 0]
 
-    cbar = ax.hexbin(xs, metallicity_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
+    cbar = ax.hexbin(xs, metallicity_plt, gridsize=100, mincnt=1, xscale='log',
                      norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
