@@ -48,7 +48,7 @@ def get_r_and_met(all_poss, mets, gal_cops, gal_hmr, tree):
 
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 2):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -79,6 +79,9 @@ for reg in regions:
 
         print(reg, snap)
 
+        z_str = snap.split('z')[1].split('p')
+        z = float(z_str[0] + '.' + z_str[1])
+
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
         try:
             all_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True,
@@ -95,8 +98,8 @@ for reg in regions:
             print(len(gal_cops), 'before cut')
             gal_cops = gal_cops[gal_masses > 1e9]
             gal_hmr = gal_hmr[gal_masses > 1e9]
-            gal_cops = gal_cops[gal_hmr < 1.1]
-            gal_hmr = gal_hmr[gal_hmr < 1.1]
+            gal_cops = gal_cops[gal_hmr / (csoft / (1 + z)) < 1.1]
+            gal_hmr = gal_hmr[gal_hmr / (csoft / (1 + z)) < 1.1]
             print(len(gal_cops), 'after cut')
 
             tree = cKDTree(all_poss, leafsize=16, compact_nodes=False, balanced_tree=False)

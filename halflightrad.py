@@ -34,8 +34,8 @@ F = FLARE.filters.add_filters(filters, new_lam = model.lam)
 model.create_Lnu_grid(F)
 
 
-def get_lumins(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gal_smls, gas_mets, gas_poss, gas_ms, gas_sml,
-               lkernel, kbins, conv, redshift, NIRCfs, model, F, i, j):
+def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
+               lkernel, kbins, conv, NIRCfs, model, F, i, j):
 
     # Set up dictionaries to store images
     ls = {}
@@ -53,14 +53,9 @@ def get_lumins(gal_poss, arc_res, ini_width, gal_ms, gal_ages, gal_mets, gal_sml
 
     for f in NIRCfs:
 
-        if int(f[1:4]) < 250:
-            arc_res = 0.031
-        else:
-            arc_res = 0.063
-
         # Calculate optical depth of ISM and birth cloud
         tauVs_ISM = (10 ** 5.2) * gal_met_surfden
-        tauVs_BC = 2.0 * (metals / 0.01)
+        tauVs_BC = 2.0 * (gal_mets / 0.01)
 
         # Extract the flux in nanoJansky
         L = (models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
