@@ -4,16 +4,12 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib
 import astropy.units as u
-import eagle_IO as E
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from matplotlib.colors import LogNorm
 import pickle
 import os
-import gc
-import sys
-import nb
+import numba as nb
 from utilities import calc_ages, get_Z_LOS
 from astropy.cosmology import Planck13 as cosmo
-from webb_imgs import createSimpleImgs, createPSFdImgs
 import seaborn as sns
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
