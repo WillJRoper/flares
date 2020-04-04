@@ -59,9 +59,6 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
 @nb.njit(nogil=True, parallel=True)
 def calc_light_mass_rad(poss, ls):
 
-    if len(ls) == 0:
-        return -2, -2
-
     # Get galaxy particle indices
     rs = np.sqrt(poss[:, 0]**2 + poss[:, 1]**2 + poss[:, 2]**2)
 
