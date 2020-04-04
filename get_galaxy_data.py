@@ -26,17 +26,17 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gal_sml = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength', noH=True, numThreads=8)
     group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-    # gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-    # gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-    # gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8)
+    gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+    gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+    gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8)
     halo_ids = np.zeros_like(grp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
 
-    # # Get centre of potentials
-    # gal_cop = {}
-    # for cop, g, sg in zip(gal_cops, gal_gids, gal_ids):
-    #     gal_cop[float(str(g) + '.' + str(sg + 1))] = cop
+    # Get centre of potentials
+    gal_cop = {}
+    for cop, g, sg in zip(gal_cops, gal_gids, gal_ids):
+        gal_cop[float(str(g) + '.' + str(sg + 1))] = cop
 
     # Translate ID into indices
     ind_to_pid = {}
@@ -96,7 +96,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
         gal_mets[id] = metallicities[parts]
         gal_ms[id] = masses[parts]
         gal_smls[id] = gal_sml[parts]
-        means[id] = all_gal_poss[id].mean(axis=0)
+        means[id] = gal_cop[id]
 
     print('Got galaxy properties')
 
@@ -207,7 +207,7 @@ if __name__ == '__main__':
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
     try:
-        img_main(path, snap, reg, npart_lim=10**4)
+        img_main(path, snap, reg, npart_lim=10**2)
     except ValueError:
         print('ValueError')
     except KeyError:
