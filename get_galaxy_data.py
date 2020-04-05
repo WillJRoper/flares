@@ -186,6 +186,8 @@ for reg in range(0, 40):
 snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 
+npart_lim=10**2
+
 reg_snaps = []
 for reg in regions:
 
@@ -206,9 +208,9 @@ if __name__ == '__main__':
 
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-    try:
+    files = os.listdir('UVimg_data/')
+
+    if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
+        pass
+    else:
         img_main(path, snap, reg, npart_lim=10**2)
-    except KeyError:
-        print('KeyError')
-    except OSError:
-        print('OSError')
