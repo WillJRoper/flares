@@ -29,6 +29,12 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
     gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8)
+
+    # Load data for luminosities
+    a_born = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime', noH=True, numThreads=8)
+    metallicities = E.read_array('SNAP', path, snap, 'PartType4/SmoothedMetallicity', noH=True, numThreads=8)
+    masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8) * 10**10
+
     halo_ids = np.zeros_like(grp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         if sg == 1073741824 or g == 1073741824:
@@ -41,6 +47,9 @@ def img_main(path, snap, reg, npart_lim=10**3):
     part_ids = part_ids[sinds]
     all_poss = all_poss[sinds]
     gal_sml = gal_sml[sinds]
+    a_born = a_born[sinds]
+    metallicities = metallicities[sinds]
+    masses = masses[sinds]
 
     # Get centre of potentials
     gal_cop = {}
@@ -61,12 +70,11 @@ def img_main(path, snap, reg, npart_lim=10**3):
     for ind, pid in enumerate(part_ids):
         if pid in set_group_part_ids:
             simid = halo_ids[group_part_ids == pid][0]
-            print(simid)
             if simid < 0:
                 continue
             halo_id_part_inds.setdefault(simid, set()).update({ind})
 
-    del group_part_ids, halo_ids, pid_to_ind, ind_to_pid, subgrp_ids, part_ids
+    del group_part_ids, halo_ids, subgrp_ids, part_ids
 
     gc.collect()
 
@@ -75,11 +83,6 @@ def img_main(path, snap, reg, npart_lim=10**3):
     # If there are no galaxies exit
     if len(ids) == 0:
         return
-
-    # Load data for luminosities
-    a_born = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime', noH=True, numThreads=8)
-    metallicities = E.read_array('SNAP', path, snap, 'PartType4/SmoothedMetallicity', noH=True, numThreads=8)
-    masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8) * 10**10
 
     # Calculate ages
     ages = calc_ages(z, a_born)
@@ -120,33 +123,29 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, numThreads=8) * 10**10
     ghalo_ids = np.zeros_like(ggrp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(ggrp_ids), gsubgrp_ids):
-        ghalo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+        if sg == 1073741824 or g == 1073741824:
+            ghalo_ids[ind] = - float(str(int(g)) + '.' + str(int(sg) + 1))
+        else:
+            ghalo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+
+    # Sort particle IDS
+    gsinds = np.argsort(gpart_ids)
+    gpart_ids = gpart_ids[gsinds]
+    gas_all_poss = gas_all_poss[gsinds]
+    gas_smooth_ls = gas_smooth_ls[gsinds]
+    gas_metallicities = gas_metallicities[gsinds]
+    gas_masses = gas_masses[gsinds]
 
     print('Got halo IDs')
     set_ggroup_part_ids = set(ggroup_part_ids)
-    # Translate ID into indices
-    gind_to_pid = {}
-    gpid_to_ind = {}
+
+    ghalo_id_part_inds = {}
     for ind, pid in enumerate(gpart_ids):
         if pid in set_ggroup_part_ids:
-            gind_to_pid[ind] = pid
-            gpid_to_ind[pid] = ind
-
-    print('Made ID dicts')
-
-    # Get the particles in the halos
-    ghalo_id_part_inds = {}
-    for pid, simid in zip(ggroup_part_ids, ghalo_ids):
-        if simid not in ids:
-            continue
-        if int(str(simid).split('.')[1]) == 2**30:
-            continue
-        try:
-            ghalo_id_part_inds.setdefault(simid, set()).update({gpid_to_ind[pid]})
-        except KeyError:
-            gind_to_pid[len(gpart_ids) + 1] = pid
-            gpid_to_ind[pid] = len(gpart_ids) + 1
-            ghalo_id_part_inds.setdefault(simid, set()).update({gpid_to_ind[pid]})
+            simid = ghalo_ids[ggroup_part_ids == pid][0]
+            if simid < 0:
+                continue
+            ghalo_id_part_inds.setdefault(simid, set()).update({ind})
 
     print('Got particle IDs')
 
