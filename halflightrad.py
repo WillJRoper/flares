@@ -129,9 +129,17 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
     return hls, ms
 
 
+# regions = []
+# for reg in range(0, 1):
+#
+#     if reg < 10:
+#         regions.append('0' + str(reg))
+#     else:
+#         regions.append(str(reg))
 regions = []
-for reg in range(26, 37):
-
+reg_ints = list(range(0, 2))
+reg_ints.append(39)
+for reg in reg_ints:
     if reg < 10:
         regions.append('0' + str(reg))
     else:

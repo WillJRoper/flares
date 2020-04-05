@@ -208,8 +208,6 @@ if __name__ == '__main__':
 
     try:
         img_main(path, snap, reg, npart_lim=10**2)
-    except ValueError:
-        print('ValueError')
     except KeyError:
         print('KeyError')
     except OSError:
