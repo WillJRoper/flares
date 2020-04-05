@@ -32,41 +32,38 @@ def img_main(path, snap, reg, npart_lim=10**3):
     halo_ids = np.zeros_like(grp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         if sg == 1073741825:
-            halo_ids[ind] = - float(str(g) + '.' + str(sg + 1))
+            halo_ids[ind] = - float(str(int(g)) + '.' + str(int(sg) + 1))
         else:
-            halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+            halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+
+    # Sort particle IDS
+    sinds = np.argsort(part_ids)
+    part_ids = part_ids[sinds]
+    all_poss = all_poss[sinds]
+    gal_sml = gal_sml[sinds]
 
     # Get centre of potentials
     gal_cop = {}
     for cop, g, sg in zip(gal_cops, gal_gids, gal_ids):
         gal_cop[float(str(g) + '.' + str(sg + 1))] = cop
 
-    # Translate ID into indices
-    ind_to_pid = {}
-    pid_to_ind = {}
-    for ind, pid in enumerate(part_ids):
-        if pid in group_part_ids:
-            ind_to_pid[ind] = pid
-            pid_to_ind[pid] = ind
-
     # Get the IDs above the npart threshold
     ids, counts = np.unique(halo_ids, return_counts=True)
     ids_abovethresh = ids[counts > npart_lim]
     ids = set(ids_abovethresh[ids_abovethresh >= 0])
 
-    # Get the particles in the halos
+    set_group_part_ids = set(group_part_ids)
+    print(len(part_ids), 'particles')
+    print(len(group_part_ids), 'particles in halos')
+    print(len(set(halo_ids)), 'halos')
+
     halo_id_part_inds = {}
-    for pid, simid in zip(group_part_ids, halo_ids):
-        if simid not in ids:
-            continue
-        if int(str(simid).split('.')[1]) == 2**30:
-            continue
-        try:
-            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
-        except KeyError:
-            ind_to_pid[len(part_ids) + 1] = pid
-            pid_to_ind[pid] = len(part_ids) + 1
-            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+    for ind, pid in enumerate(part_ids):
+        if pid in set_group_part_ids:
+            simid = halo_ids[group_part_ids == pid]
+            if int(str(simid).split('.')[1]) == 2**30:
+                continue
+            halo_id_part_inds.setdefault(simid, set()).update({ind})
 
     del group_part_ids, halo_ids, pid_to_ind, ind_to_pid, subgrp_ids, part_ids
 
@@ -94,16 +91,16 @@ def img_main(path, snap, reg, npart_lim=10**3):
     all_gal_poss = {}
     means = {}
     for id in ids:
-        try:
-            means[id] = gal_cop[id]
-        except KeyError:
-            continue
         parts = list(halo_id_part_inds[id])
         all_gal_poss[id] = all_poss[parts, :]
         gal_ages[id] = ages[parts]
         gal_mets[id] = metallicities[parts]
         gal_ms[id] = masses[parts]
         gal_smls[id] = gal_sml[parts]
+        try:
+            means[id] = gal_cop[id]
+        except KeyError:
+            means[id] = np.mean(all_gal_poss[id], axis=0)
 
     print('Got galaxy properties')
 
@@ -122,7 +119,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, numThreads=8) * 10**10
     ghalo_ids = np.zeros_like(ggrp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(ggrp_ids), gsubgrp_ids):
-        ghalo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+        ghalo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
 
     print('Got halo IDs')
     set_ggroup_part_ids = set(ggroup_part_ids)
@@ -161,7 +158,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_ms = {}
     gas_smls = {}
     all_gas_poss = {}
-    for id in means.keys():
+    for id in ids:
         gparts = list(ghalo_id_part_inds[id])
         all_gas_poss[id] = gas_all_poss[gparts, :]
         gas_mets[id] = gas_metallicities[gparts]
