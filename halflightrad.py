@@ -17,7 +17,7 @@ from SynthObs.SED import models
 matplotlib.use('Agg')
 
 
-sns.set_style('white')
+sns.set_style('whitegrid')
 
 # Define SED model
 model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
@@ -156,7 +156,7 @@ axlims_x = []
 axlims_y = []
 
 # Define comoving softening length in kpc
-csoft = 0.001802390 / 0.677 * 1e3
+csoft = 0.001802390 / 0.677
 for f in fs:
     half_mass_rads_dict = {}
     xaxis_dict = {}
@@ -216,9 +216,9 @@ for f in fs:
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r'$M_{\mathrm{DM}}/M_\odot$')
+            ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
         if j == 0:
-            ax.set_ylabel('$R_{1/2,\mathrm{DM}}/\epsilon$')
+            ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
 
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
         ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
