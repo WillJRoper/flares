@@ -31,7 +31,10 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8)
     halo_ids = np.zeros_like(grp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+        if sg == 1073741825:
+            halo_ids[ind] = - float(str(g) + '.' + str(sg + 1))
+        else:
+            halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
 
     # Get centre of potentials
     gal_cop = {}
@@ -49,7 +52,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     # Get the IDs above the npart threshold
     ids, counts = np.unique(halo_ids, return_counts=True)
     ids_abovethresh = ids[counts > npart_lim]
-    ids = set([id for id in ids_abovethresh if int(str(id).split(".")[1]) != 2**30])
+    ids = set(ids_abovethresh[ids_abovethresh >= 0])
 
     # Get the particles in the halos
     halo_id_part_inds = {}
