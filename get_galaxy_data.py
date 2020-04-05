@@ -60,7 +60,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     halo_id_part_inds = {}
     for ind, pid in enumerate(part_ids):
         if pid in set_group_part_ids:
-            simid = halo_ids[group_part_ids == pid]
+            simid = halo_ids[group_part_ids == pid][0]
             print(simid)
             if simid < 0:
                 continue
