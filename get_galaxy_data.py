@@ -31,7 +31,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8)
     halo_ids = np.zeros_like(grp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        if sg == 1073741825:
+        if sg == 1073741824 or g == 1073741824:
             halo_ids[ind] = - float(str(int(g)) + '.' + str(int(sg) + 1))
         else:
             halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
@@ -61,8 +61,6 @@ def img_main(path, snap, reg, npart_lim=10**3):
     for ind, pid in enumerate(part_ids):
         if pid in set_group_part_ids:
             simid = halo_ids[group_part_ids == pid]
-            if int(str(simid).split('.')[1]) == 2**30:
-                continue
             halo_id_part_inds.setdefault(simid, set()).update({ind})
 
     del group_part_ids, halo_ids, pid_to_ind, ind_to_pid, subgrp_ids, part_ids
