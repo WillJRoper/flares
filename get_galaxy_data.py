@@ -48,7 +48,8 @@ def img_main(path, snap, reg, npart_lim=10**3):
 
     # Get the IDs above the npart threshold
     ids, counts = np.unique(halo_ids, return_counts=True)
-    ids = set(ids[counts > npart_lim])
+    ids_abovethresh = ids[counts > npart_lim]
+    ids = set([id for id in ids_abovethresh if int(str(id).split(".")[1]) != 2**30])
 
     # Get the particles in the halos
     halo_id_part_inds = {}
