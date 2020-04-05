@@ -81,7 +81,7 @@ def calc_light_mass_rad(poss, ls):
     return hmr
 
 
-def hl_main(snap, reg, model, F, f, npart_lim=10**4, conv=1, i=0, j=1):
+def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -129,7 +129,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**4, conv=1, i=0, j=1):
 
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 2):
 
     if reg < 10:
         regions.append('0' + str(reg))
