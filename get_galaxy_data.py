@@ -94,13 +94,16 @@ def img_main(path, snap, reg, npart_lim=10**3):
     all_gal_poss = {}
     means = {}
     for id in ids:
+        try:
+            means[id] = gal_cop[id]
+        except KeyError:
+            continue
         parts = list(halo_id_part_inds[id])
         all_gal_poss[id] = all_poss[parts, :]
         gal_ages[id] = ages[parts]
         gal_mets[id] = metallicities[parts]
         gal_ms[id] = masses[parts]
         gal_smls[id] = gal_sml[parts]
-        means[id] = gal_cop[id]
 
     print('Got galaxy properties')
 
@@ -158,7 +161,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_ms = {}
     gas_smls = {}
     all_gas_poss = {}
-    for id in ids:
+    for id in means.keys():
         gparts = list(ghalo_id_part_inds[id])
         all_gas_poss[id] = gas_all_poss[gparts, :]
         gas_mets[id] = gas_metallicities[gparts]
