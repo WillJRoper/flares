@@ -73,7 +73,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
 
     result = np.ma.array(yindex, mask=mask)
 
-    part_groups = group_part_ids[np.logical_not(result.mask)]
+    part_groups = halo_ids[np.logical_not(result.mask)]
     parts_in_groups = result.data[np.logical_not(result.mask)]
 
     halo_id_part_inds = {}
@@ -107,10 +107,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
         gal_mets[id] = metallicities[parts]
         gal_ms[id] = masses[parts]
         gal_smls[id] = gal_sml[parts]
-        try:
-            means[id] = gal_cop[id]
-        except KeyError:
-            means[id] = np.mean(all_gal_poss[id], axis=0)
+        means[id] = gal_cop[id]
 
     print('Got galaxy properties')
 
@@ -151,7 +148,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
 
     result = np.ma.array(yindex, mask=mask)
 
-    part_groups = ggroup_part_ids[np.logical_not(result.mask)]
+    part_groups = ghalo_ids[np.logical_not(result.mask)]
     parts_in_groups = result.data[np.logical_not(result.mask)]
 
     ghalo_id_part_inds = {}
