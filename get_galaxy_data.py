@@ -34,13 +34,11 @@ def img_main(path, snap, reg, npart_lim=10**3):
     a_born = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime', noH=True, numThreads=8)
     metallicities = E.read_array('SNAP', path, snap, 'PartType4/SmoothedMetallicity', noH=True, numThreads=8)
     masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8) * 10**10
-
+    grp_ids = grp_ids[subgrp_ids != 1073741824]
+    subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
     halo_ids = np.zeros_like(grp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        if sg == 1073741824 or g == 1073741824:
-            halo_ids[ind] = - float(str(int(g)) + '.' + str(int(sg) + 1))
-        else:
-            halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+        halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
 
     # Sort particle IDS
     unsort_part_ids = part_ids[:]
@@ -125,11 +123,10 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_smooth_ls = E.read_array('SNAP', path, snap, 'PartType0/SmoothingLength', noH=True, numThreads=8)
     gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, numThreads=8) * 10**10
     ghalo_ids = np.zeros_like(ggrp_ids, dtype=float)
+    ggrp_ids = ggrp_ids[gsubgrp_ids != 1073741824]
+    gsubgrp_ids = gsubgrp_ids[gsubgrp_ids != 1073741824]
     for (ind, g), sg in zip(enumerate(ggrp_ids), gsubgrp_ids):
-        if sg == 1073741824 or g == 1073741824:
-            ghalo_ids[ind] = - float(str(int(g)) + '.' + str(int(sg) + 1))
-        else:
-            ghalo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+        ghalo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
 
     # Sort particle IDS
     unsort_gpart_ids = gpart_ids[:]
@@ -157,7 +154,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
 
     print('Got particle IDs')
 
-    del ggroup_part_ids, ghalo_ids, gpid_to_ind, gind_to_pid, gsubgrp_ids, gpart_ids
+    del ggroup_part_ids, ghalo_ids, gsubgrp_ids, gpart_ids
 
     gc.collect()
 
