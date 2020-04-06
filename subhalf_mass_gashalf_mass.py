@@ -33,10 +33,12 @@ csoft = 0.001802390/0.677*1e3
 
 half_mass_rads_dict = {}
 xaxis_dict = {}
+ms = {}
 for snap in snaps:
 
     half_mass_rads_dict[snap] = {}
     xaxis_dict[snap] = {}
+    ms[snap] = {}
 
 for reg in regions:
 
@@ -50,6 +52,8 @@ for reg in regions:
                                                           numThreads=8)[:, 4] * 1e3
             xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                                  numThreads=8)[:, 0] * 1e3
+            ms[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                                 noH=True, numThreads=8)[:, 4] * 10**10
         except OSError:
             continue
         except ValueError:
@@ -77,7 +81,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     xs = np.concatenate(list(xaxis_dict[snap].values()))
     half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
-    
+    m = np.concatenate(list(ms[snap].values()))
+
+    half_mass_rads_plt = half_mass_rads_plt[m > 1e9]
+    xs_plt = xs_plt[m > 1e9]
     xs_plt = xs[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 0]
