@@ -43,6 +43,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
             halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
 
     # Sort particle IDS
+    unsort_part_ids = part_ids[:]
     sinds = np.argsort(part_ids)
     part_ids = part_ids[sinds]
     all_poss = all_poss[sinds]
@@ -61,18 +62,23 @@ def img_main(path, snap, reg, npart_lim=10**3):
     ids_abovethresh = ids[counts > npart_lim]
     ids = set(ids_abovethresh[ids_abovethresh >= 0])
 
-    set_group_part_ids = set(group_part_ids)
     print(len(part_ids), 'particles')
     print(len(group_part_ids), 'particles in halos')
     print(len(set(halo_ids)), 'halos')
 
+    sorted_index = np.searchsorted(part_ids, group_part_ids)
+
+    yindex = np.take(sinds, sorted_index, mode="clip")
+    mask = unsort_part_ids[yindex] != group_part_ids
+
+    result = np.ma.array(yindex, mask=mask)
+
+    part_groups = group_part_ids[np.logical_not(result.mask)]
+    parts_in_groups = result.data[np.logical_not(result.mask)]
+
     halo_id_part_inds = {}
-    for ind, pid in enumerate(part_ids):
-        if pid in set_group_part_ids:
-            simid = halo_ids[group_part_ids == pid][0]
-            if simid < 0:
-                continue
-            halo_id_part_inds.setdefault(simid, set()).update({ind})
+    for ind, grp in zip(parts_in_groups, part_groups):
+        halo_id_part_inds.setdefault(grp, set()).update({ind})
 
     del group_part_ids, halo_ids, subgrp_ids, part_ids
 
@@ -129,6 +135,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
             ghalo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
 
     # Sort particle IDS
+    unsort_gpart_ids = gpart_ids[:]
     gsinds = np.argsort(gpart_ids)
     gpart_ids = gpart_ids[gsinds]
     gas_all_poss = gas_all_poss[gsinds]
@@ -137,15 +144,19 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_masses = gas_masses[gsinds]
 
     print('Got halo IDs')
-    set_ggroup_part_ids = set(ggroup_part_ids)
+    sorted_index = np.searchsorted(gpart_ids, ggroup_part_ids)
+
+    yindex = np.take(sinds, sorted_index, mode="clip")
+    mask = unsort_gpart_ids[yindex] != ggroup_part_ids
+
+    result = np.ma.array(yindex, mask=mask)
+
+    part_groups = ggroup_part_ids[np.logical_not(result.mask)]
+    parts_in_groups = result.data[np.logical_not(result.mask)]
 
     ghalo_id_part_inds = {}
-    for ind, pid in enumerate(gpart_ids):
-        if pid in set_ggroup_part_ids:
-            simid = ghalo_ids[ggroup_part_ids == pid][0]
-            if simid < 0:
-                continue
-            ghalo_id_part_inds.setdefault(simid, set()).update({ind})
+    for ind, grp in zip(parts_in_groups, part_groups):
+        ghalo_id_part_inds.setdefault(grp, set()).update({ind})
 
     print('Got particle IDs')
 
