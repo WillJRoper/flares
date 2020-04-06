@@ -140,6 +140,10 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_metallicities = gas_metallicities[gsinds]
     gas_masses = gas_masses[gsinds]
 
+    # Get the IDs above the npart threshold
+    ids, counts = np.unique(ghalo_ids, return_counts=True)
+    ids = ids[counts > npart_lim]
+    print(ids)
     print('Got halo IDs')
     sorted_index = np.searchsorted(gpart_ids, ggroup_part_ids)
 
