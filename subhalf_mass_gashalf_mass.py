@@ -52,6 +52,8 @@ for reg in regions:
                                                  numThreads=8)[:, 0] * 1e3
         except OSError:
             continue
+        except ValueError:
+            continue
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
