@@ -159,8 +159,6 @@ def img_main(path, snap, reg, npart_lim=10**3):
     for ind, grp in zip(parts_in_groups, part_groups):
         ghalo_id_part_inds.setdefault(grp, set()).update({ind})
 
-    print(list(ghalo_id_part_inds.keys()))
-
     print('Got particle IDs')
 
     del ggroup_part_ids, ghalo_ids, gsubgrp_ids, gpart_ids

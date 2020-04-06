@@ -119,14 +119,17 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
         print('Computing luminosities for', id)
 
         # Get the luminosities
-        ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
-                        all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model, F, i, j, f)
+        try:
+            ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
+                            all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model, F, i, j, f)
 
-        # Compute half mass radii
-        hls[ind] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
-        ms[ind] = np.sum(gal_ms[id])
+            # Compute half mass radii
+            hls[ind] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
+            ms[ind] = np.sum(gal_ms[id])
+        except KeyError:
+            continue
 
-    return hls, ms
+    return hls[ms > 0], ms[ms > 0]
 
 
 # regions = []
