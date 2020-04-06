@@ -123,10 +123,11 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_metallicities = E.read_array('SNAP', path, snap, 'PartType0/SmoothedMetallicity', noH=True, numThreads=8)
     gas_smooth_ls = E.read_array('SNAP', path, snap, 'PartType0/SmoothingLength', noH=True, numThreads=8)
     gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, numThreads=8) * 10**10
-    ghalo_ids = np.zeros_like(ggrp_ids, dtype=float)
+
     ggroup_part_ids = ggroup_part_ids[gsubgrp_ids != 1073741824]
     ggrp_ids = ggrp_ids[gsubgrp_ids != 1073741824]
     gsubgrp_ids = gsubgrp_ids[gsubgrp_ids != 1073741824]
+    ghalo_ids = np.zeros_like(ggrp_ids, dtype=float)
     for (ind, g), sg in zip(enumerate(ggrp_ids), gsubgrp_ids):
         ghalo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
 
