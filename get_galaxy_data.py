@@ -37,7 +37,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     group_part_ids = group_part_ids[subgrp_ids != 1073741824]
     grp_ids = grp_ids[subgrp_ids != 1073741824]
     subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
-    halo_ids = np.zeros_like(grp_ids, dtype=float)
+    halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
 
@@ -127,7 +127,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     ggroup_part_ids = ggroup_part_ids[gsubgrp_ids != 1073741824]
     ggrp_ids = ggrp_ids[gsubgrp_ids != 1073741824]
     gsubgrp_ids = gsubgrp_ids[gsubgrp_ids != 1073741824]
-    ghalo_ids = np.zeros_like(ggrp_ids, dtype=float)
+    ghalo_ids = np.zeros(ggrp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(ggrp_ids), gsubgrp_ids):
         ghalo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
 
@@ -140,10 +140,6 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_metallicities = gas_metallicities[gsinds]
     gas_masses = gas_masses[gsinds]
 
-    # Get the IDs above the npart threshold
-    ids, counts = np.unique(ghalo_ids, return_counts=True)
-    ids = ids[counts > npart_lim]
-    print(ids)
     print('Got halo IDs')
     sorted_index = np.searchsorted(gpart_ids, ggroup_part_ids)
 
