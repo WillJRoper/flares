@@ -120,12 +120,14 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
 
         # Get the luminosities
         try:
+            print(all_gal_poss[id])
             ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
                             all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model, F, i, j, f)
 
             # Compute half mass radii
             hls[ind] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
             ms[ind] = np.sum(gal_ms[id])
+            print(hls[ind])
         except KeyError:
             continue
 
@@ -159,7 +161,7 @@ axlims_x = []
 axlims_y = []
 
 # Define comoving softening length in kpc
-csoft = 0.001802390 / 0.677
+csoft = 0.001802390 / 0.677 * 1e3
 for f in fs:
     half_mass_rads_dict = {}
     xaxis_dict = {}
