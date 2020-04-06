@@ -84,8 +84,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     m = np.concatenate(list(ms[snap].values()))
 
     half_mass_rads_plt = half_mass_rads_plt[m > 1e9]
-    xs_plt = xs_plt[m > 1e9]
-    xs_plt = xs[half_mass_rads_plt > 0]
+    xs_plt = xs[m > 1e9]
+    xs_plt = xs_plt[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 0]
     xs_plt = xs_plt[xs_plt > 0]
