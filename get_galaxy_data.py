@@ -141,9 +141,10 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_masses = gas_masses[gsinds]
 
     print('Got halo IDs')
+
     sorted_index = np.searchsorted(gpart_ids, ggroup_part_ids)
 
-    yindex = np.take(sinds, sorted_index, mode="clip")
+    yindex = np.take(gsinds, sorted_index, mode="clip")
     mask = unsort_gpart_ids[yindex] != ggroup_part_ids
 
     result = np.ma.array(yindex, mask=mask)
