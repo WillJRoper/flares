@@ -156,7 +156,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     for ind, grp in zip(parts_in_groups, part_groups):
         ghalo_id_part_inds.setdefault(grp, set()).update({ind})
 
-    print(ghalo_ids)
+    print(np.unique(ghalo_ids))
 
     print('Got particle IDs')
 
