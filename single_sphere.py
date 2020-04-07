@@ -66,7 +66,7 @@ def single_sphere(reg, snap, part_type, soft):
 
     # Get the spheres centre
     centre, radius, mindist = spherical_region(path, snap)
-
+    print(centre)
     # Centre particles
     print(poss)
     poss -= centre
