@@ -62,7 +62,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
 
     # Get the IDs above the npart threshold
     ids, counts = np.unique(halo_ids, return_counts=True)
-    ids = ids[counts > npart_lim]
+    ids = set(ids[counts > npart_lim])
 
     print(len(part_ids), 'particles')
     print(len(group_part_ids), 'particles in halos')
@@ -150,7 +150,8 @@ def img_main(path, snap, reg, npart_lim=10**3):
 
     # Get the IDs above the npart threshold
     gids, gcounts = np.unique(ghalo_ids, return_counts=True)
-    gids = gids[gcounts > npart_lim]
+    gids = set(gids[gcounts > npart_lim])
+    both_ids = gids.intersection(ids)
 
     sorted_index = np.searchsorted(gpart_ids, ggroup_part_ids)
 
@@ -177,7 +178,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gas_ms = {}
     gas_smls = {}
     all_gas_poss = {}
-    for id in gids:
+    for id in both_ids:
         gparts = list(ghalo_id_part_inds[id])
         all_gas_poss[id] = gas_all_poss[gparts, :]
         print(all_gas_poss[id][:, 0].max() - all_gas_poss[id][:, 0].min(),
