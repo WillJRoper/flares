@@ -36,18 +36,18 @@ model.create_Lnu_grid(F)
 def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
                lkernel, kbins, conv, model, F, i, j, f, dust):
 
-    # Define dimensions array
-    if i == 0 and j == 1:
-        k = 2
-    elif i == 0 and j == 2:
-        k = 1
-    else:
-        k = 0
-    dimens = np.array([i, j, k])
-
-    gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
-
     if dust:
+
+        # Define dimensions array
+        if i == 0 and j == 1:
+            k = 2
+        elif i == 0 and j == 2:
+            k = 1
+        else:
+            k = 0
+        dimens = np.array([i, j, k])
+
+        gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
         tauVs_ISM = (10 ** 5.2) * gal_met_surfden
         tauVs_BC = 2.0 * (gal_mets / 0.01)
         lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F,
