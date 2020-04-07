@@ -132,6 +132,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
             # Compute half mass radii
             hls[ind] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
             ms[ind] = np.sum(gal_ms[id])
+            print(hls[ind])
         except KeyError:
             continue
 
