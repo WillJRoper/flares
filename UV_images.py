@@ -310,16 +310,16 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax4.imshow(np.zeros_like(plt_im4), extent=extents[key], cmap='Greys_r')
             ax5.imshow(np.zeros_like(plt_im5), extent=extents[key], cmap='Greys_r')
 
-            im1 = ax1.imshow(plt_im1, extent=extents[key], cmap='rainbow')
-            im2 = ax2.imshow(plt_im2, extent=extents[key], cmap='rainbow')
-            im3 = ax3.imshow(plt_im3, extent=extents[key], cmap='rainbow')
-            im4 = ax4.imshow(plt_im4, extent=extents[key], cmap='rainbow')
-            im5 = ax5.imshow(plt_im5, extent=extents[key], cmap='rainbow')
-            im6 = ax6.imshow(plt_im6, extent=extents[key], cmap='rainbow')
+            im1 = ax1.imshow(plt_im1, extent=extents[key], cmap='plasma')
+            im2 = ax2.imshow(plt_im2, extent=extents[key], cmap='plasma')
+            im3 = ax3.imshow(plt_im3, extent=extents[key], cmap='plasma')
+            im4 = ax4.imshow(plt_im4, extent=extents[key], cmap='plasma')
+            im5 = ax5.imshow(plt_im5, extent=extents[key], cmap='plasma')
+            im6 = ax6.imshow(plt_im6, extent=extents[key], cmap='plasma')
 
             # Draw scale line
             right_side = dim - (dim * 0.1)
-            vert = dim - (dim * 0.15)
+            vert = dim - (dim * 0.175)
             lab_vert = vert + (dim * 0.1) * 5 / 8
             lab_horz = right_side - scale / 2
             ax1.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
@@ -443,7 +443,7 @@ csoft = 0.001802390/0.677
 res = csoft / 10
 print(100 / res, 'pixels in', '100 kpc')
 
-npart_lim = 10**4
+npart_lim = 10**2
 
 regions = []
 for reg in range(0, 40):

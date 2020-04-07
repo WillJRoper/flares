@@ -98,9 +98,6 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    # Convert inputs to physical kpc
-    convert_pkpc = (u.Mpc).to(u.kpc) / (1 + z)
-
     model.create_Fnu_grid(F, z, cosmo)
 
     kinp = np.load('/cosma/home/dp004/dc-rope1/cosma7/FLARES/flares/los_extinction/kernel_sph-anarchy.npz',
@@ -136,11 +133,11 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
         try:
             if len(gas_ms[id]) == 0:
                 continue
-            gas_poss = all_gas_poss[id] * convert_pkpc
-            gal_poss = all_gal_poss[id] * convert_pkpc
-            means[id] = np.mean(gal_poss, axis=0)
-            gal_poss -= means[id] * convert_pkpc
-            gas_poss -= means[id] * convert_pkpc
+            gas_poss = all_gas_poss[id]
+            gal_poss = all_gal_poss[id]
+            # means[id] = np.mean(gal_poss, axis=0)
+            gal_poss -= means[id]
+            gas_poss -= means[id]
             ls = get_lumins(gal_poss, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
                             gas_poss, gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
                             F, i, j, f, dust)
@@ -222,10 +219,10 @@ for f in fs:
         z = float(z_str[0] + '.' + z_str[1])
 
         # Convert inputs to physical kpc
-        convert_pkpc = (u.Mpc).to(u.kpc) / (1 + z)
+        convert_pMpc = 1 / (1 + z)
 
         # Define comoving softening length in kpc
-        csoft = 0.001802390 / 0.677 * convert_pkpc
+        csoft = 0.001802390 / 0.677 * convert_pMpc
 
         xs = np.concatenate(list(xaxis_dict[snap].values()))
         half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
