@@ -90,6 +90,9 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
+    # Convert inputs to physical kpc
+    convert_pkpc = (u.Mpc).to(u.kpc) / (1 + z)
+
     model.create_Fnu_grid(F, z, cosmo)
 
     kinp = np.load('/cosma/home/dp004/dc-rope1/cosma7/FLARES/flares/los_extinction/kernel_sph-anarchy.npz',
@@ -123,13 +126,15 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
 
         # Get the luminosities
         try:
-            means[id] = np.mean(all_gal_poss[id], axis=0)
-            ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
-                            all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
+            if len(gas_ms[id]) == 0:
+                continue
+            means[id] = np.mean(all_gal_poss[id] * convert_pkpc, axis=0)
+            ls = get_lumins(all_gal_poss[id] - means[id] * convert_pkpc, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
+                            all_gas_poss[id] - means[id] * convert_pkpc, gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
                             F, i, j, f, dust)
 
             # Compute half mass radii
-            hls[ind] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
+            hls[ind] = calc_light_mass_rad(all_gal_poss[id] - means[id] * convert_pkpc, ls)
             ms[ind] = np.sum(gal_ms[id])
             print(hls[ind])
         except KeyError:
@@ -156,7 +161,7 @@ for reg in reg_ints:
 
 fs = ['FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV']
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
-i, j = 0, 1
+ii, jj = 0, 1
 dust = False
 
 snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
@@ -165,8 +170,6 @@ snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
 axlims_x = []
 axlims_y = []
 
-# Define comoving softening length in kpc
-csoft = 0.001802390 / 0.677
 for f in fs:
     half_mass_rads_dict = {}
     xaxis_dict = {}
@@ -181,7 +184,7 @@ for f in fs:
             print(reg, snap)
             try:
                 half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = hl_main(snap, reg, model, F, f,
-                                                                                conv=conv, i=i, j=j, dust=dust)
+                                                                                conv=conv, i=ii, j=jj, dust=dust)
             except FileNotFoundError:
                 continue
 
@@ -206,6 +209,12 @@ for f in fs:
         z_str = snap.split('z')[1].split('p')
         z = float(z_str[0] + '.' + z_str[1])
 
+        # Convert inputs to physical kpc
+        convert_pkpc = (u.Mpc).to(u.kpc) / (1 + z)
+
+        # Define comoving softening length in kpc
+        csoft = 0.001802390 / 0.677 * convert_pkpc
+
         xs = np.concatenate(list(xaxis_dict[snap].values()))
         half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
 
@@ -214,7 +223,7 @@ for f in fs:
         half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
         xs_plt = xs_plt[xs_plt > 1e8]
 
-        cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
+        cbar = ax.hexbin(xs_plt, half_mass_rads_plt / csoft, gridsize=100, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(),
                          linewidths=0.2, cmap='viridis')
 
@@ -248,7 +257,7 @@ for f in fs:
     ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
     ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-    fig.savefig('plots/HalfLightRadius_all_snaps_' + f + '_coords' + str(i) + '-' + str(j) + '.png',
+    fig.savefig('plots/HalfLightRadius_all_snaps_' + f + '_coords' + str(ii) + '-' + str(jj) + '.png',
                 bbox_inches='tight')
 
     plt.close(fig)
