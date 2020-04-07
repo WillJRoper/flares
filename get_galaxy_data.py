@@ -108,9 +108,9 @@ def img_main(path, snap, reg, npart_lim=10**3):
     for id in ids:
         parts = list(halo_id_part_inds[id])
         all_gal_poss[id] = all_poss[parts, :]
-        print(all_gal_poss[:, 0].max() - all_gal_poss[:, 0].min(),
-              all_gal_poss[:, 1].max() - all_gal_poss[:, 1].min(),
-              all_gal_poss[:, 2].max() - all_gal_poss[:, 2].min())
+        print(all_gal_poss[id][:, 0].max() - all_gal_poss[id][:, 0].min(),
+              all_gal_poss[id][:, 1].max() - all_gal_poss[id][:, 1].min(),
+              all_gal_poss[id][:, 2].max() - all_gal_poss[id][:, 2].min())
         gal_ages[id] = ages[parts]
         gal_mets[id] = metallicities[parts]
         gal_ms[id] = masses[parts]
