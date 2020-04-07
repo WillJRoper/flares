@@ -429,7 +429,7 @@ csoft = 0.001802390/0.677
 res = csoft
 print(100 / res, 'pixels in', '100 kpc')
 
-npart_lim = 10**2
+npart_lim = 10**4
 
 regions = []
 for reg in range(0, 40):
