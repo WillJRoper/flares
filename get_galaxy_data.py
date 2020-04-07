@@ -21,19 +21,19 @@ def img_main(path, snap, reg, npart_lim=10**3):
 
     # Load all necessary arrays
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
-    all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
+    all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, physicalUnits=True, numThreads=8)
     part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    gal_sml = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength', noH=True, numThreads=8)
+    gal_sml = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength', noH=True, physicalUnits=True, numThreads=8)
     group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
     gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-    gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8)
+    gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, physicalUnits=True, numThreads=8)
 
     # Load data for luminosities
-    a_born = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime', noH=True, numThreads=8)
-    metallicities = E.read_array('SNAP', path, snap, 'PartType4/SmoothedMetallicity', noH=True, numThreads=8)
-    masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8) * 10**10
+    a_born = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime', noH=True, physicalUnits=True, numThreads=8)
+    metallicities = E.read_array('SNAP', path, snap, 'PartType4/SmoothedMetallicity', noH=True, physicalUnits=True, numThreads=8)
+    masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
     group_part_ids = group_part_ids[subgrp_ids != 1073741824]
     grp_ids = grp_ids[subgrp_ids != 1073741824]
     subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
@@ -115,13 +115,13 @@ def img_main(path, snap, reg, npart_lim=10**3):
 
     # Get gas particle information
     gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
-    gas_all_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', noH=True, numThreads=8)
+    gas_all_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True, numThreads=8)
     gpart_ids = E.read_array('SNAP', path, snap, 'PartType0/ParticleIDs', numThreads=8)
     ggroup_part_ids = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', numThreads=8)
     ggrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', numThreads=8)
-    gas_metallicities = E.read_array('SNAP', path, snap, 'PartType0/SmoothedMetallicity', noH=True, numThreads=8)
-    gas_smooth_ls = E.read_array('SNAP', path, snap, 'PartType0/SmoothingLength', noH=True, numThreads=8)
-    gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, numThreads=8) * 10**10
+    gas_metallicities = E.read_array('SNAP', path, snap, 'PartType0/SmoothedMetallicity', noH=True, physicalUnits=True, numThreads=8)
+    gas_smooth_ls = E.read_array('SNAP', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True, numThreads=8)
+    gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
 
     ggroup_part_ids = ggroup_part_ids[gsubgrp_ids != 1073741824]
     ggrp_ids = ggrp_ids[gsubgrp_ids != 1073741824]

@@ -123,6 +123,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
 
         # Get the luminosities
         try:
+            means[id] = np.mean(all_gal_poss[id], axis=0)
             print(all_gal_poss[id] - means[id])
             ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
                             all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
@@ -213,7 +214,7 @@ for f in fs:
         half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
         xs_plt = xs_plt[xs_plt > 1e8]
 
-        cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log',
+        cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(),
                          linewidths=0.2, cmap='viridis')
 
