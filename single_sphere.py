@@ -66,11 +66,10 @@ def single_sphere(reg, snap, part_type, soft):
 
     # Get the spheres centre
     centre, radius, mindist = spherical_region(path, snap)
-    print(centre)
+
     # Centre particles
-    print(poss)
     poss -= centre
-    print(poss)
+
     # Remove boundary particles
     r = np.linalg.norm(poss, axis=1)
     okinds = r < 14 / 0.677
@@ -85,8 +84,8 @@ def single_sphere(reg, snap, part_type, soft):
     Particles = sph.Particles(poss, masses, smls)
 
     lbox = (15/0.677) * 2
-    Camera = sph.Camera(r='infinity', extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    # t=0, p=0, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
+    Camera = sph.Camera(r='infinity', t=0, p=0, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
+                        extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
     Scene = sph.Scene(Particles, Camera)
     Render = sph.Render(Scene)
     extent = Render.get_extent()
