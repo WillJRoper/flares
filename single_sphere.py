@@ -85,12 +85,11 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 # Define a list of regions and snapshots
 reg_snaps = []
 regcents = []
-for reg in regions:
+for snap in snaps:
 
-    c = cents[int(reg), :]
-
-    for snap in snaps:
-
+    for reg in regions:
+        
+        c = cents[int(reg), :]
         reg_snaps.append((reg, snap))
         regcents.append(c)
 
