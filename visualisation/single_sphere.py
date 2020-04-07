@@ -84,7 +84,7 @@ reg_snaps = []
 regcents = []
 for reg in regions:
 
-    c = cents[reg]
+    c = cents[int(reg)]
 
     for snap in snaps:
 
