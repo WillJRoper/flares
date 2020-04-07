@@ -298,9 +298,9 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 
             plt_im5 = np.log10(galimgs[key]['FAKE.TH.FUV'])
 
-            plt_im6 = np.zeros_like(galimgs[key]['SFR'])
-            log_im6 = np.log10(galimgs[key]['SFR'])
-            plt_im6[np.where(log_im6 > -np.inf)] = log_im6[np.where(log_im6 > -np.inf)]
+            plt_im6 = galimgs[key]['SFR']
+            # log_im6 = np.log10(galimgs[key]['SFR'])
+            # plt_im6[np.where(log_im6 > -np.inf)] = log_im6[np.where(log_im6 > -np.inf)]
 
             ax1.imshow(np.zeros_like(plt_im1), extent=extents[key], cmap='Greys_r')
             ax2.imshow(np.zeros_like(plt_im2), extent=extents[key], cmap='Greys_r')
@@ -419,7 +419,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar5.outline.set_edgecolor('w')
             cbar5.outline.set_linewidth(0.05)
             cbar5.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar6.ax.set_xlabel(r'$\log_{10}(\mathrm{SFR}/[\mathrm{M}_{\star}/\mathrm{yr}])$', fontsize=2, color='w',
+            cbar6.ax.set_xlabel(r'$\mathrm{SFR}/[\mathrm{M}_{\star}/\mathrm{yr}]$', fontsize=2, color='w',
                                 labelpad=1.0)
             cbar6.ax.xaxis.set_label_position('top')
             cbar6.outline.set_edgecolor('w')
