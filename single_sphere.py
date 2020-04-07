@@ -33,6 +33,7 @@ def single_sphere(reg, snap, part_type, soft, cent):
     poss, masses, smls = get_sphere_data(path, snap, part_type, soft)
 
     # Centre particles
+    print(poss)
     poss -= cent
     print(poss)
     # Remove boundary particles
@@ -86,7 +87,7 @@ reg_snaps = []
 regcents = []
 for reg in regions:
 
-    c = cents[int(reg)]
+    c = cents[int(reg), :]
 
     for snap in snaps:
 
