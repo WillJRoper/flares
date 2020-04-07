@@ -85,7 +85,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     Particles = sph.Particles(poss, masses, smls)
 
     lbox = (15/0.677) * 2
-    Camera = sph.Camera(r='infinity', t=t, p=p, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
+    Camera = sph.Camera(r='infinity', t=t, p=p, roll=0, xsize=500, ysize=500, x=0, y=0, z=0,
                         extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
     Scene = sph.Scene(Particles, Camera)
     Render = sph.Render(Scene)
@@ -108,7 +108,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
 
     fig.savefig('plots/spheres/single_sphere_reg' + reg + '_snap' + snap + '_PartType' + str(part_type)
                     + '_angle' + save_num + '.png',
-                    bbox_inches='tight', dpi=300)
+                    bbox_inches='tight')
 
 
 # Define softening lengths
