@@ -47,8 +47,8 @@ def single_sphere(reg, snap, part_type, soft, cent):
     Particles = sph.Particles(poss, masses, smls)
 
     lbox = (15/0.7) * 2
-    Camera = sph.Camera(r='infinity', t=0, p=0, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
-                        extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    Camera = sph.Camera(r='infinity', extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    # t=0, p=0, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
     Scene = sph.Scene(Particles, Camera)
     Render = sph.Render(Scene)
     extent = Render.get_extent()
