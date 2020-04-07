@@ -127,5 +127,5 @@ ind = int(sys.argv[1])
 # print(reg_snaps[ind])
 # reg, snap = reg_snaps[ind]
 reg, snap = '00', '011_z004p770'
-ts = np.linspace(-np.pi, np.pi, 100)
-single_sphere(reg, snap, part_type=0, soft=csoft, t=ts[ind])
+ps = np.linspace(0, 360, 1000)
+single_sphere(reg, snap, part_type=0, soft=csoft, p=ps[ind])
