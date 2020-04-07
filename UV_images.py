@@ -290,36 +290,26 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax6 = fig.add_subplot(gs[0, 5])
 
             # Draw images
-            plt_im1 = np.zeros_like(galimgs[key]['mass'])
-            log_im1 = np.log10(galimgs[key]['mass'])
-            plt_im1[np.where(log_im1 > -np.inf)] = log_im1[np.where(log_im1 > -np.inf)]
+            plt_im1 = np.log10(galimgs[key]['mass'])
 
-            plt_im2 = np.zeros_like(galimgs[key]['metals'])
-            log_im2 = np.log10(galimgs[key]['metals'])
-            plt_im2[np.where(log_im2 > -np.inf)] = log_im2[np.where(log_im2 > -np.inf)]
+            plt_im2 = np.log10(galimgs[key]['metals'])
 
-            plt_im3 = np.zeros_like(galimgs[key]['FAKE.TH.V'])
-            log_im3 = np.log10(galimgs[key]['FAKE.TH.V'])
-            plt_im3[np.where(log_im3 > -np.inf)] = log_im3[np.where(log_im3 > -np.inf)]
+            plt_im3 = np.log10(galimgs[key]['FAKE.TH.V'])
 
-            plt_im4 = np.zeros_like(galimgs[key]['FAKE.TH.NUV'])
-            log_im4 = np.log10(galimgs[key]['FAKE.TH.NUV'])
-            plt_im4[np.where(log_im4 > -np.inf)] = log_im4[np.where(log_im4 > -np.inf)]
+            plt_im4 = np.log10(galimgs[key]['FAKE.TH.NUV'])
 
-            plt_im5 = np.zeros_like(galimgs[key]['FAKE.TH.FUV'])
-            log_im5 = np.log10(galimgs[key]['FAKE.TH.FUV'])
-            plt_im5[np.where(log_im5 > -np.inf)] = log_im5[np.where(log_im5 > -np.inf)]
+            plt_im5 = np.log10(galimgs[key]['FAKE.TH.FUV'])
 
             plt_im6 = np.zeros_like(galimgs[key]['SFR'])
             log_im6 = np.log10(galimgs[key]['SFR'])
             plt_im6[np.where(log_im6 > -np.inf)] = log_im6[np.where(log_im6 > -np.inf)]
 
-            im1 = ax1.imshow(plt_im1, extent=extents[key], cmap='Greys_r')
-            im2 = ax2.imshow(plt_im2, extent=extents[key], cmap='Greys_r')
-            im3 = ax3.imshow(plt_im3, extent=extents[key], cmap='Greys_r')
-            im4 = ax4.imshow(plt_im4, extent=extents[key], cmap='Greys_r')
-            im5 = ax5.imshow(plt_im5, extent=extents[key], cmap='Greys_r')
-            im6 = ax6.imshow(plt_im6, extent=extents[key], cmap='Greys_r')
+            im1 = ax1.imshow(plt_im1, extent=extents[key], cmap='Greys')
+            im2 = ax2.imshow(plt_im2, extent=extents[key], cmap='Greys')
+            im3 = ax3.imshow(plt_im3, extent=extents[key], cmap='Greys')
+            im4 = ax4.imshow(plt_im4, extent=extents[key], cmap='Greys')
+            im5 = ax5.imshow(plt_im5, extent=extents[key], cmap='Greys')
+            im6 = ax6.imshow(plt_im6, extent=extents[key], cmap='Greys')
 
             # Draw scale line
             right_side = dim - (dim * 0.1)
