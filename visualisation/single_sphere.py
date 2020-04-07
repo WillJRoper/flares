@@ -63,7 +63,7 @@ def single_sphere(reg, snap, part_type, soft, cent):
 
 # Load centres
 cents = np.loadtxt('Region_cents.txt')
-
+print(cents)
 # Define softening lengths
 csoft = 0.001802390 / 0.677
 
