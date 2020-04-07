@@ -269,6 +269,8 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
                                           gal_mets[id], gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id],
                                           lkernel, kbins, conv)
 
+        m = np.log10(np.sum(gal_ms))
+
         # Loop over dimensions
         for key in galimgs.keys():
 
@@ -411,7 +413,8 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar6.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
-                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',
+                        '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + 'm_%.2f'%m
+                        + '_coords' + key + '.png',
                         bbox_inches='tight', dpi=600)
 
             plt.close(fig)
@@ -427,7 +430,7 @@ print(100 / res, 'pixels in', '100 kpc')
 npart_lim = 10**2
 
 regions = []
-for reg in range(0, 13):
+for reg in range(0, 40):
     if reg < 10:
         regions.append('0' + str(reg))
     else:

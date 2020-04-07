@@ -163,7 +163,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
 #     else:
 #         regions.append(str(reg))
 regions = []
-reg_ints = list(range(0, 1))
+reg_ints = list(range(0, 40))
 reg_ints.append(39)
 for reg in reg_ints:
     if reg < 10:
