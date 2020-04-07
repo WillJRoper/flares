@@ -5,6 +5,7 @@ import numpy as np
 import sphviewer as sph
 from sphviewer.tools import cmaps
 import matplotlib.pyplot as plt
+from flares import flares
 import eagle_IO as E
 import sys
 
@@ -24,7 +25,7 @@ def get_sphere_data(path, snap, part_type, soft):
 
     return poss, masses, smls
 
-def single_sphere(reg, snap, part_type, soft, cent):
+def single_sphere(reg, snap, part_type, soft):
 
     # Define path
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
@@ -32,9 +33,12 @@ def single_sphere(reg, snap, part_type, soft, cent):
     # Get plot data
     poss, masses, smls = get_sphere_data(path, snap, part_type, soft)
 
+    # Get the spheres centre
+    centre, radius, mindist = flares.spherical_region(path, snap)
+
     # Centre particles
     print(poss)
-    poss -= cent
+    poss -= centre
     print(poss)
     # Remove boundary particles
     r = np.linalg.norm(poss, axis=1)
@@ -64,9 +68,6 @@ def single_sphere(reg, snap, part_type, soft, cent):
                 bbox_inches='tight', dpi=300)
 
 
-# Load centres
-cents = np.loadtxt('Region_cents.txt')
-print(cents)
 # Define softening lengths
 csoft = 0.001802390 / 0.677
 
@@ -84,16 +85,14 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 
 # Define a list of regions and snapshots
 reg_snaps = []
-regcents = []
 for snap in snaps:
 
     for reg in regions:
-        
-        c = cents[int(reg), :]
+
         reg_snaps.append((reg, snap))
         regcents.append(c)
 
 ind = int(sys.argv[1])
-print(reg_snaps[ind], regcents[ind])
+print(reg_snaps[ind])
 reg, snap = reg_snaps[ind]
-single_sphere(reg, snap, part_type=0, soft=csoft, cent=regcents[ind])
+single_sphere(reg, snap, part_type=4, soft=csoft)
