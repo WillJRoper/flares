@@ -53,8 +53,8 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
         lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F,
                                            f=f, fesc=0.0)
     else:
-        lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, None, None, F,
-                                           f=f, fesc=0.0)
+        lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, np.zeros_like(gal_mets),
+                                           np.zeros_like(gal_mets), F, f=f, fesc=0.0)
 
     return lumins
 
