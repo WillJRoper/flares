@@ -105,9 +105,6 @@ def img_main(path, snap, reg, npart_lim=10**3):
     for id in ids:
         parts = list(halo_id_part_inds[id])
         all_gal_poss[id] = all_poss[parts, :]
-        print(all_gal_poss[id][:, 0].max() - all_gal_poss[id][:, 0].min(),
-              all_gal_poss[id][:, 1].max() - all_gal_poss[id][:, 1].min(),
-              all_gal_poss[id][:, 2].max() - all_gal_poss[id][:, 2].min())
         gal_ages[id] = ages[parts]
         gal_mets[id] = metallicities[parts]
         gal_ms[id] = masses[parts]
@@ -181,9 +178,6 @@ def img_main(path, snap, reg, npart_lim=10**3):
     for id in both_ids:
         gparts = list(ghalo_id_part_inds[id])
         all_gas_poss[id] = gas_all_poss[gparts, :]
-        print(all_gas_poss[id][:, 0].max() - all_gas_poss[id][:, 0].min(),
-              all_gas_poss[id][:, 1].max() - all_gas_poss[id][:, 1].min(),
-              all_gas_poss[id][:, 2].max() - all_gas_poss[id][:, 2].min())
         gas_mets[id] = gas_metallicities[gparts]
         gas_ms[id] = gas_masses[gparts]
         gas_smls[id] = gas_smooth_ls[gparts]
