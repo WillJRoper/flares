@@ -304,12 +304,12 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             log_im6 = np.log10(galimgs[key]['SFR'])
             plt_im6[np.where(log_im6 > -np.inf)] = log_im6[np.where(log_im6 > -np.inf)]
 
-            im1 = ax1.imshow(plt_im1, extent=extents[key], cmap='Greys')
-            im2 = ax2.imshow(plt_im2, extent=extents[key], cmap='Greys')
-            im3 = ax3.imshow(plt_im3, extent=extents[key], cmap='Greys')
-            im4 = ax4.imshow(plt_im4, extent=extents[key], cmap='Greys')
-            im5 = ax5.imshow(plt_im5, extent=extents[key], cmap='Greys')
-            im6 = ax6.imshow(plt_im6, extent=extents[key], cmap='Greys')
+            im1 = ax1.imshow(plt_im1, extent=extents[key], cmap='plasma')
+            im2 = ax2.imshow(plt_im2, extent=extents[key], cmap='plasma')
+            im3 = ax3.imshow(plt_im3, extent=extents[key], cmap='plasma')
+            im4 = ax4.imshow(plt_im4, extent=extents[key], cmap='plasma')
+            im5 = ax5.imshow(plt_im5, extent=extents[key], cmap='plasma')
+            im6 = ax6.imshow(plt_im6, extent=extents[key], cmap='plasma')
 
             # Draw scale line
             right_side = dim - (dim * 0.1)
