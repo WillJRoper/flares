@@ -212,11 +212,6 @@ npart_lim=10**2
 reg_snaps = []
 for reg in regions:
 
-    try:
-        os.mkdir('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg)
-    except OSError:
-        pass
-
     for snap in snaps:
 
         reg_snaps.append((reg, snap))
