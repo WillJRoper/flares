@@ -69,6 +69,11 @@ def calc_light_mass_rad(poss, ls):
     sinds = np.argsort(rs)
     rs = rs[sinds]
     ls = ls[sinds]
+    ls = ls[rs < 30]
+    rs = rs[rs < 30]
+
+    if len(ls) < 20:
+        return 0
 
     # Get the cumalative sum of masses
     l_profile = np.cumsum(ls)
@@ -111,8 +116,8 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
     gas_mets = save_dict['gas_mets']
     gas_ms = save_dict['gas_ms']
     gas_smls = save_dict['gas_smls']
-    all_gas_poss = save_dict['all_gas_poss']
-    all_gal_poss = save_dict['all_gal_poss']
+    all_gas_poss = save_dict['all_gas_poss'] * convert_pkpc
+    all_gal_poss = save_dict['all_gal_poss'] * convert_pkpc
     means = save_dict['means']
 
     print('Extracted galaxy positions')
@@ -128,19 +133,19 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
         try:
             if len(gas_ms[id]) == 0:
                 continue
-            means[id] = np.mean(all_gal_poss[id] * convert_pkpc, axis=0)
-            ls = get_lumins(all_gal_poss[id] - means[id] * convert_pkpc, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
-                            all_gas_poss[id] - means[id] * convert_pkpc, gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
+            means[id] = np.mean(all_gal_poss[id], axis=0)
+            ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
+                            all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
                             F, i, j, f, dust)
 
             # Compute half mass radii
-            hls[ind] = calc_light_mass_rad(all_gal_poss[id] - means[id] * convert_pkpc, ls)
+            hls[ind] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
             ms[ind] = np.sum(gal_ms[id])
             print(hls[ind])
         except KeyError:
             continue
 
-    return hls[ms > 0], ms[ms > 0]
+    return hls[hls > 0], ms[hls > 0]
 
 
 # regions = []
