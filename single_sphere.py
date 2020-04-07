@@ -25,7 +25,7 @@ def spherical_region(sim, snap):
     """
 
     dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
-                           noH=False, physicalUnits=False, numThreads=8)  # dm particle coordinates
+                           noH=True, physicalUnits=False, numThreads=8)  # dm particle coordinates
 
     hull = ConvexHull(dm_cood)
 
