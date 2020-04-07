@@ -56,6 +56,7 @@ def get_sphere_data(path, snap, part_type, soft):
 
     return poss, masses, smls
 
+
 def single_sphere(reg, snap, part_type, soft):
 
     # Define path
@@ -124,4 +125,4 @@ for snap in snaps:
 ind = int(sys.argv[1])
 print(reg_snaps[ind])
 reg, snap = reg_snaps[ind]
-single_sphere(reg, snap, part_type=1, soft=csoft)
+single_sphere(reg, snap, part_type=0, soft=csoft)
