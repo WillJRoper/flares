@@ -36,7 +36,10 @@ model.create_Lnu_grid(F)
 def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
                lkernel, kbins, conv, model, F, i, j, f, dust):
 
-    if dust:
+    if f == 'mass':
+        lumins = gal_ms
+
+    elif dust:
 
         # Define dimensions array
         if i == 0 and j == 1:
@@ -135,9 +138,9 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
                 continue
             gas_poss = all_gas_poss[id] * convert_pkpc
             gal_poss = all_gal_poss[id] * convert_pkpc
-            means[id] = np.mean(gal_poss, axis=0)
-            gal_poss -= means[id]
-            gas_poss -= means[id]
+            # means[id] = np.mean(gal_poss, axis=0)
+            gal_poss -= means[id] * convert_pkpc
+            gas_poss -= means[id] * convert_pkpc
             ls = get_lumins(gal_poss, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
                             gas_poss, gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
                             F, i, j, f, dust)
@@ -160,7 +163,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
 #     else:
 #         regions.append(str(reg))
 regions = []
-reg_ints = list(range(0, 2))
+reg_ints = list(range(0, 1))
 reg_ints.append(39)
 for reg in reg_ints:
     if reg < 10:
@@ -168,7 +171,7 @@ for reg in reg_ints:
     else:
         regions.append(str(reg))
 
-fs = ['FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV']
+fs = ['mass', 'FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV']
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
 ii, jj = 0, 1
 dust = False
@@ -266,7 +269,11 @@ for f in fs:
     ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
     ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-    fig.savefig('plots/HalfLightRadius_all_snaps_' + f + '_coords' + str(ii) + '-' + str(jj) + '.png',
-                bbox_inches='tight')
+    if f != 'mass':
+        fig.savefig('plots/HalfLightRadius_all_snaps_' + f + '_coords' + str(ii) + '-' + str(jj) + '.png',
+                    bbox_inches='tight')
+    else:
+        fig.savefig('plots/HalfMassRadius_all_snaps_coords' + str(ii) + '-' + str(jj) + '.png',
+                    bbox_inches='tight')
 
     plt.close(fig)

@@ -8,7 +8,7 @@ import eagle_IO as E
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import pickle
 import os
-from utilities import calc_ages, get_Z_LOS
+from utilities import calc_ages, get_Z_LOS, calc_srf_from_age
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
 from SynthObs.SED import models
@@ -60,23 +60,27 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
             # Compute luminosities
             if f == 'mass':
                 lumins = gal_ms
+                gal_pos = gal_poss - mean
             elif f == 'metals':
                 lumins = gal_met_surfden
+                gal_pos = gal_poss - mean
             elif f == 'SFR':
-                lumins = gal_met_surfden
+                lumins, ok = calc_srf_from_age(gal_ages, gal_ms)
+                gal_pos = gal_poss[ok, :] - mean
             else:
                 tauVs_ISM = (10 ** 5.2) * gal_met_surfden
                 tauVs_BC = 2.0 * (gal_mets / 0.01)
                 lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F,
                                                    f=f, fesc=0.0)
+                gal_pos = gal_poss - mean
 
             # Compute extent for the 2D square image
             extents[str(i) + '-' + str(j)] = [-dim, dim, -dim, dim]
             posrange = ((-dim, dim), (-dim, dim))
 
             # Create images
-            galimgs[str(i) + '-' + str(j)][f], gxbins, gybins = np.histogram2d(gal_poss[:, i] - mean[i],
-                                                                               gal_poss[:, j] - mean[j],
+            galimgs[str(i) + '-' + str(j)][f], gxbins, gybins = np.histogram2d(gal_pos[:, i],
+                                                                               gal_pos[:, j],
                                                                                bins=int(dim / res), weights=lumins,
                                                                                range=posrange)
             ls[str(i) + '-' + str(j)][f] = lumins

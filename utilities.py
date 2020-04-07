@@ -19,6 +19,44 @@ def calc_ages(z, a_born):
     return ages.value
 
 
+def calc_srf(z, a_born, mass, t_bin=100):
+
+    # Convert scale factor into redshift
+    z_born = 1 / a_born - 1
+
+    # Convert to time in Gyrs
+    t = cosmo.age(z)
+    t_born = cosmo.age(z_born)
+
+    # Calculate the VR
+    age = (t - t_born).to(u.Myr)
+
+    ok = np.where(age.value <= t_bin)[0]
+    if len(ok) > 0:
+
+        # Calculate the SFR
+        sfr = np.sum(mass[ok]) / (t_bin * 1e6)
+
+    else:
+        sfr = 0.0
+
+    return sfr
+
+
+def calc_srf_from_age(age, mass, t_bin=100):
+
+    ok = np.where(age.value <= t_bin)[0]
+    if len(ok) > 0:
+
+        # Calculate the SFR
+        sfr = np.sum(mass[ok]) / (t_bin * 1e6)
+
+    else:
+        sfr = np.zeros(len(ok))
+
+    return sfr, ok
+
+
 @nb.njit(nogil=True)
 def get_Z_LOS(s_cood, g_cood, g_mass, g_Z, g_sml, dimens, lkernel, kbins, conv):
 
