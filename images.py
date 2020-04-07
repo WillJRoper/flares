@@ -401,21 +401,19 @@ for reg in reversed(regions):
 
         reg_snaps.append((reg, snap))
 
-if __name__ == '__main__':
+ind = int(sys.argv[1])
+print(reg_snaps[ind])
+reg, snap = reg_snaps[ind]
 
-    ind = int(sys.argv[1])
-    print(reg_snaps[ind])
-    reg, snap = reg_snaps[ind]
+# Define region variables
+path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
-    # Define region variables
-    path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
+files = os.listdir('UVimg_data/')
+print(files)
 
-    files = os.listdir('UVimg_data/')
-    print(files)
-
-    if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
-        load = True
-        img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width,
-                 load=load, conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
-        img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width,
-                 load=True, conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
+if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
+    load = True
+    img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width,
+             load=load, conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
+    img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width,
+             load=True, conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)

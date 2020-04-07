@@ -8,6 +8,7 @@ import eagle_IO as E
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import pickle
 import os
+import sys
 from utilities import calc_ages, get_Z_LOS, calc_srf_from_age
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
@@ -423,7 +424,7 @@ csoft = 0.001802390/0.677
 res = csoft
 print(100 / res, 'pixels in', '100 kpc')
 
-npart_lim = 10**4
+npart_lim = 10**2
 
 regions = []
 for reg in range(0, 13):
@@ -442,29 +443,17 @@ for reg in reversed(regions):
 
         reg_snaps.append((reg, snap))
 
-for i in range(len(reg_snaps)):
+ind = int(sys.argv[1])
+print(reg_snaps[ind])
+reg, snap = reg_snaps[ind]
 
-    print(reg_snaps[i][0], reg_snaps[i][1])
+# Define region variables
+path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
-    # Define region variables
-    reg = reg_snaps[i][0]
-    snap = reg_snaps[i][1]
-    path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
+files = os.listdir('UVimg_data/')
 
-    files = os.listdir('UVimg_data/')
-    print(files)
+if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
+    load = True
 
-    if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
-        load = True
-    else:
-        load = False
-
-    try:
-        img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.25, load=load,
-                 conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.05)
-    except ValueError:
-        continue
-    except KeyError:
-        continue
-    except OSError:
-        continue
+    img_main(path, snap, reg, res, npart_lim=npart_lim, dim=0.25, load=load,
+             conv=(u.solMass/u.Mpc**2).to(u.g/u.cm**2), scale=0.05)
