@@ -290,13 +290,16 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax6 = fig.add_subplot(gs[0, 5])
 
             # Draw images
-            ax1.imshow(np.zeros_like(galimgs[key]['mass']), extent=extents[key], cmap='Greys_r')
+            plt_im1 = np.zeros_like(galimgs[key]['mass'])
+            log_im1 = np.log10(galimgs[key]['mass'])
+            print(log_im1.min())
+            plt_im1[np.where(log_im1 > -1000)] = log_im1[np.where(log_im1 > -1000)]
             ax2.imshow(np.zeros_like(galimgs[key]['metals']), extent=extents[key], cmap='Greys_r')
             ax3.imshow(np.zeros_like(galimgs[key]['FAKE.TH.V']), extent=extents[key], cmap='Greys_r')
             ax4.imshow(np.zeros_like(galimgs[key]['FAKE.TH.NUV']), extent=extents[key], cmap='Greys_r')
             ax5.imshow(np.zeros_like(galimgs[key]['FAKE.TH.FUV']), extent=extents[key], cmap='Greys_r')
             ax6.imshow(np.zeros_like(galimgs[key]['SFR']), extent=extents[key], cmap='Greys_r')
-            im1 = ax1.imshow(np.log10(galimgs[key]['mass']), extent=extents[key], cmap='Greys_r')
+            im1 = ax1.imshow(plt_im1, extent=extents[key], cmap='Greys_r')
             im2 = ax2.imshow(np.log10(galimgs[key]['metals']), extent=extents[key], cmap='Greys_r')
             im3 = ax3.imshow(np.log10(galimgs[key]['FAKE.TH.V']), extent=extents[key], cmap='Greys_r')
             im4 = ax4.imshow(np.log10(galimgs[key]['FAKE.TH.NUV']), extent=extents[key], cmap='Greys_r')
@@ -426,7 +429,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 csoft = 0.001802390/0.677
 
 # Define resolution
-res = csoft
+res = csoft / 10
 print(100 / res, 'pixels in', '100 kpc')
 
 npart_lim = 10**4
