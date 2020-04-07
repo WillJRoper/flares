@@ -66,8 +66,10 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
                 lumins = gal_met_surfden
                 gal_pos = gal_poss - mean
             elif f == 'SFR':
-                lumins, ok = calc_srf_from_age(gal_ages, gal_ms)
-                gal_pos = gal_poss[ok, :] - mean
+                lumins = np.zeros(gal_ages.size)
+                ls, ok = calc_srf_from_age(gal_ages, gal_ms)
+                lumins[ok] = ls
+                gal_pos = gal_poss - mean
             else:
                 tauVs_ISM = (10 ** 5.2) * gal_met_surfden
                 tauVs_BC = 2.0 * (gal_mets / 0.01)

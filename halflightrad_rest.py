@@ -138,7 +138,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
                 continue
             gas_poss = all_gas_poss[id] * convert_pkpc
             gal_poss = all_gal_poss[id] * convert_pkpc
-            # means[id] = np.mean(gal_poss, axis=0)
+            means[id] = np.mean(gal_poss, axis=0)
             gal_poss -= means[id] * convert_pkpc
             gas_poss -= means[id] * convert_pkpc
             ls = get_lumins(gal_poss, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
