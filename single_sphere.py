@@ -90,7 +90,6 @@ for snap in snaps:
     for reg in regions:
 
         reg_snaps.append((reg, snap))
-        regcents.append(c)
 
 ind = int(sys.argv[1])
 print(reg_snaps[ind])
