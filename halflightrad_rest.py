@@ -116,7 +116,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
     gas_mets = save_dict['gas_mets']
     gas_ms = save_dict['gas_ms']
     gas_smls = save_dict['gas_smls']
-    all_gas_poss = save_dict['all_gas_poss'] * convert_pkpc
+    all_gas_poss = save_dict['all_gas_poss']
     all_gal_poss = save_dict['all_gal_poss'] * convert_pkpc
     means = save_dict['means']
 
@@ -133,13 +133,17 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
         try:
             if len(gas_ms[id]) == 0:
                 continue
-            means[id] = np.mean(all_gal_poss[id], axis=0)
-            ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
-                            all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
+            gas_poss = all_gas_poss[id] * convert_pkpc
+            gal_poss = all_gal_poss[id] * convert_pkpc
+            means[id] = np.mean(gal_poss, axis=0)
+            gal_poss -= means[id]
+            gas_poss -= means[id]
+            ls = get_lumins(gal_poss, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
+                            gas_poss, gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
                             F, i, j, f, dust)
 
             # Compute half mass radii
-            hls[ind] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
+            hls[ind] = calc_light_mass_rad(gal_poss, ls)
             ms[ind] = np.sum(gal_ms[id])
             print(hls[ind])
         except KeyError:
