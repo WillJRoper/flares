@@ -70,11 +70,8 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 	arcsec_per_kpc_proper = cosmo.arcsec_per_kpc_proper(redshift).value
 
 	# Convert star positions to angular positons in arcseconds
-	print('X', X)
-	print('X', xs)
 	xs = xs * arcsec_per_kpc_proper
 	ys = ys * arcsec_per_kpc_proper
-	print('X in arcseconds', xs)
 
 	# Extract the luminosity for the desired filter
 	if NIRCf is not None:

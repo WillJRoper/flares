@@ -375,7 +375,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 csoft = 0.001802390/0.677
 
 # Define image width
-width = 3.
+width = 10.
 
 # Define resolution
 arc_res = 0.031
