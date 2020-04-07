@@ -124,7 +124,6 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
         # Get the luminosities
         try:
             means[id] = np.mean(all_gal_poss[id], axis=0)
-            print(all_gal_poss[id] - means[id])
             ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
                             all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
                             F, i, j, f, dust)
@@ -158,7 +157,7 @@ for reg in reg_ints:
 fs = ['FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV']
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
 i, j = 0, 1
-dust = True
+dust = False
 
 snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000',
