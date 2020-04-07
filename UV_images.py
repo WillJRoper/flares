@@ -53,7 +53,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
         galimgs[str(i) + '-' + str(j)] = {}
         ls[str(i) + '-' + str(j)] = {}
 
-        for f in ['mass', 'FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV', 'metals']:
+        for f in ['mass', 'FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV', 'metals', 'SFR']:
 
             print((i, j), f)
 
@@ -61,6 +61,8 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
             if f == 'mass':
                 lumins = gal_ms
             elif f == 'metals':
+                lumins = gal_met_surfden
+            elif f == 'SFR':
                 lumins = gal_met_surfden
             else:
                 tauVs_ISM = (10 ** 5.2) * gal_met_surfden
@@ -268,14 +270,15 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             i, j = key.split('-')
 
             # Set up figure
-            fig = plt.figure(figsize=(5, 22))
-            gs = gridspec.GridSpec(1, 5)
+            fig = plt.figure(figsize=(5, 24))
+            gs = gridspec.GridSpec(1, 6)
             gs.update(wspace=0.0, hspace=0.0)
             ax1 = fig.add_subplot(gs[0, 0])
             ax2 = fig.add_subplot(gs[0, 1])
             ax3 = fig.add_subplot(gs[0, 2])
             ax4 = fig.add_subplot(gs[0, 3])
             ax5 = fig.add_subplot(gs[0, 4])
+            ax6 = fig.add_subplot(gs[0, 5])
 
             # Draw images
             ax1.imshow(np.zeros_like(galimgs[key]['mass']), extent=extents[key], cmap='Greys_r')
@@ -283,11 +286,13 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax3.imshow(np.zeros_like(galimgs[key]['FAKE.TH.V']), extent=extents[key], cmap='Greys_r')
             ax4.imshow(np.zeros_like(galimgs[key]['FAKE.TH.NUV']), extent=extents[key], cmap='Greys_r')
             ax5.imshow(np.zeros_like(galimgs[key]['FAKE.TH.FUV']), extent=extents[key], cmap='Greys_r')
+            ax6.imshow(np.zeros_like(galimgs[key]['SFR']), extent=extents[key], cmap='Greys_r')
             im1 = ax1.imshow(np.log10(galimgs[key]['mass']), extent=extents[key], cmap='Greys_r')
             im2 = ax2.imshow(np.log10(galimgs[key]['metals']), extent=extents[key], cmap='Greys_r')
             im3 = ax3.imshow(np.log10(galimgs[key]['FAKE.TH.V']), extent=extents[key], cmap='Greys_r')
             im4 = ax4.imshow(np.log10(galimgs[key]['FAKE.TH.NUV']), extent=extents[key], cmap='Greys_r')
             im5 = ax5.imshow(np.log10(galimgs[key]['FAKE.TH.FUV']), extent=extents[key], cmap='Greys_r')
+            im6 = ax6.imshow(np.log10(galimgs[key]['SFR']), extent=extents[key], cmap='Greys_r')
 
             # Draw scale line
             right_side = dim - (dim * 0.1)
@@ -299,6 +304,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax3.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
             ax4.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
             ax5.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+            ax6.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
 
             # Label scale
             ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
@@ -310,6 +316,8 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             ax4.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
                      fontsize=2, color='w')
             ax5.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+                     fontsize=2, color='w')
+            ax6.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
                      fontsize=2, color='w')
 
             # # Draw text
@@ -335,6 +343,8 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
                             labeltop=False, labelright=False, labelbottom=False)
             ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                             labeltop=False, labelright=False, labelbottom=False)
+            ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
 
             # # Label axes
             # ax1.set_xlabel(axlabels[int(i)])
@@ -350,11 +360,13 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cax3 = inset_axes(ax3, width="50%", height="3%", loc='lower left')
             cax4 = inset_axes(ax4, width="50%", height="3%", loc='lower left')
             cax5 = inset_axes(ax5, width="50%", height="3%", loc='lower left')
+            cax6 = inset_axes(ax6, width="50%", height="3%", loc='lower left')
             cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
             cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
             cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
             cbar4 = fig.colorbar(im4, cax=cax4, orientation="horizontal")
             cbar5 = fig.colorbar(im5, cax=cax5, orientation="horizontal")
+            cbar6 = fig.colorbar(im6, cax=cax6, orientation="horizontal")
 
             # Label colorbars
             cbar1.ax.set_xlabel(r'$\log_{10}(M_{\star}/M_{\odot})$', fontsize=2, color='w', labelpad=1.0)
@@ -386,6 +398,12 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar5.outline.set_edgecolor('w')
             cbar5.outline.set_linewidth(0.05)
             cbar5.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
+            cbar6.ax.set_xlabel(r'$\log_{10}(\mathrn{SFR}/[\mathrm{M}_{\star}/\mathrm{yr}])$', fontsize=2, color='w',
+                                labelpad=1.0)
+            cbar6.ax.xaxis.set_label_position('top')
+            cbar6.outline.set_edgecolor('w')
+            cbar6.outline.set_linewidth(0.05)
+            cbar6.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
             fig.savefig('plots/UVimages/UV_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + '.png',

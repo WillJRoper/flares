@@ -117,7 +117,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
     gas_ms = save_dict['gas_ms']
     gas_smls = save_dict['gas_smls']
     all_gas_poss = save_dict['all_gas_poss']
-    all_gal_poss = save_dict['all_gal_poss'] * convert_pkpc
+    all_gal_poss = save_dict['all_gal_poss']
     means = save_dict['means']
 
     print('Extracted galaxy positions')
