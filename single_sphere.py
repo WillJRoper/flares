@@ -19,7 +19,7 @@ def _sphere(coords, a, b, c, r):
     return (x - a) ** 2 + (y - b) ** 2 + (z - c) ** 2 - r ** 2
 
 
-def spherical_region(self, sim, snap):
+def spherical_region(sim, snap):
     """
     Inspired from David Turner's suggestion
     """
