@@ -381,7 +381,7 @@ width = 3.
 arc_res = 0.031
 print(width / arc_res, 'pixels in', width, 'arcseconds')
 
-npart_lim = 10**4
+npart_lim = 10**2
 NIRCfs = ('F070W', 'F090W', 'F115W', 'F150W', 'F200W', 'F277W', 'F356W', 'F444W')
 
 regions = []
@@ -415,16 +415,7 @@ if __name__ == '__main__':
 
     if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
         load = True
-        try:
-            img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width,
-                     load=load,
-                     conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
-            img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width,
-                     load=True,
-                     conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
-        except ValueError:
-            print('ValueError')
-        except KeyError:
-            print('KeyError')
-        except OSError:
-            print('OSError')
+        img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width,
+                 load=load, conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
+        img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width,
+                 load=True, conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
