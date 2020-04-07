@@ -75,7 +75,7 @@ def calc_light_mass_rad(poss, ls):
     ls = ls[rs < 30]
     rs = rs[rs < 30]
 
-    if len(ls) < 20:
+    if len(ls) < 10:
         return 0
 
     # Get the cumalative sum of masses
@@ -130,7 +130,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
     ms = np.zeros(len(gal_ages))
     for ind, id in enumerate(gal_ages.keys()):
 
-        print('Computing luminosities for', id)
+        print('Computing luminosities for', id, f)
 
         # Get the luminosities
         try:
@@ -235,9 +235,10 @@ for f in fs:
         half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
         xs_plt = xs_plt[xs_plt > 1e8]
 
-        cbar = ax.hexbin(xs_plt, half_mass_rads_plt / csoft, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                         norm=LogNorm(),
-                         linewidths=0.2, cmap='viridis')
+        if len(xs_plt) > 0:
+            cbar = ax.hexbin(xs_plt, half_mass_rads_plt / csoft, gridsize=100, mincnt=1, xscale='log', yscale='log',
+                             norm=LogNorm(),
+                             linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
