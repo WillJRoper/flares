@@ -324,7 +324,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
             right_side = dim / 2 - (dim / 2 * 0.1)
             vert = dim / 2 - (dim / 2 * 0.15)
             lab_vert = vert + (dim / 2 * 0.1) * 4 / 8
-            lab_horz = right_side - scale / 2
+            lab_horz = right_side - scale * cosmo.arcsec_per_kpc_proper(z).value / 2
 
             # Draw images
             for ax, f in zip(axes, NIRCfs):
@@ -334,11 +334,12 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
                 im = ax.imshow(galimgs[key][f], extent=extents[key], cmap='Greys_r')
 
                 # Draw scale line
-                ax.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+                ax.plot([right_side - scale * cosmo.arcsec_per_kpc_proper(z).value, right_side], [
+                    vert, vert], color='w', linewidth=0.5)
 
                 # Label scale
-                ax.text(lab_horz, lab_vert, str(scale) + '"', horizontalalignment='center',
-                        fontsize=3, color='w')
+                ax.text(lab_horz, lab_vert, str(scale) + '"',
+                        horizontalalignment='center', fontsize=3, color='w')
 
                 # Draw text
                 ax.text(0.05, 0.945, f, bbox=dict(boxstyle="round,pad=0.3", fc='k', ec="w", lw=0.25, alpha=0.5),
@@ -375,7 +376,7 @@ def img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_li
 csoft = 0.001802390/0.677
 
 # Define image width
-width = 10.
+width = 3.
 
 # Define resolution
 arc_res = 0.031
@@ -409,11 +410,10 @@ reg, snap = reg_snaps[ind]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
 files = os.listdir('UVimg_data/')
-print(files)
 
 if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
     load = True
-    img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width,
-             load=load, conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
+    # img_main(path, snap, reg, arc_res, model, F, output=True, psf=False, npart_lim=npart_lim, dim=width,
+    #          load=load, conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
     img_main(path, snap, reg, arc_res, model, F, output=True, psf=True, npart_lim=npart_lim, dim=width,
-             load=True, conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=0.5, NIRCfs=NIRCfs)
+             load=True, conv=(u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2), scale=50, NIRCfs=NIRCfs)
