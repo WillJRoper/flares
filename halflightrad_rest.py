@@ -75,7 +75,7 @@ def calc_light_mass_rad(poss, ls):
     ls = ls[rs < 30]
     rs = rs[rs < 30]
 
-    if len(ls) < 10:
+    if len(ls) < 20:
         return 0
 
     # Get the cumalative sum of masses
@@ -127,7 +127,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
     ms = np.zeros(len(gal_ages))
     for ind, id in enumerate(gal_ages.keys()):
 
-        print('Computing luminosities for', id, f)
+        # print('Computing luminosities for', id, f)
 
         # Get the luminosities
         try:
@@ -145,7 +145,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
             # Compute half mass radii
             hls[ind] = calc_light_mass_rad(gal_poss, ls)
             ms[ind] = np.sum(gal_ms[id])
-            print(hls[ind])
+            # print(hls[ind])
         except KeyError:
             continue
 

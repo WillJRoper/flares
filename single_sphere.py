@@ -47,7 +47,7 @@ def get_sphere_data(path, snap, part_type, soft):
     poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates',
                         noH=True, numThreads=8)
     masses = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Mass',
-                          noH=True, numThreads=8)
+                          noH=True, numThreads=8) * 10**10
     if part_type != 1:
         smls = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength',
                             noH=True, numThreads=8)
@@ -57,7 +57,7 @@ def get_sphere_data(path, snap, part_type, soft):
     return poss, masses, smls
 
 
-def single_sphere(reg, snap, part_type, soft, t=0, p=0):
+def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
 
     # Define path
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
@@ -95,9 +95,20 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0):
     plt.imshow(np.log10(img), cmap=cmaps.twilight(), extent=extent, origin='lower')
     plt.axis('off')
 
+    if len(str(num)) == 1:
+        save_num = '00000' + str(num)
+    elif len(str(num)) == 2:
+        save_num = '0000' + str(num)
+    elif len(str(num)) == 3:
+        save_num = '000' + str(num)
+    elif len(str(num)) == 4:
+        save_num = '00' + str(num)
+    elif len(str(num)) == 5:
+        save_num = '0' + str(num)
+
     fig.savefig('plots/spheres/single_sphere_reg' + reg + '_snap' + snap + '_PartType' + str(part_type)
-                + '_angle' + str(t) + 'p' + str(p) + '.png',
-                bbox_inches='tight', dpi=300)
+                    + '_angle' + save_num + '.png',
+                    bbox_inches='tight', dpi=300)
 
 
 # Define softening lengths
@@ -128,4 +139,4 @@ ind = int(sys.argv[1])
 # reg, snap = reg_snaps[ind]
 reg, snap = '00', '011_z004p770'
 ps = np.linspace(0, 360, 1000)
-single_sphere(reg, snap, part_type=0, soft=csoft, p=ps[ind])
+single_sphere(reg, snap, part_type=0, soft=csoft, p=ps[ind], num=ind)
