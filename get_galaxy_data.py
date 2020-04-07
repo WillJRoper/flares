@@ -16,18 +16,15 @@ def img_main(path, snap, reg, npart_lim=10**3):
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    # Define stellar particle type
-    part_type = 4
-
     # Load all necessary arrays
-    all_poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
+    all_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True,
                             physicalUnits=True, numThreads=8)
-    part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    gal_sml = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength', noH=True,
+    part_ids = E.read_array('SNAP', path, snap, 'PartType4/ParticleIDs', numThreads=8)
+    gal_sml = E.read_array('SNAP', path, snap, 'PartType4/SmoothingLength', noH=True,
                            physicalUnits=True, numThreads=8)
-    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
+    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
+    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
     gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
     gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
@@ -52,11 +49,11 @@ def img_main(path, snap, reg, npart_lim=10**3):
     unsort_part_ids = part_ids[:]
     sinds = np.argsort(part_ids)
     part_ids = part_ids[sinds]
-    all_poss = all_poss[sinds]
-    gal_sml = gal_sml[sinds]
-    a_born = a_born[sinds]
-    metallicities = metallicities[sinds]
-    masses = masses[sinds]
+    # all_poss = all_poss[sinds]
+    # gal_sml = gal_sml[sinds]
+    # a_born = a_born[sinds]
+    # metallicities = metallicities[sinds]
+    # masses = masses[sinds]
 
     # Get centre of potentials
     gal_cop = {}
@@ -144,10 +141,10 @@ def img_main(path, snap, reg, npart_lim=10**3):
     unsort_gpart_ids = gpart_ids[:]
     gsinds = np.argsort(gpart_ids)
     gpart_ids = gpart_ids[gsinds]
-    gas_all_poss = gas_all_poss[gsinds]
-    gas_smooth_ls = gas_smooth_ls[gsinds]
-    gas_metallicities = gas_metallicities[gsinds]
-    gas_masses = gas_masses[gsinds]
+    # gas_all_poss = gas_all_poss[gsinds]
+    # gas_smooth_ls = gas_smooth_ls[gsinds]
+    # gas_metallicities = gas_metallicities[gsinds]
+    # gas_masses = gas_masses[gsinds]
 
     print('Got halo IDs')
 
