@@ -42,6 +42,8 @@ def single_sphere(reg, snap, part_type, soft, cent):
     masses = masses[okinds]
     smls = smls[okinds]
 
+    print('There are', len(masses), 'in the region')
+
     fig = plt.figure(1, figsize=(7, 7))
 
     Particles = sph.Particles(poss, masses, smls)
