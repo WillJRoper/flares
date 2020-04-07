@@ -407,7 +407,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
             cbar5.outline.set_edgecolor('w')
             cbar5.outline.set_linewidth(0.05)
             cbar5.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar6.ax.set_xlabel(r'$\log_{10}(\mathrn{SFR}/[\mathrm{M}_{\star}/\mathrm{yr}])$', fontsize=2, color='w',
+            cbar6.ax.set_xlabel(r'$\log_{10}(\mathrm{SFR}/[\mathrm{M}_{\star}/\mathrm{yr}])$', fontsize=2, color='w',
                                 labelpad=1.0)
             cbar6.ax.xaxis.set_label_position('top')
             cbar6.outline.set_edgecolor('w')
