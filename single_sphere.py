@@ -5,9 +5,40 @@ import numpy as np
 import sphviewer as sph
 from sphviewer.tools import cmaps
 import matplotlib.pyplot as plt
-from flares import flares
+from scipy.optimize import curve_fit
+from scipy.spatial import ConvexHull
 import eagle_IO as E
 import sys
+
+
+def _sphere(coords, a, b, c, r):
+
+    # Equation of a sphere
+    x, y, z = coords[:, 0], coords[:, 1], coords[:, 2]
+
+    return (x - a) ** 2 + (y - b) ** 2 + (z - c) ** 2 - r ** 2
+
+
+def spherical_region(self, sim, snap):
+    """
+    Inspired from David Turner's suggestion
+    """
+
+    dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
+                           noH=False, physicalUnits=False, numThreads=8)  # dm particle coordinates
+
+    hull = ConvexHull(dm_cood)
+
+    cen = [np.median(dm_cood[:, 0]), np.median(dm_cood[:, 1]), np.median(dm_cood[:,2])]
+    pedge = dm_cood[hull.vertices]  #edge particles
+    y_obs = np.zeros(len(pedge))
+    p0 = np.append(cen, self.radius)
+
+    popt, pcov = curve_fit(self._sphere, pedge, y_obs, p0, method='lm', sigma=np.ones(len(pedge))*0.001)
+    dist = np.sqrt(np.sum((pedge-popt[:3])**2, axis = 1))
+    centre, radius, mindist = popt[:3], popt[3], np.min(dist)
+
+    return centre, radius, mindist
 
 
 def get_sphere_data(path, snap, part_type, soft):
@@ -34,7 +65,7 @@ def single_sphere(reg, snap, part_type, soft):
     poss, masses, smls = get_sphere_data(path, snap, part_type, soft)
 
     # Get the spheres centre
-    centre, radius, mindist = flares.spherical_region(path, snap)
+    centre, radius, mindist = spherical_region(path, snap)
 
     # Centre particles
     print(poss)
