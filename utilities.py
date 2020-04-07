@@ -45,7 +45,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
 
 def calc_srf_from_age(age, mass, t_bin=100):
 
-    ok = np.where(age.value <= t_bin)[0]
+    ok = np.where(age <= t_bin)[0]
     if len(ok) > 0:
 
         # Calculate the SFR
