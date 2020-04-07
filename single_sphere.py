@@ -95,7 +95,8 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0):
     plt.imshow(np.log10(img), cmap=cmaps.twilight(), extent=extent, origin='lower')
     plt.axis('off')
 
-    fig.savefig('plots/spheres/single_sphere_reg' + reg + '_snap' + snap + '_PartType' + str(part_type) + '.png',
+    fig.savefig('plots/spheres/single_sphere_reg' + reg + '_snap' + snap + '_PartType' + str(part_type)
+                + '_angle' + str(t) + 'p' + str(p) + '.png',
                 bbox_inches='tight', dpi=300)
 
 
