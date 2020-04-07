@@ -271,7 +271,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
                                           gal_mets[id], gas_mets[id], all_gas_poss[id], gas_ms[id], gas_smls[id],
                                           lkernel, kbins, conv)
 
-        m = np.log10(np.sum(gal_ms))
+        m = np.log10(np.sum(gal_ms[id]))
 
         # Loop over dimensions
         for key in galimgs.keys():
