@@ -257,9 +257,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
                   + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'wb') as pfile1:
             pickle.dump(save_dict, pfile1)
 
-    print('Extracted galaxy positions')
-
-    axlabels = [r'$x$', r'$y$', r'$z$']
+    print('Extracted galaxy positions, there are', len(gal_ages.keys()), 'galaxies')
 
     # Create images for these galaxies
     for id in gal_ages.keys():
@@ -440,7 +438,7 @@ def img_main(path, snap, reg, res, npart_lim=10**3, dim=0.1, load=True, conv=1, 
 csoft = 0.001802390/0.677
 
 # Define resolution
-res = csoft / 10
+res = csoft / 2
 print(100 / res, 'pixels in', '100 kpc')
 
 npart_lim = 10**2
