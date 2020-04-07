@@ -57,7 +57,7 @@ def get_sphere_data(path, snap, part_type, soft):
     return poss, masses, smls
 
 
-def single_sphere(reg, snap, part_type, soft):
+def single_sphere(reg, snap, part_type, soft, t=0, p=0):
 
     # Define path
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
@@ -85,7 +85,7 @@ def single_sphere(reg, snap, part_type, soft):
     Particles = sph.Particles(poss, masses, smls)
 
     lbox = (15/0.677) * 2
-    Camera = sph.Camera(r='infinity', t=0, p=0, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
+    Camera = sph.Camera(r='infinity', t=t, p=p, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
                         extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
     Scene = sph.Scene(Particles, Camera)
     Render = sph.Render(Scene)
@@ -102,27 +102,29 @@ def single_sphere(reg, snap, part_type, soft):
 # Define softening lengths
 csoft = 0.001802390 / 0.677
 
-# Define region list
-regions = []
-for reg in range(0, 40):
-    if reg < 10:
-        regions.append('0' + str(reg))
-    else:
-        regions.append(str(reg))
-
-# Define snapshots
-snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
-         '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
-
-# Define a list of regions and snapshots
-reg_snaps = []
-for snap in snaps:
-
-    for reg in regions:
-
-        reg_snaps.append((reg, snap))
+# # Define region list
+# regions = []
+# for reg in range(0, 40):
+#     if reg < 10:
+#         regions.append('0' + str(reg))
+#     else:
+#         regions.append(str(reg))
+#
+# # Define snapshots
+# snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
+#          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+#
+# # Define a list of regions and snapshots
+# reg_snaps = []
+# for snap in snaps:
+#
+#     for reg in regions:
+#
+#         reg_snaps.append((reg, snap))
 
 ind = int(sys.argv[1])
-print(reg_snaps[ind])
-reg, snap = reg_snaps[ind]
-single_sphere(reg, snap, part_type=0, soft=csoft)
+# print(reg_snaps[ind])
+# reg, snap = reg_snaps[ind]
+reg, snap = '00', '011_z004p770'
+ts = np.linspace(-np.pi, np.pi, 100)
+single_sphere(reg, snap, part_type=0, soft=csoft, t=ts[ind])
