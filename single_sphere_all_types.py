@@ -132,9 +132,9 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image(), 'stars': qv_stars.get_image()}
     extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent(), 'stars': qv_stars.get_extent()}
 
-    rgb_gas = cmap_gas(get_normalised_image(np.arcsinh(imgs['gas'])))
-    rgb_DM = cmap_dm(get_normalised_image(np.arcsinh(imgs['dm'])))
-    rgb_stars = cmap_stars(get_normalised_image(np.arcsinh(imgs['stars'])))
+    rgb_gas = cmap_gas(get_normalised_image(imgs['gas']))
+    rgb_DM = cmap_dm(get_normalised_image(imgs['dm']))
+    rgb_stars = cmap_stars(get_normalised_image(imgs['stars']))
 
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
