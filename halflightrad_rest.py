@@ -72,11 +72,11 @@ def calc_light_mass_rad(poss, ls):
     sinds = np.argsort(rs)
     rs = rs[sinds]
     ls = ls[sinds]
-    ls = ls[rs < 30]
-    rs = rs[rs < 30]
+    # ls = ls[rs < 30]
+    # rs = rs[rs < 30]
 
-    if len(ls) < 20:
-        return 0
+    # if len(ls) < 20:
+    #     return 0
 
     # Get the cumalative sum of masses
     l_profile = np.cumsum(ls)
