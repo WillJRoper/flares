@@ -218,4 +218,4 @@ ind = int(sys.argv[1])
 # reg, snap = reg_snaps[ind]
 reg, snap = '00', '010_z005p000'
 ps = np.linspace(0, 360, 360)
-single_sphere(reg, snap, part_type=0, soft=csoft, p=ps[ind], num=ind)
+spheregrid(snap, soft=csoft, p=ps[ind], num=ind)
