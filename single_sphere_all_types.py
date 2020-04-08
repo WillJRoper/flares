@@ -122,6 +122,11 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     Camera = sph.Camera(r=lbox / 2., t=t, p=p, roll=0, xsize=500, ysize=500, x=0, y=0, z=0,
                         extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
+    # Get colomaps
+    cmap_gas = ml.cm.magma
+    cmap_dm = ml.cm.Greys_r
+    cmap_stars = ml.cm.plasma
+
     # Get each particle type image
     imgs = {}
     for key, Particles in zip(['gas', 'dm', 'stars'], [Particles_gas, Particles_DM, Particles_stars]):
@@ -130,13 +135,13 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
         extent = Render.get_extent()
         imgs[key] = Render.get_image()
 
-    rgb_gas = ml.magma(get_normalised_image(imgs['gas']))
-    rgb_DM = ml.Greys_r(get_normalised_image(imgs['gas'], vmin=0.001))
-    rgb_stars = cmaps.sunset(get_normalised_image(imgs['gas'], vmin=0.001))
+    rgb_gas = cmap_gas(get_normalised_image(imgs['gas'], vmin=0.001))
+    rgb_DM = cmap_dm(get_normalised_image(imgs['gas'], vmin=0.0))
+    rgb_stars = cmap_stars(get_normalised_image(imgs['gas'], vmin=0.001))
 
-    blend1 = Blend(rgb_DM, rgb_gas)
+    blend1 = Blend.Blend(rgb_DM, rgb_gas)
     dmgas_output = blend1.Overlay()
-    blend2 = Blend(dmgas_output, rgb_stars)
+    blend2 = Blend.Blend(dmgas_output, rgb_stars)
     rgb_output = blend2.Overlay()
 
     fig.imsave('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, rgb_output)
