@@ -145,7 +145,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
     print(extents['gas'], extents['dm'], extents['stars'])
-    ax.imshow(rgb_gas, extent=extents['gas'], origin='lower')
+    ax.imshow(rgb_gas, origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
@@ -156,7 +156,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(rgb_DM, extent=extents['dm'], origin='lower')
+    ax.imshow(rgb_DM, origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
@@ -167,7 +167,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(rgb_stars, extent=extents['stars'], origin='lower')
+    ax.imshow(rgb_stars, origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
