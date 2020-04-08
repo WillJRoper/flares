@@ -107,8 +107,8 @@ def single_sphere(reg, snap, soft, t=0, p=0):
     # masses_stars = masses_stars[okinds_stars]
     # smls_stars = smls_stars[okinds_stars]
 
-    print('There are', len(masses_gas), 'gas particles in the region')
-    print('There are', len(masses_DM), 'DM particles in the region')
+    print('There are', len(masses_gas), 'gas particles in region', reg)
+    print('There are', len(masses_DM), 'DM particles in region', reg)
     # print('There are', len(masses_stars), 'star particles in the region')
 
     # fig = plt.figure(1, figsize=(7, 7))
@@ -127,7 +127,7 @@ def single_sphere(reg, snap, soft, t=0, p=0):
     # Get colomaps
     cmap_gas = ml.cm.magma
     cmap_dm = ml.cm.Greys_r
-    cmap_stars = ml.cm.Greys_r
+    # cmap_stars = ml.cm.Greys_r
 
     # Get each particle type image
     imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image(), 'stars': qv_stars.get_image()}
