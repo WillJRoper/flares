@@ -133,12 +133,12 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent(), 'stars': qv_stars.get_extent()}
 
     # Convert images to rgb arrays
-    rgb_gas = cmap_gas(get_normalised_image(imgs['gas'],
-                                            vmin=imgs['gas'][np.where(imgs['gas'] != 0.0)].min()))
-    rgb_DM = cmap_dm(get_normalised_image(imgs['dm'],
-                                          vmin=imgs['dm'][np.where(imgs['dm'] != 0.0)].min()))
-    rgb_stars = cmap_stars(get_normalised_image(imgs['stars'],
-                                                vmin=imgs['stars'][np.where(imgs['stars'] != 0.0)].min()))
+    rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
+                                            vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min())))
+    rgb_DM = cmap_dm(get_normalised_image(np.log10(imgs['dm']),
+                                          vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min())))
+    rgb_stars = cmap_stars(get_normalised_image(np.log10(imgs['stars']),
+                                                vmin=np.log10(imgs['stars'][np.where(imgs['stars'] != 0.0)].min())))
 
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
