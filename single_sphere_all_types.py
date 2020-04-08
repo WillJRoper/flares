@@ -111,7 +111,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     print('There are', len(masses_DM), 'DM particles in the region')
     print('There are', len(masses_stars), 'star particles in the region')
 
-    fig = plt.figure(1, figsize=(7, 7))
+    # fig = plt.figure(1, figsize=(7, 7))
 
     # Define particles
     Particles_gas = sph.Particles(poss_gas, masses_gas, smls_gas)
@@ -144,7 +144,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     blend2 = Blend.Blend(dmgas_output, rgb_stars)
     rgb_output = blend2.Overlay()
 
-    fig.imsave('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, rgb_output)
+    plt.imsave('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, rgb_output)
 
 
 # Define softening lengths
