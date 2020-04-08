@@ -115,7 +115,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
             current_halo_pids)
 
 
-def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepath='MergerGraphs/'):
+def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='MergerGraphs/'):
     """ A function which cycles through all halos in a snapshot finding and writing out the
     direct progenitor and descendant data.
 
@@ -133,36 +133,39 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, rank, savepa
     part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
     group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                   numThreads=8)
-    # print(internal_to_flares_part_ids.size)
-    if rank == 0:
-        halo_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-    elif rank == 1:
-        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
-        halo_ids = np.zeros_like(grp_ids, dtype=float)
-        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
-    else:
-        raise ValueError("Incompatible rank")
+    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
 
-    ind_to_pid = {}
-    pid_to_ind = {}
-    for ind, pid in enumerate(part_ids):
-        ind_to_pid[ind] = pid
-        pid_to_ind[pid] = ind
-        # if ind % 10000000 == 0:
-        #     print('Mapping particle IDs to index:', pid, 'to', ind, 'of', len(part_ids), end='\r')
+
+    # Remove particles not associated to a subgroup
+    group_part_ids = group_part_ids[subgrp_ids != 1073741824]
+    grp_ids = grp_ids[subgrp_ids != 1073741824]
+    subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
+    halo_ids = np.zeros(grp_ids.size, dtype=float)
+    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+        halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+
+    # Sort particle IDS
+    unsort_part_ids = part_ids[:]
+    sinds = np.argsort(part_ids)
+    part_ids = part_ids[sinds]
+
+    sorted_index = np.searchsorted(part_ids, group_part_ids)
+
+    yindex = np.take(sinds, sorted_index, mode="clip")
+    mask = unsort_part_ids[yindex] != group_part_ids
+
+    result = np.ma.array(yindex, mask=mask)
+
+    part_groups = halo_ids[np.logical_not(result.mask)]
+    parts_in_groups = result.data[np.logical_not(result.mask)]
 
     halo_id_part_inds = {}
-    for pid, simid in zip(group_part_ids, halo_ids):
-        if int(str(simid).split('.')[rank]) == 2**30:
-            continue
-        try:
-            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
-        except KeyError:
-            ind_to_pid[len(part_ids) + 1] = pid
-            pid_to_ind[pid] = len(part_ids) + 1
-            halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
+    for ind, grp in zip(parts_in_groups, part_groups):
+        halo_id_part_inds.setdefault(grp, set()).update({ind})
+
+    del group_part_ids, halo_ids, subgrp_ids, part_ids
+    gc.collect()
 
     # =============== Progenitor Snapshot ===============
 
