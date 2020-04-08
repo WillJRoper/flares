@@ -139,12 +139,12 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
         imgs[key] = Render.get_image()
 
     rgb_gas = cmap_gas(get_normalised_image(np.arcsinh(imgs['gas'])))
-    rgb_DM = cmap_dm(get_normalised_image(np.arcsinh(imgs['gas'])))
-    rgb_stars = cmap_stars(get_normalised_image(np.arcsinh(imgs['gas'])))
+    rgb_DM = cmap_dm(get_normalised_image(np.arcsinh(imgs['dm'])))
+    rgb_stars = cmap_stars(get_normalised_image(np.arcsinh(imgs['stars'])))
 
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
-    print(extents['gas'], extents['DM'], extents['stars'])
+    print(extents['gas'], extents['dm'], extents['stars'])
     ax.imshow(rgb_gas, extent=extents['gas'], origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
@@ -156,7 +156,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(rgb_DM, extent=extents['DM'], origin='lower')
+    ax.imshow(rgb_DM, extent=extents['dm'], origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
