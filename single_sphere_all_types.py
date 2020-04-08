@@ -134,9 +134,9 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
-                                            vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()+3)))
+                                            vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()+5)))
     rgb_DM = cmap_dm(get_normalised_image(np.log10(imgs['dm']),
-                                          vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min())))
+                                          vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min()-0.5)))
     rgb_stars = cmap_stars(get_normalised_image(np.log10(imgs['stars']),
                                                 vmin=np.log10(imgs['stars'][np.where(imgs['stars'] != 0.0)].min())))
 
@@ -221,6 +221,6 @@ csoft = 0.001802390 / 0.677
 ind = int(sys.argv[1])
 # print(reg_snaps[ind])
 # reg, snap = reg_snaps[ind]
-reg, snap = '34', '011_z004p770'
+reg, snap = '00', '010_z005p000'
 ps = np.linspace(0, 360, 360)
 single_sphere(reg, snap, part_type=0, soft=csoft, p=ps[ind], num=ind)
