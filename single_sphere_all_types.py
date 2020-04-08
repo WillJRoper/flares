@@ -130,15 +130,49 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
 
     # Get each particle type image
     imgs = {}
+    extents = {}
     for key, Particles in zip(['gas', 'dm', 'stars'], [Particles_gas, Particles_DM, Particles_stars]):
         Scene = sph.Scene(Particles, Camera)
         Render = sph.Render(Scene)
-        extent = Render.get_extent()
+        extents[key] = Render.get_extent()
         imgs[key] = Render.get_image()
 
     rgb_gas = cmap_gas(get_normalised_image(np.arcsinh(imgs['gas'])))
     rgb_DM = cmap_dm(get_normalised_image(np.arcsinh(imgs['gas'])))
     rgb_stars = cmap_stars(get_normalised_image(np.arcsinh(imgs['gas'])))
+
+    fig = plt.figure(figsize=(7, 7))
+    ax = fig.add_subplot(111)
+
+    ax.imshow(rgb_gas, extent=extents['gas'], origin='lower')
+    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                   labeltop=False, labelright=False, labelbottom=False)
+
+    fig.savefig('plots/spheres/Gas_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+                bbox_inches='tight')
+    plt.close(fig)
+
+    fig = plt.figure(figsize=(7, 7))
+    ax = fig.add_subplot(111)
+
+    ax.imshow(rgb_DM, extent=extents['gas'], origin='lower')
+    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                   labeltop=False, labelright=False, labelbottom=False)
+
+    fig.savefig('plots/spheres/DM_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+                bbox_inches='tight')
+    plt.close(fig)
+
+    fig = plt.figure(figsize=(7, 7))
+    ax = fig.add_subplot(111)
+
+    ax.imshow(rgb_stars, extent=extents['gas'], origin='lower')
+    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                   labeltop=False, labelright=False, labelbottom=False)
+
+    fig.savefig('plots/spheres/Stars_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+                bbox_inches='tight')
+    plt.close(fig)
 
     blend1 = Blend.Blend(rgb_DM, rgb_gas)
     dmgas_output = blend1.Overlay()
@@ -146,12 +180,16 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     # rgb_output = blend2.Overlay()
     rgb_output = dmgas_output
 
-    if 'plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap \
-            + '_angle%05d.png'%num in list(os.listdir(os.getcwd())):
-        os.remove('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num)
+    fig = plt.figure(figsize=(7, 7))
+    ax = fig.add_subplot(111)
 
-    plt.imsave('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, rgb_output)
-    plt.close()
+    ax.imshow(rgb_output, extent=extents['gas'], origin='lower')
+    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                   labeltop=False, labelright=False, labelbottom=False)
+
+    fig.savefig('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
+                bbox_inches='tight')
+    plt.close(fig)
 
 
 # Define softening lengths
