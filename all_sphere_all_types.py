@@ -124,7 +124,7 @@ def single_sphere(reg, snap, soft, t=0, p=0):
     # qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
     #                    xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
-    # Get colomaps
+    # Get colormaps
     cmap_gas = ml.cm.magma
     cmap_dm = ml.cm.Greys_r
     # cmap_stars = ml.cm.Greys_r

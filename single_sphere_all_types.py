@@ -124,7 +124,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
                        xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
     # Get colomaps
-    cmap_gas = ml.cm.magma
+    cmap_gas = ml.cm.plasma
     cmap_dm = ml.cm.Greys_r
     cmap_stars = ml.cm.Greys_r
 
