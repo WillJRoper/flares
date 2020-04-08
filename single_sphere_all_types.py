@@ -174,9 +174,9 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     plt.close(fig)
 
     blend1 = Blend.Blend(rgb_DM, rgb_gas)
-    dmgas_output = blend1.Overlay()
+    dmgas_output = blend1.Screen()
     blend2 = Blend.Blend(dmgas_output, rgb_stars)
-    rgb_output = blend2.Overlay()
+    rgb_output = blend2.Screen()
 
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
