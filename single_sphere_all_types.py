@@ -10,6 +10,7 @@ from scipy.optimize import curve_fit
 from scipy.spatial import ConvexHull
 import eagle_IO as E
 import sys
+import os
 
 
 def _sphere(coords, a, b, c, r):
@@ -135,15 +136,17 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
         extent = Render.get_extent()
         imgs[key] = Render.get_image()
 
-    rgb_gas = cmap_gas(get_normalised_image(imgs['gas'], vmin=0.001))
-    rgb_DM = cmap_dm(get_normalised_image(imgs['gas'], vmin=0.0))
-    rgb_stars = cmap_stars(get_normalised_image(imgs['gas'], vmin=0.001))
+    rgb_gas = cmap_gas(get_normalised_image(np.arcsinh(imgs['gas'])))
+    rgb_DM = cmap_dm(get_normalised_image(np.arcsinh(imgs['gas'])))
+    rgb_stars = cmap_stars(get_normalised_image(np.arcsinh(imgs['gas'])))
 
     blend1 = Blend.Blend(rgb_DM, rgb_gas)
     dmgas_output = blend1.Overlay()
     # blend2 = Blend.Blend(dmgas_output, rgb_stars)
     # rgb_output = blend2.Overlay()
     rgb_output = dmgas_output
+
+    os.remove('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num)
 
     plt.imsave('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, rgb_output)
 
