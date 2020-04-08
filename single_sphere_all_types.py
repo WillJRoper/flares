@@ -116,11 +116,11 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     lbox = (15 / 0.677) * 2
 
     # Define particles
-    qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox / 2., t=t, p=p, roll=0,
+    qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox, t=t, p=p, roll=0,
                        xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox / 2., t=t, p=p, roll=0,
+    qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox, t=t, p=p, roll=0,
                        xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox / 2., t=t, p=p, roll=0,
+    qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox, t=t, p=p, roll=0,
                        xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
     # Get colomaps
@@ -139,41 +139,40 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
     print(extents['gas'], extents['dm'], extents['stars'])
-    ax.imshow(rgb_gas, origin='lower')
+    ax.imshow(rgb_gas, extent=extents['gas'], origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
-    fig.savefig('plots/spheres/Gas_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+    fig.savefig('plots/spheres/Gas/Gas_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
                 bbox_inches='tight')
     plt.close(fig)
 
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(rgb_DM, origin='lower')
+    ax.imshow(rgb_DM, extent=extents['dm'], origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
-    fig.savefig('plots/spheres/DM_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+    fig.savefig('plots/spheres/DM/DM_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
                 bbox_inches='tight')
     plt.close(fig)
 
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(rgb_stars, origin='lower')
+    ax.imshow(rgb_stars, extent=extents['stars'], origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
-    fig.savefig('plots/spheres/Stars_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+    fig.savefig('plots/spheres/Stars/Stars_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
                 bbox_inches='tight')
     plt.close(fig)
 
     blend1 = Blend.Blend(rgb_DM, rgb_gas)
     dmgas_output = blend1.Overlay()
-    # blend2 = Blend.Blend(dmgas_output, rgb_stars)
-    # rgb_output = blend2.Overlay()
-    rgb_output = dmgas_output
+    blend2 = Blend.Blend(dmgas_output, rgb_stars)
+    rgb_output = blend2.Overlay()
 
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
@@ -182,7 +181,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
-    fig.savefig('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
+    fig.savefig('plots/spheres/All/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
                 bbox_inches='tight')
     plt.close(fig)
 
