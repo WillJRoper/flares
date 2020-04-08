@@ -177,6 +177,6 @@ csoft = 0.001802390 / 0.677
 ind = int(sys.argv[1])
 # print(reg_snaps[ind])
 # reg, snap = reg_snaps[ind]
-reg, snap = '00', '011_z004p770'
+reg, snap = '34', '011_z004p770'
 ps = np.linspace(0, 360, 360)
 single_sphere(reg, snap, part_type=0, soft=csoft, p=ps[ind], num=ind)
