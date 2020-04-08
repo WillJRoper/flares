@@ -147,7 +147,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     rgb_output = dmgas_output
 
     if 'plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap \
-            + '_angle%05d.png'%num in list(os.listdir(os.cwd)):
+            + '_angle%05d.png'%num in list(os.listdir(os.getcwd())):
         os.remove('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num)
 
     plt.imsave('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, rgb_output)
