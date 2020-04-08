@@ -20,10 +20,13 @@ def _sphere(coords, a, b, c, r):
     return (x - a) ** 2 + (y - b) ** 2 + (z - c) ** 2 - r ** 2
 
 
-def spherical_region(dm_cood):
+def spherical_region(sim, snap):
     """
     Inspired from David Turner's suggestion
     """
+
+    dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
+                           noH=True, physicalUnits=False, numThreads=4)  # dm particle coordinates
 
     hull = ConvexHull(dm_cood)
 
@@ -80,7 +83,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     poss_stars, masses_stars, smls_stars = get_sphere_data(path, snap, part_type=4, soft=None)
 
     # Get the spheres centre
-    centre, radius, mindist = spherical_region(poss_DM)
+    centre, radius, mindist = spherical_region(path, snap)
 
     # Centre particles
     poss_gas -= centre

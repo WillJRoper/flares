@@ -49,8 +49,6 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
             k = 0
         dimens = np.array([i, j, k])
 
-        gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
-
         galimgs[str(i) + '-' + str(j)] = {}
         ls[str(i) + '-' + str(j)] = {}
 
@@ -63,6 +61,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
                 lumins = gal_ms
                 gal_pos = gal_poss - mean
             elif f == 'metals':
+                gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
                 lumins = gal_met_surfden
                 gal_pos = gal_poss - mean
             elif f == 'SFR':
@@ -71,6 +70,7 @@ def create_img(res, gal_poss, mean, dim, gal_ms, gal_ages, gal_mets, gas_mets, g
                 lumins[ok] = l
                 gal_pos = gal_poss - mean
             else:
+                gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
                 tauVs_ISM = (10 ** 5.2) * gal_met_surfden
                 tauVs_BC = 2.0 * (gal_mets / 0.01)
                 lumins = models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM, tauVs_BC, F,
