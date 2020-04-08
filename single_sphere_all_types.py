@@ -2,15 +2,13 @@
 import matplotlib
 matplotlib.use('Agg')
 import numpy as np
-import sphviewer as sph
-from sphviewer.tools import cmaps, Blend
+from sphviewer.tools import cmaps, Blend, QuickView
 import matplotlib as ml
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from scipy.spatial import ConvexHull
 import eagle_IO as E
 import sys
-import os
 
 
 def _sphere(coords, a, b, c, r):
@@ -114,14 +112,16 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
 
     # fig = plt.figure(1, figsize=(7, 7))
 
-    # Define particles
-    Particles_gas = sph.Particles(poss_gas, masses_gas, smls_gas)
-    Particles_DM = sph.Particles(poss_DM, masses_DM, smls_DM)
-    Particles_stars = sph.Particles(poss_stars, masses_stars, smls_stars)
+    # Define the box size
+    lbox = (15 / 0.677) * 2
 
-    lbox = (15/0.677) * 2
-    Camera = sph.Camera(r=lbox / 2., t=t, p=p, roll=0, xsize=500, ysize=500, x=0, y=0, z=0,
-                        extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    # Define particles
+    qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox / 2., t=t, p=p, roll=0,
+                       xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox / 2., t=t, p=p, roll=0,
+                       xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox / 2., t=t, p=p, roll=0,
+                       xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
     # Get colomaps
     cmap_gas = ml.cm.magma
@@ -129,14 +129,8 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     cmap_stars = ml.cm.plasma
 
     # Get each particle type image
-    imgs = {}
-    extents = {}
-    for key, Particles in zip(['gas', 'dm', 'stars'], [Particles_gas, Particles_DM, Particles_stars]):
-        Scene = sph.Scene(Particles, Camera)
-        Render = sph.Render(Scene)
-        extents[key] = Render.get_extent()
-        # extents[key] = [-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.]
-        imgs[key] = Render.get_image()
+    imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image(), 'stars': qv_stars.get_image()}
+    extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent(), 'stars': qv_stars.get_extent()}
 
     rgb_gas = cmap_gas(get_normalised_image(np.arcsinh(imgs['gas'])))
     rgb_DM = cmap_dm(get_normalised_image(np.arcsinh(imgs['dm'])))
