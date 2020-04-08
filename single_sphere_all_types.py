@@ -116,17 +116,17 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     lbox = (15 / 0.677) * 2
 
     # Define particles
-    qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox, t=t, p=p, roll=0,
-                       xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox, t=t, p=p, roll=0,
-                       xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox, t=t, p=p, roll=0,
-                       xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
+                       xsize=1000, ysize=1000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
+                       xsize=1000, ysize=1000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
+                       xsize=1000, ysize=1000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
     # Get colomaps
     cmap_gas = ml.cm.magma
-    cmap_dm = ml.cm.Greys_r
-    cmap_stars = ml.cm.plasma
+    cmap_dm = ml.cm.plasma
+    cmap_stars = ml.cm.Greys_r
 
     # Get each particle type image
     imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image(), 'stars': qv_stars.get_image()}
@@ -137,7 +137,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
                                             vmin=imgs['gas'][np.where(imgs['gas'] != 0.0)].min()))
     rgb_DM = cmap_dm(get_normalised_image(imgs['dm'],
                                           vmin=imgs['dm'][np.where(imgs['dm'] != 0.0)].min()))
-    rgb_stars = cmap_stars(get_normalised_image(imgs['stars'], 
+    rgb_stars = cmap_stars(get_normalised_image(imgs['stars'],
                                                 vmin=imgs['stars'][np.where(imgs['stars'] != 0.0)].min()))
 
     fig = plt.figure(figsize=(7, 7))
