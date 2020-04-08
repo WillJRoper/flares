@@ -130,8 +130,10 @@ def single_sphere(reg, snap, soft, t=0, p=0):
     # cmap_stars = ml.cm.Greys_r
 
     # Get each particle type image
-    imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image(), 'stars': qv_stars.get_image()}
-    extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent(), 'stars': qv_stars.get_extent()}
+    # imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image(), 'stars': qv_stars.get_image()}
+    # extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent(), 'stars': qv_stars.get_extent()}
+    imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image()}
+    extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent()}
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
