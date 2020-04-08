@@ -130,7 +130,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
         extent = Render.get_extent()
         imgs[key] = Render.get_image()
 
-    rgb_gas = cmaps.twilight(get_normalised_image(imgs['gas']))
+    rgb_gas = ml.magma(get_normalised_image(imgs['gas']))
     rgb_DM = ml.Greys_r(get_normalised_image(imgs['gas'], vmin=0.001))
     rgb_stars = cmaps.sunset(get_normalised_image(imgs['gas'], vmin=0.001))
 
