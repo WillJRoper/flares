@@ -134,8 +134,8 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     for key, Particles in zip(['gas', 'dm', 'stars'], [Particles_gas, Particles_DM, Particles_stars]):
         Scene = sph.Scene(Particles, Camera)
         Render = sph.Render(Scene)
-        # extents[key] = Render.get_extent()
-        extents[key] = [-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.]
+        extents[key] = Render.get_extent()
+        # extents[key] = [-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.]
         imgs[key] = Render.get_image()
 
     rgb_gas = cmap_gas(get_normalised_image(np.arcsinh(imgs['gas'])))
@@ -144,7 +144,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
 
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
-
+    print(extents['gas'], extents['DM'], extents['stars'])
     ax.imshow(rgb_gas, extent=extents['gas'], origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
