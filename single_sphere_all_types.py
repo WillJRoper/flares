@@ -134,15 +134,19 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
-                                            vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()+5)))
+                                            vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()+4)))
     rgb_DM = cmap_dm(get_normalised_image(np.log10(imgs['dm']),
-                                          vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min()+1)))
+                                          vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min()+2)))
     rgb_stars = cmap_stars(get_normalised_image(np.log10(imgs['stars']),
                                                 vmin=np.log10(imgs['stars'][np.where(imgs['stars'] != 0.0)].min()+1)))
 
+    rgb_gas[rgb_gas == 0.0] = np.nan
+    rgb_DM[rgb_DM == 0.0] = np.nan
+    rgb_stars[rgb_stars == 0.0] = np.nan
+
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
-    print(extents['gas'], extents['dm'], extents['stars'])
+
     ax.imshow(rgb_gas, extent=extents['gas'], origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
@@ -174,9 +178,10 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     plt.close(fig)
 
     blend1 = Blend.Blend(rgb_DM, rgb_gas)
-    dmgas_output = blend1.Screen()
-    blend2 = Blend.Blend(dmgas_output, rgb_stars)
-    rgb_output = blend2.Screen()
+    dmgas_output = blend1.Overlay()
+    # blend2 = Blend.Blend(dmgas_output, rgb_stars)
+    # rgb_output = blend2.Overlay()
+    rgb_output = dmgas_output
 
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
