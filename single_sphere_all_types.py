@@ -3,7 +3,8 @@ import matplotlib
 matplotlib.use('Agg')
 import numpy as np
 import sphviewer as sph
-from sphviewer.tools import cmaps
+from sphviewer.tools import cmaps, Blend
+import matplotlib as ml
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from scipy.spatial import ConvexHull
@@ -19,13 +20,10 @@ def _sphere(coords, a, b, c, r):
     return (x - a) ** 2 + (y - b) ** 2 + (z - c) ** 2 - r ** 2
 
 
-def spherical_region(sim, snap):
+def spherical_region(dm_cood):
     """
     Inspired from David Turner's suggestion
     """
-
-    dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
-                           noH=True, physicalUnits=False, numThreads=8)  # dm particle coordinates
 
     hull = ConvexHull(dm_cood)
 
@@ -41,17 +39,31 @@ def spherical_region(sim, snap):
     return centre, radius, mindist
 
 
+def get_normalised_image(img, vmin=None, vmax=None):
+
+    if vmin == None:
+        vmin = np.min(img)
+    if vmax == None:
+        vmax = np.max(img)
+
+    img = np.clip(img, vmin, vmax)
+    img = (img - vmin) / (vmax - vmin)
+
+    return img
+
+
 def get_sphere_data(path, snap, part_type, soft):
 
     # Get positions masses and smoothing lengths
     poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates',
                         noH=True, numThreads=8)
-    masses = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Mass',
-                          noH=True, numThreads=8) * 10**10
     if part_type != 1:
+        masses = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Mass',
+                              noH=True, numThreads=8) * 10 ** 10
         smls = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength',
                             noH=True, numThreads=8)
     else:
+        masses = np.ones(poss.shape[0])
         smls = np.full_like(masses, soft)
 
     return poss, masses, smls
@@ -63,52 +75,68 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
     # Get plot data
-    poss, masses, smls = get_sphere_data(path, snap, part_type, soft)
+    poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
+    poss_DM, masses_DM, smls_DM = get_sphere_data(path, snap, part_type=1, soft=soft)
+    poss_stars, masses_stars, smls_stars = get_sphere_data(path, snap, part_type=4, soft=None)
 
     # Get the spheres centre
-    centre, radius, mindist = spherical_region(path, snap)
+    centre, radius, mindist = spherical_region(poss_DM)
 
     # Centre particles
-    poss -= centre
+    poss_gas -= centre
+    poss_DM -= centre
+    poss_stars -= centre
 
     # Remove boundary particles
-    r = np.linalg.norm(poss, axis=1)
-    okinds = r < 14 / 0.677
-    poss = poss[okinds, :]
-    masses = masses[okinds]
-    smls = smls[okinds]
+    rgas = np.linalg.norm(poss_gas, axis=1)
+    rDM = np.linalg.norm(poss_DM, axis=1)
+    rstars = np.linalg.norm(poss_stars, axis=1)
+    okinds_gas = rgas < 14 / 0.677
+    poss_gas = poss_gas[okinds_gas, :]
+    masses_gas = masses_gas[okinds_gas]
+    smls_gas = smls_gas[okinds_gas]
+    okinds_DM = rDM < 14 / 0.677
+    poss_DM = poss_DM[okinds_DM, :]
+    masses_DM = masses_DM[okinds_DM]
+    smls_DM = smls_DM[okinds_DM]
+    okinds_stars = rstars < 14 / 0.677
+    poss_stars = poss_stars[okinds_stars, :]
+    masses_stars = masses_stars[okinds_stars]
+    smls_stars = smls_stars[okinds_stars]
 
-    print('There are', len(masses), 'in the region')
+    print('There are', len(masses_gas), 'gas particles in the region')
+    print('There are', len(masses_DM), 'DM particles in the region')
+    print('There are', len(masses_stars), 'star particles in the region')
 
     fig = plt.figure(1, figsize=(7, 7))
 
-    Particles = sph.Particles(poss, masses, smls)
+    # Define particles
+    Particles_gas = sph.Particles(poss_gas, masses_gas, smls_gas)
+    Particles_DM = sph.Particles(poss_DM, masses_DM, smls_DM)
+    Particles_stars = sph.Particles(poss_stars, masses_stars, smls_stars)
 
     lbox = (15/0.677) * 2
     Camera = sph.Camera(r=lbox / 2., t=t, p=p, roll=0, xsize=500, ysize=500, x=0, y=0, z=0,
                         extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    Scene = sph.Scene(Particles, Camera)
-    Render = sph.Render(Scene)
-    extent = Render.get_extent()
-    img = Render.get_image()
 
-    plt.imshow(np.log10(img), cmap=cmaps.twilight(), extent=extent, origin='lower')
-    plt.axis('off')
+    # Get each particle type image
+    imgs = {}
+    for key, Particles in zip(['gas', 'dm', 'stars'], [Particles_gas, Particles_DM, Particles_stars]):
+        Scene = sph.Scene(Particles, Camera)
+        Render = sph.Render(Scene)
+        extent = Render.get_extent()
+        imgs[key] = Render.get_image()
 
-    if len(str(num)) == 1:
-        save_num = '00000' + str(num)
-    elif len(str(num)) == 2:
-        save_num = '0000' + str(num)
-    elif len(str(num)) == 3:
-        save_num = '000' + str(num)
-    elif len(str(num)) == 4:
-        save_num = '00' + str(num)
-    elif len(str(num)) == 5:
-        save_num = '0' + str(num)
+    rgb_gas = cmaps.twilight(get_normalised_image(imgs['gas']))
+    rgb_DM = ml.Greys_r(get_normalised_image(imgs['gas'], vmin=0.001))
+    rgb_stars = cmaps.sunset(get_normalised_image(imgs['gas'], vmin=0.001))
 
-    fig.savefig('plots/spheres/single_sphere_reg' + reg + '_snap' + snap + '_PartType' + str(part_type)
-                    + '_angle' + save_num + '.png',
-                    bbox_inches='tight')
+    blend1 = Blend(rgb_DM, rgb_gas)
+    dmgas_output = blend1.Overlay()
+    blend2 = Blend(dmgas_output, rgb_stars)
+    rgb_output = blend2.Overlay()
+
+    fig.imsave('plots/spheres/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, rgb_output)
 
 
 # Define softening lengths
