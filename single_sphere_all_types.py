@@ -134,7 +134,7 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
-                                            vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()+4)))
+                                            vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()+2)))
     rgb_DM = cmap_dm(get_normalised_image(np.log10(imgs['dm']),
                                           vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min())))
     rgb_stars = cmap_stars(get_normalised_image(np.log10(imgs['stars']),
