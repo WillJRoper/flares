@@ -4,6 +4,7 @@ import matplotlib
 import h5py
 import eagle_IO as E
 import os
+import gc
 import sys
 matplotlib.use('Agg')
 
