@@ -329,6 +329,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         results[haloID] = getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
                           prog_counts, desc_counts)
 
+    print('Processed', len(results.keys()), 'halos in snapshot', snap, 'of region', reg)
+
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '_PartType' + str(part_type) +'.hdf5', 'w')
 
     for num, haloID in enumerate(results.keys()):
