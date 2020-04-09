@@ -144,7 +144,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
                             F, i, j, f, dust)
 
             # Compute half mass radii
-            hls[ind], ms[ind] = calc_light_mass_rad(gal_poss, ls)
+            hls[ind], ms[ind] = calc_light_mass_rad(gal_poss, ls, gal_ms[id])
             # print(hls[ind])
         except KeyError:
             continue
