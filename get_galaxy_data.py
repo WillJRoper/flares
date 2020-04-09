@@ -10,7 +10,7 @@ from utilities import calc_ages, get_Z_LOS
 matplotlib.use('Agg')
 
 
-def img_main(path, snap, reg, npart_lim=10**3):
+def get_main(path, snap, reg):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -19,7 +19,7 @@ def img_main(path, snap, reg, npart_lim=10**3):
     # Load all necessary arrays
     all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
                             physicalUnits=True, numThreads=8)
-    gal_sml = E.read_array('', path, snap, 'PartType4/SmoothingLength', noH=True,
+    gal_sml = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothingLength', noH=True,
                            physicalUnits=True, numThreads=8)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
@@ -127,18 +127,16 @@ for reg in regions:
 
         reg_snaps.append((reg, snap))
 
-if __name__ == '__main__':
+ind = int(sys.argv[1])
+print(reg_snaps[ind])
+reg, snap = reg_snaps[ind]
 
-    ind = int(sys.argv[1])
-    print(reg_snaps[ind])
-    reg, snap = reg_snaps[ind]
+path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-    path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+files = os.listdir('UVimg_data/')
 
-    files = os.listdir('UVimg_data/')
-
-    # if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
-    #     pass
-    # else:
-    #     img_main(path, snap, reg, npart_lim=10**2)
-    img_main(path, snap, reg, npart_lim=10**2)
+# if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
+#     pass
+# else:
+#     img_main(path, snap, reg, npart_lim=10**2)
+get_main(path, snap, reg)
