@@ -63,7 +63,7 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
 
 
 @nb.njit(nogil=True, parallel=True)
-def calc_light_mass_rad(poss, ls):
+def calc_light_mass_rad(poss, ls, ms):
 
     # Get galaxy particle indices
     rs = np.sqrt(poss[:, 0]**2 + poss[:, 1]**2 + poss[:, 2]**2)
@@ -72,8 +72,9 @@ def calc_light_mass_rad(poss, ls):
     sinds = np.argsort(rs)
     rs = rs[sinds]
     ls = ls[sinds]
-    # ls = ls[rs < 30]
-    # rs = rs[rs < 30]
+    ls = ls[rs < 30]
+    rs = rs[rs < 30]
+    ms = ms[rs < 30]
 
     # if len(ls) < 20:
     #     return 0
@@ -89,7 +90,7 @@ def calc_light_mass_rad(poss, ls):
     hmr_ind = np.argmin(np.abs(l_profile - half_l))
     hmr = rs[hmr_ind]
 
-    return hmr
+    return hmr, np.sum(ms)
 
 
 def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=False):
@@ -143,8 +144,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
                             F, i, j, f, dust)
 
             # Compute half mass radii
-            hls[ind] = calc_light_mass_rad(gal_poss, ls)
-            ms[ind] = np.sum(gal_ms[id])
+            hls[ind], ms[ind] = calc_light_mass_rad(gal_poss, ls)
             # print(hls[ind])
         except KeyError:
             continue
