@@ -34,11 +34,11 @@ def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=T
 tag = "Subhalo/Stars/Mass"
 snap = '010_z005p000'
 group = "SUBFIND"
-M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_38/data/', snap,
+M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_00/data/', snap,
                       tag, group=group, noH=True, cut_bounds=False)
 # M_200_hrDMO = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032_hires/data/', snap,
 #                       tag, group=group, noH=True, cut_bounds=False)
-M_200_hr = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-HD/FLARES_HR_EMOSAICS_38/data/', snap,
+M_200_hr = get_mass_data('/cosma7/data/dp004/dc-payy1/G-EAGLE/GEAGLE_00_SMthresh/data/', snap,
                          tag, group=group, noH=True, cut_bounds=False)
 
 M_200 = M_200[np.where(M_200 != 0.0)] * 10**10
@@ -75,8 +75,8 @@ bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
 #bin_cents2 = bin_cents[np.where(H_hr != 0)]
 
 # Plot each histogram
-ax.loglog(bin_cents, H/interval, label='"Standard" Resolution')
-ax.loglog(bin_cents, H_hr/interval, linestyle='--', label='High Resolution')
+ax.loglog(bin_cents, H/interval, label='Particle')
+ax.loglog(bin_cents, H_hr/interval, linestyle='--', label='Smoothed')
 
 # ax.set_xlim(10**7.5, None)
 # ax.set_ylim(None, 10**-5.5)
