@@ -17,12 +17,10 @@ def img_main(path, snap, reg, npart_lim=10**3):
     z = float(z_str[0] + '.' + z_str[1])
 
     # Load all necessary arrays
-    all_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True,
+    all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
                             physicalUnits=True, numThreads=8)
-    part_ids = E.read_array('SNAP', path, snap, 'PartType4/ParticleIDs', numThreads=8)
-    gal_sml = E.read_array('SNAP', path, snap, 'PartType4/SmoothingLength', noH=True,
+    gal_sml = E.read_array('', path, snap, 'PartType4/SmoothingLength', noH=True,
                            physicalUnits=True, numThreads=8)
-    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
     gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
@@ -31,66 +29,11 @@ def img_main(path, snap, reg, npart_lim=10**3):
                             physicalUnits=True, numThreads=8)
 
     # Load data for luminosities
-    a_born = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime', noH=True,
+    a_born = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
                           physicalUnits=True, numThreads=8)
-    metallicities = E.read_array('SNAP', path, snap, 'PartType4/SmoothedMetallicity', noH=True,
+    metallicities = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothedMetallicity', noH=True,
                                  physicalUnits=True, numThreads=8)
-    masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
-
-    # Remove particles not associated to a subgroup
-    group_part_ids = group_part_ids[subgrp_ids != 1073741824]
-    grp_ids = grp_ids[subgrp_ids != 1073741824]
-    subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
-    halo_ids = np.zeros(grp_ids.size, dtype=float)
-    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
-
-    # Sort particle IDS
-    unsort_part_ids = part_ids[:]
-    sinds = np.argsort(part_ids)
-    part_ids = part_ids[sinds]
-    # all_poss = all_poss[sinds]
-    # gal_sml = gal_sml[sinds]
-    # a_born = a_born[sinds]
-    # metallicities = metallicities[sinds]
-    # masses = masses[sinds]
-
-    # Get centre of potentials
-    gal_cop = {}
-    for cop, g, sg in zip(gal_cops, gal_gids, gal_ids):
-        gal_cop[float(str(g) + '.' + str(sg + 1))] = cop
-
-    # Get the IDs above the npart threshold
-    ids, counts = np.unique(halo_ids, return_counts=True)
-    ids = set(ids[counts > npart_lim])
-
-    print(len(part_ids), 'particles')
-    print(len(group_part_ids), 'particles in halos')
-    print(len(set(halo_ids)), 'halos')
-
-    sorted_index = np.searchsorted(part_ids, group_part_ids)
-
-    yindex = np.take(sinds, sorted_index, mode="clip")
-    mask = unsort_part_ids[yindex] != group_part_ids
-
-    result = np.ma.array(yindex, mask=mask)
-
-    part_groups = halo_ids[np.logical_not(result.mask)]
-    parts_in_groups = result.data[np.logical_not(result.mask)]
-
-    halo_id_part_inds = {}
-    for ind, grp in zip(parts_in_groups, part_groups):
-        halo_id_part_inds.setdefault(grp, set()).update({ind})
-
-    del group_part_ids, halo_ids, subgrp_ids, part_ids
-
-    gc.collect()
-
-    print('There are', len(ids), 'galaxies above the cutoff')
-
-    # If there are no galaxies exit
-    if len(ids) == 0:
-        return
+    masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
 
     # Calculate ages
     ages = calc_ages(z, a_born)
@@ -102,98 +45,66 @@ def img_main(path, snap, reg, npart_lim=10**3):
     gal_smls = {}
     all_gal_poss = {}
     means = {}
-    for id in ids:
-        parts = list(halo_id_part_inds[id])
-        all_gal_poss[id] = all_poss[parts, :]
-        gal_ages[id] = ages[parts]
-        gal_mets[id] = metallicities[parts]
-        gal_ms[id] = masses[parts]
-        gal_smls[id] = gal_sml[parts]
-        means[id] = gal_cop[id]
+    for g, sg, cop in zip(gal_gids, gal_ids, gal_cops):
+        if int(sg) == 2**30:
+            continue
+        mask = (grp_ids == g) & (subgrp_ids == sg)
+        id = float(str(int(g)) + '.' + str(int(sg)))
+        all_gal_poss[id] = all_poss[mask, :]
+        gal_ages[id] = ages[mask]
+        gal_mets[id] = metallicities[mask]
+        gal_ms[id] = masses[mask]
+        gal_smls[id] = gal_sml[mask]
+        means[id] = cop
 
+    print('There are', len(gal_ages.keys()), 'galaxies')
+
+    del subgrp_ids, ages, all_poss, metallicities, masses, gal_sml, a_born, grp_ids, subgrp_ids
+
+    gc.collect()
+
+    # If there are no galaxies exit
+    if len(gal_ages.keys()) == 0:
+        return
+    
     print('Got galaxy properties')
-
-    del ages, all_poss, metallicities, masses, gal_sml, halo_id_part_inds, a_born
-
-    gc.collect()
-
+    
     # Get gas particle information
-    gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
-    gas_all_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True, numThreads=8)
-    gpart_ids = E.read_array('SNAP', path, snap, 'PartType0/ParticleIDs', numThreads=8)
-    ggroup_part_ids = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', numThreads=8)
+    gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True, numThreads=8)
     ggrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', numThreads=8)
-    gas_metallicities = E.read_array('SNAP', path, snap, 'PartType0/SmoothedMetallicity', noH=True, physicalUnits=True, numThreads=8)
-    gas_smooth_ls = E.read_array('SNAP', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True, numThreads=8)
-    gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
-
-    ggroup_part_ids = ggroup_part_ids[gsubgrp_ids != 1073741824]
-    ggrp_ids = ggrp_ids[gsubgrp_ids != 1073741824]
-    gsubgrp_ids = gsubgrp_ids[gsubgrp_ids != 1073741824]
-    ghalo_ids = np.zeros(ggrp_ids.size, dtype=float)
-    for (ind, g), sg in zip(enumerate(ggrp_ids), gsubgrp_ids):
-        ghalo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
-
-    # Sort particle IDS
-    unsort_gpart_ids = gpart_ids[:]
-    gsinds = np.argsort(gpart_ids)
-    gpart_ids = gpart_ids[gsinds]
-    # gas_all_poss = gas_all_poss[gsinds]
-    # gas_smooth_ls = gas_smooth_ls[gsinds]
-    # gas_metallicities = gas_metallicities[gsinds]
-    # gas_masses = gas_masses[gsinds]
-
-    print('Got halo IDs')
-
-    # Get the IDs above the npart threshold
-    gids, gcounts = np.unique(ghalo_ids, return_counts=True)
-    gids = set(gids[gcounts > npart_lim])
-    both_ids = gids.intersection(ids)
-
-    sorted_index = np.searchsorted(gpart_ids, ggroup_part_ids)
-
-    yindex = np.take(gsinds, sorted_index, mode="clip")
-    mask = unsort_gpart_ids[yindex] != ggroup_part_ids
-
-    result = np.ma.array(yindex, mask=mask)
-
-    part_groups = ghalo_ids[np.logical_not(result.mask)]
-    parts_in_groups = result.data[np.logical_not(result.mask)]
-
-    ghalo_id_part_inds = {}
-    for ind, grp in zip(parts_in_groups, part_groups):
-        ghalo_id_part_inds.setdefault(grp, set()).update({ind})
-
-    print('Got particle IDs')
-
-    del ggroup_part_ids, ghalo_ids, gsubgrp_ids, gpart_ids
-
-    gc.collect()
-
+    gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
+    gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothedMetallicity', noH=True, physicalUnits=True, numThreads=8)
+    gas_smooth_ls = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True, numThreads=8)
+    gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
+        
     # Get the position of each of these galaxies
     gas_mets = {}
     gas_ms = {}
     gas_smls = {}
     all_gas_poss = {}
-    for id in both_ids:
-        gparts = list(ghalo_id_part_inds[id])
-        all_gas_poss[id] = gas_all_poss[gparts, :]
-        gas_mets[id] = gas_metallicities[gparts]
-        gas_ms[id] = gas_masses[gparts]
-        gas_smls[id] = gas_smooth_ls[gparts]
+    for g, sg in zip(gal_gids, gal_ids):
+        if int(sg) == 2**30:
+            continue
+        mask = (ggrp_ids == g) & (gsubgrp_ids == sg)
+        id = float(str(int(g)) + '.' + str(int(sg)))
+        all_gas_poss[id] = gas_all_poss[mask, :]
+        gas_mets[id] = gas_metallicities[mask]
+        gas_ms[id] = gas_masses[mask]
+        gas_smls[id] = gas_smooth_ls[mask]
 
-    print('Got gas properties')
+    print('Got particle IDs')
 
-    del gas_smooth_ls, gas_masses, gas_metallicities, gas_all_poss, ghalo_id_part_inds
+    del ggrp_ids, gsubgrp_ids, gas_all_poss, gas_metallicities, gas_smooth_ls, gas_masses
 
     gc.collect()
+
+    print('Got gas properties')
 
     save_dict = {'gal_ages': gal_ages, 'gal_mets': gal_mets, 'gal_ms': gal_ms, 'gas_mets': gas_mets,
                  'gas_ms': gas_ms, 'gal_smls': gal_smls, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
                  'all_gal_poss': all_gal_poss, 'means': means}
 
-    with open('UVimg_data/stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan'
-              + str(npart_lim) + '.pck', 'wb') as pfile1:
+    with open('UVimg_data/stellardata_reg' + reg + '_snap' + snap + '.pck', 'wb') as pfile1:
         pickle.dump(save_dict, pfile1)
 
 
