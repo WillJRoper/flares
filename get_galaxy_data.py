@@ -59,7 +59,7 @@ def get_main(path, snap, reg):
 
     print('There are', len(gal_ages.keys()), 'galaxies')
 
-    del subgrp_ids, ages, all_poss, metallicities, masses, gal_sml, a_born, grp_ids, subgrp_ids
+    del subgrp_ids, ages, all_poss, metallicities, masses, gal_sml, a_born, grp_ids
 
     gc.collect()
 
