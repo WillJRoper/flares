@@ -76,8 +76,8 @@ def calc_light_mass_rad(poss, ls, ms):
     rs = rs[rs < 30/1e3]
     ms = ms[rs < 30/1e3]
 
-    # if len(ls) < 20:
-    #     return 0
+    if len(ls) < 20:
+        return 0, 0 
 
     # Get the cumalative sum of masses
     l_profile = np.cumsum(ls)
