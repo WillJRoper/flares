@@ -147,6 +147,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
             hls[ind], ms[ind] = calc_light_mass_rad(gal_poss, ls, gal_ms[id])
             # print(hls[ind])
         except KeyError:
+            print('id', id, 'not in dictionary')
             continue
 
     return hls[hls > 0], ms[hls > 0]
