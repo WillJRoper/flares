@@ -58,12 +58,12 @@ def get_normalised_image(img, vmin=None, vmax=None):
 def get_sphere_data(path, snap, part_type, soft):
 
     # Get positions masses and smoothing lengths
-    poss = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates',
+    poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates',
                         noH=True, numThreads=8)
     if part_type != 1:
-        masses = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Mass',
+        masses = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Mass',
                               noH=True, numThreads=8) * 10 ** 10
-        smls = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SmoothingLength',
+        smls = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength',
                             noH=True, numThreads=8)
     else:
         masses = np.ones(poss.shape[0])
@@ -166,20 +166,18 @@ def spheregrid(snap, soft, t=0, p=0, num=0):
         else:
             regions.append(str(reg))
 
-    fig = plt.figure()
-    gs = gridspec.GridSpec(5, 8)
+    fig = plt.figure(figsize=(8*7, 5*7))
+    gs = gridspec.GridSpec(nrows=5, ncols=8)
     gs.update(wspace=0.0, hspace=0.0)
 
-    i, j = -1, 0
-    for reg in regions:
+    pltgrid = []
+    for i in range(5):
+        for j in range(8):
+            pltgrid.append((i, j))
 
-        i += 1
+    for reg, (i, j) in zip(regions, pltgrid):
 
-        if i % 8 == 0:
-            j += 1
-            i = 0
-
-        ax = fig.add_subplot(gs[j, i])
+        ax = fig.add_subplot(gs[i, j])
 
         img, extent = single_sphere(reg, snap, soft, t, p)
 
