@@ -58,12 +58,12 @@ def get_normalised_image(img, vmin=None, vmax=None):
 def get_sphere_data(path, snap, part_type, soft):
 
     # Get positions masses and smoothing lengths
-    poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates',
+    poss = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates',
                         noH=True, numThreads=8)
     if part_type != 1:
-        masses = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Mass',
+        masses = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Mass',
                               noH=True, numThreads=8) * 10 ** 10
-        smls = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength',
+        smls = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SmoothingLength',
                             noH=True, numThreads=8)
     else:
         masses = np.ones(poss.shape[0])
