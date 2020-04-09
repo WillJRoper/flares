@@ -93,7 +93,7 @@ def calc_light_mass_rad(poss, ls, ms):
     return hmr, np.sum(ms)
 
 
-def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=False):
+def hl_main(snap, reg, model, F, f, npart_lim=0, conv=1, i=0, j=1, dust=False):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -106,10 +106,13 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
     lkernel = kinp['kernel']
     header = kinp['header']
     kbins = header.item()['bins']
-
-    with open('UVimg_data/stellardata_reg' + reg + '_snap'
-              + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'rb') as pfile1:
-        save_dict = pickle.load(pfile1)
+    if npart_lim > 0:
+        with open('UVimg_data/stellardata_reg' + reg + '_snap'
+                  + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'rb') as pfile1:
+            save_dict = pickle.load(pfile1)
+    else:
+        with open('UVimg_data/stellardata_reg' + reg + '_snap' + snap + '.pck', 'rb') as pfile1:
+            save_dict = pickle.load(pfile1)
 
     gal_ages = save_dict['gal_ages']
     gal_mets = save_dict['gal_mets']
@@ -131,26 +134,24 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1, dust=Fals
         # print('Computing luminosities for', id, f)
 
         # Get the luminosities
-        try:
-            if len(gas_ms[id]) == 0:
-                continue
-            gas_poss = all_gas_poss[id]
-            gal_poss = all_gal_poss[id]
-            # means[id] = np.mean(gal_poss, axis=0)
-            gal_poss -= means[id]
-            gas_poss -= means[id]
-            ls = get_lumins(gal_poss, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
-                            gas_poss, gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
-                            F, i, j, f, dust)
-
-            # Compute half mass radii
-            hls[ind], ms[ind] = calc_light_mass_rad(gal_poss, ls, gal_ms[id])
-            # print(hls[ind])
-        except KeyError:
-            # print('id', id, 'not in dictionary')
+        if len(gas_ms[id]) == 0:
             continue
+        if np.sum(gal_ms) < 1e8:
+            continue
+        gas_poss = all_gas_poss[id]
+        gal_poss = all_gal_poss[id]
+        # means[id] = np.mean(gal_poss, axis=0)
+        gal_poss -= means[id]
+        gas_poss -= means[id]
+        ls = get_lumins(gal_poss, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
+                        gas_poss, gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
+                        F, i, j, f, dust)
 
-    return hls[hls > 0], ms[hls > 0]
+        # Compute half mass radii
+        hls[ind], ms[ind] = calc_light_mass_rad(gal_poss, ls, gal_ms[id])
+        # print(hls[ind])
+
+    return hls[hls > 0.0], ms[hls > 0.0]
 
 
 # regions = []

@@ -359,18 +359,12 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         halo.attrs['current_halo_nPart'] = current_halo_pids.size  # mass of the halo
         # halo.create_dataset('current_halo_partIDs', data=current_halo_pids, dtype=int,
         #                     compression='gzip')  # particle ids in this halo
-        halo.create_dataset('prog_npart_contribution', data=prog_mass_contribution, dtype=int,
-                            compression='gzip')  # Mass contribution
-        halo.create_dataset('desc_npart_contribution', data=desc_mass_contribution, dtype=int,
-                            compression='gzip')  # Mass contribution
-        halo.create_dataset('Prog_nPart', data=prog_npart, dtype=int,
-                            compression='gzip')  # number of particles in each progenitor
-        halo.create_dataset('Desc_nPart', data=desc_npart, dtype=int,
-                            compression='gzip')  # number of particles in each descendant
-        halo.create_dataset('Prog_haloIDs', data=sim_prog_haloids, dtype=float,
-                            compression='gzip')  # progenitor IDs
-        halo.create_dataset('Desc_haloIDs', data=sim_desc_haloids, dtype=float,
-                            compression='gzip')  # descendant IDs
+        halo.create_dataset('prog_npart_contribution', data=prog_mass_contribution, dtype=int)  # Mass contribution
+        halo.create_dataset('desc_npart_contribution', data=desc_mass_contribution, dtype=int)  # Mass contribution
+        halo.create_dataset('Prog_nPart', data=prog_npart, dtype=int)  # number of particles in each progenitor
+        halo.create_dataset('Desc_nPart', data=desc_npart, dtype=int)  # number of particles in each descendant
+        halo.create_dataset('Prog_haloIDs', data=sim_prog_haloids, dtype=float)  # progenitor IDs
+        halo.create_dataset('Desc_haloIDs', data=sim_desc_haloids, dtype=float)  # descendant IDs
 
     hdf.close()
 
