@@ -46,8 +46,6 @@ def get_main(path, snap, reg):
     all_gal_poss = {}
     means = {}
     for g, sg, cop in zip(gal_gids, gal_ids, gal_cops):
-        if int(sg) == 2**30:
-            continue
         mask = (grp_ids == g) & (subgrp_ids == sg)
         id = float(str(int(g)) + '.' + str(int(sg)))
         all_gal_poss[id] = all_poss[mask, :]
@@ -83,8 +81,6 @@ def get_main(path, snap, reg):
     gas_smls = {}
     all_gas_poss = {}
     for g, sg in zip(gal_gids, gal_ids):
-        if int(sg) == 2**30:
-            continue
         mask = (ggrp_ids == g) & (gsubgrp_ids == sg)
         id = float(str(int(g)) + '.' + str(int(sg)))
         all_gas_poss[id] = gas_all_poss[mask, :]
@@ -135,8 +131,8 @@ path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
 files = os.listdir('UVimg_data/')
 
-# if 'stellardata_reg' + reg + '_snap' + snap + '_npartgreaterthan' + str(npart_lim) + '.pck' in files:
-#     pass
-# else:
-#     img_main(path, snap, reg, npart_lim=10**2)
-get_main(path, snap, reg)
+if 'UVimg_data/stellardata_reg' + reg + '_snap' + snap + '.pck' in files:
+    pass
+else:
+    get_main(path, snap, reg)
+# get_main(path, snap, reg)
