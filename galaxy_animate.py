@@ -152,7 +152,7 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
                    labeltop=False, labelright=False, labelbottom=False)
 
     fig.savefig('plots/spheres/Galaxies/all_parts_galaxy_reg' + reg + '_snap' + snap
-                + '_galid:', str(g) + 'p' + str(sg) + '_angle%05d.png'%num,
+                + '_galid:' + str(g) + 'p' + str(sg) + '_angle%05d.png'%num,
                 bbox_inches='tight')
     plt.close(fig)
 
