@@ -20,13 +20,13 @@ def _sphere(coords, a, b, c, r):
     return (x - a) ** 2 + (y - b) ** 2 + (z - c) ** 2 - r ** 2
 
 
-def spherical_region(sim, snap):
+def spherical_region(dm_cood):
     """
     Inspired from David Turner's suggestion
     """
 
-    dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
-                           noH=True, physicalUnits=False, numThreads=4)  # dm particle coordinates
+    # dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
+    #                        noH=True, physicalUnits=False, numThreads=4)  # dm particle coordinates
 
     hull = ConvexHull(dm_cood)
 
@@ -78,7 +78,7 @@ def single_sphere(reg, snap, soft):
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
     # Get plot data
-    poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
+    # poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
     poss_DM, masses_DM, smls_DM = get_sphere_data(path, snap, part_type=1, soft=soft)
     
     # Get centres of groups
@@ -88,34 +88,36 @@ def single_sphere(reg, snap, soft):
                             noH=True, numThreads=8)
 
     # Get the spheres centre
-    centre, radius, mindist = spherical_region(path, snap)
+    centre, radius, mindist = spherical_region(poss_DM)
 
     # Centre particles
-    poss_gas -= centre
+    # poss_gas -= centre
     poss_DM -= centre
 
+    print('got centre')
+
     # Remove boundary particles
-    rgas = np.linalg.norm(poss_gas, axis=1)
+    # rgas = np.linalg.norm(poss_gas, axis=1)
     rDM = np.linalg.norm(poss_DM, axis=1)
-    okinds_gas = rgas < 14 / 0.677
-    poss_gas = poss_gas[okinds_gas, :]
-    masses_gas = masses_gas[okinds_gas]
-    smls_gas = smls_gas[okinds_gas]
+    # okinds_gas = rgas < 14 / 0.677
+    # poss_gas = poss_gas[okinds_gas, :]
+    # masses_gas = masses_gas[okinds_gas]
+    # smls_gas = smls_gas[okinds_gas]
     okinds_DM = rDM < 14 / 0.677
     poss_DM = poss_DM[okinds_DM, :]
     masses_DM = masses_DM[okinds_DM]
     smls_DM = smls_DM[okinds_DM]
 
-    print('There are', len(masses_gas), 'gas particles in the region')
+    # print('There are', len(masses_gas), 'gas particles in the region')
     print('There are', len(masses_DM), 'DM particles in the region')
 
     # Set up particle objects
     P_DM = sph.Particles(poss_DM, mass=masses_DM, hsml=smls_DM)
-    P_gas = sph.Particles(poss_gas, mass=masses_gas, hsml=smls_gas)
+    # P_gas = sph.Particles(poss_gas, mass=masses_gas, hsml=smls_gas)
 
-    # Initialise the scene
-    S_DM = sph.Scene(P_DM)
-    S_gas = sph.Scene(P_gas)
+    # # Initialise the scene
+    # S_DM = sph.Scene(P_DM)
+    # S_gas = sph.Scene(P_gas)
 
     # Define targets
     targets = [[0, 0, 0]]
