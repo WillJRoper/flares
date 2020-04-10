@@ -126,9 +126,9 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     # qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
     #                    xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
     qv_gas = QuickView(poss_gas, mass=masses_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-                       xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+                       xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
     qv_DM = QuickView(poss_DM, mass=masses_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-                       xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+                       xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
     # Get colomaps
     cmap_gas = ml.cm.plasma
