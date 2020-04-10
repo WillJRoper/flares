@@ -139,27 +139,6 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image()}
     extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent()}
 
-    fig = plt.figure(figsize=(7, 7))
-    ax = fig.add_subplot(111)
-
-    ax.imshow(imgs['gas'], extent=extents['gas'], origin='lower', cmap='Greys_r')
-    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                   labeltop=False, labelright=False, labelbottom=False)
-
-    fig.savefig('plots/spheres/Gas/Gas_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
-                bbox_inches='tight')
-    plt.close(fig)
-
-    fig = plt.figure(figsize=(7, 7))
-    ax = fig.add_subplot(111)
-
-    ax.imshow(imgs['dm'], extent=extents['dm'], origin='lower', cmap='magma')
-    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                   labeltop=False, labelright=False, labelbottom=False)
-
-    fig.savefig('plots/spheres/DM/DM_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
-                bbox_inches='tight')
-
     print(imgs['dm'][np.where(imgs['dm'] != 0.0)].min())
     print(imgs['gas'][np.where(imgs['gas'] != 0.0)].min())
     vmindm = imgs['dm'][np.where(imgs['dm'] != 0.0)].min()
@@ -170,6 +149,27 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(imgs['gas'], vmin=vmingas))
     rgb_DM = cmap_dm(get_normalised_image(imgs['dm'], vmin=vmindm))
+
+    fig = plt.figure(figsize=(7, 7))
+    ax = fig.add_subplot(111)
+
+    ax.imshow(rgb_gas, extent=extents['gas'], origin='lower', cmap='Greys_r')
+    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                   labeltop=False, labelright=False, labelbottom=False)
+
+    fig.savefig('plots/spheres/Gas/Gas_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+                bbox_inches='tight')
+    plt.close(fig)
+
+    fig = plt.figure(figsize=(7, 7))
+    ax = fig.add_subplot(111)
+
+    ax.imshow(rgb_DM, extent=extents['dm'], origin='lower', cmap='magma')
+    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                   labeltop=False, labelright=False, labelbottom=False)
+
+    fig.savefig('plots/spheres/DM/DM_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+                bbox_inches='tight')
 
     blend = Blend.Blend(rgb_DM, rgb_gas)
     dmgas_output = blend.Overlay()
