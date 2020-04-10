@@ -46,7 +46,7 @@ def get_main(path, snap, reg):
     all_gal_poss = {}
     means = {}
     print(np.unique(grp_ids))
-    print(np.unique(subgrp_ids))
+    print(np.unique(subgrp_ids, return_counts=True))
     for g, sg, cop in zip(gal_gids, gal_ids, gal_cops):
         mask = (grp_ids == g) & (subgrp_ids == sg)
         id = float(str(int(g)) + '.' + str(int(sg)))
