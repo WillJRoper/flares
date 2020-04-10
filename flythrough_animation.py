@@ -137,6 +137,7 @@ def single_sphere(reg, snap, soft):
 
     num = 0
     for i in data:
+        print(num)
         i['xsize'] = 500
         i['ysize'] = 500
         i['roll'] = 0
