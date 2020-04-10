@@ -101,7 +101,9 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     centrey = np.sum(poss_DM[:, 1] * masses_DM, axis=0) / np.sum(masses_DM)
     centrez = np.sum(poss_DM[:, 2] * masses_DM, axis=0) / np.sum(masses_DM)
     centre = np.array([centrex, centrey, centrez])
-
+    print(poss_DM)
+    print(poss_gas)
+    print(centre)
     # Centre particles
     poss_gas -= centre
     poss_DM -= centre
@@ -113,12 +115,12 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     poss_gas = poss_gas[okinds_gas, :]
     masses_gas = masses_gas[okinds_gas]
     smls_gas = smls_gas[okinds_gas]
-    
+    print(rDM.max())
     print('There are', len(masses_gas), 'gas particles in the region')
     print('There are', len(masses_DM), 'DM particles in the region')
 
     # Define the box size
-    lbox = rDM.max() + 0.1 * rDM.max() * 2
+    lbox = (rDM.max() + 0.1 * rDM.max()) * 2
 
     # Define particles
     qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
