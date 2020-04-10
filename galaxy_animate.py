@@ -141,7 +141,7 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(imgs['gas'], extent=extents['gas'], origin='lower', cmap='Greys_r')
+    ax.imshow(np.log10(imgs['gas']), extent=extents['gas'], origin='lower', cmap='Greys_r')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
@@ -152,7 +152,7 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(imgs['dm'], extent=extents['dm'], origin='lower', cmap='magma')
+    ax.imshow(np.log10(imgs['dm']), extent=extents['dm'], origin='lower', cmap='magma')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
