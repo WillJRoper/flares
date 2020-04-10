@@ -86,7 +86,7 @@ def single_sphere(reg, snap, soft):
 
     # Get plot data
     # poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
-    poss_DM, masses_DM, smls_DM = get_sphere_data(path, snap, part_type=1, soft=soft)
+    poss_DM, masses_DM, smls_DM = get_sphere_data(path, snap, part_type=4, soft=soft)
     
     # Get centres of groups
     grp_cops = E.read_array('SUBFIND', path, snap, 'FOF/GroupCentreOfPotential',
@@ -165,15 +165,10 @@ def single_sphere(reg, snap, soft):
         i['xsize'] = 500
         i['ysize'] = 500
         i['roll'] = 0
-        print(num)
         S_DM.update_camera(**i)
-        print(h.heap())
         R = sph.Render(S_DM)
-        print(h.heap())
         R.set_logscale()
-        print(h.heap())
         img = R.get_image()
-        print(h.heap())
 
         vmin = img[np.where(img != 0)].min()
         vmax = img.max()
