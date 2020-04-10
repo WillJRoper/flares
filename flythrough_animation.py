@@ -99,7 +99,7 @@ def single_sphere(reg, snap, soft):
 
     del radius, mindist
     gc.collect()
-    h.heap()
+    print(h.heap())
     # Centre particles
     # poss_gas -= centre
     poss_DM -= centre
@@ -120,7 +120,7 @@ def single_sphere(reg, snap, soft):
 
     del rDM, okinds_DM
     gc.collect()
-    h.heap()
+    print(h.heap())
     # print('There are', len(masses_gas), 'gas particles in the region')
     print('There are', len(masses_DM), 'DM particles in the region')
 
@@ -158,7 +158,7 @@ def single_sphere(reg, snap, soft):
 
     # Define the camera trajectory
     data = camera_tools.get_camera_trajectory(targets, anchors)
-    h.heap()
+    print(h.heap())
     num = 0
     for i in data:
         print(num)
@@ -169,7 +169,7 @@ def single_sphere(reg, snap, soft):
         R = sph.Render(S_DM)
         R.set_logscale()
         img = R.get_image()
-        h.heap()
+        print(h.heap())
 
         vmin = img[np.where(img != 0)].min()
         vmax = img.max()
