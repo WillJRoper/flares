@@ -119,7 +119,7 @@ def single_sphere(reg, snap, soft):
 
     # Define targets
     targets = [[0, 0, 0]]
-    targets.append(grp_cops[np.argmax(grp_ms)])
+    targets.append(grp_cops[np.argmax(grp_ms) - centre])
 
     # Define the box size
     lbox = (15 / 0.677) * 2
