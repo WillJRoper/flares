@@ -6,6 +6,7 @@ import pickle
 import gc
 import os
 import sys
+from scipy.spatial import cKDTree
 from utilities import calc_ages, get_Z_LOS
 matplotlib.use('Agg')
 
@@ -38,6 +39,14 @@ def get_main(path, snap, reg):
     # Calculate ages
     ages = calc_ages(z, a_born)
 
+    x = np.zeros((len(grp_ids), 2))
+    x[:, 0] = grp_ids
+    x[:, 1] = subgrp_ids
+
+    tree = cKDTree(x)
+
+    print("Tree built")
+
     # Get the position of each of these galaxies
     gal_ages = {}
     gal_mets = {}
@@ -49,6 +58,9 @@ def get_main(path, snap, reg):
     print(np.unique(subgrp_ids, return_counts=True))
     for g, sg, cop in zip(gal_gids, gal_ids, gal_cops):
         mask = (grp_ids == g) & (subgrp_ids == sg)
+        print(np.where(mask == True))
+        query = tree.query_ball_point(np.array([[int(g), int(sg)]]), r=0.5)
+        print(query)
         id = float(str(int(g)) + '.' + str(int(sg)))
         all_gal_poss[id] = all_poss[mask, :]
         gal_ages[id] = ages[mask]
