@@ -6,7 +6,6 @@ import pickle
 import gc
 import os
 import sys
-from scipy.spatial import cKDTree
 from utilities import calc_ages, get_Z_LOS
 matplotlib.use('Agg')
 
@@ -36,16 +35,18 @@ def get_main(path, snap, reg):
                                  physicalUnits=True, numThreads=8)
     masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
 
+    # Remove particles not in a subgroup
+    nosub_mask = subgrp_ids != 1073741824
+    all_poss = all_poss[nosub_mask, :]
+    gal_sml = gal_sml[nosub_mask]
+    grp_ids = grp_ids[nosub_mask]
+    subgrp_ids = subgrp_ids[nosub_mask]
+    a_born = a_born[nosub_mask]
+    metallicities = metallicities[nosub_mask]
+    masses = masses[nosub_mask]
+
     # Calculate ages
     ages = calc_ages(z, a_born)
-
-    x = np.zeros((len(grp_ids), 2))
-    x[:, 0] = grp_ids
-    x[:, 1] = subgrp_ids
-
-    tree = cKDTree(x)
-
-    print("Tree built")
 
     # Get the position of each of these galaxies
     gal_ages = {}
@@ -58,9 +59,6 @@ def get_main(path, snap, reg):
     print(np.unique(subgrp_ids, return_counts=True))
     for g, sg, cop in zip(gal_gids, gal_ids, gal_cops):
         mask = (grp_ids == g) & (subgrp_ids == sg)
-        print(np.where(mask == True))
-        query = tree.query_ball_point(np.array([[int(g), int(sg)]]), r=0.5)
-        print(query)
         id = float(str(int(g)) + '.' + str(int(sg)))
         all_gal_poss[id] = all_poss[mask, :]
         gal_ages[id] = ages[mask]
@@ -88,7 +86,16 @@ def get_main(path, snap, reg):
     gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothedMetallicity', noH=True, physicalUnits=True, numThreads=8)
     gas_smooth_ls = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True, numThreads=8)
     gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
-        
+
+    # Remove particles not in a subgroup
+    nosub_mask = gsubgrp_ids != 1073741824
+    gas_all_poss = gas_all_poss[nosub_mask, :]
+    ggrp_ids = ggrp_ids[nosub_mask]
+    gsubgrp_ids = gsubgrp_ids[nosub_mask]
+    gas_metallicities = gas_metallicities[nosub_mask]
+    gas_smooth_ls = gas_smooth_ls[nosub_mask]
+    gas_masses = gas_masses[nosub_mask]
+
     # Get the position of each of these galaxies
     gas_mets = {}
     gas_ms = {}
