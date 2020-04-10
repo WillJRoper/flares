@@ -141,7 +141,7 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(np.log10(imgs['gas']), extent=extents['gas'], origin='lower', cmap='Greys_r')
+    ax.imshow(imgs['gas'], extent=extents['gas'], origin='lower', cmap='Greys_r')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
@@ -152,21 +152,19 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(np.log10(imgs['dm']), extent=extents['dm'], origin='lower', cmap='magma')
+    ax.imshow(imgs['dm'], extent=extents['dm'], origin='lower', cmap='magma')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
     fig.savefig('plots/spheres/DM/DM_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
                 bbox_inches='tight')
 
-    print(np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min()))
-    print(np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()))
+    print(imgs['dm'][np.where(imgs['dm'] != 0.0)].min())
+    print(imgs['gas'][np.where(imgs['gas'] != 0.0)].min())
 
     # Convert images to rgb arrays
-    rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
-                                            vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min())))
-    rgb_DM = cmap_dm(get_normalised_image(np.log10(imgs['dm']),
-                                          vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min())))
+    rgb_gas = cmap_gas(get_normalised_image(imgs['gas'], vmin=imgs['gas'][np.where(imgs['gas'] != 0.0)].min()))
+    rgb_DM = cmap_dm(get_normalised_image(imgs['dm'], vmin=imgs['dm'][np.where(imgs['dm'] != 0.0)].min()))
 
     blend = Blend.Blend(rgb_DM, rgb_gas)
     dmgas_output = blend.Overlay()
