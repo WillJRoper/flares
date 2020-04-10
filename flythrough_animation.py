@@ -153,8 +153,8 @@ def single_sphere(reg, snap, soft):
     anchors['r'] = [lbox * 3/4, 'pass', lbox / 10, 'same', 'same', 'pass', lbox * 3/4]
     anchors['t'] = [0, 'pass', 'pass', 180, 'pass', 'pass', 0]
     anchors['p'] = [0, 'pass', 350, 'pass', 0, 'pass', 359]
-    anchors['zoom'] = [1., 'pass', 8, 'same', 'same', 'pass', 0]
-    anchors['extent'] = [10, 'pass', 60, 'same', 'same', 'pass', 10]
+    anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same']
+    anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same']
 
     # Define the camera trajectory
     data = camera_tools.get_camera_trajectory(targets, anchors)
