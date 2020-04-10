@@ -205,6 +205,6 @@ ps = np.linspace(0, 360, 360)
 ind = int(sys.argv[1])
 reg, snap, g, sg = regions[int(sys.argv[2])], snaps[int(sys.argv[3])], int(sys.argv[4]), int(sys.argv[5])
 if not 'galid' + str(g) + 'p' + str(sg) in os.listdir('plots/spheres/Galaxies/'):
-    os.mkdir('galid' + str(g) + 'p' + str(sg))
+    os.mkdir('plots/spheres/Galaxies/galid' + str(g) + 'p' + str(sg))
 print('Phi=', ps[ind], 'Region:', reg, 'Snapshot:', snap, 'Galaxy:', str(g) + '.' + str(sg))
 single_galaxy(g, sg, reg, snap, soft, t=0, p=ps[ind], num=ind)
