@@ -139,12 +139,12 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image()}
     extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent()}
 
+    print(imgs['dm'][np.where(imgs['dm'] != 0.0)].max())
     print(imgs['dm'][np.where(imgs['dm'] != 0.0)].min())
+    print(imgs['gas'][np.where(imgs['gas'] != 0.0)].max())
     print(imgs['gas'][np.where(imgs['gas'] != 0.0)].min())
-    vmindm = imgs['dm'][np.where(imgs['dm'] != 0.0)].max()
-    vmingas = imgs['gas'][np.where(imgs['gas'] != 0.0)].max()
-    vmindm *= 0.3
-    vmingas *= 0.3
+    vmindm = imgs['dm'].max() * 0.5
+    vmingas = imgs['gas'].max() * 0.5
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(imgs['gas'], vmin=vmingas))
