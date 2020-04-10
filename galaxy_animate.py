@@ -143,8 +143,8 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     print(imgs['gas'][np.where(imgs['gas'] != 0.0)].min())
     vmindm = imgs['dm'][np.where(imgs['dm'] != 0.0)].min()
     vmingas = imgs['gas'][np.where(imgs['gas'] != 0.0)].min()
-    vmindm += vmindm * 0.1
-    vmingas += vmingas * 0.1
+    vmindm += vmindm * 0.2
+    vmingas += vmingas * 0.2
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(imgs['gas'], vmin=vmingas))
@@ -153,7 +153,7 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(rgb_gas, extent=extents['gas'], origin='lower', cmap='Greys_r')
+    ax.imshow(rgb_gas, extent=extents['gas'], origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
@@ -164,7 +164,7 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
-    ax.imshow(rgb_DM, extent=extents['dm'], origin='lower', cmap='magma')
+    ax.imshow(rgb_DM, extent=extents['dm'], origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
