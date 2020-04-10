@@ -37,6 +37,7 @@ def get_main(path, snap, reg):
 
     print(gal_ids)
     print(gal_gids)
+    print(gal_cops)
 
     # Remove particles not in a subgroup
     nosub_mask = subgrp_ids != 1073741824
