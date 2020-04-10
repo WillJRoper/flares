@@ -141,10 +141,10 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
 
     print(imgs['dm'][np.where(imgs['dm'] != 0.0)].min())
     print(imgs['gas'][np.where(imgs['gas'] != 0.0)].min())
-    vmindm = imgs['dm'][np.where(imgs['dm'] != 0.0)].min()
-    vmingas = imgs['gas'][np.where(imgs['gas'] != 0.0)].min()
-    vmindm += 1
-    vmingas += 5
+    vmindm = imgs['dm'][np.where(imgs['dm'] != 0.0)].max()
+    vmingas = imgs['gas'][np.where(imgs['gas'] != 0.0)].max()
+    vmindm *= 0.1
+    vmingas *= 0.1
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(imgs['gas'], vmin=vmingas))
