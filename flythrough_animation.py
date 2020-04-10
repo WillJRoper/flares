@@ -1,10 +1,9 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
-import matplotlib
-matplotlib.use('Agg')
+import matplotlib as ml
+ml.use('Agg')
 import numpy as np
 import sphviewer as sph
 from sphviewer.tools import cmaps, Blend, camera_tools
-import matplotlib as ml
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from scipy.spatial import ConvexHull
