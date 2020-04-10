@@ -166,7 +166,7 @@ def spheregrid(snap, soft, t=0, p=0, num=0):
         else:
             regions.append(str(reg))
 
-    fig = plt.figure(figsize=(8*3.975, 5*4))
+    fig = plt.figure(figsize=(8*4, 5*4))
     gs = gridspec.GridSpec(nrows=5, ncols=8)
     gs.update(wspace=0.0, hspace=0.0)
 
