@@ -137,6 +137,7 @@ def single_sphere(reg, snap, soft):
 
     num = 0
     for i in data:
+        print(num)
         i['xsize'] = 500
         i['ysize'] = 500
         i['roll'] = 0
@@ -145,7 +146,7 @@ def single_sphere(reg, snap, soft):
         R = sph.Render(S)
         R.set_logscale()
         img = R.get_image()
-        plt.imsave('plots/spheres/All/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
+        plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
                    vmin=img[np.where(img != 0)].min(), vmax=img.max(), cmap='cubehelix')
         num += 1
 
@@ -207,9 +208,7 @@ csoft = 0.001802390 / 0.677
 #
 #         reg_snaps.append((reg, snap))
 
-ind = int(sys.argv[1])
 # print(reg_snaps[ind])
 # reg, snap = reg_snaps[ind]
 reg, snap = '00', '010_z005p000'
-ps = np.linspace(0, 360, 360)
-single_sphere(reg, snap, part_type=0, soft=csoft, p=ps[ind], num=ind)
+single_sphere(reg, snap, soft=csoft)
