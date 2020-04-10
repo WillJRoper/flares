@@ -41,7 +41,7 @@ def spherical_region(dm_cood):
 
     popt, pcov = curve_fit(_sphere, pedge, y_obs, p0, method='lm', sigma=np.ones(len(pedge)) * 0.001)
     dist = np.sqrt(np.sum((pedge-popt[:3])**2, axis=1))
-    centre, radius, mindist = popt[:3], popt[3], np.min(dist
+    centre, radius, mindist = popt[:3], popt[3], np.min(dist)
 
     print('computed fit')
 
