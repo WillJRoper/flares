@@ -102,12 +102,9 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     centrez = np.sum(poss_DM[:, 2] * masses_DM, axis=0) / np.sum(masses_DM)
     centre = np.array([centrex, centrey, centrez])
 
-    print(centre)
     # Centre particles
     poss_gas -= centre
     poss_DM -= centre
-    print(poss_DM)
-    print(poss_gas)
 
     # Remove boundary particles
     rgas = np.linalg.norm(poss_gas, axis=1)
@@ -124,9 +121,13 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     lbox = (rDM.max() + 0.1 * rDM.max()) * 2
 
     # Define particles
-    qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
+    # qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
+    #                    xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    # qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
+    #                    xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    qv_gas = QuickView(poss_gas, mass=masses_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
                        xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
+    qv_DM = QuickView(poss_DM, mass=masses_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
                        xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
     # Get colomaps
