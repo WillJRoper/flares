@@ -97,6 +97,9 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     # Get plot data
     poss_DM, masses_DM, smls_DM, poss_gas, masses_gas, smls_gas = get_galaxy_data(g, sg, path, snap, soft=soft)
 
+    if len(masses_DM) == 0:
+        return
+
     # Get the spheres centre
     centrex = np.sum(poss_DM[:, 0] * masses_DM, axis=0) / np.sum(masses_DM)
     centrey = np.sum(poss_DM[:, 1] * masses_DM, axis=0) / np.sum(masses_DM)
@@ -143,8 +146,8 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     print(imgs['dm'][np.where(imgs['dm'] != 0.0)].min())
     print(imgs['gas'][np.where(imgs['gas'] != 0.0)].max())
     print(imgs['gas'][np.where(imgs['gas'] != 0.0)].min())
-    vmindm = imgs['dm'].max() * 0.5
-    vmingas = imgs['gas'].max() * 0.5
+    vmindm = imgs['dm'].max() * 0.4
+    vmingas = imgs['gas'].max() * 0.4
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(imgs['gas'], vmin=vmingas))
@@ -182,6 +185,9 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
+    if not 'galid' + str(g) + 'p' + str(sg) in os.listdir('plots/spheres/Galaxies/'):
+        os.mkdir('plots/spheres/Galaxies/galid' + str(g) + 'p' + str(sg))
+
     fig.savefig('plots/spheres/Galaxies/galid' + str(g) + 'p' + str(sg) + '/all_parts_galaxy_reg' + reg
                 + '_snap' + snap + '_galid:' + str(g) + 'p' + str(sg) + '_angle%05d.png'%num,
                 bbox_inches='tight')
@@ -207,8 +213,7 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 ps = np.linspace(0, 360, 360)
 
 ind = int(sys.argv[1])
-reg, snap, g, sg = regions[int(sys.argv[2])], snaps[int(sys.argv[3])], int(sys.argv[4]), int(sys.argv[5])
-if not 'galid' + str(g) + 'p' + str(sg) in os.listdir('plots/spheres/Galaxies/'):
-    os.mkdir('plots/spheres/Galaxies/galid' + str(g) + 'p' + str(sg))
-print('Phi=', ps[ind], 'Region:', reg, 'Snapshot:', snap, 'Galaxy:', str(g) + '.' + str(sg))
-single_galaxy(g, sg, reg, snap, soft, t=0, p=ps[ind], num=ind)
+for i in range(0, 1000):
+    reg, snap, g, sg = regions[int(sys.argv[2])], snaps[int(sys.argv[3])], i, 0
+    print('Phi=', ps[ind], 'Region:', reg, 'Snapshot:', snap, 'Galaxy:', str(g) + '.' + str(sg))
+    single_galaxy(g, sg, reg, snap, soft, t=0, p=ps[ind], num=ind)
