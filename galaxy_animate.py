@@ -9,6 +9,7 @@ from scipy.optimize import curve_fit
 from scipy.spatial import ConvexHull
 import eagle_IO as E
 import sys
+import os
 
 
 def _sphere(coords, a, b, c, r):
@@ -118,7 +119,7 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     print('There are', len(masses_DM), 'DM particles in the region')
 
     # Define the box size
-    lbox = (rDM.max() + 0.1 * rDM.max()) * 2
+    lbox = (rDM.max() + 0.05 * rDM.max()) * 2
 
     # Define particles
     # qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
@@ -177,8 +178,8 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
-    fig.savefig('plots/spheres/Galaxies/all_parts_galaxy_reg' + reg + '_snap' + snap
-                + '_galid:' + str(g) + 'p' + str(sg) + '_angle%05d.png'%num,
+    fig.savefig('plots/spheres/Galaxies/galid' + str(g) + 'p' + str(sg) + '/all_parts_galaxy_reg' + reg
+                + '_snap' + snap + '_galid:' + str(g) + 'p' + str(sg) + '_angle%05d.png'%num,
                 bbox_inches='tight')
     plt.close(fig)
 
@@ -203,5 +204,7 @@ ps = np.linspace(0, 360, 360)
 
 ind = int(sys.argv[1])
 reg, snap, g, sg = regions[int(sys.argv[2])], snaps[int(sys.argv[3])], int(sys.argv[4]), int(sys.argv[5])
+if not 'galid' + str(g) + 'p' + str(sg) in os.listdir('plots/spheres/Galaxies/'):
+    os.mkdir('galid' + str(g) + 'p' + str(sg))
 print('Phi=', ps[ind], 'Region:', reg, 'Snapshot:', snap, 'Galaxy:', str(g) + '.' + str(sg))
 single_galaxy(g, sg, reg, snap, soft, t=0, p=ps[ind], num=ind)

@@ -158,4 +158,3 @@ if 'UVimg_data/stellardata_reg' + reg + '_snap' + snap + '.pck' in files:
     pass
 else:
     get_main(path, snap, reg)
-# get_main(path, snap, reg)
