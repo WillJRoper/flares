@@ -101,12 +101,13 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     centrey = np.sum(poss_DM[:, 1] * masses_DM, axis=0) / np.sum(masses_DM)
     centrez = np.sum(poss_DM[:, 2] * masses_DM, axis=0) / np.sum(masses_DM)
     centre = np.array([centrex, centrey, centrez])
-    print(poss_DM)
-    print(poss_gas)
+
     print(centre)
     # Centre particles
     poss_gas -= centre
     poss_DM -= centre
+    print(poss_DM)
+    print(poss_gas)
 
     # Remove boundary particles
     rgas = np.linalg.norm(poss_gas, axis=1)
@@ -135,6 +136,27 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     # Get each particle type image
     imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image()}
     extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent()}
+
+    fig = plt.figure(figsize=(7, 7))
+    ax = fig.add_subplot(111)
+
+    ax.imshow(imgs['gas'], extent=extents['gas'], origin='lower', cmap='Greys_r')
+    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                   labeltop=False, labelright=False, labelbottom=False)
+
+    fig.savefig('plots/spheres/Gas/Gas_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+                bbox_inches='tight')
+    plt.close(fig)
+
+    fig = plt.figure(figsize=(7, 7))
+    ax = fig.add_subplot(111)
+
+    ax.imshow(imgs['dm'], extent=extents['dm'], origin='lower', cmap=cmaps.twilight)
+    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                   labeltop=False, labelright=False, labelbottom=False)
+
+    fig.savefig('plots/spheres/DM/DM_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+                bbox_inches='tight')
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
