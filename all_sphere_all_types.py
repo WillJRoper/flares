@@ -58,12 +58,12 @@ def get_normalised_image(img, vmin=None, vmax=None):
 def get_sphere_data(path, snap, part_type, soft):
 
     # Get positions masses and smoothing lengths
-    poss = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates',
+    poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates',
                         noH=True, numThreads=8)
     if part_type != 1:
-        masses = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Mass',
+        masses = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Mass',
                               noH=True, numThreads=8) * 10 ** 10
-        smls = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SmoothingLength',
+        smls = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength',
                             noH=True, numThreads=8)
     else:
         masses = np.ones(poss.shape[0])
@@ -118,11 +118,11 @@ def single_sphere(reg, snap, soft, t=0, p=0):
 
     # Define particles
     qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-                       xsize=1000, ysize=1000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+                       xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
     qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-                       xsize=1000, ysize=1000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+                       xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
     # qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-    #                    xsize=1000, ysize=1000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    #                    xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
     # Get colormaps
     cmap_gas = ml.cm.magma
