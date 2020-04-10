@@ -162,10 +162,14 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
 
     print(imgs['dm'][np.where(imgs['dm'] != 0.0)].min())
     print(imgs['gas'][np.where(imgs['gas'] != 0.0)].min())
+    vmindm = imgs['dm'][np.where(imgs['dm'] != 0.0)].min()
+    vmingas = imgs['gas'][np.where(imgs['gas'] != 0.0)].min()
+    vmindm += vmindm * 0.1
+    vmingas += vmingas * 0.1
 
     # Convert images to rgb arrays
-    rgb_gas = cmap_gas(get_normalised_image(imgs['gas'], vmin=imgs['gas'][np.where(imgs['gas'] != 0.0)].min()))
-    rgb_DM = cmap_dm(get_normalised_image(imgs['dm'], vmin=imgs['dm'][np.where(imgs['dm'] != 0.0)].min()))
+    rgb_gas = cmap_gas(get_normalised_image(imgs['gas'], vmin=vmingas))
+    rgb_DM = cmap_dm(get_normalised_image(imgs['dm'], vmin=vmindm))
 
     blend = Blend.Blend(rgb_DM, rgb_gas)
     dmgas_output = blend.Overlay()
