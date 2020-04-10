@@ -35,8 +35,8 @@ def get_main(path, snap, reg):
                                  physicalUnits=True, numThreads=8)
     masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
 
-    print(grp_ids)
-    print(subgrp_ids)
+    print(gal_ids)
+    print(gal_gids)
 
     # Remove particles not in a subgroup
     nosub_mask = subgrp_ids != 1073741824
