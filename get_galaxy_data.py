@@ -83,7 +83,7 @@ def get_main(path, snap, reg):
     gas_smls = {}
     all_gas_poss = {}
     print(np.unique(ggrp_ids))
-    print(np.unique(gsubgrp_ids))
+    print(np.unique(gsubgrp_ids, return_counts=True))
     for g, sg in zip(gal_gids, gal_ids):
         mask = (ggrp_ids == g) & (gsubgrp_ids == sg)
         id = float(str(int(g)) + '.' + str(int(sg)))
