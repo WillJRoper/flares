@@ -165,9 +165,13 @@ def single_sphere(reg, snap, soft):
         i['xsize'] = 500
         i['ysize'] = 500
         i['roll'] = 0
+        print(num)
         S_DM.update_camera(**i)
+        print(h.heap())
         R = sph.Render(S_DM)
+        print(h.heap())
         R.set_logscale()
+        print(h.heap())
         img = R.get_image()
         print(h.heap())
 
