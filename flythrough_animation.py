@@ -126,6 +126,7 @@ def single_sphere(reg, snap, soft):
 
     # Define anchors
     anchors = {}
+    anchors['sim_times'] = [0.0, 1.0, 'pass', 3.0, 'same', 'same', 'same']
     anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680]
     anchors['id_targets'] = [0, 'pass', 1, 'same', 'same', 'pass', 0]
     anchors['r'] = [lbox * 3/4, 'pass', lbox / 10, 'same', 'same', 'pass', lbox * 3/4]
