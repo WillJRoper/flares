@@ -158,7 +158,7 @@ def single_sphere(reg, snap, soft):
             vmax = 1
 
         plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
-                   vmin=vmin, vmax=vmax, cmap='cubehelix')
+                   vmin=vmin, vmax=vmax, cmap='magma')
         num += 1
 
     # # Define particles
