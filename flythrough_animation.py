@@ -89,8 +89,8 @@ def single_sphere(reg, snap, soft):
     # Get centres of groups
     grp_cops = E.read_array('SUBFIND', path, snap, 'FOF/GroupCentreOfPotential',
                             noH=True, numThreads=8)
-    grp_ms = E.read_array('SUBFIND', path, snap, 'FOF/GroupMass',
-                            noH=True, numThreads=8)
+    # grp_ms = E.read_array('SUBFIND', path, snap, 'FOF/GroupMass',
+    #                         noH=True, numThreads=8)
 
     # Get the spheres centre
     centre, radius, mindist = spherical_region(poss_DM)
@@ -126,7 +126,7 @@ def single_sphere(reg, snap, soft):
 
     # Define targets
     targets = [[0, 0, 0]]
-    targets.append(grp_cops[np.argmax(grp_ms)] - centre)
+    targets.append(grp_cops[100] - centre)
 
     # Define the box size
     lbox = (15 / 0.677) * 2
