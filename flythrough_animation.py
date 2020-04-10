@@ -149,8 +149,16 @@ def single_sphere(reg, snap, soft):
         R = sph.Render(S)
         R.set_logscale()
         img = R.get_image()
+
+        try:
+            vmin = img[np.where(img != 0)].min()
+            vmax = img.max()
+        except ValueError:
+            vmin = 0
+            vmax = 1
+
         plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
-                   vmin=img[np.where(img != 0)].min(), vmax=img.max(), cmap='cubehelix')
+                   vmin=vmin, vmax=vmax, cmap='cubehelix')
         num += 1
 
     # # Define particles
