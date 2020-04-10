@@ -146,7 +146,7 @@ def single_sphere(reg, snap, soft):
         R = sph.Render(S)
         R.set_logscale()
         img = R.get_image()
-        plt.imsave('plots/spheres/All/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
+        plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
                    vmin=img[np.where(img != 0)].min(), vmax=img.max(), cmap='cubehelix')
         num += 1
 
