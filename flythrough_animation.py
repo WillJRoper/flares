@@ -30,14 +30,20 @@ def spherical_region(dm_cood):
 
     hull = ConvexHull(dm_cood)
 
+    print('Defined convex hull')
+
     cen = [np.median(dm_cood[:, 0]), np.median(dm_cood[:, 1]), np.median(dm_cood[:,2])]
     pedge = dm_cood[hull.vertices]  #edge particles
     y_obs = np.zeros(len(pedge))
     p0 = np.append(cen, 15 / 0.677)
 
+    print('Defined convex hull')
+
     popt, pcov = curve_fit(_sphere, pedge, y_obs, p0, method='lm', sigma=np.ones(len(pedge)) * 0.001)
     dist = np.sqrt(np.sum((pedge-popt[:3])**2, axis=1))
-    centre, radius, mindist = popt[:3], popt[3], np.min(dist)
+    centre, radius, mindist = popt[:3], popt[3], np.min(dist
+
+    print('computed fit')
 
     return centre, radius, mindist
 
