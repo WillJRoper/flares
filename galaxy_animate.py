@@ -58,17 +58,19 @@ def get_galaxy_data(g, sg, path, snap, soft):
 
     # Load all necessary arrays
     dm_all_poss = E.read_array('PARTDATA', path, snap, 'PartType1/Coordinates', noH=True,
-                            physicalUnits=True, numThreads=8)
+                               physicalUnits=True, numThreads=8)
     dmgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType1/GroupNumber', numThreads=8)
     dmsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType1/SubGroupNumber', numThreads=8)
 
     # Get gas particle information
-    gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True, numThreads=8)
+    gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True,
+                                numThreads=8)
     ggrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', numThreads=8)
     gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
-    gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
-    gas_smooth_ls = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True, numThreads=8)
-
+    gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True,
+                              numThreads=8) * 10 ** 10
+    gas_smooth_ls = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True,
+                                 numThreads=8)
     # Get particle masks for this galaxy
     dmmask = (dmgrp_ids == g) & (dmsubgrp_ids == sg)
     gasmask = (ggrp_ids == g) & (gsubgrp_ids == sg)
@@ -86,7 +88,7 @@ def get_galaxy_data(g, sg, path, snap, soft):
     return poss_DM, masses_DM, dm_smls, gas_poss, gas_ms, gas_smls
 
 
-def single_sphere(g, sg, reg, snap, soft, t=0, p=0, num=0):
+def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
 
     # Define path
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
@@ -120,9 +122,9 @@ def single_sphere(g, sg, reg, snap, soft, t=0, p=0, num=0):
 
     # Define particles
     qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-                       xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+                       xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
     qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-                       xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+                       xsize=500, ysize=500, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
     # Get colomaps
     cmap_gas = ml.cm.plasma
@@ -155,31 +157,24 @@ def single_sphere(g, sg, reg, snap, soft, t=0, p=0, num=0):
 
 
 # Define softening lengths
-csoft = 0.001802390 / 0.677
+soft = 0.001802390 / 0.677
 
 # # Define region list
-# regions = []
-# for reg in range(0, 40):
-#     if reg < 10:
-#         regions.append('0' + str(reg))
-#     else:
-#         regions.append(str(reg))
-#
-# # Define snapshots
-# snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
-#          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
-#
-# # Define a list of regions and snapshots
-# reg_snaps = []
-# for snap in snaps:
-#
-#     for reg in regions:
-#
-#         reg_snaps.append((reg, snap))
+regions = []
+for reg in range(0, 40):
+    if reg < 10:
+        regions.append('0' + str(reg))
+    else:
+        regions.append(str(reg))
+
+# Define snapshot list
+snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+
+# Define angles
+ps = np.linspace(0, 360, 360)
 
 ind = int(sys.argv[1])
-# print(reg_snaps[ind])
-# reg, snap = reg_snaps[ind]
-reg, snap = '00', '010_z005p000'
-ps = np.linspace(0, 360, 360)
-single_sphere(reg, snap, part_type=0, soft=csoft, p=ps[ind], num=ind)
+reg, snap, g, sg = regions[int(sys.argv[2])], snaps[int(sys.argv[3])], int(sys.argv[4]), int(sys.argv[5])
+print('Phi=', ps[ind], 'Region:', reg, 'Snapshot:', snap, 'Galaxy:', str(g) + '.' + str(sg))
+single_galaxy(g, sg, reg, snap, soft, t=0, p=ps[ind], num=ind)
