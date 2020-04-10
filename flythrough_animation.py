@@ -9,6 +9,7 @@ from scipy.optimize import curve_fit
 from scipy.spatial import ConvexHull
 import eagle_IO as E
 import sys
+import gc
 
 
 def _sphere(coords, a, b, c, r):
@@ -95,6 +96,9 @@ def single_sphere(reg, snap, soft):
     # Get the spheres centre
     centre, radius, mindist = spherical_region(poss_DM)
 
+    del radius, mindist
+    gc.collect()
+
     # Centre particles
     # poss_gas -= centre
     poss_DM -= centre
@@ -113,6 +117,9 @@ def single_sphere(reg, snap, soft):
     masses_DM = masses_DM[okinds_DM]
     smls_DM = smls_DM[okinds_DM]
 
+    del rDM, okinds_DM
+    gc.collect()
+
     # print('There are', len(masses_gas), 'gas particles in the region')
     print('There are', len(masses_DM), 'DM particles in the region')
 
@@ -120,13 +127,19 @@ def single_sphere(reg, snap, soft):
     P_DM = sph.Particles(poss_DM, mass=masses_DM, hsml=smls_DM)
     # P_gas = sph.Particles(poss_gas, mass=masses_gas, hsml=smls_gas)
 
-    # # Initialise the scene
-    # S_DM = sph.Scene(P_DM)
+    # Initialise the scene
+    S_DM = sph.Scene(P_DM)
     # S_gas = sph.Scene(P_gas)
+
+    del poss_DM, masses_DM, smls_DM
+    gc.collect()
 
     # Define targets
     targets = [[0, 0, 0]]
     targets.append(grp_cops[np.argmax(grp_ms)] - centre)
+
+    del grp_cops, grp_ms
+    gc.collect()
 
     # Define the box size
     lbox = (15 / 0.677) * 2
@@ -151,18 +164,20 @@ def single_sphere(reg, snap, soft):
         i['xsize'] = 500
         i['ysize'] = 500
         i['roll'] = 0
-        S = sph.Scene(P_DM)
-        S.update_camera(**i)
-        R = sph.Render(S)
+        S_DM.update_camera(**i)
+        R = sph.Render(S_DM)
         R.set_logscale()
         img = R.get_image()
 
-        try:
-            vmin = img[np.where(img != 0)].min()
-            vmax = img.max()
-        except ValueError:
-            vmin = 0
-            vmax = 1
+        vmin = img[np.where(img != 0)].min()
+        vmax = img.max()
+
+        # try:
+        #     vmin = img[np.where(img != 0)].min()
+        #     vmax = img.max()
+        # except ValueError:
+        #     vmin = 0
+        #     vmax = 1
 
         plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
                    vmin=vmin, vmax=vmax, cmap='magma')
