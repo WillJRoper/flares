@@ -77,7 +77,7 @@ def calc_light_mass_rad(poss, ls, ms):
     ms = ms[rs < 30/1e3]
 
     if len(ls) < 20:
-        return 0, 0
+        return 0.0, 0.0
 
     # Get the cumalative sum of masses
     l_profile = np.cumsum(ls)
@@ -99,7 +99,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=0, conv=1, i=0, j=1, dust=False):
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    model.create_Lnu_grid(F, z, cosmo)
+    model.create_Lnu_grid(F)
 
     kinp = np.load('/cosma/home/dp004/dc-rope1/cosma7/FLARES/flares/los_extinction/kernel_sph-anarchy.npz',
                    allow_pickle=True)
