@@ -21,13 +21,13 @@ def _sphere(coords, a, b, c, r):
     return (x - a) ** 2 + (y - b) ** 2 + (z - c) ** 2 - r ** 2
 
 
-def spherical_region(dm_cood):
+def spherical_region(sim, snap):
     """
     Inspired from David Turner's suggestion
     """
 
-    # dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
-    #                        noH=True, physicalUnits=False, numThreads=4)  # dm particle coordinates
+    dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
+                           noH=True, physicalUnits=False, numThreads=4)  # dm particle coordinates
 
     hull = ConvexHull(dm_cood)
 
@@ -65,12 +65,12 @@ def get_normalised_image(img, vmin=None, vmax=None):
 def get_sphere_data(path, snap, part_type, soft):
 
     # Get positions masses and smoothing lengths
-    poss = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates',
+    poss = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates',
                         noH=True, numThreads=8)
     if part_type != 1:
-        masses = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Mass',
+        masses = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Mass',
                               noH=True, numThreads=8) * 10 ** 10
-        smls = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SmoothingLength',
+        smls = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SmoothingLength',
                             noH=True, numThreads=8)
     else:
         masses = np.ones(poss.shape[0])
@@ -85,7 +85,7 @@ def single_sphere(reg, snap, soft, num):
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
     # Get plot data
-    # poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
+    poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
     poss_DM, masses_DM, smls_DM = get_sphere_data(path, snap, part_type=1, soft=soft)
     
     # Get centres of groups
@@ -95,24 +95,24 @@ def single_sphere(reg, snap, soft, num):
                             noH=True, numThreads=8)
 
     # Get the spheres centre
-    centre, radius, mindist = spherical_region(poss_DM)
+    centre, radius, mindist = spherical_region(path, snap)
 
     del radius, mindist
     gc.collect()
 
     # Centre particles
-    # poss_gas -= centre
+    poss_gas -= centre
     poss_DM -= centre
 
     print('got centre')
 
     # Remove boundary particles
-    # rgas = np.linalg.norm(poss_gas, axis=1)
+    rgas = np.linalg.norm(poss_gas, axis=1)
     rDM = np.linalg.norm(poss_DM, axis=1)
-    # okinds_gas = rgas < 14 / 0.677
-    # poss_gas = poss_gas[okinds_gas, :]
-    # masses_gas = masses_gas[okinds_gas]
-    # smls_gas = smls_gas[okinds_gas]
+    okinds_gas = rgas < 14 / 0.677
+    poss_gas = poss_gas[okinds_gas, :]
+    masses_gas = masses_gas[okinds_gas]
+    smls_gas = smls_gas[okinds_gas]
     okinds_DM = rDM < 14 / 0.677
     poss_DM = poss_DM[okinds_DM, :]
     masses_DM = masses_DM[okinds_DM]
@@ -126,11 +126,11 @@ def single_sphere(reg, snap, soft, num):
 
     # Set up particle objects
     P_DM = sph.Particles(poss_DM, mass=masses_DM, hsml=smls_DM)
-    # P_gas = sph.Particles(poss_gas, mass=masses_gas, hsml=smls_gas)
+    P_gas = sph.Particles(poss_gas, mass=masses_gas, hsml=smls_gas)
 
     # Initialise the scene
     S_DM = sph.Scene(P_DM)
-    # S_gas = sph.Scene(P_gas)
+    S_gas = sph.Scene(P_gas)
 
     del poss_DM, masses_DM, smls_DM
     gc.collect()
@@ -167,15 +167,32 @@ def single_sphere(reg, snap, soft, num):
     i['ysize'] = 5000
     i['roll'] = 0
     S_DM.update_camera(**i)
-    R = sph.Render(S_DM)
-    R.set_logscale()
-    img = R.get_image()
+    S_gas.update_camera(**i)
+    R_DM = sph.Render(S_DM)
+    R_DM.set_logscale()
+    img_DM = R_DM.get_image()
+    R_gas = sph.Render(S_gas)
+    R_gas.set_logscale()
+    img_gas = R_gas.get_image()
 
-    vmin = img[np.where(img != 0)].min()
-    vmax = img.max()
+    vmin_DM = img_DM[np.where(img_DM != 0)].min()
+    vmax_DM = img_DM.max()
+    vmin_gas = img_gas[np.where(img_gas != 0)].min()
+    vmax_gas = img_gas.max()
 
-    plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
-               vmin=vmin, vmax=vmax, cmap='magma')
+    # Get colormaps
+    cmap_gas = ml.cm.magma
+    cmap_dm = ml.cm.Greys_r
+
+    # Convert images to rgb arrays
+    rgb_gas = cmap_gas(get_normalised_image(img_gas, vmin=vmin_gas))
+    rgb_DM = cmap_dm(get_normalised_image(img_DM, vmin=vmin_DM))
+
+    blend = Blend.Blend(rgb_DM, rgb_gas)
+    rgb_output = blend.Overlay()
+
+    plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, rgb_output,
+               cmap='magma')
     plt.close()
 
     # # Define particles
