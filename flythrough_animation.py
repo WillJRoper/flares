@@ -239,4 +239,4 @@ csoft = 0.001802390 / 0.677
 # print(reg_snaps[ind])
 # reg, snap = reg_snaps[ind]
 reg, snap = '00', '010_z005p000'
-single_sphere(reg, snap, soft=csoft, num=sys.argv[1])
+single_sphere(reg, snap, soft=csoft, num=int(sys.argv[1]))
