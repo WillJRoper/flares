@@ -136,7 +136,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=0, conv=1, i=0, j=1, dust=False):
         # Get the luminosities
         if len(gas_ms[id]) == 0:
             continue
-        if np.sum(gal_ms) < 1e8:
+        if np.sum(gal_ms[id]) < 1e8:
             continue
         gas_poss = all_gas_poss[id]
         gal_poss = all_gal_poss[id]
