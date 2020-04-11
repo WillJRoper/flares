@@ -176,9 +176,9 @@ def single_sphere(reg, snap, soft, num):
     img_gas = R_gas.get_image()
 
     vmax_DM = img_DM.max()
-    vmin_DM = vmax_DM * 0.1
+    vmin_DM = vmax_DM * 0.3
     vmax_gas = img_gas.max()
-    vmin_gas = vmax_gas * 0.1
+    vmin_gas = vmax_gas * 0.3
 
     # Get colormaps
     cmap_gas = ml.cm.magma
