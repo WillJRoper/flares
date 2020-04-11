@@ -136,8 +136,12 @@ def single_sphere(reg, snap, soft):
     gc.collect()
 
     # Define targets
+    sinds = np.argsort(grp_ms)
+    grp_cops = grp_cops[sinds]
     targets = [[0, 0, 0]]
-    targets.append(grp_cops[np.argmax(grp_ms)] - centre)
+    targets.append(grp_cops[0] - centre)
+    targets.append(grp_cops[1] - centre)
+    targets.append(grp_cops[2] - centre)
 
     del grp_cops, grp_ms
     gc.collect()
@@ -149,10 +153,10 @@ def single_sphere(reg, snap, soft):
     anchors = {}
     anchors['sim_times'] = [0.0, 1.0, 'pass', 3.0, 'same', 'same', 'same']
     anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680]
-    anchors['id_targets'] = [0, 'pass', 1, 'same', 'same', 'pass', 0]
-    anchors['r'] = [lbox * 3/4, 'pass', lbox / 10, 'same', 'same', 'pass', lbox * 3/4]
-    anchors['t'] = [0, 'pass', 'pass', 180, 'pass', 'pass', 0]
-    anchors['p'] = [0, 'pass', 350, 'pass', 0, 'pass', 359]
+    anchors['id_targets'] = [0, 'pass', 1, 'pass', 2, 'pass', 0]
+    anchors['r'] = [lbox * 3/4, 'pass', lbox / 30, 'pass', 'pass', 'pass', lbox * 3/4]
+    anchors['t'] = [0, 'pass', 'pass', 180, 'pass', 'pass', 360]
+    anchors['p'] = [0, 'pass', 'pass', 'pass', 'pass', 'pass', 360*3]
     anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same']
     anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same']
 
@@ -172,13 +176,6 @@ def single_sphere(reg, snap, soft):
 
         vmin = img[np.where(img != 0)].min()
         vmax = img.max()
-
-        # try:
-        #     vmin = img[np.where(img != 0)].min()
-        #     vmax = img.max()
-        # except ValueError:
-        #     vmin = 0
-        #     vmax = 1
 
         plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
                    vmin=vmin, vmax=vmax, cmap='magma')
