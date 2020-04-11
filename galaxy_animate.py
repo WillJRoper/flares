@@ -160,7 +160,7 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
-    fig.savefig('plots/spheres/Gas/Gas_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+    fig.savefig('plots/spheres/Galaxies/Gas_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
                 bbox_inches='tight')
     plt.close(fig)
 
@@ -171,7 +171,7 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
-    fig.savefig('plots/spheres/DM/DM_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+    fig.savefig('plots/spheres/Galaxies/DM_galaxy_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
                 bbox_inches='tight')
 
     blend = Blend.Blend(rgb_DM, rgb_gas)

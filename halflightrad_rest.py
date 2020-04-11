@@ -193,11 +193,8 @@ for f in fs:
         for snap in snaps:
 
             print(reg, snap)
-            try:
-                half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = hl_main(snap, reg, model, F, f,
-                                                                                conv=conv, i=ii, j=jj, dust=dust)
-            except FileNotFoundError:
-                continue
+            half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = hl_main(snap, reg, model, F, f,
+                                                                            conv=conv, i=ii, j=jj, dust=dust)
 
 
     # Set up plot

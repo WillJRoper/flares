@@ -151,20 +151,20 @@ def single_sphere(reg, snap, soft, num):
 
     # Define anchors
     anchors = {}
-    anchors['sim_times'] = [0.0, 1.0, 'pass', 3.0, 'same', 'same', 'same']
-    anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680]
-    anchors['id_targets'] = [0, 'pass', 1, 'pass', 2, 'pass', 0]
-    anchors['r'] = [lbox * 3/4, 'pass', lbox / 30, 'pass', 'pass', 'pass', lbox * 3/4]
-    anchors['t'] = [0, 'pass', 'pass', 180, 'pass', 'pass', 360]
-    anchors['p'] = [0, 'pass', 'pass', 'pass', 'pass', 'pass', 360*3]
-    anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same']
-    anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same']
+    anchors['sim_times'] = [0.0, 1.0, 'pass', 3.0, 'same', 'same', 'same', 'same']
+    anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680, 2000]
+    anchors['id_targets'] = [0, 'pass', 1, 'same', 'pass', 2, 'pass', 0]
+    anchors['r'] = [lbox * 3/4, 'pass', lbox / 100, 'same', 'same', 'same', 'pass', lbox * 3/4]
+    anchors['t'] = [0, 'pass', 'pass', 180, 'pass', 270, 'pass', 360]
+    anchors['p'] = [0, 'pass', 'pass', 'pass', 'pass', 'pass', 'pass', 360*3]
+    anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same', 'same']
+    anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
 
     # Define the camera trajectory
     data = camera_tools.get_camera_trajectory(targets, anchors)
     i = data[num]
-    i['xsize'] = 5000
-    i['ysize'] = 5000
+    i['xsize'] = 1000
+    i['ysize'] = 1000
     i['roll'] = 0
     S_DM.update_camera(**i)
     S_gas.update_camera(**i)
