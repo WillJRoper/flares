@@ -79,7 +79,7 @@ def get_sphere_data(path, snap, part_type, soft):
     return poss, masses, smls
 
 
-def single_sphere(reg, snap, soft):
+def single_sphere(reg, snap, soft, num):
 
     # Define path
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
@@ -99,7 +99,7 @@ def single_sphere(reg, snap, soft):
 
     del radius, mindist
     gc.collect()
-    print(h.heap())
+
     # Centre particles
     # poss_gas -= centre
     poss_DM -= centre
@@ -120,7 +120,7 @@ def single_sphere(reg, snap, soft):
 
     del rDM, okinds_DM
     gc.collect()
-    print(h.heap())
+
     # print('There are', len(masses_gas), 'gas particles in the region')
     print('There are', len(masses_DM), 'DM particles in the region')
 
@@ -162,25 +162,21 @@ def single_sphere(reg, snap, soft):
 
     # Define the camera trajectory
     data = camera_tools.get_camera_trajectory(targets, anchors)
-    print(h.heap())
-    num = 0
-    for i in data:
-        print(num)
-        i['xsize'] = 500
-        i['ysize'] = 500
-        i['roll'] = 0
-        S_DM.update_camera(**i)
-        R = sph.Render(S_DM)
-        R.set_logscale()
-        img = R.get_image()
+    i = data[num]
+    i['xsize'] = 5000
+    i['ysize'] = 5000
+    i['roll'] = 0
+    S_DM.update_camera(**i)
+    R = sph.Render(S_DM)
+    R.set_logscale()
+    img = R.get_image()
 
-        vmin = img[np.where(img != 0)].min()
-        vmax = img.max()
+    vmin = img[np.where(img != 0)].min()
+    vmax = img.max()
 
-        plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
-                   vmin=vmin, vmax=vmax, cmap='magma')
-        plt.close()
-        num += 1
+    plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, img,
+               vmin=vmin, vmax=vmax, cmap='magma')
+    plt.close()
 
     # # Define particles
     # qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
@@ -243,4 +239,4 @@ csoft = 0.001802390 / 0.677
 # print(reg_snaps[ind])
 # reg, snap = reg_snaps[ind]
 reg, snap = '00', '010_z005p000'
-single_sphere(reg, snap, soft=csoft)
+single_sphere(reg, snap, soft=csoft, num=sys.argv[1])
