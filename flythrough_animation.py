@@ -86,7 +86,7 @@ def single_sphere(reg, snap, soft):
 
     # Get plot data
     # poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
-    poss_DM, masses_DM, smls_DM = get_sphere_data(path, snap, part_type=4, soft=soft)
+    poss_DM, masses_DM, smls_DM = get_sphere_data(path, snap, part_type=1, soft=soft)
     
     # Get centres of groups
     grp_cops = E.read_array('SUBFIND', path, snap, 'FOF/GroupCentreOfPotential',

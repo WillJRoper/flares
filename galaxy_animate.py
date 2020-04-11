@@ -185,10 +185,7 @@ def single_galaxy(g, sg, reg, snap, soft, t=0, p=0, num=0):
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
-    if not 'galid' + str(g) + 'p' + str(sg) in os.listdir('plots/spheres/Galaxies/'):
-        os.mkdir('plots/spheres/Galaxies/galid' + str(g) + 'p' + str(sg))
-
-    fig.savefig('plots/spheres/Galaxies/galid' + str(g) + 'p' + str(sg) + '/all_parts_galaxy_reg' + reg
+    fig.savefig('plots/spheres/Galaxies/all_parts_galaxy_reg' + reg
                 + '_snap' + snap + '_galid:' + str(g) + 'p' + str(sg) + '_angle%05d.png'%num,
                 bbox_inches='tight')
     plt.close(fig)
