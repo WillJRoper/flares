@@ -191,43 +191,16 @@ def single_sphere(reg, snap, soft, num):
     blend = Blend.Blend(rgb_DM, rgb_gas)
     rgb_output = blend.Overlay()
 
-    plt.imsave('plots/spheres/All/all_parts_ani_reg' + reg + '_snap' + snap + '_angle%05d.png'%num, rgb_output,
-               cmap='magma')
-    plt.close()
+    fig = plt.figure(figsize=(4, 4))
+    ax = fig.add_subplot(111)
 
-    # # Define particles
-    # qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-    #                    xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    # qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-    #                    xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    #
-    # # Get colomaps
-    # cmap_gas = ml.cm.plasma
-    # cmap_dm = ml.cm.Greys_r
-    #
-    # # Get each particle type image
-    # imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image()}
-    # extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent()}
-    #
-    # # Convert images to rgb arrays
-    # rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
-    #                                         vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()+7)))
-    # rgb_DM = cmap_dm(get_normalised_image(np.log10(imgs['dm']),
-    #                                       vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min()-0.5)))
-    #
-    # blend = Blend.Blend(rgb_DM, rgb_gas)
-    # rgb_output = blend.Overlay()
-    #
-    # fig = plt.figure(figsize=(7, 7))
-    # ax = fig.add_subplot(111)
-    #
-    # ax.imshow(rgb_output, extent=extents['gas'], origin='lower')
-    # ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-    #                labeltop=False, labelright=False, labelbottom=False)
-    #
-    # fig.savefig('plots/spheres/All/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
-    #             bbox_inches='tight')
-    # plt.close(fig)
+    ax.imshow(rgb_output, extent=R_gas.get_extent(), origin='lower')
+    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                   labeltop=False, labelright=False, labelbottom=False)
+
+    fig.savefig('plots/spheres/All/all_parts_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
+                bbox_inches='tight')
+    plt.close(fig)
 
 
 # Define softening lengths
