@@ -153,10 +153,10 @@ def single_sphere(reg, snap, soft, num):
     anchors = {}
     anchors['sim_times'] = [0.0, 1.0, 'pass', 3.0, 'same', 'same', 'same', 'same']
     anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680, 2000]
-    anchors['id_targets'] = [0, 'pass', 1, 'same', 'pass', 2, 'pass', 0]
+    anchors['id_targets'] = [0, 'pass', 2, 'same', 'pass', 1, 'pass', 0]
     anchors['r'] = [lbox * 3/4, 'pass', lbox / 100, 'same', 'same', 'same', 'pass', lbox * 3/4]
     anchors['t'] = [0, 'pass', 'pass', 180, 'pass', 270, 'pass', 360]
-    anchors['p'] = [0, 'pass', 'pass', 'pass', 'pass', 'pass', 'pass', 360*3]
+    anchors['p'] = [0, 'pass', 'pass', 'same', 'pass', 'same', 'pass', 360*3]
     anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same', 'same']
     anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
 
