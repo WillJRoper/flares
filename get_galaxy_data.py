@@ -153,8 +153,8 @@ reg, snap = reg_snaps[ind]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
 files = os.listdir('UVimg_data/')
-print(files)
+
 if 'stellardata_reg' + reg + '_snap' + snap + '.pck' in files:
-    print('File Exists', reg, snaps)
+    print('File Exists', reg, snap)
 else:
     get_main(path, snap, reg)
