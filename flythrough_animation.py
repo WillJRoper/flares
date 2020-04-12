@@ -111,12 +111,12 @@ def getimage(path, snap, soft, num, centre, data, part_type):
     S_gas = sph.Scene(P_gas)
 
     i = data[num]
-    i['xsize'] = 1000
-    i['ysize'] = 1000
+    i['xsize'] = 5000
+    i['ysize'] = 5000
     i['roll'] = 0
     S_gas.update_camera(**i)
     R_gas = sph.Render(S_gas)
-    # R_gas.set_logscale()
+    R_gas.set_logscale()
     img_gas = R_gas.get_image()
 
     vmax_gas = img_gas.max()
@@ -126,7 +126,7 @@ def getimage(path, snap, soft, num, centre, data, part_type):
     cmap_gas = ml.cm.magma
 
     # Convert images to rgb arrays
-    rgb_gas = cmap_gas(get_normalised_image(np.log10(img_gas), vmin=np.log10(vmin_gas)))
+    rgb_gas = cmap_gas(get_normalised_image(img_gas, vmin=vmin_gas))
 
     return rgb_gas, R_gas.get_extent()
 
