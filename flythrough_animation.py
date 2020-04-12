@@ -79,7 +79,7 @@ def get_sphere_data(path, snap, part_type, soft):
     return poss, masses, smls
 
 
-def getimage(path, snap, soft, num, centre, targets, anchors, part_type):
+def getimage(path, snap, soft, num, centre, data, part_type):
 
     # Get plot data
     if part_type == 0:
@@ -110,8 +110,6 @@ def getimage(path, snap, soft, num, centre, targets, anchors, part_type):
     # Initialise the scene
     S_gas = sph.Scene(P_gas)
 
-    # Define the camera trajectory
-    data = camera_tools.get_camera_trajectory(targets, anchors)
     i = data[num]
     i['xsize'] = 1000
     i['ysize'] = 1000
@@ -171,21 +169,12 @@ def single_sphere(reg, snap, soft, num):
     anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same', 'same']
     anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
 
+    # Define the camera trajectory
+    data = camera_tools.get_camera_trajectory(targets, anchors)
+
     # Get images
-    rgb_DM = getimage(path, snap, soft, num, centre, targets, anchors, part_type=1)
-
-    # Define anchors
-    anchors = {}
-    anchors['sim_times'] = [0.0, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
-    anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680, 2000]
-    anchors['id_targets'] = [0, 'pass', 2, 'same', 'pass', 1, 'pass', 0]
-    anchors['r'] = [lbox * 3 / 4, 'pass', lbox / 100, 'same', 'same', 'same', 'pass', lbox * 3 / 4]
-    anchors['t'] = [0, 'pass', 'pass', 180, 'pass', 270, 'pass', 360]
-    anchors['p'] = [0, 'pass', 'pass', 'same', 'pass', 'same', 'pass', 360 * 3]
-    anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same', 'same']
-    anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
-
-    rgb_gas = getimage(path, snap, soft, num, centre, targets, anchors, part_type=0)
+    rgb_DM = getimage(path, snap, soft, num, centre, data, part_type=1)
+    rgb_gas = getimage(path, snap, soft, num, centre, data, part_type=0)
 
     blend = Blend.Blend(rgb_DM, rgb_gas)
     rgb_output = blend.Overlay()
