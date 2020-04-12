@@ -99,7 +99,10 @@ def getimage(path, snap, soft, num, centre, targets, anchors, part_type):
     masses_gas = masses_gas[okinds_gas]
     smls_gas = smls_gas[okinds_gas]
 
-    print('There are', len(masses_gas), 'gas particles in the region')
+    if part_type == 0:
+        print('There are', len(masses_gas), 'gas particles in the region')
+    elif part_type == 1:
+        print('There are', len(masses_gas), 'dark matter particles in the region')
 
     # Set up particle objects
     P_gas = sph.Particles(poss_gas, mass=masses_gas, hsml=smls_gas)
@@ -148,8 +151,8 @@ def single_sphere(reg, snap, soft, num):
     sinds = np.argsort(grp_ms)
     grp_cops = grp_cops[sinds]
     targets = [[0, 0, 0]]
-    targets.append(grp_cops[0] - centre)
-    targets.append(grp_cops[1] - centre)
+    targets.append(grp_cops[0, :] - centre)
+    targets.append(grp_cops[1, :] - centre)
 
     del grp_cops, grp_ms
     gc.collect()
@@ -159,7 +162,7 @@ def single_sphere(reg, snap, soft, num):
 
     # Define anchors
     anchors = {}
-    anchors['sim_times'] = [0.0, 1.0, 'pass', 3.0, 'same', 'same', 'same', 'same']
+    anchors['sim_times'] = [0.0, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
     anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680, 2000]
     anchors['id_targets'] = [0, 'pass', 2, 'same', 'pass', 1, 'pass', 0]
     anchors['r'] = [lbox * 3 / 4, 'pass', lbox / 100, 'same', 'same', 'same', 'pass', lbox * 3 / 4]
@@ -170,6 +173,18 @@ def single_sphere(reg, snap, soft, num):
 
     # Get images
     rgb_DM = getimage(path, snap, soft, num, centre, targets, anchors, part_type=1)
+
+    # Define anchors
+    anchors = {}
+    anchors['sim_times'] = [0.0, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
+    anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680, 2000]
+    anchors['id_targets'] = [0, 'pass', 2, 'same', 'pass', 1, 'pass', 0]
+    anchors['r'] = [lbox * 3 / 4, 'pass', lbox / 100, 'same', 'same', 'same', 'pass', lbox * 3 / 4]
+    anchors['t'] = [0, 'pass', 'pass', 180, 'pass', 270, 'pass', 360]
+    anchors['p'] = [0, 'pass', 'pass', 'same', 'pass', 'same', 'pass', 360 * 3]
+    anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same', 'same']
+    anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
+
     rgb_gas = getimage(path, snap, soft, num, centre, targets, anchors, part_type=0)
 
     blend = Blend.Blend(rgb_DM, rgb_gas)
