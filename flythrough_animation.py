@@ -79,61 +79,70 @@ def get_sphere_data(path, snap, part_type, soft):
     return poss, masses, smls
 
 
+def getimage(path, snap, soft, num, centre, targets, anchors, part_type):
+
+    # Get plot data
+    if part_type == 0:
+        poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
+    elif part_type == 1:
+        poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=1, soft=soft)
+    else:
+        return -1
+
+    # Centre particles
+    poss_gas -= centre
+
+    # Remove boundary particles
+    rgas = np.linalg.norm(poss_gas, axis=1)
+    okinds_gas = rgas < 14 / 0.677
+    poss_gas = poss_gas[okinds_gas, :]
+    masses_gas = masses_gas[okinds_gas]
+    smls_gas = smls_gas[okinds_gas]
+
+    print('There are', len(masses_gas), 'gas particles in the region')
+
+    # Set up particle objects
+    P_gas = sph.Particles(poss_gas, mass=masses_gas, hsml=smls_gas)
+
+    # Initialise the scene
+    S_gas = sph.Scene(P_gas)
+
+    # Define the camera trajectory
+    data = camera_tools.get_camera_trajectory(targets, anchors)
+    i = data[num]
+    i['xsize'] = 1000
+    i['ysize'] = 1000
+    i['roll'] = 0
+    S_gas.update_camera(**i)
+    R_gas = sph.Render(S_gas)
+    # R_gas.set_logscale()
+    img_gas = R_gas.get_image()
+
+    vmax_gas = img_gas.max()
+    vmin_gas = vmax_gas * 0.5
+
+    # Get colormaps
+    cmap_gas = ml.cm.magma
+
+    # Convert images to rgb arrays
+    rgb_gas = cmap_gas(get_normalised_image(np.log10(img_gas), vmin=np.log10(vmin_gas)))
+
+    return rgb_gas
+
+
 def single_sphere(reg, snap, soft, num):
 
     # Define path
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-    # Get plot data
-    poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
-    poss_DM, masses_DM, smls_DM = get_sphere_data(path, snap, part_type=1, soft=soft)
-    
     # Get centres of groups
     grp_cops = E.read_array('SUBFIND', path, snap, 'FOF/GroupCentreOfPotential',
                             noH=True, numThreads=8)
     grp_ms = E.read_array('SUBFIND', path, snap, 'FOF/GroupMass',
-                            noH=True, numThreads=8)
+                          noH=True, numThreads=8)
 
     # Get the spheres centre
     centre, radius, mindist = spherical_region(path, snap)
-
-    del radius, mindist
-    gc.collect()
-
-    # Centre particles
-    poss_gas -= centre
-    poss_DM -= centre
-
-    print('got centre')
-
-    # Remove boundary particles
-    rgas = np.linalg.norm(poss_gas, axis=1)
-    rDM = np.linalg.norm(poss_DM, axis=1)
-    okinds_gas = rgas < 14 / 0.677
-    poss_gas = poss_gas[okinds_gas, :]
-    masses_gas = masses_gas[okinds_gas]
-    smls_gas = smls_gas[okinds_gas]
-    okinds_DM = rDM < 14 / 0.677
-    poss_DM = poss_DM[okinds_DM, :]
-    masses_DM = masses_DM[okinds_DM]
-    smls_DM = smls_DM[okinds_DM]
-
-    del rDM, okinds_DM
-    gc.collect()
-
-    # print('There are', len(masses_gas), 'gas particles in the region')
-    print('There are', len(masses_DM), 'DM particles in the region')
-
-    # Set up particle objects
-    P_DM = sph.Particles(poss_DM, mass=masses_DM, hsml=smls_DM)
-    P_gas = sph.Particles(poss_gas, mass=masses_gas, hsml=smls_gas)
-
-    # Initialise the scene
-    S_DM = sph.Scene(P_DM)
-    S_gas = sph.Scene(P_gas)
-
-    del poss_DM, masses_DM, smls_DM
-    gc.collect()
 
     # Define targets
     sinds = np.argsort(grp_ms)
@@ -141,7 +150,6 @@ def single_sphere(reg, snap, soft, num):
     targets = [[0, 0, 0]]
     targets.append(grp_cops[0] - centre)
     targets.append(grp_cops[1] - centre)
-    targets.append(grp_cops[2] - centre)
 
     del grp_cops, grp_ms
     gc.collect()
@@ -154,39 +162,15 @@ def single_sphere(reg, snap, soft, num):
     anchors['sim_times'] = [0.0, 1.0, 'pass', 3.0, 'same', 'same', 'same', 'same']
     anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680, 2000]
     anchors['id_targets'] = [0, 'pass', 2, 'same', 'pass', 1, 'pass', 0]
-    anchors['r'] = [lbox * 3/4, 'pass', lbox / 100, 'same', 'same', 'same', 'pass', lbox * 3/4]
+    anchors['r'] = [lbox * 3 / 4, 'pass', lbox / 100, 'same', 'same', 'same', 'pass', lbox * 3 / 4]
     anchors['t'] = [0, 'pass', 'pass', 180, 'pass', 270, 'pass', 360]
-    anchors['p'] = [0, 'pass', 'pass', 'same', 'pass', 'same', 'pass', 360*3]
+    anchors['p'] = [0, 'pass', 'pass', 'same', 'pass', 'same', 'pass', 360 * 3]
     anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same', 'same']
     anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
 
-    # Define the camera trajectory
-    data = camera_tools.get_camera_trajectory(targets, anchors)
-    i = data[num]
-    i['xsize'] = 1000
-    i['ysize'] = 1000
-    i['roll'] = 0
-    S_DM.update_camera(**i)
-    S_gas.update_camera(**i)
-    R_DM = sph.Render(S_DM)
-    R_DM.set_logscale()
-    img_DM = R_DM.get_image()
-    R_gas = sph.Render(S_gas)
-    R_gas.set_logscale()
-    img_gas = R_gas.get_image()
-
-    vmax_DM = img_DM.max()
-    vmin_DM = vmax_DM * 0.5
-    vmax_gas = img_gas.max()
-    vmin_gas = vmax_gas * 0.5
-
-    # Get colormaps
-    cmap_gas = ml.cm.magma
-    cmap_dm = ml.cm.Greys_r
-
-    # Convert images to rgb arrays
-    rgb_gas = cmap_gas(get_normalised_image(img_gas, vmin=vmin_gas))
-    rgb_DM = cmap_dm(get_normalised_image(img_DM, vmin=vmin_DM))
+    # Get images
+    rgb_DM = getimage(path, snap, soft, num, centre, targets, anchors, part_type=1)
+    rgb_gas = getimage(path, snap, soft, num, centre, targets, anchors, part_type=0)
 
     blend = Blend.Blend(rgb_DM, rgb_gas)
     rgb_output = blend.Overlay()
@@ -206,27 +190,5 @@ def single_sphere(reg, snap, soft, num):
 # Define softening lengths
 csoft = 0.001802390 / 0.677
 
-# # Define region list
-# regions = []
-# for reg in range(0, 40):
-#     if reg < 10:
-#         regions.append('0' + str(reg))
-#     else:
-#         regions.append(str(reg))
-#
-# # Define snapshots
-# snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
-#          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
-#
-# # Define a list of regions and snapshots
-# reg_snaps = []
-# for snap in snaps:
-#
-#     for reg in regions:
-#
-#         reg_snaps.append((reg, snap))
-
-# print(reg_snaps[ind])
-# reg, snap = reg_snaps[ind]
 reg, snap = '00', '010_z005p000'
 single_sphere(reg, snap, soft=csoft, num=int(sys.argv[1]))
