@@ -128,7 +128,7 @@ def getimage(path, snap, soft, num, centre, data, part_type):
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(np.log10(img_gas), vmin=np.log10(vmin_gas)))
 
-    return rgb_gas
+    return rgb_gas, R_gas.get_extent()
 
 
 def single_sphere(reg, snap, soft, num):
@@ -173,8 +173,8 @@ def single_sphere(reg, snap, soft, num):
     data = camera_tools.get_camera_trajectory(targets, anchors)
 
     # Get images
-    rgb_DM = getimage(path, snap, soft, num, centre, data, part_type=1)
-    rgb_gas = getimage(path, snap, soft, num, centre, data, part_type=0)
+    rgb_DM, extent = getimage(path, snap, soft, num, centre, data, part_type=1)
+    rgb_gas, _ = getimage(path, snap, soft, num, centre, data, part_type=0)
 
     blend = Blend.Blend(rgb_DM, rgb_gas)
     rgb_output = blend.Overlay()
@@ -182,7 +182,7 @@ def single_sphere(reg, snap, soft, num):
     fig = plt.figure(figsize=(4, 4))
     ax = fig.add_subplot(111)
 
-    ax.imshow(rgb_output, extent=R_gas.get_extent(), origin='lower')
+    ax.imshow(rgb_output, extent=extent, origin='lower')
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
