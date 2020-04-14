@@ -132,6 +132,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
     part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+    coords = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', numThreads=8)
     group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                   numThreads=8)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
@@ -150,6 +151,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     unsort_part_ids = part_ids[:]
     sinds = np.argsort(part_ids)
     part_ids = part_ids[sinds]
+
+    coords = coords[sinds, :]
 
     sorted_index = np.searchsorted(part_ids, group_part_ids)
 
@@ -322,7 +325,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         # =============== Current Halo ===============
 
         current_halo_pids = np.array(list(halo_id_part_inds[haloID]))
+        pos = coords[current_halo_pids, :]
 
+        print(pos[:, 0].max() - pos[:, 0].min(),
+              pos[:, 1].max() - pos[:, 1].min(),
+              pos[:, 2].max() - pos[:, 2].min())
         # =============== Run The Direct Progenitor and Descendant Finder ===============
 
         # Run the progenitor/descendant finder
