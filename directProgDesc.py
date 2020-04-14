@@ -143,7 +143,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
     halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+        halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
 
     # Sort particle IDS
     part_ids = np.sort(part_ids)
@@ -188,7 +188,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
         prog_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            prog_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+            prog_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
 
         # Sort particle IDS
         prog_allpart_ids = np.sort(prog_allpart_ids)
@@ -253,7 +253,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
         desc_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            desc_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+            desc_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
 
         # Sort particle IDS
         desc_allpart_ids = np.sort(desc_allpart_ids)

@@ -186,7 +186,7 @@ def spheregrid(snap, soft, t=0, p=0, num=0):
                        labeltop=False, labelright=False, labelbottom=False)
 
     fig.savefig('plots/spheres/All/all_parts_grid_sphere_snap' + snap + '_angle%05d.png'%num,
-                bbox_inches='tight')
+                bbox_inches='tight', facecolor='k')
     plt.close(fig)
 
 
