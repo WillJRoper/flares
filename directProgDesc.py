@@ -145,27 +145,35 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
-
-    # Sort particle IDS
+    #
+    # # Sort particle IDS
     part_ids = np.sort(part_ids)
-    unsort_part_ids = part_ids[:]
-    sinds = np.argsort(part_ids)
-    part_ids = part_ids[sinds]
-
-    coords = coords[sinds, :]
-
-    sorted_index = np.searchsorted(part_ids, group_part_ids)
-
-    yindex = np.take(sinds, sorted_index, mode="clip")
-    mask = unsort_part_ids[yindex] != group_part_ids
-
-    result = np.ma.array(yindex, mask=mask)
-
-    part_groups = halo_ids[np.logical_not(result.mask)]
-    parts_in_groups = result.data[np.logical_not(result.mask)]
+    set_group_part_ids = set(group_part_ids)
+    # unsort_part_ids = part_ids[:]
+    # sinds = np.argsort(part_ids)
+    # part_ids = part_ids[sinds]
+    #
+    # coords = coords[sinds, :]
+    #
+    # sorted_index = np.searchsorted(part_ids, group_part_ids)
+    #
+    # yindex = np.take(sinds, sorted_index, mode="clip")
+    # mask = unsort_part_ids[yindex] != group_part_ids
+    #
+    # result = np.ma.array(yindex, mask=mask)
+    #
+    # part_groups = halo_ids[np.logical_not(result.mask)]
+    # parts_in_groups = result.data[np.logical_not(result.mask)]
+    #
+    # halo_id_part_inds = {}
+    # for ind, grp in zip(parts_in_groups, part_groups):
+    #     halo_id_part_inds.setdefault(grp, set()).update({ind})
 
     halo_id_part_inds = {}
-    for ind, grp in zip(parts_in_groups, part_groups):
+    for ind, part in enumerate(part_ids):
+        if part not in set_group_part_ids:
+            continue
+        grp = halo_ids[np.where(group_part_ids == part)]
         halo_id_part_inds.setdefault(grp, set()).update({ind})
 
     del group_part_ids, halo_ids, subgrp_ids, part_ids
