@@ -11,6 +11,7 @@ import eagle_IO as E
 import sys
 from guppy import hpy; h=hpy()
 import gc
+import os
 
 
 def _sphere(coords, a, b, c, r):
@@ -119,18 +120,23 @@ def getimage(path, snap, soft, num, centre, data, part_type):
     R_gas.set_logscale()
     img_gas = R_gas.get_image()
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    ax.hist(get_normalised_image(img_gas).ravel(), bins=256, range=(0.0, 1.0), fc='k', ec='k')
-
     if part_type == 0:
-        fig.savefig('plots/spheres/All/histDM_animation_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
-                    bbox_inches='tight')
+        np.save('animationdata/gas_animationdata_reg' + reg + '_snap' + snap + '_angle%05d.npy'%num, img_gas)
     if part_type == 1:
-        fig.savefig('plots/spheres/All/histgas_animation_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
-                    bbox_inches='tight')
-    plt.close(fig)
+        np.save('animationdata/dm_animationdata_reg' + reg + '_snap' + snap + '_angle%05d.npy'%num, img_gas)
+
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111)
+    #
+    # ax.hist(get_normalised_image(img_gas).ravel(), bins=256, range=(0.0, 1.0), fc='k', ec='k')
+    #
+    # if part_type == 0:
+    #     fig.savefig('plots/spheres/All/histDM_animation_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
+    #                 bbox_inches='tight')
+    # if part_type == 1:
+    #     fig.savefig('plots/spheres/All/histgas_animation_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
+    #                 bbox_inches='tight')
+    # plt.close(fig)
 
     vmax_gas = img_gas.max()
     vmin_gas = vmax_gas * 0.5
@@ -147,7 +153,12 @@ def getimage(path, snap, soft, num, centre, data, part_type):
     return rgb_gas, R_gas.get_extent()
 
 
-def single_sphere(reg, snap, soft, num):
+def single_sphere(reg, snap, soft, num, runall=True):
+
+    if not runall:
+        if 'gas_animationdata_reg' + reg + '_snap' + snap + '_angle%05d.npy'%num in os.listdir('animationdata/') and \
+                'dm_animationdata_reg' + reg + '_snap' + snap + '_angle%05d.npy'%num in os.listdir('animationdata/'):
+            return
 
     # Define path
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
@@ -178,14 +189,10 @@ def single_sphere(reg, snap, soft, num):
     anchors = {}
     anchors['sim_times'] = [0.0, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
     anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680, 2000]
-    anchors['id_targets'] = [0, 'pass', 2, 'same', 'pass', 'pass', 'pass', 0]
-    anchors['r'] = [lbox * 3 / 4, 'pass', lbox / 100, 'same', 'same', 'same', 'pass', lbox * 3 / 4]
+    anchors['id_targets'] = [0, 'pass', 2, 'pass', 'pass', 'pass', 'pass', 0]
+    anchors['r'] = [lbox * 3 / 4, 'pass', lbox / 100, 'same', 'same', 'pass', 'pass', lbox * 3 / 4]
     anchors['t'] = [0, 'pass', 'pass', -180, 'pass', -270, 'pass', -360]
-<<<<<<< HEAD
     anchors['p'] = [0, 'pass', 'pass', 'pass', 'pass', 'same', 'pass', 360 * 3]
-=======
-    anchors['p'] = [0, 'pass', 'pass', 'same', 'pass', 'same', 'pass', 360 * 3]
->>>>>>> 5ea061aa54d4b1e5b1346a4cfb0e6833cad65dcd
     anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same', 'same']
     anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
 
@@ -214,5 +221,5 @@ def single_sphere(reg, snap, soft, num):
 # Define softening lengths
 csoft = 0.001802390 / 0.677
 
-reg, snap = '30', '010_z005p000'
+reg, snap = '20', '010_z005p000'
 single_sphere(reg, snap, soft=csoft, num=int(sys.argv[1]))
