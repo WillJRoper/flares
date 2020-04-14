@@ -173,7 +173,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     for ind, part in enumerate(part_ids):
         if part not in set_group_part_ids:
             continue
-        grp = halo_ids[np.where(group_part_ids == part)]
+        grp = halo_ids[np.where(group_part_ids == part)][0]
         halo_id_part_inds.setdefault(grp, set()).update({ind})
 
     del group_part_ids, halo_ids, subgrp_ids, part_ids
