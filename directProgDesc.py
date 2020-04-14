@@ -148,7 +148,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     #
     # # Sort particle IDS
     part_ids = np.sort(part_ids)
-    set_group_part_ids = set(group_part_ids)
     # unsort_part_ids = part_ids[:]
     # sinds = np.argsort(part_ids)
     # part_ids = part_ids[sinds]
@@ -169,12 +168,13 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     # for ind, grp in zip(parts_in_groups, part_groups):
     #     halo_id_part_inds.setdefault(grp, set()).update({ind})
 
-    halo_id_part_inds = {}
+    pid_to_ind = {}
     for ind, part in enumerate(part_ids):
-        if part not in set_group_part_ids:
-            continue
-        grp = halo_ids[np.where(group_part_ids == part)][0]
-        halo_id_part_inds.setdefault(grp, set()).update({ind})
+        pid_to_ind[part] = ind
+
+    halo_id_part_inds = {}  
+    for part, grp in zip(group_part_ids, halo_ids):
+        halo_id_part_inds.setdefault(grp, set()).update({pid_to_ind[part]})
 
     del group_part_ids, halo_ids, subgrp_ids, part_ids
     gc.collect()
