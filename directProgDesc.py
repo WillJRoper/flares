@@ -132,7 +132,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
     part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    coords = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', numThreads=8)
     group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                   numThreads=8)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
@@ -145,36 +144,26 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
-    #
-    # # Sort particle IDS
+
+    # Sort particle IDS
     part_ids = np.sort(part_ids)
-    # unsort_part_ids = part_ids[:]
-    # sinds = np.argsort(part_ids)
-    # part_ids = part_ids[sinds]
-    #
-    # coords = coords[sinds, :]
-    #
-    # sorted_index = np.searchsorted(part_ids, group_part_ids)
-    #
-    # yindex = np.take(sinds, sorted_index, mode="clip")
-    # mask = unsort_part_ids[yindex] != group_part_ids
-    #
-    # result = np.ma.array(yindex, mask=mask)
-    #
-    # part_groups = halo_ids[np.logical_not(result.mask)]
-    # parts_in_groups = result.data[np.logical_not(result.mask)]
-    #
-    # halo_id_part_inds = {}
-    # for ind, grp in zip(parts_in_groups, part_groups):
-    #     halo_id_part_inds.setdefault(grp, set()).update({ind})
+    unsort_part_ids = part_ids[:]
+    sinds = np.argsort(part_ids)
+    part_ids = part_ids[sinds]
 
-    pid_to_ind = {}
-    for ind, part in enumerate(part_ids):
-        pid_to_ind[part] = ind
+    sorted_index = np.searchsorted(part_ids, group_part_ids)
 
-    halo_id_part_inds = {}  
-    for part, grp in zip(group_part_ids, halo_ids):
-        halo_id_part_inds.setdefault(grp, set()).update({pid_to_ind[part]})
+    yindex = np.take(sinds, sorted_index, mode="clip")
+    mask = unsort_part_ids[yindex] != group_part_ids
+
+    result = np.ma.array(yindex, mask=mask)
+
+    part_groups = halo_ids[np.logical_not(result.mask)]
+    parts_in_groups = result.data[np.logical_not(result.mask)]
+
+    halo_id_part_inds = {}
+    for ind, grp in zip(parts_in_groups, part_groups):
+        halo_id_part_inds.setdefault(grp, set()).update({ind})
 
     del group_part_ids, halo_ids, subgrp_ids, part_ids
     gc.collect()
@@ -333,11 +322,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         # =============== Current Halo ===============
 
         current_halo_pids = np.array(list(halo_id_part_inds[haloID]))
-        pos = coords[current_halo_pids, :]
 
-        print(pos[:, 0].max() - pos[:, 0].min(),
-              pos[:, 1].max() - pos[:, 1].min(),
-              pos[:, 2].max() - pos[:, 2].min())
         # =============== Run The Direct Progenitor and Descendant Finder ===============
 
         # Run the progenitor/descendant finder
@@ -372,8 +357,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         halo.attrs['nProg'] = nprog  # number of progenitors
         halo.attrs['nDesc'] = ndesc  # number of descendants
         halo.attrs['current_halo_nPart'] = current_halo_pids.size  # mass of the halo
-        # halo.create_dataset('current_halo_partIDs', data=current_halo_pids, dtype=int,
-        #                     compression='gzip')  # particle ids in this halo
+        halo.create_dataset('current_halo_part_inds', data=current_halo_pids, dtype=int)  # particle ids in this halo
         halo.create_dataset('prog_npart_contribution', data=prog_mass_contribution, dtype=int)  # Mass contribution
         halo.create_dataset('desc_npart_contribution', data=desc_mass_contribution, dtype=int)  # Mass contribution
         halo.create_dataset('Prog_nPart', data=prog_npart, dtype=int)  # number of particles in each progenitor

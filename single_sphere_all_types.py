@@ -144,37 +144,37 @@ def single_sphere(reg, snap, part_type, soft, t=0, p=0, num=0):
     # rgb_DM[rgb_DM == 0.0] = np.nan
     # rgb_stars[rgb_stars == 0.0] = np.nan
 
-    fig = plt.figure(figsize=(7, 7))
-    ax = fig.add_subplot(111)
-
-    ax.imshow(rgb_gas, extent=extents['gas'], origin='lower')
-    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                   labeltop=False, labelright=False, labelbottom=False)
-
-    fig.savefig('plots/spheres/Gas/Gas_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
-                bbox_inches='tight')
-    plt.close(fig)
-
-    fig = plt.figure(figsize=(7, 7))
-    ax = fig.add_subplot(111)
-
-    ax.imshow(rgb_DM, extent=extents['dm'], origin='lower')
-    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                   labeltop=False, labelright=False, labelbottom=False)
-
-    fig.savefig('plots/spheres/DM/DM_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
-                bbox_inches='tight')
-    plt.close(fig)
-
-    fig = plt.figure(figsize=(7, 7))
-    ax = fig.add_subplot(111)
-
-    ax.imshow(rgb_stars, extent=extents['stars'], origin='lower')
-    ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                   labeltop=False, labelright=False, labelbottom=False)
-
-    fig.savefig('plots/spheres/Stars/Stars_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
-                bbox_inches='tight')
+    # fig = plt.figure(figsize=(7, 7))
+    # ax = fig.add_subplot(111)
+    #
+    # ax.imshow(rgb_gas, extent=extents['gas'], origin='lower')
+    # ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+    #                labeltop=False, labelright=False, labelbottom=False)
+    #
+    # fig.savefig('plots/spheres/Gas/Gas_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+    #             bbox_inches='tight')
+    # plt.close(fig)
+    #
+    # fig = plt.figure(figsize=(7, 7))
+    # ax = fig.add_subplot(111)
+    #
+    # ax.imshow(rgb_DM, extent=extents['dm'], origin='lower')
+    # ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+    #                labeltop=False, labelright=False, labelbottom=False)
+    #
+    # fig.savefig('plots/spheres/DM/DM_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+    #             bbox_inches='tight')
+    # plt.close(fig)
+    #
+    # fig = plt.figure(figsize=(7, 7))
+    # ax = fig.add_subplot(111)
+    #
+    # ax.imshow(rgb_stars, extent=extents['stars'], origin='lower')
+    # ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+    #                labeltop=False, labelright=False, labelbottom=False)
+    #
+    # fig.savefig('plots/spheres/Stars/Stars_single_sphere_reg' + reg + '_snap' + snap + '_angle%05d.png' % num,
+    #             bbox_inches='tight')
     plt.close(fig)
 
     blend1 = Blend.Blend(rgb_DM, rgb_gas)
@@ -221,6 +221,6 @@ csoft = 0.001802390 / 0.677
 ind = int(sys.argv[1])
 # print(reg_snaps[ind])
 # reg, snap = reg_snaps[ind]
-reg, snap = '00', '010_z005p000'
+reg, snap = '00', '011_z004p770'
 ps = np.linspace(0, 360, 360)
 single_sphere(reg, snap, part_type=0, soft=csoft, p=ps[ind], num=ind)
