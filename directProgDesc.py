@@ -300,9 +300,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         if progress != previous_progress:
             print('Graph progress: ', progress, '%', haloID)
 
-        if int(str(haloID).split('.')[1]) == 0:
-            continue
-
         # =============== Current Halo ===============
 
         current_halo_pids = np.array(list(halo_id_part_inds[haloID]))
@@ -314,6 +311,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
                           prog_counts, desc_counts)
 
     print('Processed', len(results.keys()), 'halos in snapshot', snap)
+    size = len(results.keys())
 
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '_PartType' + str(part_type) +'.hdf5', 'w')
 
