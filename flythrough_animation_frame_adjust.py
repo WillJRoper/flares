@@ -34,9 +34,9 @@ def single_sphere(reg, snap, num):
     print(img_gas)
 
     # Contrast stretching
-    p2, p98 = np.percentile(img_gas, (2, 98))
+    p2, p98 = np.percentile(img_gas, (16, 98))
     img_gas = exposure.rescale_intensity(img_gas, in_range=(p2, p98))
-    p2, p98 = np.percentile(img_dm, (2, 98))
+    p2, p98 = np.percentile(img_dm, (16, 98))
     img_dm = exposure.rescale_intensity(img_dm, in_range=(p2, p98))
 
     # Set up colormaps
@@ -65,5 +65,5 @@ def single_sphere(reg, snap, num):
 # Define softening lengths
 csoft = 0.001802390 / 0.677
 
-reg, snap = '20', '010_z005p000'
+reg, snap = '00', '010_z005p000'
 single_sphere(reg, snap, num=int(sys.argv[1]))
