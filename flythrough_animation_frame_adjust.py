@@ -65,5 +65,5 @@ def single_sphere(reg, snap, num):
 # Define softening lengths
 csoft = 0.001802390 / 0.677
 
-reg, snap = '00', '010_z005p000'
+reg, snap = '20', '010_z005p000'
 single_sphere(reg, snap, num=int(sys.argv[1]))
