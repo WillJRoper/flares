@@ -66,7 +66,7 @@ def single_frame(reg, snap, num):
 # Define softening lengths
 csoft = 0.001802390 / 0.677
 
-reg, snap = '20', '010_z005p000'
+reg, snap = '00', '010_z005p000'
 print(int(sys.argv[1]))
 try:
     single_frame(reg, snap, num=int(sys.argv[1]))
