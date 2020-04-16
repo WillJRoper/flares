@@ -33,8 +33,8 @@ def single_sphere(reg, snap, num):
     img_dm = np.load('animationdata/dm_animationdata_reg' + reg + '_snap' + snap + '_angle%05d.npy'%num)
 
     # Contrast stretching
-    p2, p98 = np.percentile(img_gas, (10, 99.9))
-    img_gas = exposure.rescale_intensity(get_normalised_image(img_gas, vmin=p2, vmax=p98), in_range=(p2, p98))
+    p2, p98 = np.percentile(img_gas, (30, 100))
+    img_gas = exposure.rescale_intensity(img_gas, in_range=(p2, p98))
     # p2, p98 = np.percentile(img_dm, (50, 100))
     # img_dm = exposure.rescale_intensity(img_dm, in_range=(p2, p98))
 
