@@ -42,8 +42,8 @@ def single_sphere(reg, snap, num):
     cmap_dm = ml.cm.Greys_r
 
     # Convert images to rgb arrays
-    rgb_gas = cmap_gas(get_normalised_image(img_gas))
-    rgb_dm = cmap_dm(get_normalised_image(img_dm))
+    rgb_gas = cmap_gas(get_normalised_image(10**img_gas))
+    rgb_dm = cmap_dm(get_normalised_image(10**img_dm))
 
     blend = Blend.Blend(rgb_dm, rgb_gas)
     rgb_output = blend.Screen()
