@@ -92,7 +92,7 @@ def main_change(savepath, snap, prog_snap, path, masslim=1e8):
     subgrp_ids = subgrp_ids[okinds]
     halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg) + 1))
+        halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
 
     # Remove particles not associated to a subgroup
     okinds = prog_subgrp_ids != 1073741824
