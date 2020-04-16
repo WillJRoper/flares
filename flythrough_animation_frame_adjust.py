@@ -67,4 +67,5 @@ csoft = 0.001802390 / 0.677
 
 reg, snap = '20', '010_z005p000'
 for num in range(2000):
-    single_sphere(reg, snap, num=int(sys.argv[1]))
+    print(num, end='\r')
+    single_sphere(reg, snap, num=num)
