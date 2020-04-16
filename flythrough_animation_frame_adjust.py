@@ -4,6 +4,7 @@ ml.use('Agg')
 import numpy as np
 from sphviewer.tools import cmaps, Blend
 import matplotlib.pyplot as plt
+from astropy.visualization import SqrtStretch
 from skimage import exposure
 from skimage import img_as_float
 import PIL
@@ -42,8 +43,8 @@ def single_sphere(reg, snap, num):
     cmap_dm = ml.cm.Greys_r
 
     # Convert images to rgb arrays
-    rgb_gas = cmap_gas(get_normalised_image(10**img_gas))
-    rgb_dm = cmap_dm(get_normalised_image(10**img_dm))
+    rgb_gas = cmap_gas(get_normalised_image(SqrtStretch(img_gas)))
+    rgb_dm = cmap_dm(get_normalised_image(SqrtStretch(img_dm)))
 
     blend = Blend.Blend(rgb_dm, rgb_gas)
     rgb_output = blend.Screen()
