@@ -143,7 +143,7 @@ def getimage(path, snap, soft, num, centre, data, part_type):
 
     # Get colormaps
     if part_type == 0:
-        cmap_gas = ml.cm.magma
+        cmap_gas = cmaps.twilight()
     elif part_type == 1:
         cmap_gas = ml.cm.Greys_r
 
