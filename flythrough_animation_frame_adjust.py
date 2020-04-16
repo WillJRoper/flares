@@ -31,11 +31,11 @@ def single_sphere(reg, snap, num):
     img_gas = np.load('animationdata/gas_animationdata_reg' + reg + '_snap' + snap + '_angle%05d.npy'%num)
     img_dm = np.load('animationdata/dm_animationdata_reg' + reg + '_snap' + snap + '_angle%05d.npy'%num)
 
-    # Contrast stretching
-    p2, p98 = np.percentile(img_gas, (40, 99))
-    img_gas = exposure.rescale_intensity(img_gas, in_range=(p2, p98))
-    p2, p98 = np.percentile(img_dm, (40, 99))
-    img_dm = exposure.rescale_intensity(img_dm, in_range=(p2, p98))
+    # # Contrast stretching
+    # p2, p98 = np.percentile(img_gas, (40, 99))
+    # img_gas = exposure.rescale_intensity(img_gas, in_range=(p2, p98))
+    # p2, p98 = np.percentile(img_dm, (40, 99))
+    # img_dm = exposure.rescale_intensity(img_dm, in_range=(p2, p98))
 
     # Set up colormaps
     cmap_gas = ml.cm.magma
