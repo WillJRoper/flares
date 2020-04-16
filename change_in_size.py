@@ -131,6 +131,13 @@ def main_change(savepath, snap, prog_snap, path, masslim=1e8):
     fig.savefig('plots/change_in_halfmassradius.png', bbox_inches='tight')
 
 
-main_change(savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_10/',
+regions = []
+for reg in range(0, 40):
+    if reg < 10:
+        regions.append('0' + str(reg))
+    else:
+        regions.append(str(reg))
+
+main_change(savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_00/',
             snap='010_z005p000', prog_snap='009_z006p000',
-            path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_10/data', masslim=10**9.5)
+            path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_00/data', masslim=10**9)
