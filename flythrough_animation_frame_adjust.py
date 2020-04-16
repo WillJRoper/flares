@@ -42,7 +42,7 @@ def single_sphere(reg, snap, num):
     cmap_gas = ml.cm.magma
     cmap_dm = ml.cm.Greys_r
 
-    stretch = SqrtStretch
+    stretch = SqrtStretch()
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(stretch(img_gas)))
