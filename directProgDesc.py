@@ -298,7 +298,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         previous_progress = progress
         progress = int(num / size * 100)
         if progress != previous_progress:
-            print('Graph progress: ', progress, '%', haloID, end='\r')
+            print('Graph progress: ', progress, '%', haloID)
 
         if int(str(haloID).split('.')[1]) == 0:
             continue
@@ -334,7 +334,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         previous_progress = progress
         progress = int(num / size * 100)
         if progress != previous_progress:
-            print('Write progress: ', progress, '%', haloID, end='\r')
+            print('Write progress: ', progress, '%', haloID)
 
         # Write out the data produced
         halo = hdf.create_group(str(haloID))  # create halo group
