@@ -322,6 +322,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
          ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results[haloID]
 
+        print(haloID, nprog, ndesc)
+
         sim_prog_haloids = np.zeros_like(prog_haloids)
         for ind, prog in enumerate(prog_haloids):
             sim_prog_haloids[ind] = internal_to_sim_haloID_prog[prog]
