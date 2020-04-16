@@ -42,9 +42,11 @@ def single_sphere(reg, snap, num):
     cmap_gas = ml.cm.magma
     cmap_dm = ml.cm.Greys_r
 
+    stretch = SqrtStretch
+
     # Convert images to rgb arrays
-    rgb_gas = cmap_gas(get_normalised_image(SqrtStretch(img_gas)))
-    rgb_dm = cmap_dm(get_normalised_image(SqrtStretch(img_dm)))
+    rgb_gas = cmap_gas(get_normalised_image(stretch(img_gas)))
+    rgb_dm = cmap_dm(get_normalised_image(stretch(img_dm)))
 
     blend = Blend.Blend(rgb_dm, rgb_gas)
     rgb_output = blend.Screen()
