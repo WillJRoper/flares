@@ -33,17 +33,17 @@ def single_sphere(reg, snap, num):
     img_dm = np.load('animationdata/dm_animationdata_reg' + reg + '_snap' + snap + '_angle%05d.npy'%num)
 
     # Contrast stretching
-    p2, p98 = np.percentile(img_gas, (50, 99.9))
-    img_gas = exposure.rescale_intensity(img_gas, in_range=(p2, p98))
+    # p2, p98 = np.percentile(img_gas, (50, 99.9))
+    # img_gas = exposure.rescale_intensity(img_gas, in_range=(p2, p98))
     # p2, p98 = np.percentile(img_dm, (50, 100))
     # img_dm = exposure.rescale_intensity(img_dm, in_range=(p2, p98))
-    print(p2, p98)
+    # print(p2, p98)
     # Set up colormaps
     cmap_gas = cmaps.twilight()
     # cmap_dm = ml.cm.Greys_r
 
     # Convert images to rgb arrays
-    rgb_gas = cmap_gas(get_normalised_image(img_gas))
+    rgb_gas = cmap_gas(get_normalised_image(img_gas, vmin=8, vmax=12))
     # rgb_dm = cmap_dm(get_normalised_image(img_dm))
 
     # blend = Blend.Blend(rgb_dm, rgb_gas)
@@ -66,4 +66,5 @@ def single_sphere(reg, snap, num):
 csoft = 0.001802390 / 0.677
 
 reg, snap = '20', '010_z005p000'
-single_sphere(reg, snap, num=int(sys.argv[1]))
+for num in range(2000):
+    single_sphere(reg, snap, num=int(sys.argv[1]))
