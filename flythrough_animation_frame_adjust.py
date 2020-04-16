@@ -40,14 +40,15 @@ def single_sphere(reg, snap, num):
 
     # Set up colormaps
     cmap_gas = cmaps.twilight()
-    cmap_dm = ml.cm.Greys_r
+    # cmap_dm = ml.cm.Greys_r
 
     # Convert images to rgb arrays
     rgb_gas = cmap_gas(get_normalised_image(img_gas))
-    rgb_dm = cmap_dm(get_normalised_image(img_dm))
+    # rgb_dm = cmap_dm(get_normalised_image(img_dm))
 
-    blend = Blend.Blend(rgb_dm, rgb_gas)
-    rgb_output = blend.Overlay()
+    # blend = Blend.Blend(rgb_dm, rgb_gas)
+    # rgb_output = blend.Overlay()
+    rgb_output = rgb_gas
 
     fig = plt.figure(figsize=(4, 4))
     ax = fig.add_subplot(111)
