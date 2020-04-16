@@ -322,8 +322,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
          ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results[haloID]
 
-        print(haloID, nprog, ndesc)
-
         sim_prog_haloids = np.zeros_like(prog_haloids)
         for ind, prog in enumerate(prog_haloids):
             sim_prog_haloids[ind] = internal_to_sim_haloID_prog[prog]
@@ -368,7 +366,7 @@ desc_snaps = ['001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '0
               '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770', None]
 
 reg_snaps = []
-for reg in regions:
+for reg in reversed(regions):
 
     try:
         os.mkdir('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg)
