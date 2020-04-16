@@ -4,6 +4,7 @@ ml.use('Agg')
 import numpy as np
 from sphviewer.tools import cmaps, Blend
 import matplotlib.pyplot as plt
+from flythrough_animation import single_sphere
 from astropy.visualization import SqrtStretch
 from skimage import exposure
 from skimage import img_as_float
@@ -26,7 +27,7 @@ def get_normalised_image(img, vmin=None, vmax=None):
     return img
 
 
-def single_sphere(reg, snap, num):
+def single_frame(reg, snap, num):
 
     # Get images
     img_gas = np.load('animationdata/gas_animationdata_reg' + reg + '_snap' + snap + '_angle%05d.npy'%num)
@@ -66,9 +67,10 @@ def single_sphere(reg, snap, num):
 csoft = 0.001802390 / 0.677
 
 reg, snap = '20', '010_z005p000'
-for num in range(2000):
-    print(num, end='\r')
-    try:
-        single_sphere(reg, snap, num=num)
-    except FileNotFoundError:
-        continue
+print(int(sys.argv[1]))
+try:
+    single_frame(reg, snap, num=int(sys.argv[1]))
+except FileNotFoundError:
+    print("Need to generate this file")
+    single_sphere(reg, snap, soft=csoft, num=int(sys.argv[1]))
+    single_frame(reg, snap, num=num)
