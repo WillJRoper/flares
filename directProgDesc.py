@@ -165,7 +165,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     for ind, grp in zip(parts_in_groups, part_groups):
         halo_id_part_inds.setdefault(grp, set()).update({ind})
 
-    del group_part_ids, halo_ids, subgrp_ids, part_ids
+    del group_part_ids, halo_ids, subgrp_ids
     gc.collect()
 
     # =============== Progenitor Snapshot ===============
@@ -190,13 +190,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             prog_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
 
-        # Sort particle IDS
-        prog_allpart_ids = np.sort(prog_allpart_ids)
-        unsort_part_ids = prog_allpart_ids[:]
-        sinds = np.argsort(prog_allpart_ids)
-        prog_allpart_ids = prog_allpart_ids[sinds]
-
-        sorted_index = np.searchsorted(prog_allpart_ids, prog_part_ids)
+        sorted_index = np.searchsorted(part_ids, prog_part_ids)
 
         yindex = np.take(sinds, sorted_index, mode="clip")
         mask = unsort_part_ids[yindex] != prog_part_ids
@@ -206,18 +200,16 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         part_groups = prog_halo_ids[np.logical_not(result.mask)]
         parts_in_groups = result.data[np.logical_not(result.mask)]
         
-        prog_snap_haloIDs = np.full(len(prog_allpart_ids), -2, dtype=int)
+        # Map halo IDs to continuous intergers
         internal_to_sim_haloID_prog = {}
         sim_to_internal_haloID_prog = {}
-        internalID = -1
+        for i, p in enumerate(np.unique(part_groups)):
+            internal_to_sim_haloID_prog[i] = p
+            sim_to_internal_haloID_prog[p] = i
+        
+        prog_snap_haloIDs = np.full(len(prog_allpart_ids), -2, dtype=int)
         for ind, prog in zip(parts_in_groups, part_groups):
-            if prog in sim_to_internal_haloID_prog.keys():
-                prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
-            else:
-                internalID += 1
-                sim_to_internal_haloID_prog[prog] = internalID
-                internal_to_sim_haloID_prog[internalID] = prog
-                prog_snap_haloIDs[ind] = internalID
+            prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
             
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
@@ -255,13 +247,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             desc_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
 
-        # Sort particle IDS
-        desc_allpart_ids = np.sort(desc_allpart_ids)
-        unsort_part_ids = desc_allpart_ids[:]
-        sinds = np.argsort(desc_allpart_ids)
-        desc_allpart_ids = desc_allpart_ids[sinds]
-
-        sorted_index = np.searchsorted(desc_allpart_ids, desc_part_ids)
+        sorted_index = np.searchsorted(part_ids, desc_part_ids)
 
         yindex = np.take(sinds, sorted_index, mode="clip")
         mask = unsort_part_ids[yindex] != desc_part_ids
@@ -271,18 +257,16 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         part_groups = desc_halo_ids[np.logical_not(result.mask)]
         parts_in_groups = result.data[np.logical_not(result.mask)]
 
-        desc_snap_haloIDs = np.full(len(desc_allpart_ids), -2, dtype=int)
+        # Map halo IDs to continuous intergers
         internal_to_sim_haloID_desc = {}
         sim_to_internal_haloID_desc = {}
-        internalID = -1
+        for i, p in enumerate(np.unique(part_groups)):
+            internal_to_sim_haloID_desc[i] = p
+            sim_to_internal_haloID_desc[p] = i
+
+        desc_snap_haloIDs = np.full(len(desc_allpart_ids), -2, dtype=int)
         for ind, desc in zip(parts_in_groups, part_groups):
-            if desc in sim_to_internal_haloID_desc.keys():
-                desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
-            else:
-                internalID += 1
-                sim_to_internal_haloID_desc[desc] = internalID
-                internal_to_sim_haloID_desc[internalID] = desc
-                desc_snap_haloIDs[ind] = internalID
+            desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         desc_unique, desc_counts = np.unique(desc_snap_haloIDs, return_counts=True)
