@@ -159,6 +159,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
         # Combine contribution to entire halo
         prog_mass_contribution = np.array([np.sum(prog_partmass_contributed[prog_haloids == p]) 
                                            for p in uniprog_haloids])
+        prog_mass_contribution = prog_mass_contribution[np.where(prog_mass_contribution > 0.0)]
         print("prog contribution", prog_mass_contribution)
         print("prog masses", prog_masses)
         # Find the number of progenitor halos from the size of the unique array
@@ -206,6 +207,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
         # Combine contribution to entire halo
         desc_mass_contribution = np.array([np.sum(desc_partmass_contributed[desc_haloids == p])
                                            for p in unidesc_haloids])
+        desc_mass_contribution = desc_mass_contribution[np.where(desc_mass_contribution > 0.0)]
 
         # Find the number of descenitor halos from the size of the unique array
         ndesc = unidesc_haloids.size
