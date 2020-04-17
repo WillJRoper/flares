@@ -16,7 +16,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
 
     # Open graph file
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '_PartType1.hdf5', 'r')
-
+    print(list(hdf.keys()))
     # Initialise arrays for results
     delta_hmrs = np.zeros(len(gals))
     delta_ms = np.zeros(len(gals))
