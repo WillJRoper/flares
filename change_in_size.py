@@ -66,53 +66,73 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
     return delta_hmrs[delta_ms < 2**30], delta_ms[delta_ms < 2**30]
 
 
-def main_change(savepath, snap, prog_snap, path, masslim=1e8):
+def main_change(snap, prog_snap, masslim=1e8):
 
-    # Get halo IDs and halo data
-    subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-    grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-    gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                            physicalUnits=True, numThreads=8)[:, 4]
-    gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                            physicalUnits=True, numThreads=8)[:, 4] * 10**10
+    regions = []
+    for reg in range(0, 40):
+        if reg < 10:
+            regions.append('0' + str(reg))
+        else:
+            regions.append(str(reg))
 
-    # Get halo IDs and halo data
-    prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
-    prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
-    prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
-                            physicalUnits=True, numThreads=8)[:, 4]
-    prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                            physicalUnits=True, numThreads=8)[:, 4] * 10**10
+    delta_hmr_dict = {}
+    delta_ms_dict = {}
 
-    # Remove particles not associated to a subgroup
-    okinds = subgrp_ids != 1073741824
-    gal_hmrs = gal_hmrs[okinds]
-    gal_ms = gal_ms[okinds]
-    grp_ids = grp_ids[okinds]
-    subgrp_ids = subgrp_ids[okinds]
-    halo_ids = np.zeros(grp_ids.size, dtype=float)
-    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+    for reg in regions:
 
-    # Remove particles not associated to a subgroup
-    okinds = prog_subgrp_ids != 1073741824
-    prog_gal_hmrs = prog_gal_hmrs[okinds]
-    prog_gal_ms = prog_gal_ms[okinds]
-    prog_grp_ids = prog_grp_ids[okinds]
-    prog_subgrp_ids = prog_subgrp_ids[okinds]
-    prog_ids = np.zeros(prog_grp_ids.size, dtype=float)
-    for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
-        prog_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+        savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/'
 
-    # Initialise galaxy data
-    gal_data = {snap: {}, prog_snap: {}}
-    for m, hmr, i in zip(gal_ms, gal_hmrs, halo_ids):
-        gal_data[snap][i] = {'m': m, 'hmr': hmr}
-    for m, hmr, i in zip(prog_gal_ms, prog_gal_hmrs, prog_ids):
-        gal_data[prog_snap][i] = {'m': m, 'hmr': hmr}
+        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-    # Get change in stellar mass and half mass radius
-    delta_hmr, delta_mass = get_change_in_radius(snap, prog_snap, savepath, gal_data, halo_ids[gal_ms > masslim])
+        # Get halo IDs and halo data
+        subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+        gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                physicalUnits=True, numThreads=8)[:, 4]
+        gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                                physicalUnits=True, numThreads=8)[:, 4] * 10**10
+
+        # Get halo IDs and halo data
+        prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
+        prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
+                                physicalUnits=True, numThreads=8)[:, 4]
+        prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                                physicalUnits=True, numThreads=8)[:, 4] * 10**10
+
+        # Remove particles not associated to a subgroup
+        okinds = subgrp_ids != 1073741824
+        gal_hmrs = gal_hmrs[okinds]
+        gal_ms = gal_ms[okinds]
+        grp_ids = grp_ids[okinds]
+        subgrp_ids = subgrp_ids[okinds]
+        halo_ids = np.zeros(grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+            halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+
+        # Remove particles not associated to a subgroup
+        okinds = prog_subgrp_ids != 1073741824
+        prog_gal_hmrs = prog_gal_hmrs[okinds]
+        prog_gal_ms = prog_gal_ms[okinds]
+        prog_grp_ids = prog_grp_ids[okinds]
+        prog_subgrp_ids = prog_subgrp_ids[okinds]
+        prog_ids = np.zeros(prog_grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
+            prog_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+
+        # Initialise galaxy data
+        gal_data = {snap: {}, prog_snap: {}}
+        for m, hmr, i in zip(gal_ms, gal_hmrs, halo_ids):
+            gal_data[snap][i] = {'m': m, 'hmr': hmr}
+        for m, hmr, i in zip(prog_gal_ms, prog_gal_hmrs, prog_ids):
+            gal_data[prog_snap][i] = {'m': m, 'hmr': hmr}
+
+        # Get change in stellar mass and half mass radius
+        delta_hmr_dict[reg], delta_ms_dict[reg] = get_change_in_radius(snap, prog_snap, savepath, gal_data,
+                                                                       halo_ids[gal_ms > masslim])
+
+    delta_hmr = np.concatenate(list(delta_hmr_dict.values()))
+    delta_mass = np.concatenate(list(delta_ms_dict.values()))
 
     # Set up plot
     fig = plt.figure()
@@ -138,6 +158,4 @@ for reg in range(0, 40):
     else:
         regions.append(str(reg))
 
-main_change(savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_00/',
-            snap='010_z005p000', prog_snap='009_z006p000',
-            path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_00/data', masslim=10**9)
+main_change(snap='010_z005p000', prog_snap='009_z006p000', masslim=10**9)
