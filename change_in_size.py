@@ -111,7 +111,7 @@ def main_change(snap, prog_snap, masslim=1e8):
             halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
 
         # Remove particles not associated to a subgroup
-        okinds = np.logical_and(prog_subgrp_ids != 1073741824, prog_gal_ms > 0)
+        okinds = prog_subgrp_ids != 1073741824
         prog_gal_hmrs = prog_gal_hmrs[okinds]
         prog_gal_ms = prog_gal_ms[okinds]
         prog_grp_ids = prog_grp_ids[okinds]
