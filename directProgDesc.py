@@ -575,7 +575,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_gas[haloID]
-
+            print(prog_npart)
             halo.create_dataset('prog_gas_mass_contribution', data=prog_mass_contribution,
                                 dtype=float)  # Mass contribution
             halo.create_dataset('desc_gas_mass_contribution', data=desc_mass_contribution,
