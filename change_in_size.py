@@ -158,4 +158,4 @@ for reg in range(0, 40):
     else:
         regions.append(str(reg))
 
-main_change(snap='010_z005p000', prog_snap='009_z006p000', masslim=10**9)
+main_change(snap='010_z005p000', prog_snap='009_z006p000', masslim=10**9.5)
