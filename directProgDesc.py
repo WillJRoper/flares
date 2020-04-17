@@ -164,6 +164,10 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
         # Find the number of progenitor halos from the size of the unique array
         nprog = uniprog_haloids.size
 
+        print("nprog", nprog)
+        print("prog contribution", prog_mass_contribution)
+        print("prog masses", prog_masses)
+
         # Sort the halo IDs and number of particles in each progenitor halo by their contribution to the
         # current halo (number of particles from the current halo in the progenitor or descendant)
         sorting_inds = prog_mass_contribution.argsort()[::-1]
@@ -210,6 +214,10 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
 
         # Find the number of descenitor halos from the size of the unique array
         ndesc = unidesc_haloids.size
+        
+        print("ndesc", ndesc)
+        print("desc contribution", desc_mass_contribution)
+        print("desc masses", desc_masses)
 
         # Sort the halo IDs and number of particles in each descenitor halo by their contribution to the
         # current halo (number of particles from the current halo in the descenitor or descendant)
