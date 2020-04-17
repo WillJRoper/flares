@@ -151,6 +151,8 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
             uniprog_counts = uniprog_counts[1:]
         
         # Get progenitor halo masses
+        print(prog_ids)
+        print(uniprog_haloids)
         prog_masses = np.array([prog_ms[prog_ids == p] for p in uniprog_haloids]).flatten()
         
         # Get progenitor particle masses
