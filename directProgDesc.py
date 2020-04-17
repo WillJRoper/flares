@@ -159,8 +159,8 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
         # Combine contribution to entire halo
         prog_mass_contribution = np.array([np.sum(prog_partmass_contributed[prog_haloids == p]) 
                                            for p in uniprog_haloids])
-        print("contribution", prog_mass_contribution)
-        print("masses", prog_masses)
+        print("prog contribution", prog_mass_contribution)
+        print("prog masses", prog_masses)
         # Find the number of progenitor halos from the size of the unique array
         nprog = uniprog_haloids.size
 
@@ -209,7 +209,8 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
 
         # Find the number of descenitor halos from the size of the unique array
         ndesc = unidesc_haloids.size
-
+        print("desc contribution", desc_mass_contribution)
+        print("desc masses", desc_masses)
         # Sort the halo IDs and number of particles in each descenitor halo by their contribution to the
         # current halo (number of particles from the current halo in the descenitor or descendant)
         sorting_inds = desc_mass_contribution.argsort()[::-1]
@@ -262,9 +263,9 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
         prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
         prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                   physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
+                                   physicalUnits=True, numThreads=8)[:, 4]
         preprogpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                          physicalUnits=True, numThreads=8) * 10 ** 10
+                                          physicalUnits=True, numThreads=8)
 
         prog_sub_ids = np.zeros(prog_grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
@@ -274,9 +275,9 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
         desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
         desc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                   physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
+                                   physicalUnits=True, numThreads=8)[:, 4]
         predescpart_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                          physicalUnits=True, numThreads=8) * 10 ** 10
+                                          physicalUnits=True, numThreads=8)
 
         desc_sub_ids = np.zeros(desc_grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(desc_grp_ids), desc_subgrp_ids):
@@ -364,23 +365,24 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         part_groups = prog_halo_ids[np.logical_not(result.mask)]
         parts_in_groups = result.data[np.logical_not(result.mask)]
         
-        # Map halo IDs to continuous intergers
-        internal_to_sim_haloID_prog = {}
-        sim_to_internal_haloID_prog = {}
-        for i, p in enumerate(np.unique(part_groups)):
-            internal_to_sim_haloID_prog[i] = p
-            sim_to_internal_haloID_prog[p] = i
+        # # Map halo IDs to continuous intergers
+        # internal_to_sim_haloID_prog = {}
+        # sim_to_internal_haloID_prog = {}
+        # for i, p in enumerate(np.unique(part_groups)):
+        #     internal_to_sim_haloID_prog[i] = p
+        #     sim_to_internal_haloID_prog[p] = i
 
         if part_type != 1:
             prog_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
             progpart_masses = np.full(len(part_ids), -2, dtype=int)
             for ind, prog, m in zip(parts_in_groups, part_groups, preprogpart_masses):
-                prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
+                prog_snap_haloIDs[ind] = prog
                 progpart_masses[ind] = m
         else:
             prog_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
+            progpart_masses = np.full(len(part_ids), -2, dtype=int)
             for ind, prog in zip(parts_in_groups, part_groups):
-                prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
+                prog_snap_haloIDs[ind] = prog
             
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
@@ -392,6 +394,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
     else:  # Assign an empty array if the snapshot is less than the earliest (000)
         prog_snap_haloIDs = np.array([], copy=False)
+        progpart_masses = np.array([], copy=False)
         internal_to_sim_haloID_prog = {}
         sim_to_internal_haloID_prog = {}
         prog_counts = []
@@ -431,23 +434,24 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         part_groups = desc_halo_ids[np.logical_not(result.mask)]
         parts_in_groups = result.data[np.logical_not(result.mask)]
 
-        # Map halo IDs to continuous intergers
-        internal_to_sim_haloID_desc = {}
-        sim_to_internal_haloID_desc = {}
-        for i, p in enumerate(np.unique(part_groups)):
-            internal_to_sim_haloID_desc[i] = p
-            sim_to_internal_haloID_desc[p] = i
+        # # Map halo IDs to continuous intergers
+        # internal_to_sim_haloID_desc = {}
+        # sim_to_internal_haloID_desc = {}
+        # for i, p in enumerate(np.unique(part_groups)):
+        #     internal_to_sim_haloID_desc[i] = p
+        #     sim_to_internal_haloID_desc[p] = i
 
         if part_type != 1:
             desc_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
             descpart_masses = np.full(len(part_ids), -2, dtype=int)
             for ind, desc, m in zip(parts_in_groups, part_groups, predescpart_masses):
-                desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
+                desc_snap_haloIDs[ind] = desc
                 descpart_masses[ind] = m
         else:
             desc_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
+            descpart_masses = np.full(len(part_ids), -2, dtype=int)
             for ind, desc in zip(parts_in_groups, part_groups):
-                desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
+                desc_snap_haloIDs[ind] = desc
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         desc_unique, desc_counts = np.unique(desc_snap_haloIDs, return_counts=True)
@@ -460,6 +464,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     else:  # Assign an empty array if the snapshot is less than the earliest (000)
         desc_snap_haloIDs = np.array([], copy=False)
         internal_to_sim_haloID_desc = {}
+        descpart_masses = np.array([], copy=False)
         sim_to_internal_haloID_desc = {}
         desc_counts = []
 
@@ -495,9 +500,10 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
             results[haloID] = getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
                                        progpart_masses, descpart_masses, prog_gal_ms, prog_sub_ids,
                                        desc_gal_ms, desc_sub_ids)
-    print('Processed', len(results.keys()), 'halos in snapshot', snap)
 
-    return results, internal_to_sim_haloID_desc, internal_to_sim_haloID_prog
+    print('Processed', len(results.keys()), 'halos in snapshot', snap, 'of particle type', part_type)
+
+    return results  #, internal_to_sim_haloID_desc, internal_to_sim_haloID_prog
 
 
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/'):
@@ -505,9 +511,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     results_dm, internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm = partDirectProgDesc(snap, prog_snap,
                                                                                                     desc_snap, path,
                                                                                                     part_type=1)
-    results_stars, _, _ = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=4)
-    results_bh, _, _ = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=5)
-    results_gas, _, _ = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=0)
+    results_stars, internal_to_sim_haloID_desc_st, internal_to_sim_haloID_prog_st = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=4)
+    results_bh, internal_to_sim_haloID_desc_bh, internal_to_sim_haloID_prog_bh = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=5)
+    results_gas, internal_to_sim_haloID_desc_gas, internal_to_sim_haloID_prog_gas = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=0)
 
     size = len(results_dm.keys())
 
@@ -521,19 +527,26 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
          ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[haloID]
 
-        sim_prog_haloids = np.zeros_like(prog_haloids)
-        for ind, prog in enumerate(prog_haloids):
-            sim_prog_haloids[ind] = internal_to_sim_haloID_prog_dm[prog]
-
-        sim_desc_haloids = np.zeros_like(desc_haloids)
-        for ind, desc in enumerate(desc_haloids):
-            sim_desc_haloids[ind] = internal_to_sim_haloID_desc_dm[desc]
+        # sim_prog_haloids = np.zeros_like(prog_haloids)
+        # for ind, prog in enumerate(prog_haloids):
+        #     sim_prog_haloids[ind] = internal_to_sim_haloID_prog_dm[prog]
+        #
+        # sim_desc_haloids = np.zeros_like(desc_haloids)
+        # for ind, desc in enumerate(desc_haloids):
+        #     sim_desc_haloids[ind] = internal_to_sim_haloID_desc_dm[desc]
 
         # Print progress
         previous_progress = progress
         progress = int(num / size * 100)
         if progress != previous_progress:
             print('Write progress: ', progress, '%', haloID)
+
+        sim_prog_haloids = prog_haloids
+        sim_desc_haloids = desc_haloids
+
+        # Αssign dark matter haloids for comparison to other particle types
+        dm_sim_desc_haloids = sim_desc_haloids
+        dm_sim_prog_haloids = sim_prog_haloids
 
         # Write out the data produced
         halo = hdf.create_group(str(haloID))  # create halo group
