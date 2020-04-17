@@ -138,9 +138,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
 
     # Remove particles not associated to a subgroup
-    group_part_ids = group_part_ids[subgrp_ids != 1073741824]
-    grp_ids = grp_ids[subgrp_ids != 1073741824]
-    subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
+    # group_part_ids = group_part_ids[subgrp_ids != 1073741824]
+    # grp_ids = grp_ids[subgrp_ids != 1073741824]
+    # subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
     halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
@@ -183,9 +183,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
                                      numThreads=8)
 
         # Remove particles not associated to a subgroup
-        prog_part_ids = prog_part_ids[subgrp_ids != 1073741824]
-        grp_ids = grp_ids[subgrp_ids != 1073741824]
-        subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
+        # prog_part_ids = prog_part_ids[subgrp_ids != 1073741824]
+        # grp_ids = grp_ids[subgrp_ids != 1073741824]
+        # subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
         prog_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             prog_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
@@ -240,9 +240,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
                                      numThreads=8)
 
         # Remove particles not associated to a subgroup
-        desc_part_ids = desc_part_ids[subgrp_ids != 1073741824]
-        grp_ids = grp_ids[subgrp_ids != 1073741824]
-        subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
+        # desc_part_ids = desc_part_ids[subgrp_ids != 1073741824]
+        # grp_ids = grp_ids[subgrp_ids != 1073741824]
+        # subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
         desc_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             desc_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
@@ -380,7 +380,7 @@ if __name__ == '__main__':
     ind = int(sys.argv[1])
     print(reg_snaps[ind])
 
-    mainDirectProgDesc(snap=reg_snaps[ind][0], prog_snap=reg_snaps[ind][1], desc_snap=reg_snaps[ind][3],
+    mainDirectProgDesc(snap=reg_snaps[ind][2], prog_snap=reg_snaps[ind][1], desc_snap=reg_snaps[ind][3],
                        path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
                        part_type=1,
                        savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_'
