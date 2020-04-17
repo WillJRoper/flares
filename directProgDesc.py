@@ -390,9 +390,11 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
                 progpart_masses[ind] = m
 
             prog_sub_ids = np.zeros(preprog_sub_ids.size, dtype=int)
-            for ind, prog in enumerate(preprog_sub_ids):
+            ind = 0
+            for prog in preprog_sub_ids:
                 try:
                     prog_sub_ids[ind] = sim_to_internal_haloID_prog[prog]
+                    ind += 1
                 except KeyError:
                     continue
                 
@@ -469,9 +471,11 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
                 descpart_masses[ind] = m
                 
             desc_sub_ids = np.zeros(predesc_sub_ids.size, dtype=int)
-            for ind, desc in enumerate(predesc_sub_ids):
+            ind = 0
+            for desc in predesc_sub_ids:
                 try:
                     desc_sub_ids[ind] = sim_to_internal_haloID_desc[desc]
+                    ind += 1
                 except KeyError:
                     continue
                 
