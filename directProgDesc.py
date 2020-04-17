@@ -119,7 +119,7 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
 
 
 def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
-             progpart_masses, descpart_masses, prog_masses, prog_ids, desc_masses, desc_ids):
+             progpart_masses, descpart_masses, prog_ms, prog_ids, desc_ms, desc_ids):
     """
 
     :param current_halo_pids:
@@ -151,7 +151,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
             uniprog_counts = uniprog_counts[1:]
         
         # Get progenitor halo masses
-        prog_masses = np.array([prog_masses[prog_ids == p] for p in uniprog_haloids])
+        prog_masses = np.array([prog_ms[prog_ids == p][0] for p in uniprog_haloids])
         
         # Get progenitor particle masses
         prog_partmass_contributed = progpart_masses[current_halo_pids]
@@ -197,7 +197,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
             unidesc_counts = unidesc_counts[1:]
 
         # Get descenitor halo masses
-        desc_masses = np.array([desc_masses[desc_ids == p] for p in unidesc_haloids])
+        desc_masses = np.array([desc_ms[desc_ids == p][0] for p in unidesc_haloids])
 
         # Get descenitor particle masses
         desc_partmass_contributed = descpart_masses[current_halo_pids]
@@ -575,7 +575,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_gas[haloID]
-            print(prog_npart)
+
             halo.create_dataset('prog_gas_mass_contribution', data=prog_mass_contribution,
                                 dtype=float)  # Mass contribution
             halo.create_dataset('desc_gas_mass_contribution', data=desc_mass_contribution,
