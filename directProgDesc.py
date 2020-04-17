@@ -346,7 +346,9 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         prog_part_ids = prog_part_ids[okinds]
         grp_ids = grp_ids[okinds]
         subgrp_ids = subgrp_ids[okinds]
-        preprogpart_masses = preprogpart_masses[okinds]
+        if part_type != 1:
+            preprogpart_masses = preprogpart_masses[okinds]
+
         prog_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             prog_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
@@ -410,7 +412,10 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         desc_part_ids = desc_part_ids[okinds]
         grp_ids = grp_ids[okinds]
         subgrp_ids = subgrp_ids[okinds]
-        predescpart_masses = predescpart_masses[okinds]
+
+        if part_type != 1:
+            predescpart_masses = predescpart_masses[okinds]
+
         desc_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             desc_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
