@@ -159,7 +159,8 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
         # Combine contribution to entire halo
         prog_mass_contribution = np.array([np.sum(prog_partmass_contributed[prog_haloids == p]) 
                                            for p in uniprog_haloids])
-
+        print("contribution", prog_mass_contribution)
+        print("masses", prog_masses)
         # Find the number of progenitor halos from the size of the unique array
         nprog = uniprog_haloids.size
 
