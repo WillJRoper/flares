@@ -401,6 +401,40 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
     # =============== Find all Direct Progenitors And Descendant Of Halos In This Snapshot ===============
 
+    if part_type != 1:
+
+        # Get halo IDs and halo data
+        prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
+        prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                                   physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
+        progpart_masses = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
+                                       physicalUnits=True, numThreads=8) * 10 ** 10
+
+        prog_sub_ids = np.zeros(prog_grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
+            prog_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+
+            # Get halo IDs and halo data
+        desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
+        desc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                                   physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
+        descpart_masses = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
+                                       physicalUnits=True, numThreads=8) * 10 ** 10
+
+        desc_sub_ids = np.zeros(desc_grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(desc_grp_ids), desc_subgrp_ids):
+            desc_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+
+    else:
+        progpart_masses = np.array([])
+        descpart_masses = np.array([])
+        prog_gal_ms = np.array([])
+        prog_sub_ids = np.array([])
+        desc_gal_ms = np.array([])
+        desc_sub_ids = np.array([])
+
     # Initialise the progress
     progress = -1
 
@@ -428,31 +462,6 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
             results[haloID] = dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
                               prog_counts, desc_counts, part_type)
         else:
-
-            # Get halo IDs and halo data
-            prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
-            prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
-            prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                       physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
-            progpart_masses = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                           physicalUnits=True, numThreads=8) * 10 ** 10
-            
-            prog_sub_ids = np.zeros(prog_grp_ids.size, dtype=float)
-            for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
-                prog_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
-
-                # Get halo IDs and halo data
-            desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
-            desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
-            desc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                       physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
-            descpart_masses = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                           physicalUnits=True, numThreads=8) * 10 ** 10
-
-            desc_sub_ids = np.zeros(desc_grp_ids.size, dtype=float)
-            for (ind, g), sg in zip(enumerate(desc_grp_ids), desc_subgrp_ids):
-                desc_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
-
             results[haloID] = getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
                                        progpart_masses, descpart_masses, prog_gal_ms, prog_sub_ids,
                                        desc_gal_ms, desc_sub_ids, maxpartid)
@@ -466,9 +475,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     results_dm, internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm = partDirectProgDesc(snap, prog_snap,
                                                                                                     desc_snap, path,
                                                                                                     part_type=1)
-    results_gas, _, _ = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=0)
     results_stars, _, _ = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=4)
     results_bh, _, _ = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=5)
+    results_gas, _, _ = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=0)
 
     size = len(results_dm.keys())
 
