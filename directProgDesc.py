@@ -312,7 +312,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
 
     print('Processed', len(results.keys()), 'halos in snapshot', snap)
     size = len(results.keys())
-
+    print(results.keys())
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '_PartType' + str(part_type) +'.hdf5', 'w')
 
     for num, haloID in enumerate(results.keys()):
@@ -339,7 +339,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
         halo.attrs['nProg'] = nprog  # number of progenitors
         halo.attrs['nDesc'] = ndesc  # number of descendants
         halo.attrs['current_halo_nPart'] = current_halo_pids.size  # mass of the halo
-        halo.create_dataset('current_halo_part_inds', data=current_halo_pids, dtype=int)  # particle ids in this halo
+        # halo.create_dataset('current_halo_part_inds', data=current_halo_pids, dtype=int)  # particle ids in this halo
         halo.create_dataset('prog_npart_contribution', data=prog_mass_contribution, dtype=int)  # Mass contribution
         halo.create_dataset('desc_npart_contribution', data=desc_mass_contribution, dtype=int)  # Mass contribution
         halo.create_dataset('Prog_nPart', data=prog_npart, dtype=int)  # number of particles in each progenitor
@@ -373,14 +373,14 @@ for reg in reversed(regions):
 
     for snap, prog_snap, desc_snap in zip(snaps, prog_snaps, desc_snaps):
 
-        reg_snaps.append((reg, snap, prog_snap, desc_snap))
+        reg_snaps.append((reg, prog_snap, snap, desc_snap))
 
 if __name__ == '__main__':
 
     ind = int(sys.argv[1])
     print(reg_snaps[ind])
 
-    mainDirectProgDesc(snap=reg_snaps[ind][1], prog_snap=reg_snaps[ind][2], desc_snap=reg_snaps[ind][3],
+    mainDirectProgDesc(snap=reg_snaps[ind][0], prog_snap=reg_snaps[ind][1], desc_snap=reg_snaps[ind][3],
                        path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
                        part_type=1,
                        savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_'
