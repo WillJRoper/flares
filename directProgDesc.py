@@ -119,7 +119,7 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
 
 
 def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
-             progpart_masses, descpart_masses, prog_masses, prog_ids, desc_masses, desc_ids, maxpartid):
+             progpart_masses, descpart_masses, prog_masses, prog_ids, desc_masses, desc_ids):
     """
 
     :param current_halo_pids:
@@ -135,13 +135,11 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
 
     # If any progenitor halos exist (i.e. The current snapshot ID is not 000, enforced in the main function)
     if prog_snap_haloIDs.size != 0:
-        
-        current_pids_in_prog_snap = current_halo_pids[np.where(current_halo_pids <= maxpartid)]
 
         # Find the halo IDs of the current halo's particles in the progenitor snapshot by indexing the
         # progenitor snapshot's particle halo IDs array with the halo's particle IDs, this can be done
         # since the particle halo IDs array is sorted by particle ID.
-        prog_haloids = prog_snap_haloIDs[current_pids_in_prog_snap]
+        prog_haloids = prog_snap_haloIDs[current_halo_pids]
 
         # Find the unique halo IDs and the number of times each appears
         uniprog_haloids, uniprog_counts = np.unique(prog_haloids, return_counts=True)
@@ -156,7 +154,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
         prog_masses = np.array([prog_masses[prog_ids == p] for p in uniprog_haloids])
         
         # Get progenitor particle masses
-        prog_partmass_contributed = progpart_masses[current_pids_in_prog_snap]
+        prog_partmass_contributed = progpart_masses[current_halo_pids]
         
         # Combine contribution to entire halo
         prog_mass_contribution = np.array([np.sum(prog_partmass_contributed[prog_haloids == p]) 
@@ -184,12 +182,10 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
     # If descendant halos exist (i.e. The current snapshot ID is not 061, enforced in the main function)
     if desc_snap_haloIDs.size != 0:
 
-        current_pids_in_desc_snap = current_halo_pids
-
         # Find the halo IDs of the current halo's particles in the descenitor snapshot by indexing the
         # descenitor snapshot's particle halo IDs array with the halo's particle IDs, this can be done
         # since the particle halo IDs array is sorted by particle ID.
-        desc_haloids = desc_snap_haloIDs[current_pids_in_desc_snap]
+        desc_haloids = desc_snap_haloIDs[current_halo_pids]
 
         # Find the unique halo IDs and the number of times each appears
         unidesc_haloids, unidesc_counts = np.unique(desc_haloids, return_counts=True)
@@ -204,7 +200,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
         desc_masses = np.array([desc_masses[desc_ids == p] for p in unidesc_haloids])
 
         # Get descenitor particle masses
-        desc_partmass_contributed = descpart_masses[current_pids_in_desc_snap]
+        desc_partmass_contributed = descpart_masses[current_halo_pids]
 
         # Combine contribution to entire halo
         desc_mass_contribution = np.array([np.sum(desc_partmass_contributed[desc_haloids == p])
@@ -244,10 +240,58 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     :return: None
     """
 
+    # Extract particle IDs, if in not using dark matter this must be all particles present at all 3 snapshots
+    if part_type == 1:
+        part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+    else:
+        # Get the particle IDs in each snapshot
+        snap_part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+        progsnap_part_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                         numThreads=8)
+        descsnap_part_ids = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                         numThreads=8)
+
+        # Combine the particle id arrays and only take unique values
+        part_ids = np.unique(np.concatenate([snap_part_ids, progsnap_part_ids, descsnap_part_ids]))
+        
+    # Get the necessary particle information
+    if part_type != 1:
+
+        # Get halo IDs and halo data
+        prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
+        prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                                   physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
+        preprogpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
+                                          physicalUnits=True, numThreads=8) * 10 ** 10
+
+        prog_sub_ids = np.zeros(prog_grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
+            prog_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+
+            # Get halo IDs and halo data
+        desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
+        desc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                                   physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
+        predescpart_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
+                                          physicalUnits=True, numThreads=8) * 10 ** 10
+
+        desc_sub_ids = np.zeros(desc_grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(desc_grp_ids), desc_subgrp_ids):
+            desc_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+
+    else:
+        preprogpart_masses = np.array([])
+        predescpart_masses = np.array([])
+        prog_gal_ms = np.array([])
+        prog_sub_ids = np.array([])
+        desc_gal_ms = np.array([])
+        desc_sub_ids = np.array([])
+
     # =============== Current Snapshot ===============
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
     group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                   numThreads=8)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
@@ -282,8 +326,6 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     for ind, grp in zip(parts_in_groups, part_groups):
         halo_id_part_inds.setdefault(grp, set()).update({ind})
 
-    maxpartid = len(part_ids)
-
     del group_part_ids, halo_ids, subgrp_ids
     gc.collect()
 
@@ -304,6 +346,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         prog_part_ids = prog_part_ids[okinds]
         grp_ids = grp_ids[okinds]
         subgrp_ids = subgrp_ids[okinds]
+        preprogpart_masses = preprogpart_masses[okinds]
         prog_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             prog_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
@@ -324,10 +367,17 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         for i, p in enumerate(np.unique(part_groups)):
             internal_to_sim_haloID_prog[i] = p
             sim_to_internal_haloID_prog[p] = i
-        
-        prog_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
-        for ind, prog in zip(parts_in_groups, part_groups):
-            prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
+
+        if part_type != 1:
+            prog_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
+            progpart_masses = np.full(len(part_ids), -2, dtype=int)
+            for ind, prog, m in zip(parts_in_groups, part_groups, preprogpart_masses):
+                prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
+                progpart_masses[ind] = m
+        else:
+            prog_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
+            for ind, prog in zip(parts_in_groups, part_groups):
+                prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
             
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
@@ -360,6 +410,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         desc_part_ids = desc_part_ids[okinds]
         grp_ids = grp_ids[okinds]
         subgrp_ids = subgrp_ids[okinds]
+        predescpart_masses = predescpart_masses[okinds]
         desc_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             desc_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
@@ -381,9 +432,16 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
             internal_to_sim_haloID_desc[i] = p
             sim_to_internal_haloID_desc[p] = i
 
-        desc_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
-        for ind, desc in zip(parts_in_groups, part_groups):
-            desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
+        if part_type != 1:
+            desc_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
+            descpart_masses = np.full(len(part_ids), -2, dtype=int)
+            for ind, desc, m in zip(parts_in_groups, part_groups, predescpart_masses):
+                desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
+                descpart_masses[ind] = m
+        else:
+            desc_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
+            for ind, desc in zip(parts_in_groups, part_groups):
+                desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
 
         # Get all the unique halo IDs in this snapshot and the number of times they appear
         desc_unique, desc_counts = np.unique(desc_snap_haloIDs, return_counts=True)
@@ -400,40 +458,6 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         desc_counts = []
 
     # =============== Find all Direct Progenitors And Descendant Of Halos In This Snapshot ===============
-
-    if part_type != 1:
-
-        # Get halo IDs and halo data
-        prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
-        prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                   physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
-        progpart_masses = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                       physicalUnits=True, numThreads=8) * 10 ** 10
-
-        prog_sub_ids = np.zeros(prog_grp_ids.size, dtype=float)
-        for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
-            prog_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
-
-            # Get halo IDs and halo data
-        desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
-        desc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                   physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
-        descpart_masses = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                       physicalUnits=True, numThreads=8) * 10 ** 10
-
-        desc_sub_ids = np.zeros(desc_grp_ids.size, dtype=float)
-        for (ind, g), sg in zip(enumerate(desc_grp_ids), desc_subgrp_ids):
-            desc_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
-
-    else:
-        progpart_masses = np.array([])
-        descpart_masses = np.array([])
-        prog_gal_ms = np.array([])
-        prog_sub_ids = np.array([])
-        desc_gal_ms = np.array([])
-        desc_sub_ids = np.array([])
 
     # Initialise the progress
     progress = -1
@@ -464,7 +488,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         else:
             results[haloID] = getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
                                        progpart_masses, descpart_masses, prog_gal_ms, prog_sub_ids,
-                                       desc_gal_ms, desc_sub_ids, maxpartid)
+                                       desc_gal_ms, desc_sub_ids)
     print('Processed', len(results.keys()), 'halos in snapshot', snap)
 
     return results, internal_to_sim_haloID_desc, internal_to_sim_haloID_prog
