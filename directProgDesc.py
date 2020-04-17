@@ -197,7 +197,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
             unidesc_counts = unidesc_counts[1:]
 
         # Get descenitor halo masses
-        desc_masses = np.array([desc_ms[desc_ids == p][0] for p in unidesc_haloids]).flatten()
+        desc_masses = np.array([desc_ms[desc_ids == p] for p in unidesc_haloids]).flatten()
 
         # Get descenitor particle masses
         desc_partmass_contributed = descpart_masses[current_halo_pids]
@@ -548,7 +548,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         halo.create_dataset('Desc_haloIDs', data=sim_desc_haloids, dtype=float)  # descendant IDs
 
         # Write out star data
-        if haloID in results_stars.keys():
+        if haloID in results_stars:
 
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[haloID]
@@ -571,7 +571,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                                 dtype=int)  # number of particles in each descendant
 
         # Write out gas data
-        if haloID in results_gas.keys():
+        if haloID in results_gas:
 
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_gas[haloID]
@@ -596,7 +596,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                                 dtype=int)  # number of particles in each descendant
             
         # Write out black hole data
-        if haloID in results_bh.keys():
+        if haloID in results_bh:
 
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_bh[haloID]
