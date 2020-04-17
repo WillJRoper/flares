@@ -160,8 +160,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
         prog_mass_contribution = np.array([np.sum(prog_partmass_contributed[prog_haloids == p]) 
                                            for p in uniprog_haloids])
         prog_mass_contribution = prog_mass_contribution[np.where(prog_mass_contribution > 0.0)]
-        print("prog contribution", prog_mass_contribution)
-        print("prog masses", prog_masses)
+
         # Find the number of progenitor halos from the size of the unique array
         nprog = uniprog_haloids.size
 
@@ -211,8 +210,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
 
         # Find the number of descenitor halos from the size of the unique array
         ndesc = unidesc_haloids.size
-        print("desc contribution", desc_mass_contribution)
-        print("desc masses", desc_masses)
+
         # Sort the halo IDs and number of particles in each descenitor halo by their contribution to the
         # current halo (number of particles from the current halo in the descenitor or descendant)
         sorting_inds = desc_mass_contribution.argsort()[::-1]
@@ -376,7 +374,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
         if part_type != 1:
             prog_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
-            progpart_masses = np.full(len(part_ids), -2, dtype=int)
+            progpart_masses = np.full(len(part_ids), -2, dtype=float)
             for ind, prog, m in zip(parts_in_groups, part_groups, preprogpart_masses):
                 prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
                 progpart_masses[ind] = m
@@ -388,7 +386,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         else:
             prog_sub_ids = np.array([], copy=False)
             prog_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
-            progpart_masses = np.full(len(part_ids), -2, dtype=int)
+            progpart_masses = np.full(len(part_ids), -2, dtype=float)
             for ind, prog in zip(parts_in_groups, part_groups):
                 prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
             
@@ -452,7 +450,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
         if part_type != 1:
             desc_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
-            descpart_masses = np.full(len(part_ids), -2, dtype=int)
+            descpart_masses = np.full(len(part_ids), -2, dtype=float)
             for ind, desc, m in zip(parts_in_groups, part_groups, predescpart_masses):
                 desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
                 descpart_masses[ind] = m
@@ -464,7 +462,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         else:
             desc_sub_ids = np.array([], copy=False)
             desc_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
-            descpart_masses = np.full(len(part_ids), -2, dtype=int)
+            descpart_masses = np.full(len(part_ids), -2, dtype=float)
             for ind, desc in zip(parts_in_groups, part_groups):
                 desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
 
