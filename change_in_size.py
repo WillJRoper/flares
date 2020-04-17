@@ -101,7 +101,7 @@ def main_change(snap, prog_snap, masslim=1e8):
                                 physicalUnits=True, numThreads=8)[:, 4] * 10**10
 
         # Remove particles not associated to a subgroup
-        okinds = subgrp_ids != 1073741824
+        okinds = subgrp_ids != 1073741824 & gal_ms > 0
         gal_hmrs = gal_hmrs[okinds]
         gal_ms = gal_ms[okinds]
         grp_ids = grp_ids[okinds]
@@ -111,7 +111,7 @@ def main_change(snap, prog_snap, masslim=1e8):
             halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
 
         # Remove particles not associated to a subgroup
-        okinds = prog_subgrp_ids != 1073741824
+        okinds = prog_subgrp_ids != 1073741824 & gal_ms > 0
         prog_gal_hmrs = prog_gal_hmrs[okinds]
         prog_gal_ms = prog_gal_ms[okinds]
         prog_grp_ids = prog_grp_ids[okinds]
@@ -158,4 +158,4 @@ for reg in range(0, 40):
     else:
         regions.append(str(reg))
 
-main_change(snap='010_z005p000', prog_snap='009_z006p000', masslim=10**9.5)
+main_change(snap='009_z006p000', prog_snap='008_z007p000', masslim=10**9.5)

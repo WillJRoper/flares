@@ -138,9 +138,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
 
     # Remove particles not associated to a subgroup
-    # group_part_ids = group_part_ids[subgrp_ids != 1073741824]
-    # grp_ids = grp_ids[subgrp_ids != 1073741824]
-    # subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
+    okinds = subgrp_ids != 1073741824
+    group_part_ids = group_part_ids[okinds]
+    grp_ids = grp_ids[okinds]
+    subgrp_ids = subgrp_ids[okinds]
     halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
@@ -173,8 +174,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     # Only look for descendant data if there is a descendant snapshot
     if prog_snap != None:
 
-        prog_allpart_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                        numThreads=8)
         grp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                numThreads=8)
         subgrp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
@@ -183,9 +182,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
                                      numThreads=8)
 
         # Remove particles not associated to a subgroup
-        # prog_part_ids = prog_part_ids[subgrp_ids != 1073741824]
-        # grp_ids = grp_ids[subgrp_ids != 1073741824]
-        # subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
+        okinds = subgrp_ids != 1073741824
+        prog_part_ids = prog_part_ids[okinds]
+        grp_ids = grp_ids[okinds]
+        subgrp_ids = subgrp_ids[okinds]
         prog_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             prog_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
@@ -207,7 +207,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
             internal_to_sim_haloID_prog[i] = p
             sim_to_internal_haloID_prog[p] = i
         
-        prog_snap_haloIDs = np.full(len(prog_allpart_ids), -2, dtype=int)
+        prog_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
         for ind, prog in zip(parts_in_groups, part_groups):
             prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
             
@@ -230,8 +230,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
     # Only look for descendant data if there is a descendant snapshot
     if desc_snap != None:
 
-        desc_allpart_ids = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                        numThreads=8)
         grp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber',
                                numThreads=8)
         subgrp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber',
@@ -240,9 +238,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
                                      numThreads=8)
 
         # Remove particles not associated to a subgroup
-        # desc_part_ids = desc_part_ids[subgrp_ids != 1073741824]
-        # grp_ids = grp_ids[subgrp_ids != 1073741824]
-        # subgrp_ids = subgrp_ids[subgrp_ids != 1073741824]
+        okinds = subgrp_ids != 1073741824
+        desc_part_ids = desc_part_ids[okinds]
+        grp_ids = grp_ids[okinds]
+        subgrp_ids = subgrp_ids[okinds]
         desc_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             desc_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
@@ -264,7 +263,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
             internal_to_sim_haloID_desc[i] = p
             sim_to_internal_haloID_desc[p] = i
 
-        desc_snap_haloIDs = np.full(len(desc_allpart_ids), -2, dtype=int)
+        desc_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
         for ind, desc in zip(parts_in_groups, part_groups):
             desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
 
@@ -312,7 +311,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, part_type, savepath='Me
 
     print('Processed', len(results.keys()), 'halos in snapshot', snap)
     size = len(results.keys())
-    print(results.keys())
+
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '_PartType' + str(part_type) +'.hdf5', 'w')
 
     for num, haloID in enumerate(results.keys()):
