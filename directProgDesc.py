@@ -253,6 +253,13 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     # Extract particle IDs, if not using dark matter this must be all particles present at all 3 snapshots
     if part_type == 1:
         part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+
+        preprogpart_masses = np.array([])
+        predescpart_masses = np.array([])
+        preprog_gal_ms = np.array([])
+        preprog_sub_ids = np.array([])
+        predesc_gal_ms = np.array([])
+        predesc_sub_ids = np.array([])
     else:
         # Get the particle IDs in each snapshot
         snap_part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
@@ -260,52 +267,50 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         if prog_snap != None:
             progsnap_part_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                              numThreads=8)
+            # Get halo IDs and halo data
+            prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+            prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
+            preprog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                          noH=False,
+                                          physicalUnits=False, numThreads=8)[:, part_type]
+            preprogpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass',
+                                              noH=False,
+                                              physicalUnits=False, numThreads=8)
+
+            preprog_sub_ids = np.zeros(prog_grp_ids.size, dtype=float)
+            for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
+                preprog_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+                
         else:
             progsnap_part_ids = np.array([])
+            preprog_sub_ids = np.array([])
+            preprogpart_masses = np.array([])
+            preprog_gal_ms = np.array([])
             
         if desc_snap != None:
             descsnap_part_ids = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                              numThreads=8)
+            # Get halo IDs and halo data
+            desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+            desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
+            predesc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                          noH=False,
+                                          physicalUnits=False, numThreads=8)[:, part_type]
+            predescpart_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/Mass',
+                                              noH=False,
+                                              physicalUnits=False, numThreads=8)
+
+            predesc_sub_ids = np.zeros(desc_grp_ids.size, dtype=float)
+            for (ind, g), sg in zip(enumerate(desc_grp_ids), desc_subgrp_ids):
+                predesc_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
         else:
             descsnap_part_ids = np.array([])
+            predesc_sub_ids = np.array([])
+            predescpart_masses = np.array([])
+            predesc_gal_ms = np.array([])
 
         # Combine the particle id arrays and only take unique values
         part_ids = np.unique(np.concatenate([snap_part_ids, progsnap_part_ids, descsnap_part_ids]))
-        
-    # Get the necessary particle information
-    if part_type != 1:
-
-        # Get halo IDs and halo data
-        prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
-        preprog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                   physicalUnits=False, numThreads=8)[:, part_type]
-        preprogpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                          physicalUnits=False, numThreads=8)
-
-        preprog_sub_ids = np.zeros(prog_grp_ids.size, dtype=float)
-        for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
-            preprog_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
-
-        # Get halo IDs and halo data
-        desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
-        predesc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                   physicalUnits=False, numThreads=8)[:, part_type]
-        predescpart_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                          physicalUnits=False, numThreads=8)
-
-        predesc_sub_ids = np.zeros(desc_grp_ids.size, dtype=float)
-        for (ind, g), sg in zip(enumerate(desc_grp_ids), desc_subgrp_ids):
-            predesc_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
-
-    else:
-        preprogpart_masses = np.array([])
-        predescpart_masses = np.array([])
-        preprog_gal_ms = np.array([])
-        preprog_sub_ids = np.array([])
-        predesc_gal_ms = np.array([])
-        predesc_sub_ids = np.array([])
 
     # =============== Current Snapshot ===============
 
