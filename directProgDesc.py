@@ -151,8 +151,6 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
             uniprog_counts = uniprog_counts[1:]
         
         # Get progenitor halo masses
-        print(prog_ids)
-        print(uniprog_haloids)
         prog_masses = np.array([prog_ms[prog_ids == p] for p in uniprog_haloids]).flatten()
         
         # Get progenitor particle masses
@@ -272,7 +270,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         # Get halo IDs and halo data
         prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
         prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
-        prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+        preprog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
                                    physicalUnits=True, numThreads=8)[:, 4]
         preprogpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
                                           physicalUnits=True, numThreads=8)
@@ -284,7 +282,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
             # Get halo IDs and halo data
         desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
         desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
-        desc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+        predesc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
                                    physicalUnits=True, numThreads=8)[:, 4]
         predescpart_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
                                           physicalUnits=True, numThreads=8)
@@ -389,15 +387,18 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
                 prog_snap_haloIDs[ind] = sim_to_internal_haloID_prog[prog]
                 progpart_masses[ind] = m
 
-            prog_sub_ids = np.zeros(preprog_sub_ids.size, dtype=int)
-            ind = 0
-            for prog in preprog_sub_ids:
+            prog_sub_ids = []
+            prog_gal_ms = []
+            for prog, m in zip(preprog_sub_ids, preprog_gal_ms):
                 try:
-                    prog_sub_ids[ind] = sim_to_internal_haloID_prog[prog]
-                    ind += 1
+                    prog_sub_ids.append(sim_to_internal_haloID_prog[prog])
+                    prog_gal_ms.append(m)
                 except KeyError:
                     continue
-                
+
+            prog_sub_ids = np.array(prog_sub_ids)
+            prog_gal_ms = np.array(prog_gal_ms)
+            
         else:
             prog_sub_ids = np.array([], copy=False)
             prog_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
@@ -470,14 +471,17 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
                 desc_snap_haloIDs[ind] = sim_to_internal_haloID_desc[desc]
                 descpart_masses[ind] = m
                 
-            desc_sub_ids = np.zeros(predesc_sub_ids.size, dtype=int)
-            ind = 0
-            for desc in predesc_sub_ids:
+            desc_sub_ids = []
+            desc_gal_ms = []
+            for desc, m in zip(predesc_sub_ids, predesc_gal_ms):
                 try:
-                    desc_sub_ids[ind] = sim_to_internal_haloID_desc[desc]
-                    ind += 1
+                    desc_sub_ids.append(sim_to_internal_haloID_desc[desc])
+                    desc_gal_ms.append(m)
                 except KeyError:
                     continue
+
+            desc_sub_ids = np.array(desc_sub_ids)
+            desc_gal_ms = np.array(desc_gal_ms)
                 
         else:
             desc_sub_ids = np.array([], copy=False)
