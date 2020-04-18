@@ -250,7 +250,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     :return: None
     """
 
-    # Extract particle IDs, if in not using dark matter this must be all particles present at all 3 snapshots
+    # Extract particle IDs, if not using dark matter this must be all particles present at all 3 snapshots
     if part_type == 1:
         part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
     else:
@@ -271,7 +271,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
         prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
         preprog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                   physicalUnits=True, numThreads=8)[:, 4]
+                                   physicalUnits=True, numThreads=8)[:, part_type]
         preprogpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
                                           physicalUnits=True, numThreads=8)
 
@@ -283,7 +283,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
         desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
         predesc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                   physicalUnits=True, numThreads=8)[:, 4]
+                                   physicalUnits=True, numThreads=8)[:, part_type]
         predescpart_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/Mass', noH=True,
                                           physicalUnits=True, numThreads=8)
 
@@ -611,8 +611,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 sim_desc_haloids[ind] = internal_to_sim_haloID_desc_st[desc]
 
             # Assign values to the corresponding index for the dark matter progenitors
-            star_prog_mass_contribution = np.zeros_like(dm_sim_desc_haloids)
-            star_prog_mass = np.zeros_like(dm_sim_desc_haloids)
+            star_prog_mass_contribution = np.zeros_like(dm_sim_prog_haloids)
+            star_prog_mass = np.zeros_like(dm_sim_prog_haloids)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
                 ind = np.where(dm_sim_prog_haloids == p)
                 star_prog_mass_contribution[ind] = cont
@@ -658,8 +658,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 sim_desc_haloids[ind] = internal_to_sim_haloID_desc_gas[desc]
 
             # Assign values to the corresponding index for the dark matter progenitors
-            gas_prog_mass_contribution = np.zeros_like(dm_sim_desc_haloids)
-            gas_prog_mass = np.zeros_like(dm_sim_desc_haloids)
+            gas_prog_mass_contribution = np.zeros_like(dm_sim_prog_haloids)
+            gas_prog_mass = np.zeros_like(dm_sim_prog_haloids)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
                 ind = np.where(dm_sim_prog_haloids == p)
                 gas_prog_mass_contribution[ind] = cont
@@ -707,8 +707,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 sim_desc_haloids[ind] = internal_to_sim_haloID_desc_bh[desc]
 
             # Assign values to the corresponding index for the dark matter progenitors
-            bh_prog_mass_contribution = np.zeros_like(dm_sim_desc_haloids)
-            bh_prog_mass = np.zeros_like(dm_sim_desc_haloids)
+            bh_prog_mass_contribution = np.zeros_like(dm_sim_prog_haloids)
+            bh_prog_mass = np.zeros_like(dm_sim_prog_haloids)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
                 ind = np.where(dm_sim_prog_haloids == p)
                 bh_prog_mass_contribution[ind] = cont
