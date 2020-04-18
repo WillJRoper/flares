@@ -30,7 +30,10 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
         mass, hmr = gal_data[snap][i]['m'], gal_data[snap][i]['hmr']
 
         # Get progenitors
-        progs = hdf[str(i)]['Prog_haloIDs'][...]
+        try:
+            progs = hdf[str(i)]['Prog_haloIDs'][...]
+        except KeyError:
+            continue
 
         if len(progs) == 0:
 
