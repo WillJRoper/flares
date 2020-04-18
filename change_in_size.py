@@ -41,12 +41,12 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
         else:
 
             # Get progenitor properties
-            prog_cont = hdf[str(i)]['prog_npart_contribution'][...] / hdf[str(i)]['Prog_nPart'][...]
-            prog_masses = np.array([gal_data[prog_snap][p]['m'] * c for p, c in zip(progs, prog_cont)])
+            prog_cont = hdf[str(i)]['prog_npart_contribution'][...]
+            prog_masses = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
             prog_hmrs = np.array([gal_data[prog_snap][p]['hmr'] for p in progs])
 
             # Get main progenitor information
-            main = np.argmax(prog_masses)
+            main = np.argmax(prog_cont)
             main_mass = prog_masses[main]
             main_hmr = prog_hmrs[main]
 
@@ -58,8 +58,8 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
         else:
 
             # Define change in properties
-            delta_hmrs[ind] = (hmr - main_hmr) / hmr
-            delta_ms[ind] = (mass - main_mass) / mass
+            delta_hmrs[ind] = (hmr - main_hmr) / main_hmr
+            delta_ms[ind] = (mass - main_mass) / main_mass
 
     hdf.close()
 
@@ -89,16 +89,16 @@ def main_change(snap, prog_snap, masslim=1e8):
         grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
         gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                 physicalUnits=True, numThreads=8)[:, 4]
-        gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                physicalUnits=True, numThreads=8)[:, 4] * 10**10
+        gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                              numThreads=8)[:, 4] * 10**10
 
         # Get halo IDs and halo data
         prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
         prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
         prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
                                 physicalUnits=True, numThreads=8)[:, 4]
-        prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                                physicalUnits=True, numThreads=8)[:, 4] * 10**10
+        prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                   numThreads=8)[:, 4] * 10**10
 
         # Remove particles not associated to a subgroup
         okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 0)
