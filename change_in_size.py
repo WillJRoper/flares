@@ -134,8 +134,11 @@ def main_change(snap, prog_snap, masslim=1e8):
             gal_data[prog_snap][i] = {'m': m, 'hmr': hmr}
 
         # Get change in stellar mass and half mass radius
-        delta_hmr_dict[reg], delta_ms_dict[reg] = get_change_in_radius(snap, prog_snap, savepath, gal_data,
-                                                                       halo_ids[gal_ms > masslim])
+        try:
+            delta_hmr_dict[reg], delta_ms_dict[reg] = get_change_in_radius(snap, prog_snap, savepath, gal_data,
+                                                                           halo_ids[gal_ms > masslim])
+        except OSError:
+            continue
 
     delta_hmr = np.concatenate(list(delta_hmr_dict.values()))
     delta_mass = np.concatenate(list(delta_ms_dict.values()))
