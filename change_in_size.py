@@ -85,8 +85,10 @@ def main_change(snap, prog_snap, masslim=1e8):
     delta_ms_dict = {}
 
     # Define snapshots
-    snaps = ['001_z014p000', '002_z013p000']
-    prog_snaps = ['000_z015p000', '001_z014p000']
+    snaps = ['001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
+             '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+    prog_snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
+                  '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000']
 
     for snap, prog_snap in zip(snaps, prog_snaps):
 
@@ -161,6 +163,9 @@ def main_change(snap, prog_snap, masslim=1e8):
 
     delta_hmr = np.concatenate(delta_hmr)
     delta_mass = np.concatenate(delta_mass)
+
+    print(delta_hmr)
+    print(delta_mass)
 
     # Set up plot
     fig = plt.figure()
