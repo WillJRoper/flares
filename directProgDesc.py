@@ -405,6 +405,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
             prog_gal_ms = np.array(prog_gal_ms)
             
         else:
+            prog_gal_ms = np.array([], copy=False)
             prog_sub_ids = np.array([], copy=False)
             prog_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
             progpart_masses = np.full(len(part_ids), -2, dtype=float)
@@ -422,6 +423,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     else:  # Assign an empty array if the snapshot is less than the earliest (000)
         prog_snap_haloIDs = np.array([], copy=False)
         progpart_masses = np.array([], copy=False)
+        prog_gal_ms = np.array([], copy=False)
         prog_sub_ids = np.array([], copy=False)
         internal_to_sim_haloID_prog = {}
         sim_to_internal_haloID_prog = {}
@@ -489,6 +491,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
             desc_gal_ms = np.array(desc_gal_ms, dtype=float)
                 
         else:
+            desc_gal_ms = np.array([], copy=False)
             desc_sub_ids = np.array([], copy=False)
             desc_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
             descpart_masses = np.full(len(part_ids), -2, dtype=float)
@@ -507,6 +510,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         desc_snap_haloIDs = np.array([], copy=False)
         descpart_masses = np.array([], copy=False)
         desc_sub_ids = np.array([], copy=False)
+        desc_gal_ms = np.array([], copy=False)
         internal_to_sim_haloID_desc = {}
         sim_to_internal_haloID_desc = {}
         desc_counts = []
