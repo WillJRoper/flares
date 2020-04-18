@@ -620,9 +620,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             star_prog_mass_contribution = np.zeros_like(dm_sim_prog_haloids)
             star_prog_mass = np.zeros_like(dm_sim_prog_haloids)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
-                ind = np.where(dm_sim_prog_haloids == p)
-                if len(ind) == 0:
+                if not p in dm_sim_prog_haloids:
                     continue
+                ind = np.where(dm_sim_prog_haloids == p)
                 star_prog_mass_contribution[ind] = cont
                 star_prog_mass[ind] = mass
                 
@@ -630,9 +630,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             star_desc_mass_contribution = np.zeros_like(dm_sim_desc_haloids)
             star_desc_mass = np.zeros_like(dm_sim_desc_haloids)
             for p, cont, mass in zip(sim_desc_haloids, desc_mass_contribution, desc_npart):
-                ind = np.where(dm_sim_desc_haloids == p)
-                if len(ind) == 0:
+                if not p in dm_sim_desc_haloids:
                     continue
+                ind = np.where(dm_sim_desc_haloids == p)
                 star_desc_mass_contribution[ind] = cont
                 star_desc_mass[ind] = mass
 
@@ -671,9 +671,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             gas_prog_mass_contribution = np.zeros_like(dm_sim_prog_haloids)
             gas_prog_mass = np.zeros_like(dm_sim_prog_haloids)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
-                ind = np.where(dm_sim_prog_haloids == p)
-                if len(ind) == 0:
+                if not p in dm_sim_prog_haloids:
                     continue
+                ind = np.where(dm_sim_prog_haloids == p)
                 gas_prog_mass_contribution[ind] = cont
                 gas_prog_mass[ind] = mass
 
@@ -681,9 +681,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             gas_desc_mass_contribution = np.zeros_like(dm_sim_desc_haloids)
             gas_desc_mass = np.zeros_like(dm_sim_desc_haloids)
             for p, cont, mass in zip(sim_desc_haloids, desc_mass_contribution, desc_npart):
-                ind = np.where(dm_sim_desc_haloids == p)
-                if len(ind) == 0:
+                if not p in dm_sim_desc_haloids:
                     continue
+                ind = np.where(dm_sim_desc_haloids == p)
                 gas_desc_mass_contribution[ind] = cont
                 gas_desc_mass[ind] = mass
 
@@ -724,9 +724,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             bh_prog_mass_contribution = np.zeros_like(dm_sim_prog_haloids)
             bh_prog_mass = np.zeros_like(dm_sim_prog_haloids)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
-                ind = np.where(dm_sim_prog_haloids == p)
-                if len(ind) == 0:
+                if not p in dm_sim_prog_haloids:
                     continue
+                ind = np.where(dm_sim_prog_haloids == p)
                 bh_prog_mass_contribution[ind] = cont
                 bh_prog_mass[ind] = mass
 
@@ -734,9 +734,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             bh_desc_mass_contribution = np.zeros_like(dm_sim_desc_haloids)
             bh_desc_mass = np.zeros_like(dm_sim_desc_haloids)
             for p, cont, mass in zip(sim_desc_haloids, desc_mass_contribution, desc_npart):
-                ind = np.where(dm_sim_desc_haloids == p)
-                if len(ind) == 0:
+                if not p in dm_sim_desc_haloids:
                     continue
+                ind = np.where(dm_sim_desc_haloids == p)
                 bh_desc_mass_contribution[ind] = cont
                 bh_desc_mass[ind] = mass
 
