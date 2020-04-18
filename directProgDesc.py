@@ -202,7 +202,7 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
             unidesc_counts = unidesc_counts[1:]
 
         # Get descenitor halo masses
-        desc_masses = np.array([desc_ms[desc_ids == p] for p in unidesc_haloids]).flatten()
+        desc_masses = np.array([desc_ms[desc_ids == d] for d in unidesc_haloids]).flatten()
 
         # Get descenitor particle masses
         desc_partmass_contributed = descpart_masses[current_halo_pids]
@@ -279,7 +279,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
             preprog_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
 
-            # Get halo IDs and halo data
+        # Get halo IDs and halo data
         desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
         desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
         predesc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
@@ -294,9 +294,9 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     else:
         preprogpart_masses = np.array([])
         predescpart_masses = np.array([])
-        prog_gal_ms = np.array([])
+        preprog_gal_ms = np.array([])
         preprog_sub_ids = np.array([])
-        desc_gal_ms = np.array([])
+        predesc_gal_ms = np.array([])
         predesc_sub_ids = np.array([])
 
     # =============== Current Snapshot ===============
@@ -480,8 +480,8 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
                 except KeyError:
                     continue
 
-            desc_sub_ids = np.array(desc_sub_ids)
-            desc_gal_ms = np.array(desc_gal_ms)
+            desc_sub_ids = np.array(desc_sub_ids, dtype=int)
+            desc_gal_ms = np.array(desc_gal_ms, dtype=float)
                 
         else:
             desc_sub_ids = np.array([], copy=False)
@@ -580,8 +580,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             print('Write progress: ', progress, '%', haloID)
 
         # Αssign dark matter haloids for comparison to other particle types
-        dm_sim_desc_haloids = sim_desc_haloids
-        dm_sim_prog_haloids = sim_prog_haloids
+        dm_sim_desc_haloids = sim_desc_haloids[:]
+        dm_sim_prog_haloids = sim_prog_haloids[:]
 
         # Write out the data produced
         halo = hdf.create_group(str(haloID))  # create halo group
@@ -602,11 +602,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_stars[haloID]
 
-            sim_prog_haloids = np.zeros_like(prog_haloids)
+            sim_prog_haloids = np.zeros(len(prog_haloids))
             for ind, prog in enumerate(prog_haloids):
                 sim_prog_haloids[ind] = internal_to_sim_haloID_prog_st[prog]
 
-            sim_desc_haloids = np.zeros_like(desc_haloids)
+            sim_desc_haloids = np.zeros(len(desc_haloids))
             for ind, desc in enumerate(desc_haloids):
                 sim_desc_haloids[ind] = internal_to_sim_haloID_desc_st[desc]
 
@@ -649,11 +649,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_gas[haloID]
 
-            sim_prog_haloids = np.zeros_like(prog_haloids)
+            sim_prog_haloids = np.zeros(len(prog_haloids))
             for ind, prog in enumerate(prog_haloids):
                 sim_prog_haloids[ind] = internal_to_sim_haloID_prog_gas[prog]
 
-            sim_desc_haloids = np.zeros_like(desc_haloids)
+            sim_desc_haloids = np.zeros(len(desc_haloids))
             for ind, desc in enumerate(desc_haloids):
                 sim_desc_haloids[ind] = internal_to_sim_haloID_desc_gas[desc]
 
@@ -698,11 +698,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_bh[haloID]
 
-            sim_prog_haloids = np.zeros_like(prog_haloids)
+            sim_prog_haloids = np.zeros(len(prog_haloids))
             for ind, prog in enumerate(prog_haloids):
                 sim_prog_haloids[ind] = internal_to_sim_haloID_prog_bh[prog]
 
-            sim_desc_haloids = np.zeros_like(desc_haloids)
+            sim_desc_haloids = np.zeros(len(desc_haloids))
             for ind, desc in enumerate(desc_haloids):
                 sim_desc_haloids[ind] = internal_to_sim_haloID_desc_bh[desc]
 
