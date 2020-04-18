@@ -59,7 +59,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
 
             # Define change in properties
             delta_hmrs[ind] = (hmr - main_hmr) / main_hmr
-            delta_ms[ind] = (mass - main_mass) / main_mass
+            delta_ms[ind] = (mass - main_mass) / np.sum(prog_masses)
 
     hdf.close()
 
