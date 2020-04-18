@@ -33,6 +33,9 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
         try:
             progs = hdf[str(i)]['Prog_haloIDs'][...]
         except KeyError:
+            # Define change in properties
+            delta_hmrs[ind] = 2**30
+            delta_ms[ind] = 2**30
             continue
 
         if len(progs) == 0:
@@ -146,7 +149,7 @@ def main_change(snap, prog_snap, masslim=1e8):
                      norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     # Label axes
-    ax.set_xlabel(r'$\Delta M_{\star}/M_{\mathrm{prog}, \star}$')
+    ax.set_xlabel(r'$\Delta M_{\star}/\sum M_{\mathrm{progs}, \star}$')
     ax.set_ylabel('$\Delta R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{prog}}$')
 
     fig.colorbar(cbar, ax=ax)
@@ -161,4 +164,4 @@ for reg in range(0, 40):
     else:
         regions.append(str(reg))
 
-main_change(snap='009_z006p000', prog_snap='008_z007p000', masslim=10**9.5)
+main_change(snap='010_z005p000', prog_snap='009_z006p000', masslim=10**9.5)
