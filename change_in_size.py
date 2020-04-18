@@ -85,8 +85,8 @@ def main_change(snap, prog_snap, masslim=1e8):
     delta_ms_dict = {}
 
     # Define snapshots
-    snaps = ['001_z014p000', '002_z013p000', '003_z012p000']
-    prog_snaps = ['000_z015p000', '001_z014p000', '002_z013p000']
+    snaps = ['001_z014p000', '002_z013p000']
+    prog_snaps = ['000_z015p000', '001_z014p000']
 
     for snap, prog_snap in zip(snaps, prog_snaps):
 
@@ -100,20 +100,23 @@ def main_change(snap, prog_snap, masslim=1e8):
             path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
             # Get halo IDs and halo data
-            subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-            grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-            gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                    physicalUnits=True, numThreads=8)[:, 4]
-            gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                  numThreads=8)[:, 4] * 10**10
+            try:
+                subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+                grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+                gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                        physicalUnits=True, numThreads=8)[:, 4]
+                gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                      numThreads=8)[:, 4] * 10**10
 
-            # Get halo IDs and halo data
-            prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
-            prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
-            prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
-                                    physicalUnits=True, numThreads=8)[:, 4]
-            prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                       numThreads=8)[:, 4] * 10**10
+                # Get halo IDs and halo data
+                prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+                prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
+                prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
+                                        physicalUnits=True, numThreads=8)[:, 4]
+                prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                           numThreads=8)[:, 4] * 10**10
+            except ValueError:
+                continue
 
             # Remove particles not associated to a subgroup
             okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 0)
