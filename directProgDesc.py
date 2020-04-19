@@ -679,6 +679,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             # Assign values to the corresponding index for the dark matter progenitors
             gas_prog_mass_contribution = np.zeros(len(dm_sim_prog_haloids), dtype=float)
             gas_prog_mass = np.zeros(len(dm_sim_prog_haloids), dtype=float)
+            print(sim_prog_haloids, prog_mass_contribution, prog_npart)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
                 if not p in dm_sim_prog_haloids:
                     continue
