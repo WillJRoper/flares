@@ -580,11 +580,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
          ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[haloID]
 
-        sim_prog_haloids = np.zeros_like(prog_haloids)
+        sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
         for ind, prog in enumerate(prog_haloids):
             sim_prog_haloids[ind] = internal_to_sim_haloID_prog_dm[prog]
 
-        sim_desc_haloids = np.zeros_like(desc_haloids)
+        sim_desc_haloids = np.zeros(len(desc_haloids), dtype=float)
         for ind, desc in enumerate(desc_haloids):
             sim_desc_haloids[ind] = internal_to_sim_haloID_desc_dm[desc]
 
@@ -617,17 +617,17 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_stars[haloID]
 
-            sim_prog_haloids = np.zeros(len(prog_haloids))
+            sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
             for ind, prog in enumerate(prog_haloids):
                 sim_prog_haloids[ind] = internal_to_sim_haloID_prog_st[prog]
 
-            sim_desc_haloids = np.zeros(len(desc_haloids))
+            sim_desc_haloids = np.zeros(len(desc_haloids), dtype=float)
             for ind, desc in enumerate(desc_haloids):
                 sim_desc_haloids[ind] = internal_to_sim_haloID_desc_st[desc]
 
             # Assign values to the corresponding index for the dark matter progenitors
-            star_prog_mass_contribution = np.zeros_like(dm_sim_prog_haloids)
-            star_prog_mass = np.zeros_like(dm_sim_prog_haloids)
+            star_prog_mass_contribution = np.zeros(len(dm_sim_prog_haloids), dtype=float)
+            star_prog_mass = np.zeros(len(dm_sim_prog_haloids), dtype=float)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
                 if not p in dm_sim_prog_haloids:
                     continue
@@ -636,8 +636,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 star_prog_mass[ind] = mass
                 
             # Assign values to the corresponding index for the dark matter descendents
-            star_desc_mass_contribution = np.zeros_like(dm_sim_desc_haloids)
-            star_desc_mass = np.zeros_like(dm_sim_desc_haloids)
+            star_desc_mass_contribution = np.zeros(len(dm_sim_desc_haloids), dtype=float)
+            star_desc_mass = np.zeros(len(dm_sim_desc_haloids), dtype=float)
             for p, cont, mass in zip(sim_desc_haloids, desc_mass_contribution, desc_npart):
                 if not p in dm_sim_desc_haloids:
                     continue
@@ -655,12 +655,12 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                                 dtype=float)  # number of particles in each descendant
         else:
 
-            halo.create_dataset('prog_stellar_mass_contribution', data=np.array([]), dtype=int)  # Mass contribution
-            halo.create_dataset('desc_stellar_mass_contribution', data=np.array([]), dtype=int)  # Mass contribution
+            halo.create_dataset('prog_stellar_mass_contribution', data=np.array([]), dtype=float)  # Mass contribution
+            halo.create_dataset('desc_stellar_mass_contribution', data=np.array([]), dtype=float)  # Mass contribution
             halo.create_dataset('Prog_stellar_mass', data=np.array([]),
-                                dtype=int)  # number of particles in each progenitor
+                                dtype=float)  # number of particles in each progenitor
             halo.create_dataset('Desc_stellar_mass', data=np.array([]),
-                                dtype=int)  # number of particles in each descendant
+                                dtype=float)  # number of particles in each descendant
 
         # Write out gas data
         if haloID in results_gas:
@@ -668,17 +668,17 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_gas[haloID]
 
-            sim_prog_haloids = np.zeros(len(prog_haloids))
+            sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
             for ind, prog in enumerate(prog_haloids):
                 sim_prog_haloids[ind] = internal_to_sim_haloID_prog_gas[prog]
 
-            sim_desc_haloids = np.zeros(len(desc_haloids))
+            sim_desc_haloids = np.zeros(len(desc_haloids), dtype=float)
             for ind, desc in enumerate(desc_haloids):
                 sim_desc_haloids[ind] = internal_to_sim_haloID_desc_gas[desc]
 
             # Assign values to the corresponding index for the dark matter progenitors
-            gas_prog_mass_contribution = np.zeros_like(dm_sim_prog_haloids)
-            gas_prog_mass = np.zeros_like(dm_sim_prog_haloids)
+            gas_prog_mass_contribution = np.zeros(len(dm_sim_prog_haloids), dtype=float)
+            gas_prog_mass = np.zeros(len(dm_sim_prog_haloids), dtype=float)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
                 if not p in dm_sim_prog_haloids:
                     continue
@@ -687,8 +687,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 gas_prog_mass[ind] = mass
 
             # Assign values to the corresponding index for the dark matter descendents
-            gas_desc_mass_contribution = np.zeros_like(dm_sim_desc_haloids)
-            gas_desc_mass = np.zeros_like(dm_sim_desc_haloids)
+            gas_desc_mass_contribution = np.zeros(len(dm_sim_desc_haloids), dtype=float)
+            gas_desc_mass = np.zeros(len(dm_sim_desc_haloids), dtype=float)
             for p, cont, mass in zip(sim_desc_haloids, desc_mass_contribution, desc_npart):
                 if not p in dm_sim_desc_haloids:
                     continue
@@ -721,17 +721,17 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             (nprog, prog_haloids, prog_npart, prog_mass_contribution,
              ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_bh[haloID]
 
-            sim_prog_haloids = np.zeros(len(prog_haloids))
+            sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
             for ind, prog in enumerate(prog_haloids):
                 sim_prog_haloids[ind] = internal_to_sim_haloID_prog_bh[prog]
 
-            sim_desc_haloids = np.zeros(len(desc_haloids))
+            sim_desc_haloids = np.zeros(len(desc_haloids), dtype=float)
             for ind, desc in enumerate(desc_haloids):
                 sim_desc_haloids[ind] = internal_to_sim_haloID_desc_bh[desc]
 
             # Assign values to the corresponding index for the dark matter progenitors
-            bh_prog_mass_contribution = np.zeros_like(dm_sim_prog_haloids)
-            bh_prog_mass = np.zeros_like(dm_sim_prog_haloids)
+            bh_prog_mass_contribution = np.zeros(len(dm_sim_prog_haloids), dtype=float)
+            bh_prog_mass = np.zeros(len(dm_sim_prog_haloids), dtype=float)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
                 if not p in dm_sim_prog_haloids:
                     continue
@@ -740,8 +740,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 bh_prog_mass[ind] = mass
 
             # Assign values to the corresponding index for the dark matter descendents
-            bh_desc_mass_contribution = np.zeros_like(dm_sim_desc_haloids)
-            bh_desc_mass = np.zeros_like(dm_sim_desc_haloids)
+            bh_desc_mass_contribution = np.zeros(len(dm_sim_desc_haloids), dtype=float)
+            bh_desc_mass = np.zeros(len(dm_sim_desc_haloids), dtype=float)
             for p, cont, mass in zip(sim_desc_haloids, desc_mass_contribution, desc_npart):
                 if not p in dm_sim_desc_haloids:
                     continue
