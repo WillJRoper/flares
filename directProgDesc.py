@@ -683,6 +683,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 if not p in dm_sim_prog_haloids:
                     continue
                 ind = np.where(dm_sim_prog_haloids == p)
+                print(ind, mass)
                 gas_prog_mass_contribution[ind] = cont
                 gas_prog_mass[ind] = mass
 
@@ -800,6 +801,7 @@ for reg in reversed(regions):
 if __name__ == '__main__':
 
     ind = int(sys.argv[1])
+    print(ind)
     print(reg_snaps[ind])
 
     mainDirectProgDesc(snap=reg_snaps[ind][2], prog_snap=reg_snaps[ind][1], desc_snap=reg_snaps[ind][3],
