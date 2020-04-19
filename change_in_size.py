@@ -119,6 +119,8 @@ def main_change(snap, prog_snap, masslim=1e8):
                                            numThreads=8)[:, 4] * 10**10
             except ValueError:
                 continue
+            except OSError:
+                continue
 
             # Remove particles not associated to a subgroup
             okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 0)
