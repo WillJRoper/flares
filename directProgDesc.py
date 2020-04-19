@@ -151,6 +151,11 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
             uniprog_counts = uniprog_counts[1:]
         
         # Get progenitor halo masses
+        for p in uniprog_haloids:
+            if len(prog_ms[prog_ids == p]) == 2:
+                print("the issue is here")
+                print(uniprog_haloids)
+                print(prog_ids[prog_ids == p])
         prog_masses = np.array([prog_ms[prog_ids == p] for p in uniprog_haloids]).flatten()
         
         # Get progenitor particle masses
@@ -396,6 +401,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
             prog_gal_ms = []
             for prog, m in zip(preprog_sub_ids, preprog_gal_ms):
                 try:
+                    print(prog, sim_to_internal_haloID_prog[prog], m)
                     prog_sub_ids.append(sim_to_internal_haloID_prog[prog])
                     prog_gal_ms.append(m)
                 except KeyError:
