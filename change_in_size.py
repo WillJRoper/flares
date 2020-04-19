@@ -36,13 +36,14 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
             # Define change in properties
             delta_hmrs[ind] = 2**30
             delta_ms[ind] = 2**30
+            print(i, ind, "Galaxy has no dark matter")
             continue
 
         if len(progs) == 0:
 
             # Define change in properties
-            main_hmr = 0
-            main_mass = 0
+            delta_hmrs[ind] = 2**30
+            delta_ms[ind] = 2**30
 
         else:
 
@@ -56,16 +57,9 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
             main_mass = prog_masses[main]
             main_hmr = prog_hmrs[main]
 
-        if mass < main_mass:
-            # Define change in properties
-            delta_hmrs[ind] = 2**30
-            delta_ms[ind] = 2**30
-
-        else:
-
             # Define change in properties
             delta_hmrs[ind] = (hmr - main_hmr) / main_hmr
-            delta_ms[ind] = (mass - main_mass) / (np.sum(prog_masses) - main_mass)
+            delta_ms[ind] = (mass - main_mass) / main_mass
 
     hdf.close()
 
@@ -178,8 +172,8 @@ def main_change(snap, prog_snap, masslim=1e8):
                      norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     # Label axes
-    ax.set_xlabel(r'$\Delta M_{\star}/\sum M_{\mathrm{progs}, \star}$')
-    ax.set_ylabel('$\Delta R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{prog}}$')
+    ax.set_xlabel(r'$\Delta M_{\star}/M_{\star, \mathrm{main prog}}$')
+    ax.set_ylabel('$\Delta R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
 
     fig.colorbar(cbar, ax=ax)
 
