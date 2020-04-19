@@ -59,7 +59,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
 
             # Define change in properties
             delta_hmrs[ind] = (hmr - main_hmr) / main_hmr
-            delta_ms[ind] = (mass - np.sum(prog_masses)) / np.sum(prog_masses)
+            delta_ms[ind] = (mass - np.sum(prog_masses))
 
     hdf.close()
 
@@ -172,7 +172,7 @@ def main_change(snap, prog_snap, masslim=1e8):
                      norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     # Label axes
-    ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}} - 1$')
+    ax.set_xlabel(r'$\Delta M_{\star}$')
     ax.set_ylabel('$\Delta R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
 
     fig.colorbar(cbar, ax=ax)
