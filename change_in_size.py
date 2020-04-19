@@ -102,7 +102,7 @@ def main_change(snap, prog_snap, masslim=1e8):
                 gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                         physicalUnits=True, numThreads=8)[:, 4]
                 gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                      numThreads=8)[:, 4] * 10**10
+                                      noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
 
                 # Get halo IDs and halo data
                 prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
@@ -110,7 +110,7 @@ def main_change(snap, prog_snap, masslim=1e8):
                 prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
                                         physicalUnits=True, numThreads=8)[:, 4]
                 prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                           numThreads=8)[:, 4] * 10**10
+                                           noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
             except ValueError:
                 continue
             except OSError:
