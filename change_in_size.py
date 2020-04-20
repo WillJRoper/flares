@@ -67,7 +67,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
     return delta_hmrs[delta_ms < 2**30], delta_ms[delta_ms < 2**30]
 
 
-def main_change(snap, prog_snap, masslim=1e8):
+def main_change(masslim=1e8):
 
     regions = []
     for reg in range(0, 40):
@@ -284,7 +284,6 @@ for reg in range(0, 40):
         regions.append('0' + str(reg))
     else:
         regions.append(str(reg))
-if sys.argv[1] == 0:
-    main_change(snap='010_z005p000', prog_snap='009_z006p000', masslim=10**8)
-else:
-    main_change_single_snap(snap='010_z005p000', prog_snap='009_z006p000', masslim=10 ** 8)
+
+main_change(masslim=10**8)
+
