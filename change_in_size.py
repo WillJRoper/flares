@@ -117,8 +117,17 @@ def main_change(masslim=1e8):
             except OSError:
                 continue
 
+            z_str = snap.split('z')[1].split('p')
+            z = float(z_str[0] + '.' + z_str[1])
+
+            # Convert inputs to physical kpc
+            convert_pMpc = 1 / (1 + z)
+
+            # Define comoving softening length in kpc
+            csoft = 0.001802390 / 0.677 * convert_pMpc
+
             # Remove particles not associated to a subgroup
-            okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 0)
+            okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 0, gal_hmrs / csoft < 1.2))
             gal_hmrs = gal_hmrs[okinds]
             gal_ms = gal_ms[okinds]
             grp_ids = grp_ids[okinds]
