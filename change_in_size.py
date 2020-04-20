@@ -59,8 +59,8 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
             main_hmr = prog_hmrs[main]
 
             # Define change in properties
-            delta_hmrs[ind] = (hmr - main_hmr) / main_hmr
-            delta_ms[ind] = (mass - np.sum(prog_masses)) / np.sum(prog_masses)
+            delta_hmrs[ind] = hmr / main_hmr
+            delta_ms[ind] = mass / np.sum(prog_masses)
 
     hdf.close()
 
@@ -161,20 +161,17 @@ def main_change(masslim=1e8):
     delta_hmr = np.concatenate(delta_hmr)
     delta_mass = np.concatenate(delta_mass)
 
-    print(delta_hmr)
-    print(delta_mass)
-
     # Set up plot
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
     # Plot results
-    cbar = ax.hexbin(delta_mass, delta_hmr, gridsize=100, mincnt=1,
+    cbar = ax.hexbin(delta_mass, delta_hmr, gridsize=100, mincnt=1, xscale='log', yscale='log',
                      norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     # Label axes
-    ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}} - 1$')
-    ax.set_ylabel('$\Delta R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
+    ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}}$')
+    ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
 
     fig.colorbar(cbar, ax=ax)
 
