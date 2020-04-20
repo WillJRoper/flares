@@ -151,11 +151,6 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
             uniprog_counts = uniprog_counts[1:]
         
         # Get progenitor halo masses
-        for p in uniprog_haloids:
-            if len(prog_ms[prog_ids == p]) == 2:
-                print("the issue is here")
-                print(uniprog_haloids)
-                print(prog_ids[prog_ids == p])
         prog_masses = np.array([prog_ms[prog_ids == p] for p in uniprog_haloids]).flatten()
         
         # Get progenitor particle masses
@@ -276,7 +271,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
             preprog_sub_ids = np.zeros(prog_grp_ids.size, dtype=float)
             for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
-                preprog_sub_ids[ind] = float(str(int(g)) + '.%07d'%int(sg))
+                preprog_sub_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
                 
         else:
             progsnap_part_ids = np.array([])
@@ -299,7 +294,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
             predesc_sub_ids = np.zeros(desc_grp_ids.size, dtype=float)
             for (ind, g), sg in zip(enumerate(desc_grp_ids), desc_subgrp_ids):
-                predesc_sub_ids[ind] = float(str(int(g)) + '.%07d'%int(sg))
+                predesc_sub_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
         else:
             descsnap_part_ids = np.array([])
             predesc_sub_ids = np.array([])
@@ -324,7 +319,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     subgrp_ids = subgrp_ids[okinds]
     halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.%07d'%int(sg))
+        halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
 
     # Sort particle IDS
     part_ids = np.sort(part_ids)
@@ -371,7 +366,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
         prog_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            prog_halo_ids[ind] = float(str(int(g)) + '.%07d'%int(sg))
+            prog_halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
 
         sorted_index = np.searchsorted(part_ids, prog_part_ids)
 
@@ -401,7 +396,6 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
             prog_gal_ms = []
             for prog, m in zip(preprog_sub_ids, preprog_gal_ms):
                 try:
-                    print(prog, sim_to_internal_haloID_prog[prog], m)
                     prog_sub_ids.append(sim_to_internal_haloID_prog[prog])
                     prog_gal_ms.append(m)
                 except KeyError:
@@ -458,7 +452,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
         desc_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            desc_halo_ids[ind] = float(str(int(g)) + '.%07d'%int(sg))
+            desc_halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
 
         sorted_index = np.searchsorted(part_ids, desc_part_ids)
 
@@ -685,12 +679,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             # Assign values to the corresponding index for the dark matter progenitors
             gas_prog_mass_contribution = np.zeros(len(dm_sim_prog_haloids), dtype=float)
             gas_prog_mass = np.zeros(len(dm_sim_prog_haloids), dtype=float)
-            print(sim_prog_haloids, prog_mass_contribution, prog_npart)
             for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
                 if not p in dm_sim_prog_haloids:
                     continue
                 ind = np.where(dm_sim_prog_haloids == p)
-                print(ind, mass)
                 gas_prog_mass_contribution[ind] = cont
                 gas_prog_mass[ind] = mass
 
