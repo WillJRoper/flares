@@ -230,7 +230,7 @@ def main_change_single_snap(snap, prog_snap, masslim=1e8):
         subgrp_ids = subgrp_ids[okinds]
         halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+            halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
 
         # Remove particles not associated to a subgroup
         okinds = prog_subgrp_ids != 1073741824
@@ -240,7 +240,7 @@ def main_change_single_snap(snap, prog_snap, masslim=1e8):
         prog_subgrp_ids = prog_subgrp_ids[okinds]
         prog_ids = np.zeros(prog_grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
-            prog_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+            prog_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
 
         # Initialise galaxy data
         gal_data = {snap: {}, prog_snap: {}}
