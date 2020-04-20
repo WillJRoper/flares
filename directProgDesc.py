@@ -276,7 +276,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
             preprog_sub_ids = np.zeros(prog_grp_ids.size, dtype=float)
             for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
-                preprog_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+                preprog_sub_ids[ind] = float(str(int(g)) + '.%07d'%int(sg))
                 
         else:
             progsnap_part_ids = np.array([])
@@ -299,7 +299,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
             predesc_sub_ids = np.zeros(desc_grp_ids.size, dtype=float)
             for (ind, g), sg in zip(enumerate(desc_grp_ids), desc_subgrp_ids):
-                predesc_sub_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+                predesc_sub_ids[ind] = float(str(int(g)) + '.%07d'%int(sg))
         else:
             descsnap_part_ids = np.array([])
             predesc_sub_ids = np.array([])
@@ -324,7 +324,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     subgrp_ids = subgrp_ids[okinds]
     halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+        halo_ids[ind] = float(str(int(g)) + '.%07d'%int(sg))
 
     # Sort particle IDS
     part_ids = np.sort(part_ids)
@@ -371,7 +371,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
         prog_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            prog_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+            prog_halo_ids[ind] = float(str(int(g)) + '.%07d'%int(sg))
 
         sorted_index = np.searchsorted(part_ids, prog_part_ids)
 
@@ -458,7 +458,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
         desc_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            desc_halo_ids[ind] = float(str(int(g)) + '.' + str(int(sg)))
+            desc_halo_ids[ind] = float(str(int(g)) + '.%07d'%int(sg))
 
         sorted_index = np.searchsorted(part_ids, desc_part_ids)
 
