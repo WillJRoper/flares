@@ -58,8 +58,6 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
             main_mass = prog_masses[main]
             main_hmr = prog_hmrs[main]
 
-            print(mass, main_mass, np.sum(prog_masses), prog_masses)
-
             # Define change in properties
             delta_hmrs[ind] = (hmr - main_hmr) / main_hmr
             delta_ms[ind] = (mass - np.sum(prog_masses)) / np.sum(prog_masses)
