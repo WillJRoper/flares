@@ -342,7 +342,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     for ind, grp in zip(parts_in_groups, part_groups):
         halo_id_part_inds.setdefault(grp, set()).update({ind})
 
-    del group_part_ids, halo_ids, subgrp_ids, parts_in_groups, part_groups, unsort_part_ids
+    del group_part_ids, halo_ids, subgrp_ids, parts_in_groups, part_groups
     gc.collect()
 
     # =============== Progenitor Snapshot ===============
