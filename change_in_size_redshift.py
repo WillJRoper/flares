@@ -103,6 +103,8 @@ def main_change(masslim=1e8):
 
             path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
+            print(reg, snap)
+
             # Get halo IDs and halo data
             try:
                 subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
@@ -188,13 +190,8 @@ def main_change(masslim=1e8):
         z_str = snap.split('z')[1].split('p')
         z = float(z_str[0] + '.' + z_str[1])
 
-        xs = np.concatenate(list(delta_ms_dict[snap].values()))
+        xs_plt = np.concatenate(list(delta_ms_dict[snap].values()))
         delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
-
-        xs_plt = xs[delta_hmr_plt > 0]
-        delta_hmr_plt = delta_hmr_plt[delta_hmr_plt > 0]
-        delta_hmr_plt = delta_hmr_plt[xs_plt > 1e8]
-        xs_plt = xs_plt[xs_plt > 1e8]
 
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, delta_hmr_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
@@ -230,7 +227,6 @@ def main_change(masslim=1e8):
                     labelright=False, labelbottom=False)
     ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
     ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
-
 
     # fig.colorbar(cbar, ax=ax)
 
