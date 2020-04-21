@@ -3,6 +3,7 @@ import matplotlib as ml
 ml.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 from matplotlib.colors import LogNorm
 import eagle_IO as E
 import h5py
@@ -224,7 +225,7 @@ def main_change(masslim=1e8, hmrcut=False):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    H, bin_edges = np.histogram(major_minor, bins=int(np.sqrt(len(major_minor))))
+    H, bin_edges = np.histogram(np.log10(major_minor), bins=int(np.sqrt(len(major_minor))))
 
     bin_wid = bin_edges[1] - bin_edges[0]
     bin_cents = bin_edges[1:] - (bin_wid / 2)
@@ -233,7 +234,7 @@ def main_change(masslim=1e8, hmrcut=False):
     plt.bar(bin_cents, H, color='k', edgecolor='k', alpha=0.6)
 
     # Label axes
-    ax.set_xlabel(r'$M_{secondary}/M_{primary}$')
+    ax.set_xlabel(r'$\log_{10}(M_{secondary}/M_{primary})$')
     ax.set_ylabel('$N$')
 
     fig.colorbar(cbar, ax=ax)
@@ -246,7 +247,7 @@ def main_change(masslim=1e8, hmrcut=False):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    H, bin_edges = np.histogram(wet_dry, bins=int(np.sqrt(len(wet_dry))))
+    H, bin_edges = np.histogram(np.log10(wet_dry), bins=100)
 
     bin_wid = bin_edges[1] - bin_edges[0]
     bin_cents = bin_edges[1:] - (bin_wid / 2)
@@ -255,28 +256,94 @@ def main_change(masslim=1e8, hmrcut=False):
     plt.bar(bin_cents, H, color='k', edgecolor='k', alpha=0.6)
 
     # Label axes
-    ax.set_xlabel(r'$f_{\mathrm{gas,merger}}$')
+    ax.set_xlabel(r'$\log_{10}(f_{\mathrm{gas,merger}})$')
     ax.set_ylabel('$N$')
-
-    fig.colorbar(cbar, ax=ax)
 
     fig.savefig('plots/wetdrymerger_hist.png', bbox_inches='tight')
 
     plt.close()
 
+    # Define limits
+    majlowlim = 0.3
+    minlowlim = 0.1
+    wetlowlim = 0.5
+    dryuplim = 0.2
+
+    # Get major/minor/accretion and wet/mix/dry divisions
+    maj_wet_inds = np.logical_and(major_minor >= majlowlim, wet_dry >= wetlowlim)
+    min_wet_inds = np.logical_and(np.logical_and(major_minor < majlowlim, major_minor >= minlowlim), wet_dry >= wetlowlim)
+    acc_wet_inds = np.logical_and(major_minor < minlowlim, wet_dry >= wetlowlim)
+    maj_dry_inds = np.logical_and(major_minor >= majlowlim, wet_dry <= dryuplim)
+    min_dry_inds = np.logical_and(np.logical_and(major_minor < majlowlim, major_minor >= minlowlim), wet_dry <= dryuplim)
+    acc_dry_inds = np.logical_and(major_minor < minlowlim, wet_dry <= dryuplim)
+    maj_mix_inds = np.logical_and(major_minor >= 0.3, np.logical_and(wet_dry < wetlowlim, wet_dry > dryuplim))
+    min_mix_inds = np.logical_and(np.logical_and(major_minor < 0.3, major_minor >= 0.1), np.logical_and(wet_dry < wetlowlim, wet_dry > dryuplim))
+    acc_mix_inds = np.logical_and(major_minor < minlowlim, np.logical_and(wet_dry < wetlowlim, wet_dry > dryuplim))
+
     # Set up plot
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    fig = plt.figure(figsize=(18, 10))
+    gs = gridspec.GridSpec(3, 6)
+    gs.update(wspace=0.0, hspace=0.0)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax3 = fig.add_subplot(gs[0, 2])
+    ax4 = fig.add_subplot(gs[1, 0])
+    ax5 = fig.add_subplot(gs[1, 1])
+    ax6 = fig.add_subplot(gs[1, 2])
+    ax7 = fig.add_subplot(gs[2, 0])
+    ax8 = fig.add_subplot(gs[2, 1])
+    ax9 = fig.add_subplot(gs[2, 2])
 
-    # Plot results
-    cbar = ax.hexbin(delta_mass, delta_hmr, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                     norm=LogNorm(), linewidths=0.2, cmap='viridis')
+    axlims_x = []
+    axlims_y = []
+    axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]
+    gridrefs = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
+    inds = [maj_wet_inds, min_wet_inds, acc_wet_inds,
+            maj_mix_inds, min_mix_inds, acc_mix_inds,
+            maj_dry_inds, min_dry_inds, acc_dry_inds]
+    labels = ['Major-Wet', 'Minor-Wet', 'Accretion-Wet',
+              'Major-Mix', 'Minor-Mix', 'Accretion-Mix',
+              'Major-Dry', 'Minor-Dry', 'Accretion-Dry']
 
-    # Label axes
-    ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}}$')
-    ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
+    for ax, (i, j), ind, lab in zip(axes, gridrefs, inds, labels):
 
-    fig.colorbar(cbar, ax=ax)
+        xs_plt = delta_mass[ind]
+        delta_hmr_plt = delta_hmr[ind]
+
+        if len(xs_plt) > 0:
+            cbar = ax.hexbin(xs_plt, delta_hmr_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
+                             norm=LogNorm(),
+                             linewidths=0.2, cmap='viridis')
+
+        ax.text(0.8, 0.9, lab, bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                transform=ax.transAxes, horizontalalignment='right', fontsize=8)
+
+        axlims_x.extend(ax.get_xlim())
+        axlims_y.extend(ax.get_ylim())
+
+        # Label axes
+        if i == 2:
+            ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}}$')
+        if j == 0:
+            ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
+
+    for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
+        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
+        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+
+    # Remove axis labels
+    ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+    ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
     fig.savefig('plots/change_in_halfmassradius_mergersplit.png', bbox_inches='tight')
 
