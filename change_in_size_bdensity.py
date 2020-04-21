@@ -21,8 +21,6 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
     # Initialise arrays for results
     delta_hmrs = np.zeros(len(gals))
     delta_ms = np.zeros(len(gals))
-    major_minor = np.zeros(len(gals))
-    wet_dry = np.zeros(len(gals))
 
     print('There are', len(gals), 'Galaxies to test in snapshot', snap)
 
@@ -39,8 +37,6 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
             # Define change in properties
             delta_hmrs[ind] = 2**30
             delta_ms[ind] = 2**30
-            major_minor[ind] = 2**30
-            wet_dry[ind] = 2**30
             print(i, ind, "Galaxy has no dark matter")
             continue
 
@@ -49,8 +45,6 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
             # Define change in properties
             delta_hmrs[ind] = 2**30
             delta_ms[ind] = 2**30
-            major_minor[ind] = 2**30
-            wet_dry[ind] = 2**30
 
         else:
 
@@ -58,27 +52,22 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
             prog_cont = hdf[str(i)]['prog_npart_contribution'][...]
             prog_masses = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
             prog_hmrs = np.array([gal_data[prog_snap][p]['hmr'] for p in progs])
-            prog_gas_mass = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
-            prog_stellar_mass = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10 ** 10
 
             # Get main progenitor information
             main = np.argmax(prog_cont)
-            main_stellar_mass = prog_stellar_mass[main]
+            main_mass = prog_masses[main]
             main_hmr = prog_hmrs[main]
 
             # Define change in properties
-            major_minor[ind] = (np.sum(prog_stellar_mass) - main_stellar_mass) / main_stellar_mass
-            wet_dry[ind] = np.sum(prog_gas_mass) / np.sum(prog_stellar_mass)
             delta_hmrs[ind] = hmr / main_hmr
             delta_ms[ind] = mass / np.sum(prog_masses)
 
     hdf.close()
 
-    return delta_hmrs[delta_ms < 2**30], delta_ms[delta_ms < 2**30], \
-           wet_dry[delta_ms < 2**30], major_minor[delta_ms < 2**30]
+    return delta_hmrs[delta_ms < 2**30], delta_ms[delta_ms < 2**30]
 
 
-def main_change(masslim=1e8, hmrcut=False):
+def main_change(masslim=1e8):
 
     regions = []
     for reg in range(0, 40):
@@ -89,8 +78,6 @@ def main_change(masslim=1e8, hmrcut=False):
 
     delta_hmr_dict = {}
     delta_ms_dict = {}
-    wet_dry_dict= {}
-    major_minor_dict = {}
 
     # Define snapshots
     snaps = ['001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
@@ -102,8 +89,6 @@ def main_change(masslim=1e8, hmrcut=False):
 
         delta_hmr_dict[snap] = {}
         delta_ms_dict[snap] = {}
-        wet_dry_dict[snap] = {}
-        major_minor_dict[snap] = {}
 
         for reg in regions:
 
@@ -142,10 +127,7 @@ def main_change(masslim=1e8, hmrcut=False):
             csoft = 0.001802390 / 0.677 * convert_pMpc
 
             # Remove particles not associated to a subgroup
-            if hmrcut:
-                okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 0, gal_hmrs / csoft < 1.2))
-            else:
-                okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 0)
+            okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 0, gal_hmrs / csoft < 1.2))
             gal_hmrs = gal_hmrs[okinds]
             gal_ms = gal_ms[okinds]
             grp_ids = grp_ids[okinds]
@@ -173,96 +155,20 @@ def main_change(masslim=1e8, hmrcut=False):
 
             # Get change in stellar mass and half mass radius
             try:
-                results_tup = get_change_in_radius(snap, prog_snap, savepath, gal_data, halo_ids[gal_ms > masslim])
-                delta_hmr_dict[snap][reg] = results_tup[0]
-                delta_ms_dict[snap][reg] = results_tup[1]
-                wet_dry_dict[snap][reg] = results_tup[2]
-                major_minor_dict[snap][reg] = results_tup[3]
+                delta_hmr_dict[snap][reg], delta_ms_dict[snap][reg] = get_change_in_radius(snap, prog_snap, savepath,
+                                                                                           gal_data,
+                                                                                           halo_ids[gal_ms > masslim])
             except OSError:
                 continue
 
     delta_hmr = []
     delta_mass = []
-    major_minor = []
-    wet_dry = []
     for snap in snaps:
         delta_hmr.append(np.concatenate(list(delta_hmr_dict[snap].values())))
         delta_mass.append(np.concatenate(list(delta_ms_dict[snap].values())))
-        major_minor.append(np.concatenate(list(major_minor_dict[snap].values())))
-        wet_dry.append(np.concatenate(list(wet_dry_dict[snap].values())))
 
     delta_hmr = np.concatenate(delta_hmr)
     delta_mass = np.concatenate(delta_mass)
-    major_minor = np.concatenate(major_minor)
-    wet_dry = np.concatenate(wet_dry)
-
-    okinds = np.logical_and(major_minor > 0, wet_dry > 0)
-    delta_hmr = delta_hmr[okinds]
-    delta_mass = delta_mass[okinds]
-    major_minor = major_minor[okinds]
-    wet_dry = wet_dry[okinds]
-
-    # Set up plot
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    # Plot results
-    cbar = ax.hexbin(major_minor, wet_dry, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                     norm=LogNorm(), linewidths=0.2, cmap='viridis')
-
-    # Label axes
-    ax.set_xlabel(r'$M_{secondary}/M_{primary}$')
-    ax.set_ylabel('$f_{\mathrm{gas,merger}}$')
-
-    fig.colorbar(cbar, ax=ax)
-
-    fig.savefig('plots/wetdrymajorminormerger.png', bbox_inches='tight')
-
-    plt.close()
-
-    # Set up plot
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    H, bin_edges = np.histogram(major_minor, bins=int(np.sqrt(len(major_minor))))
-
-    bin_wid = bin_edges[1] - bin_edges[0]
-    bin_cents = bin_edges[1:] - (bin_wid / 2)
-
-    # Plot results
-    plt.bar(bin_cents, H, color='k', edgecolor='k', alpha=0.6)
-
-    # Label axes
-    ax.set_xlabel(r'$M_{secondary}/M_{primary}$')
-    ax.set_ylabel('$N$')
-
-    fig.colorbar(cbar, ax=ax)
-
-    fig.savefig('plots/majorminormerger_hist.png', bbox_inches='tight')
-
-    plt.close()
-
-    # Set up plot
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    H, bin_edges = np.histogram(wet_dry, bins=int(np.sqrt(len(wet_dry))))
-
-    bin_wid = bin_edges[1] - bin_edges[0]
-    bin_cents = bin_edges[1:] - (bin_wid / 2)
-
-    # Plot results
-    plt.bar(bin_cents, H, color='k', edgecolor='k', alpha=0.6)
-
-    # Label axes
-    ax.set_xlabel(r'$f_{\mathrm{gas,merger}}$')
-    ax.set_ylabel('$N$')
-
-    fig.colorbar(cbar, ax=ax)
-
-    fig.savefig('plots/wetdrymerger_hist.png', bbox_inches='tight')
-
-    plt.close()
 
     # Set up plot
     fig = plt.figure()
@@ -278,7 +184,104 @@ def main_change(masslim=1e8, hmrcut=False):
 
     fig.colorbar(cbar, ax=ax)
 
-    fig.savefig('plots/change_in_halfmassradius_mergersplit.png', bbox_inches='tight')
+    fig.savefig('plots/change_in_halfmassradius.png', bbox_inches='tight')
+
+
+def main_change_single_snap(snap, prog_snap, masslim=1e8):
+
+    regions = []
+    for reg in range(0, 40):
+        if reg < 10:
+            regions.append('0' + str(reg))
+        else:
+            regions.append(str(reg))
+
+    delta_hmr_dict = {}
+    delta_ms_dict = {}
+
+    for reg in regions:
+
+        savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/'
+
+        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+
+        # Get halo IDs and halo data
+        try:
+            subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+            grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+            gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                    physicalUnits=True, numThreads=8)[:, 4]
+            gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                  noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
+
+            # Get halo IDs and halo data
+            prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+            prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
+            prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
+                                    physicalUnits=True, numThreads=8)[:, 4]
+            prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                       noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
+        except ValueError:
+            continue
+        except OSError:
+            continue
+
+        # Remove particles not associated to a subgroup
+        okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 0)
+        gal_hmrs = gal_hmrs[okinds]
+        gal_ms = gal_ms[okinds]
+        grp_ids = grp_ids[okinds]
+        subgrp_ids = subgrp_ids[okinds]
+        halo_ids = np.zeros(grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+            halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
+
+        # Remove particles not associated to a subgroup
+        okinds = prog_subgrp_ids != 1073741824
+        prog_gal_hmrs = prog_gal_hmrs[okinds]
+        prog_gal_ms = prog_gal_ms[okinds]
+        prog_grp_ids = prog_grp_ids[okinds]
+        prog_subgrp_ids = prog_subgrp_ids[okinds]
+        prog_ids = np.zeros(prog_grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
+            prog_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
+
+        # Initialise galaxy data
+        gal_data = {snap: {}, prog_snap: {}}
+        for m, hmr, i in zip(gal_ms, gal_hmrs, halo_ids):
+            gal_data[snap][i] = {'m': m, 'hmr': hmr}
+        for m, hmr, i in zip(prog_gal_ms, prog_gal_hmrs, prog_ids):
+            gal_data[prog_snap][i] = {'m': m, 'hmr': hmr}
+
+        # Get change in stellar mass and half mass radius
+        try:
+            delta_hmr_dict[reg], delta_ms_dict[reg] = get_change_in_radius(snap, prog_snap, savepath,
+                                                                                       gal_data,
+                                                                                       halo_ids[gal_ms > masslim])
+        except OSError:
+            continue
+
+    delta_hmr = np.concatenate(list(delta_hmr_dict.values()))
+    delta_mass = np.concatenate(list(delta_ms_dict.values()))
+
+    print(delta_hmr)
+    print(delta_mass)
+
+    # Set up plot
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    # Plot results
+    cbar = ax.hexbin(delta_mass, delta_hmr, gridsize=100, mincnt=1,
+                     norm=LogNorm(), linewidths=0.2, cmap='viridis')
+
+    # Label axes
+    ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}} - 1$')
+    ax.set_ylabel('$\Delta R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
+
+    fig.colorbar(cbar, ax=ax)
+
+    fig.savefig('plots/change_in_halfmassradius.png', bbox_inches='tight')
 
 
 regions = []

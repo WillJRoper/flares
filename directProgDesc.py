@@ -550,23 +550,19 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
             
     print('Processed', len(results.keys()), 'halos in snapshot', snap, 'of particle type', part_type)
 
-    return results, internal_to_sim_haloID_desc, internal_to_sim_haloID_prog
+    return results, internal_to_sim_haloID_desc, internal_to_sim_haloID_prog, part_ids
 
 
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/'):
 
-    results_dm, internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm = partDirectProgDesc(snap, prog_snap,
-                                                                                                    desc_snap, path,
-                                                                                                    part_type=1)
-    results_stars, internal_to_sim_haloID_desc_st, internal_to_sim_haloID_prog_st = partDirectProgDesc(snap, prog_snap,
-                                                                                                       desc_snap, path,
-                                                                                                       part_type=4)
-    results_bh, internal_to_sim_haloID_desc_bh, internal_to_sim_haloID_prog_bh = partDirectProgDesc(snap, prog_snap,
-                                                                                                    desc_snap, path,
-                                                                                                    part_type=5)
-    results_gas, internal_to_sim_haloID_desc_gas, internal_to_sim_haloID_prog_gas = partDirectProgDesc(snap, prog_snap,
-                                                                                                       desc_snap, path,
-                                                                                                       part_type=0)
+    dm_results_tup = partDirectProgDesc(snap, prog_snap,desc_snap, path, part_type=1)
+    results_dm, internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm, part_ids = dm_results_tup
+    stars_results_tup = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=4)
+    results_stars, internal_to_sim_haloID_desc_st, internal_to_sim_haloID_prog_st, star_ids = stars_results_tup
+    bh_results_tup = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=5)
+    results_bh, internal_to_sim_haloID_desc_bh, internal_to_sim_haloID_prog_bh, bh_ids = bh_results_tup
+    gas_results_tup = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=0)
+    results_gas, internal_to_sim_haloID_desc_gas, internal_to_sim_haloID_prog_gas, gas_ids = gas_results_tup
 
     size = len(results_dm.keys())
 
@@ -598,12 +594,15 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         dm_sim_desc_haloids = sim_desc_haloids[:]
         dm_sim_prog_haloids = sim_prog_haloids[:]
 
+        # Get the particle IDs
+        pids = part_ids[current_halo_pids]
+
         # Write out the data produced
         halo = hdf.create_group(str(haloID))  # create halo group
         halo.attrs['nProg'] = nprog  # number of progenitors
         halo.attrs['nDesc'] = ndesc  # number of descendants
         halo.attrs['current_halo_nPart'] = current_halo_pids.size  # mass of the halo
-        # halo.create_dataset('current_halo_part_inds', data=current_halo_pids, dtype=int)  # particle ids in this halo
+        halo.create_dataset('current_halo_part_ids', data=pids, dtype=int)  # particle ids in this halo
         halo.create_dataset('prog_npart_contribution', data=prog_mass_contribution, dtype=int)  # Mass contribution
         halo.create_dataset('desc_npart_contribution', data=desc_mass_contribution, dtype=int)  # Mass contribution
         halo.create_dataset('Prog_nPart', data=prog_npart, dtype=int)  # number of particles in each progenitor
@@ -645,6 +644,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 star_desc_mass_contribution[ind] = cont
                 star_desc_mass[ind] = mass
 
+            # Get IDs
+            pids = star_ids[current_halo_pids]
+
+            halo.create_dataset('stellar_part_ids', data=pids, dtype=int)  # particle ids in this halo
             halo.create_dataset('prog_stellar_mass_contribution', data=star_prog_mass_contribution,
                                 dtype=float)  # Mass contribution
             halo.create_dataset('desc_stellar_mass_contribution', data=star_desc_mass_contribution,
@@ -655,6 +658,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                                 dtype=float)  # number of particles in each descendant
         else:
 
+            halo.create_dataset('stellar_part_ids', data=np.array([]), dtype=int)  # particle ids in this halo
             halo.create_dataset('prog_stellar_mass_contribution', data=np.array([]), dtype=float)  # Mass contribution
             halo.create_dataset('desc_stellar_mass_contribution', data=np.array([]), dtype=float)  # Mass contribution
             halo.create_dataset('Prog_stellar_mass', data=np.array([]),
@@ -696,6 +700,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 gas_desc_mass_contribution[ind] = cont
                 gas_desc_mass[ind] = mass
 
+            # Get IDs
+            pids = gas_ids[current_halo_pids]
+
+            halo.create_dataset('gas_part_ids', data=pids, dtype=int)  # particle ids in this halo
             halo.create_dataset('prog_gas_mass_contribution', data=gas_prog_mass_contribution,
                                 dtype=float)  # Mass contribution
             halo.create_dataset('desc_gas_mass_contribution', data=gas_desc_mass_contribution,
@@ -706,6 +714,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                                 dtype=float)  # number of particles in each descendant
         else:
 
+            halo.create_dataset('gas_part_ids', data=np.array([]), dtype=int)  # particle ids in this halo
             halo.create_dataset('prog_gas_mass_contribution', data=np.array([]),
                                 dtype=int)  # Mass contribution
             halo.create_dataset('desc_gas_mass_contribution', data=np.array([]),
@@ -749,6 +758,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 bh_desc_mass_contribution[ind] = cont
                 bh_desc_mass[ind] = mass
 
+            # Get IDs
+            pids = bh_ids[current_halo_pids]
+
+            halo.create_dataset('bh_part_ids', data=pids, dtype=int)  # particle ids in this halo
             halo.create_dataset('prog_bh_mass_contribution', data=bh_prog_mass_contribution,
                                 dtype=float)  # Mass contribution
             halo.create_dataset('desc_bh_mass_contribution', data=bh_desc_mass_contribution,
@@ -759,6 +772,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                                 dtype=float)  # number of particles in each descendant
         else:
 
+            halo.create_dataset('bh_part_ids', data=np.array([]), dtype=int)  # particle ids in this halo
             halo.create_dataset('prog_bh_mass_contribution', data=np.array([]),
                                 dtype=int)  # Mass contribution
             halo.create_dataset('desc_bh_mass_contribution', data=np.array([]),
