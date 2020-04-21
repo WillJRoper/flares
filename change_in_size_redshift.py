@@ -68,7 +68,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
     return delta_hmrs[delta_ms < 2**30], delta_ms[delta_ms < 2**30]
 
 
-def main_change(masslim=1e8):
+def main_change(masslim=1e8, hmrcut=False):
 
     regions = []
     for reg in range(0, 40):
@@ -136,7 +136,10 @@ def main_change(masslim=1e8):
             csoft = 0.001802390 / 0.677 * convert_pMpc
 
             # Remove particles not associated to a subgroup
-            okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 0, gal_hmrs / csoft < 1.2))
+            if hmrcut:
+                okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 0, gal_hmrs / csoft < 1.2))
+            else:
+                okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 0)
             gal_hmrs = gal_hmrs[okinds]
             gal_ms = gal_ms[okinds]
             grp_ids = grp_ids[okinds]
@@ -211,8 +214,8 @@ def main_change(masslim=1e8):
             ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
 
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
-        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
-        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+        ax.set_xlim(10**np.min(axlims_x), 10**np.max(axlims_x))
+        ax.set_ylim(10**np.min(axlims_y), 10**np.max(axlims_y))
 
     # Remove axis labels
     ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
