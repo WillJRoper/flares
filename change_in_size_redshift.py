@@ -218,8 +218,8 @@ def main_change(masslim=1e8, hmrcut=False):
             ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
 
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
-        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
-        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+        ax.set_xlim(10**-0.2, 10**2.1)
+        ax.set_ylim(10**-1.9, 10**1.9)
 
     # Remove axis labels
     ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
@@ -337,5 +337,5 @@ def main_change_single_snap(snap, prog_snap, masslim=1e8):
     fig.savefig('plots/change_in_halfmassradius.png', bbox_inches='tight')
 
 
-main_change(masslim=10**9.5)
+main_change(masslim=10**8)
 

@@ -45,7 +45,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
             print(i, ind, "Galaxy has no dark matter")
             continue
 
-        if len(progs) == 0:
+        if len(progs) < 2:
 
             # Define change in properties
             delta_hmrs[ind] = 2**30
@@ -231,13 +231,13 @@ def main_change(masslim=1e8, hmrcut=False):
     bin_cents = bin_edges[1:] - (bin_wid / 2)
 
     # Plot results
-    plt.bar(bin_cents, H, color='k', edgecolor='k', alpha=0.6)
+    plt.bar(bin_cents, np.log10(H), color='k', edgecolor='k', alpha=0.6, width=bin_wid)
 
     # Label axes
     ax.set_xlabel(r'$\log_{10}(M_{secondary}/M_{primary})$')
-    ax.set_ylabel('$N$')
+    ax.set_ylabel('$\log_{10}(N)$')
 
-    fig.colorbar(cbar, ax=ax)
+    # fig.colorbar(cbar, ax=ax)
 
     fig.savefig('plots/majorminormerger_hist.png', bbox_inches='tight')
 
@@ -253,11 +253,11 @@ def main_change(masslim=1e8, hmrcut=False):
     bin_cents = bin_edges[1:] - (bin_wid / 2)
 
     # Plot results
-    plt.bar(bin_cents, H, color='k', edgecolor='k', alpha=0.6)
+    plt.bar(bin_cents, np.log10(H), color='k', edgecolor='k', alpha=0.6, width=bin_wid)
 
     # Label axes
     ax.set_xlabel(r'$\log_{10}(f_{\mathrm{gas,merger}})$')
-    ax.set_ylabel('$N$')
+    ax.set_ylabel('$\log_{10}(N)$')
 
     fig.savefig('plots/wetdrymerger_hist.png', bbox_inches='tight')
 
@@ -328,8 +328,8 @@ def main_change(masslim=1e8, hmrcut=False):
             ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
 
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
-        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
-        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+        ax.set_xlim(10**-0.2, 10**2.1)
+        ax.set_ylim(10**-1.9, 10**1.9)
 
     # Remove axis labels
     ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
@@ -355,5 +355,5 @@ for reg in range(0, 40):
     else:
         regions.append(str(reg))
 
-main_change(masslim=10**9.5)
+main_change(masslim=10**8)
 
