@@ -342,7 +342,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     for ind, grp in zip(parts_in_groups, part_groups):
         halo_id_part_inds.setdefault(grp, set()).update({ind})
 
-    del group_part_ids, halo_ids, subgrp_ids
+    del group_part_ids, halo_ids, subgrp_ids, parts_in_groups, part_groups, unsort_part_ids, sinds
     gc.collect()
 
     # =============== Progenitor Snapshot ===============
@@ -559,15 +559,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     results_dm, internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm = partDirectProgDesc(snap, prog_snap,
                                                                                                     desc_snap, path,
                                                                                                     part_type=1)
-    results_stars, internal_to_sim_haloID_desc_st, internal_to_sim_haloID_prog_st = partDirectProgDesc(snap, prog_snap,
-                                                                                                       desc_snap, path,
-                                                                                                       part_type=4)
-    results_bh, internal_to_sim_haloID_desc_bh, internal_to_sim_haloID_prog_bh = partDirectProgDesc(snap, prog_snap,
-                                                                                                    desc_snap, path,
-                                                                                                    part_type=5)
-    results_gas, internal_to_sim_haloID_desc_gas, internal_to_sim_haloID_prog_gas = partDirectProgDesc(snap, prog_snap,
-                                                                                                       desc_snap, path,
-                                                                                                       part_type=0)
 
     size = len(results_dm.keys())
 
@@ -595,10 +586,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         if progress != previous_progress:
             print('Write progress: ', progress, '%', haloID)
 
-        # Αssign dark matter haloids for comparison to other particle types
-        dm_sim_desc_haloids = sim_desc_haloids[:]
-        dm_sim_prog_haloids = sim_prog_haloids[:]
-
         # Write out the data produced
         halo = hdf.create_group(str(haloID))  # create halo group
         halo.attrs['nProg'] = nprog  # number of progenitors
@@ -612,164 +599,135 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         halo.create_dataset('Prog_haloIDs', data=sim_prog_haloids, dtype=float)  # progenitor IDs
         halo.create_dataset('Desc_haloIDs', data=sim_desc_haloids, dtype=float)  # descendant IDs
 
-        # Write out star data
-        if haloID in results_stars:
-
-            (nprog, prog_haloids, prog_npart, prog_mass_contribution,
-             ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_stars[haloID]
-
-            sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
-            for ind, prog in enumerate(prog_haloids):
-                sim_prog_haloids[ind] = internal_to_sim_haloID_prog_st[prog]
-
-            sim_desc_haloids = np.zeros(len(desc_haloids), dtype=float)
-            for ind, desc in enumerate(desc_haloids):
-                sim_desc_haloids[ind] = internal_to_sim_haloID_desc_st[desc]
-
-            # Assign values to the corresponding index for the dark matter progenitors
-            star_prog_mass_contribution = np.zeros(len(dm_sim_prog_haloids), dtype=float)
-            star_prog_mass = np.zeros(len(dm_sim_prog_haloids), dtype=float)
-            for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
-                if not p in dm_sim_prog_haloids:
-                    continue
-                ind = np.where(dm_sim_prog_haloids == p)
-                star_prog_mass_contribution[ind] = cont
-                star_prog_mass[ind] = mass
-
-            # Assign values to the corresponding index for the dark matter descendents
-            star_desc_mass_contribution = np.zeros(len(dm_sim_desc_haloids), dtype=float)
-            star_desc_mass = np.zeros(len(dm_sim_desc_haloids), dtype=float)
-            for p, cont, mass in zip(sim_desc_haloids, desc_mass_contribution, desc_npart):
-                if not p in dm_sim_desc_haloids:
-                    continue
-                ind = np.where(dm_sim_desc_haloids == p)
-                star_desc_mass_contribution[ind] = cont
-                star_desc_mass[ind] = mass
-
-            halo.create_dataset('prog_stellar_mass_contribution', data=star_prog_mass_contribution,
-                                dtype=float)  # Mass contribution
-            halo.create_dataset('desc_stellar_mass_contribution', data=star_desc_mass_contribution,
-                                dtype=float)  # Mass contribution
-            halo.create_dataset('Prog_stellar_mass', data=star_prog_mass,
-                                dtype=float)  # number of particles in each progenitor
-            halo.create_dataset('Desc_stellar_mass', data=star_desc_mass,
-                                dtype=float)  # number of particles in each descendant
-        else:
-
-            halo.create_dataset('prog_stellar_mass_contribution', data=np.array([]), dtype=float)  # Mass contribution
-            halo.create_dataset('desc_stellar_mass_contribution', data=np.array([]), dtype=float)  # Mass contribution
-            halo.create_dataset('Prog_stellar_mass', data=np.array([]),
-                                dtype=float)  # number of particles in each progenitor
-            halo.create_dataset('Desc_stellar_mass', data=np.array([]),
-                                dtype=float)  # number of particles in each descendant
-
-        # Write out gas data
-        if haloID in results_gas:
-
-            (nprog, prog_haloids, prog_npart, prog_mass_contribution,
-             ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_gas[haloID]
-
-            sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
-            for ind, prog in enumerate(prog_haloids):
-                sim_prog_haloids[ind] = internal_to_sim_haloID_prog_gas[prog]
-
-            sim_desc_haloids = np.zeros(len(desc_haloids), dtype=float)
-            for ind, desc in enumerate(desc_haloids):
-                sim_desc_haloids[ind] = internal_to_sim_haloID_desc_gas[desc]
-
-            # Assign values to the corresponding index for the dark matter progenitors
-            gas_prog_mass_contribution = np.zeros(len(dm_sim_prog_haloids), dtype=float)
-            gas_prog_mass = np.zeros(len(dm_sim_prog_haloids), dtype=float)
-            for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
-                if not p in dm_sim_prog_haloids:
-                    continue
-                ind = np.where(dm_sim_prog_haloids == p)
-                gas_prog_mass_contribution[ind] = cont
-                gas_prog_mass[ind] = mass
-
-            # Assign values to the corresponding index for the dark matter descendents
-            gas_desc_mass_contribution = np.zeros(len(dm_sim_desc_haloids), dtype=float)
-            gas_desc_mass = np.zeros(len(dm_sim_desc_haloids), dtype=float)
-            for p, cont, mass in zip(sim_desc_haloids, desc_mass_contribution, desc_npart):
-                if not p in dm_sim_desc_haloids:
-                    continue
-                ind = np.where(dm_sim_desc_haloids == p)
-                gas_desc_mass_contribution[ind] = cont
-                gas_desc_mass[ind] = mass
-
-            halo.create_dataset('prog_gas_mass_contribution', data=gas_prog_mass_contribution,
-                                dtype=float)  # Mass contribution
-            halo.create_dataset('desc_gas_mass_contribution', data=gas_desc_mass_contribution,
-                                dtype=float)  # Mass contribution
-            halo.create_dataset('Prog_gas_mass', data=gas_prog_mass,
-                                dtype=float)  # number of particles in each progenitor
-            halo.create_dataset('Desc_gas_mass', data=gas_desc_mass,
-                                dtype=float)  # number of particles in each descendant
-        else:
-
-            halo.create_dataset('prog_gas_mass_contribution', data=np.array([]),
-                                dtype=int)  # Mass contribution
-            halo.create_dataset('desc_gas_mass_contribution', data=np.array([]),
-                                dtype=int)  # Mass contribution
-            halo.create_dataset('Prog_gas_mass', data=np.array([]),
-                                dtype=int)  # number of particles in each progenitor
-            halo.create_dataset('Desc_gas_mass', data=np.array([]),
-                                dtype=int)  # number of particles in each descendant
-
-        # Write out black hole data
-        if haloID in results_bh:
-
-            (nprog, prog_haloids, prog_npart, prog_mass_contribution,
-             ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_bh[haloID]
-
-            sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
-            for ind, prog in enumerate(prog_haloids):
-                sim_prog_haloids[ind] = internal_to_sim_haloID_prog_bh[prog]
-
-            sim_desc_haloids = np.zeros(len(desc_haloids), dtype=float)
-            for ind, desc in enumerate(desc_haloids):
-                sim_desc_haloids[ind] = internal_to_sim_haloID_desc_bh[desc]
-
-            # Assign values to the corresponding index for the dark matter progenitors
-            bh_prog_mass_contribution = np.zeros(len(dm_sim_prog_haloids), dtype=float)
-            bh_prog_mass = np.zeros(len(dm_sim_prog_haloids), dtype=float)
-            for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
-                if not p in dm_sim_prog_haloids:
-                    continue
-                ind = np.where(dm_sim_prog_haloids == p)
-                bh_prog_mass_contribution[ind] = cont
-                bh_prog_mass[ind] = mass
-
-            # Assign values to the corresponding index for the dark matter descendents
-            bh_desc_mass_contribution = np.zeros(len(dm_sim_desc_haloids), dtype=float)
-            bh_desc_mass = np.zeros(len(dm_sim_desc_haloids), dtype=float)
-            for p, cont, mass in zip(sim_desc_haloids, desc_mass_contribution, desc_npart):
-                if not p in dm_sim_desc_haloids:
-                    continue
-                ind = np.where(dm_sim_desc_haloids == p)
-                bh_desc_mass_contribution[ind] = cont
-                bh_desc_mass[ind] = mass
-
-            halo.create_dataset('prog_bh_mass_contribution', data=bh_prog_mass_contribution,
-                                dtype=float)  # Mass contribution
-            halo.create_dataset('desc_bh_mass_contribution', data=bh_desc_mass_contribution,
-                                dtype=float)  # Mass contribution
-            halo.create_dataset('Prog_bh_mass', data=bh_prog_mass,
-                                dtype=float)  # number of particles in each progenitor
-            halo.create_dataset('Desc_bh_mass', data=bh_desc_mass,
-                                dtype=float)  # number of particles in each descendant
-        else:
-
-            halo.create_dataset('prog_bh_mass_contribution', data=np.array([]),
-                                dtype=int)  # Mass contribution
-            halo.create_dataset('desc_bh_mass_contribution', data=np.array([]),
-                                dtype=int)  # Mass contribution
-            halo.create_dataset('Prog_bh_mass', data=np.array([]),
-                                dtype=int)  # number of particles in each progenitor
-            halo.create_dataset('Desc_bh_mass', data=np.array([]),
-                                dtype=int)  # number of particles in each descendant
-
     hdf.close()
+
+    del internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm
+    gc.collect()
+
+    for ptype in [4, 5, 0]:
+
+        results, internal_to_sim_haloID_desc, internal_to_sim_haloID_prog = partDirectProgDesc(snap, prog_snap,
+                                                                                               desc_snap, path,
+                                                                                               part_type=ptype)
+
+        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
+
+        for num, haloID in enumerate(results_dm.keys()):
+
+            # Write out star data
+            if haloID in results:
+
+                # Αssign dark matter haloids for comparison to other particle types
+                dm_sim_desc_haloids = hdf[str(haloID)]['Desc_haloIDs'][...]
+                dm_sim_prog_haloids = hdf[str(haloID)]['Prog_haloIDs'][...]
+
+                (nprog, prog_haloids, prog_npart, prog_mass_contribution,
+                 ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results[haloID]
+
+                sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
+                for ind, prog in enumerate(prog_haloids):
+                    sim_prog_haloids[ind] = internal_to_sim_haloID_prog[prog]
+
+                sim_desc_haloids = np.zeros(len(desc_haloids), dtype=float)
+                for ind, desc in enumerate(desc_haloids):
+                    sim_desc_haloids[ind] = internal_to_sim_haloID_desc[desc]
+
+                # Assign values to the corresponding index for the dark matter progenitors
+                out_prog_mass_contribution = np.zeros(len(dm_sim_prog_haloids), dtype=float)
+                out_prog_mass = np.zeros(len(dm_sim_prog_haloids), dtype=float)
+                for p, cont, mass in zip(sim_prog_haloids, prog_mass_contribution, prog_npart):
+                    if not p in dm_sim_prog_haloids:
+                        continue
+                    ind = np.where(dm_sim_prog_haloids == p)
+                    out_prog_mass_contribution[ind] = cont
+                    out_prog_mass[ind] = mass
+
+                # Assign values to the corresponding index for the dark matter descendents
+                out_desc_mass_contribution = np.zeros(len(dm_sim_desc_haloids), dtype=float)
+                out_desc_mass = np.zeros(len(dm_sim_desc_haloids), dtype=float)
+                for d, cont, mass in zip(sim_desc_haloids, desc_mass_contribution, desc_npart):
+                    if not d in dm_sim_desc_haloids:
+                        continue
+                    ind = np.where(dm_sim_desc_haloids == d)
+                    out_desc_mass_contribution[ind] = cont
+                    out_desc_mass[ind] = mass
+
+                halo = hdf[str(haloID)]
+
+                if ptype == 4:
+
+                    halo.create_dataset('prog_stellar_mass_contribution', data=out_prog_mass_contribution,
+                                        dtype=float)  # Mass contribution
+                    halo.create_dataset('desc_stellar_mass_contribution', data=out_desc_mass_contribution,
+                                        dtype=float)  # Mass contribution
+                    halo.create_dataset('Prog_stellar_mass', data=out_prog_mass,
+                                        dtype=float)  # number of particles in each progenitor
+                    halo.create_dataset('Desc_stellar_mass', data=out_desc_mass,
+                                        dtype=float)  # number of particles in each descendant
+
+                if ptype == 0:
+
+                    halo.create_dataset('prog_gas_mass_contribution', data=out_prog_mass_contribution,
+                                        dtype=float)  # Mass contribution
+                    halo.create_dataset('desc_gas_mass_contribution', data=out_desc_mass_contribution,
+                                        dtype=float)  # Mass contribution
+                    halo.create_dataset('Prog_gas_mass', data=out_prog_mass,
+                                        dtype=float)  # number of particles in each progenitor
+                    halo.create_dataset('Desc_gas_mass', data=out_desc_mass,
+                                        dtype=float)  # number of particles in each descendant
+
+                if ptype == 5:
+
+                    halo.create_dataset('prog_bh_mass_contribution', data=out_prog_mass_contribution,
+                                        dtype=float)  # Mass contribution
+                    halo.create_dataset('desc_bh_mass_contribution', data=out_desc_mass_contribution,
+                                        dtype=float)  # Mass contribution
+                    halo.create_dataset('Prog_bh_mass', data=out_prog_mass,
+                                        dtype=float)  # number of particles in each progenitor
+                    halo.create_dataset('Desc_bh_mass', data=out_desc_mass,
+                                        dtype=float)  # number of particles in each descendant
+
+            else:
+
+                halo = hdf[str(haloID)]
+
+                if ptype == 4:
+
+                    halo.create_dataset('prog_stellar_mass_contribution', data=np.array([]),
+                                        dtype=float)  # Mass contribution
+                    halo.create_dataset('desc_stellar_mass_contribution', data=np.array([]),
+                                        dtype=float)  # Mass contribution
+                    halo.create_dataset('Prog_stellar_mass', data=np.array([]),
+                                        dtype=float)  # number of particles in each progenitor
+                    halo.create_dataset('Desc_stellar_mass', data=np.array([]),
+                                        dtype=float)  # number of particles in each descendant
+
+                if ptype == 0:
+
+                    halo.create_dataset('prog_gas_mass_contribution', data=np.array([]),
+                                        dtype=int)  # Mass contribution
+                    halo.create_dataset('desc_gas_mass_contribution', data=np.array([]),
+                                        dtype=int)  # Mass contribution
+                    halo.create_dataset('Prog_gas_mass', data=np.array([]),
+                                        dtype=int)  # number of particles in each progenitor
+                    halo.create_dataset('Desc_gas_mass', data=np.array([]),
+                                        dtype=int)  # number of particles in each descendant
+
+                if ptype == 5:
+
+                    halo.create_dataset('prog_bh_mass_contribution', data=np.array([]),
+                                        dtype=int)  # Mass contribution
+                    halo.create_dataset('desc_bh_mass_contribution', data=np.array([]),
+                                        dtype=int)  # Mass contribution
+                    halo.create_dataset('Prog_bh_mass', data=np.array([]),
+                                        dtype=int)  # number of particles in each progenitor
+                    halo.create_dataset('Desc_bh_mass', data=np.array([]),
+                                        dtype=int)  # number of particles in each descendant
+
+        hdf.close()
+
+        del results, internal_to_sim_haloID_desc, internal_to_sim_haloID_prog
+        gc.collect()
 
 
 def ascend(a):

@@ -196,6 +196,10 @@ def main_change(masslim=1e8, hmrcut=False):
         xs_plt = np.concatenate(list(delta_ms_dict[snap].values()))
         delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
 
+        okinds = np.logical_and(xs_plt > 0, delta_hmr_plt > 0)
+        xs_plt = xs_plt[okinds]
+        delta_hmr_plt = delta_hmr_plt[okinds]
+
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, delta_hmr_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(),
@@ -214,8 +218,8 @@ def main_change(masslim=1e8, hmrcut=False):
             ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
 
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
-        ax.set_xlim(10**np.min(axlims_x), 10**np.max(axlims_x))
-        ax.set_ylim(10**np.min(axlims_y), 10**np.max(axlims_y))
+        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
+        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
 
     # Remove axis labels
     ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
