@@ -1,10 +1,10 @@
 #!/bin/bash -l
 #SBATCH --ntasks 1 # The number of cores you need...
-#SBATCH --array=1-360
+#SBATCH --array=1-29
 #SBATCH --cpus-per-task=8
-#SBATCH -J FLARES-pysphv #Give it something meaningful.
-#SBATCH -o logs/output_Halo.%J.out
-#SBATCH -e logs/error_Halo.%J.err
+#SBATCH -J MEGA-REF #Give it something meaningful.
+#SBATCH -o logs/output_MEGAREF.%J.out
+#SBATCH -e logs/error_MEGAREF.%J.err
 #SBATCH -p cosma7 #or some other partition, e.g. cosma, cosma6, etc.
 #SBATCH -A dp004
 #SBATCH --exclusive
@@ -24,12 +24,11 @@ source activate flares-env
 i=$(($SLURM_ARRAY_TASK_ID - 1))
 
 # Run the program
-./single_sphere_all_types.py $i
+./directProgDescREF.py $i
 
 source deactivate
 
 echo "Job done, info follows..."
 sacct -j $SLURM_JOBID --format=JobID,JobName,Partition,MaxRSS,Elapsed,ExitCode
 exit
-
 

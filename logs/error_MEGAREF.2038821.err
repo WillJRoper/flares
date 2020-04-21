@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "./directProgDescREF.py", line 819, in <module>
+    savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/REF/')
+  File "./directProgDescREF.py", line 564, in mainDirectProgDesc
+    part_type=4)
+  File "./directProgDescREF.py", line 268, in partDirectProgDesc
+    physicalUnits=False, numThreads=8)[:, part_type]
+  File "/cosma7/data/dp004/dc-rope1/FLARES/flares/eagle_IO.py", line 141, in read_array
+    dat = np.concatenate(list(pool.map(lg, files)), axis=0)
+  File "<__array_function__ internals>", line 6, in concatenate
+ValueError: all the input arrays must have same number of dimensions, but the array at index 0 has 2 dimension(s) and the array at index 110 has 1 dimension(s)
