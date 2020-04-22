@@ -197,6 +197,10 @@ def get_evolution(forest, path, graphpath, snaps):
 
 def main_evolve(reg, root_snap):
 
+    snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
+                '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
+                '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+
     graphpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/'
 
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
@@ -231,11 +235,13 @@ def main_evolve(reg, root_snap):
     # Intialise counter
     count = 0
 
-    for halo in halo_ids:
+    for halo, hr, m in zip(halo_ids, gal_hmrs, gal_ms):
+
+        count += 1
 
         # Get the graph
         forest = forest_worker(halo, graphpath)
 
-        hmrs, masses, progs = get_evolution(forest, path, graphpath, snaps)
+        hmrs, masses, progs = get_evolution(forest, path, graphpath, snaplist)
 
 
