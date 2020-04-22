@@ -53,6 +53,8 @@ def get_forest(z0halo, treepath):
     # Loop over snapshots and progenitor snapshots
     for prog_snap, snap in zip(snaplist[1:], snaplist[:-1]):
 
+        print(snap, prog_snap)
+
         # Assign the halos variable for the next stage of the tree
         halos = forest_dict[snap]
 
@@ -123,7 +125,7 @@ def get_evolution(forest, path, graphpath, snaps):
         for halo in forest[snap]:
             hmrs[snap][halo] = gal_hmrs[halo_ids == halo]
             masses[snap][halo] = gal_ms[halo_ids == halo]
-            progs[snap][halo] = hdf[halo]['Prog_haloIDs'][...]
+            progs[snap][halo] = hdf[str(halo)]['Prog_haloIDs'][...]
 
         hdf.close()
 
