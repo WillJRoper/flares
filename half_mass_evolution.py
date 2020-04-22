@@ -74,7 +74,7 @@ def get_forest(z0halo, treepath):
                 halo -= (int(snap.split('_')[0]) * 1000000)
 
                 # Open this snapshots root group
-                snap_tree_data = h5py.File(treepath + snap + '.hdf5', 'r')
+                snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
@@ -101,7 +101,7 @@ def get_forest(z0halo, treepath):
                 halo -= (int(snap.split('_')[0]) * 1000000)
 
                 # Open this snapshots root group
-                snap_tree_data = h5py.File(treepath + snap + '.hdf5', 'r')
+                snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
@@ -123,7 +123,7 @@ def get_forest(z0halo, treepath):
 
         try:
             # Open this snapshots root group
-            snap_tree_data = h5py.File(treepath + snap + '.hdf5', 'r')
+            snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
         except OSError:
             del forest_dict[snap]
             continue
@@ -232,7 +232,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-    # Intialise counter
+    # Initialise counter
     count = 0
 
     for root, hr, m in zip(halo_ids, gal_hmrs, gal_ms):
