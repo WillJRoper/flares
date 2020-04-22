@@ -123,6 +123,7 @@ def get_evolution(forest, path, graphpath, snaps):
 
         # Get halo properties
         for halo in forest[snap]:
+            print(halo, halo_ids == halo)
             hmrs[snap][halo] = gal_hmrs[halo_ids == halo]
             masses[snap][halo] = gal_ms[halo_ids == halo]
             progs[snap][halo] = hdf[str(halo)]['Prog_haloIDs'][...]
@@ -200,9 +201,11 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                 prog_hmrs = []
                 prog_mass = []
                 for prog in progs[snap][halo]:
-
-                    prog_hmrs.append(hmrs[prog_snap][prog])
-                    prog_mass.append(masses[prog_snap][prog])
+                    try:
+                        prog_hmrs.append(hmrs[prog_snap][prog])
+                        prog_mass.append(masses[prog_snap][prog])
+                    except KeyError:
+                        continue
 
                 for pm, phmr in zip(prog_hmrs, prog_mass):
 
