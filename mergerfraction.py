@@ -38,18 +38,22 @@ hdf = h5py.File(graphpath + 'SubMgraph_' + snap + '.hdf5', 'r')
 # Loop over galaxies in the file
 for gal in halo_ids:
 
-    print(gal, end='\r')
-    prog_conts = hdf[gal]['prog_stellar_mass_contribution'][...] * 10 ** 10
-    nProg = len(prog_conts[prog_conts > 0])
+    gal = str(gal)
+    try:
+        print(gal, end='\r')
+        prog_conts = hdf[gal]['prog_stellar_mass_contribution'][...] * 10 ** 10
+        nProg = len(prog_conts[prog_conts > 0])
 
-    if np.sum(hdf[gal]['prog_stellar_mass_contribution'][...] * 10 ** 10) == 0:
-        continue
+        if np.sum(hdf[gal]['prog_stellar_mass_contribution'][...] * 10 ** 10) == 0:
+            continue
 
-    if nProg > 1:
-        merger += 1
-    elif nProg == 1:
-        no_merger += 1
-    else:
+        if nProg > 1:
+            merger += 1
+        elif nProg == 1:
+            no_merger += 1
+        else:
+            continue
+    except KeyError:
         continue
 
 print(merger)
