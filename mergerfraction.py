@@ -41,11 +41,7 @@ for gal in halo_ids:
     gal = str(gal)
     try:
         print(gal, end='\r')
-        prog_conts = hdf[gal]['prog_stellar_mass_contribution'][...] * 10 ** 10
-        nProg = len(prog_conts[prog_conts > 0])
-
-        if np.sum(hdf[gal]['prog_stellar_mass_contribution'][...] * 10 ** 10) == 0:
-            continue
+        nProg = hdf[gal].attrs['nProg']
 
         if nProg > 1:
             merger += 1
