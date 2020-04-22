@@ -59,8 +59,8 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
             prog_cont = hdf[str(i)]['prog_npart_contribution'][...]
             prog_masses = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
             prog_hmrs = np.array([gal_data[prog_snap][p]['hmr'] for p in progs])
-            prog_gas_mass = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
-            prog_stellar_mass = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10 ** 10
+            prog_gas_mass = hdf[str(i)]['prog_gas_mass_contribution'][...] * 10**10
+            prog_stellar_mass = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
 
             # Get main progenitor information
             main = np.argmax(prog_cont)
@@ -225,7 +225,8 @@ def main_change(masslim=1e8, hmrcut=False):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    H, bin_edges = np.histogram(np.log10(major_minor), bins=int(np.sqrt(len(major_minor))))
+    H, bin_edges = np.histogram(np.log10(major_minor)[np.where(np.log10(major_minor) < np.inf)],
+                                bins=int(np.sqrt(len(major_minor))))
 
     bin_wid = bin_edges[1] - bin_edges[0]
     bin_cents = bin_edges[1:] - (bin_wid / 2)
@@ -247,7 +248,7 @@ def main_change(masslim=1e8, hmrcut=False):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    H, bin_edges = np.histogram(np.log10(wet_dry), bins=100)
+    H, bin_edges = np.histogram(np.log10(wet_dry)[np.where(np.log10(wet_dry) < np.inf)], bins=100)
 
     bin_wid = bin_edges[1] - bin_edges[0]
     bin_cents = bin_edges[1:] - (bin_wid / 2)
