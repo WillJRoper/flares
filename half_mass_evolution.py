@@ -123,7 +123,6 @@ def get_evolution(forest, path, graphpath, snaps):
 
         # Get halo properties
         for halo in forest[snap]:
-            print(halo, halo_ids == halo)
             hmrs[snap][halo] = gal_hmrs[halo_ids == halo]
             masses[snap][halo] = gal_ms[halo_ids == halo]
             progs[snap][halo] = hdf[str(halo)]['Prog_haloIDs'][...]
@@ -208,7 +207,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                         continue
 
                 for pm, phmr in zip(prog_hmrs, prog_mass):
-
+                    print(pm, phmr, mass - pm, hmr - phmr)
                     ax.arrow(pm, phmr, mass - pm, hmr - phmr)
                     ax.scatter(pm, phmr, marker='.', color='b')
 
