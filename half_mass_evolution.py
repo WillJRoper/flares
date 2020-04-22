@@ -195,7 +195,7 @@ def get_evolution(forest, path, graphpath, snaps):
     return hmrs, masses, progs
 
 
-def main_evolve(reg, root_snap):
+def main_evolve(reg, root_snap='011_z004p770', lim=1):
 
     snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
                 '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
@@ -235,15 +235,51 @@ def main_evolve(reg, root_snap):
     # Intialise counter
     count = 0
 
-    for halo, hr, m in zip(halo_ids, gal_hmrs, gal_ms):
+    for root, hr, m in zip(halo_ids, gal_hmrs, gal_ms):
 
         count += 1
 
         # Get the graph
-        forest = forest_worker(halo, graphpath)
+        forest = forest_worker(root, graphpath)
 
         hmrs, masses, progs = get_evolution(forest, path, graphpath, snaplist)
 
+        forest_snaps = list(forest.keys())[1:]
+        forest_progsnaps = list(forest.keys())[:-1]
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+
+        for snap, prog_snap in zip(forest_snaps, forest_progsnaps):
+
+            for halo in forest[snap]:
+
+                mass = masses[snap][halo]
+                hmr = masses[snap][halo]
+
+                ax.scatter(mass, hmr, marker='.', color='b')
+
+                # Get prog data
+                prog_hmrs = []
+                prog_mass = []
+                for prog in progs[snap][halo]:
+
+                    prog_hmrs.append(hmrs[prog_snap][prog])
+                    prog_mass.append(masses[prog_snap][prog])
+
+                for pm, phmr in zip(prog_hmrs, prog_mass):
+
+                    ax.arrow(pm, phmr, mass - pm, hmr - phmr)
+                    ax.scatter(pm, phmr, marker='.', color='b')
+
+        ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
+        ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
+
+        fig.savefig('plots/Evolution_HalfMassRadius_Mass' + str(root) + '.png',
+                    bbox_inches='tight')
+
+        if count >= lim:
+            break
 
 
-
+main_evolve(reg='00', root_snap='011_z004p770', lim=1)
