@@ -20,7 +20,7 @@ gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/
                       noH=True, physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
 
 # Remove particles not associated to a subgroup
-okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 1e8))
+okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 1e8)
 gal_ms = gal_ms[okinds]
 grp_ids = grp_ids[okinds]
 subgrp_ids = subgrp_ids[okinds]
