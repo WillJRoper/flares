@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "./directProgDescREF.py", line 777, in <module>
+    savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/REF/')
+  File "./directProgDescREF.py", line 561, in mainDirectProgDesc
+    part_type=1)
+  File "./directProgDescREF.py", line 461, in partDirectProgDesc
+    mask = unsort_part_ids[yindex] != desc_part_ids
+UnboundLocalError: local variable 'unsort_part_ids' referenced before assignment
