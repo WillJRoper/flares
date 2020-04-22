@@ -56,11 +56,20 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
         else:
 
             # Get progenitor properties
-            prog_cont = hdf[str(i)]['prog_npart_contribution'][...]
-            prog_masses = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
-            prog_hmrs = np.array([gal_data[prog_snap][p]['hmr'] for p in progs])
-            prog_gas_mass = hdf[str(i)]['prog_gas_mass_contribution'][...] * 10**10
-            prog_stellar_mass = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
+            try:
+                prog_cont = hdf[str(i)]['prog_npart_contribution'][...]
+                prog_masses = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
+                prog_hmrs = np.array([gal_data[prog_snap][p]['hmr'] for p in progs])
+                prog_gas_mass = hdf[str(i)]['prog_gas_mass'][...] * 10**10
+                prog_stellar_mass = hdf[str(i)]['prog_stellar_mass'][...] * 10**10
+            except KeyError:
+                # Define change in properties
+                delta_hmrs[ind] = 2 ** 30
+                delta_ms[ind] = 2 ** 30
+                major_minor[ind] = 2 ** 30
+                wet_dry[ind] = 2 ** 30
+                print(i, ind, "Galaxy was missing a dataset")
+                continue
 
             # Get main progenitor information
             main = np.argmax(prog_cont)
