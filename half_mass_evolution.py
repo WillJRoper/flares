@@ -43,7 +43,7 @@ def get_forest(z0halo, treepath):
     print(snaplist)
 
     # Initialise the halo's set for tree walking
-    halos = {int(z0halo) + (int(snaplist[0].split('_')[0]) * 1000000)}
+    halos = {float(z0halo) + (int(snaplist[0].split('_')[0]) * 1000000)}
 
     # Initialise the forest dictionary with the present day halo as the first entry
     forest_dict[snaplist[0]] = halos
