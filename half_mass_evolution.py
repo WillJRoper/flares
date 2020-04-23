@@ -212,6 +212,8 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                 if mass == 0 or hmr == 0:
                     continue
 
+                print(z)
+
                 masses_plt.extend(mass)
                 hmrs_plt.extend(hmr / soft)
                 colors.append(z)
@@ -238,7 +240,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         colors = np.array(colors)
 
         im = ax.scatter(masses_plt[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8], marker='.',
-                        c=mpl.cm.plasma(colors[masses_plt > 1e8]))
+                        c=colors, cmap='plasma')
 
         ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
