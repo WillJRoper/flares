@@ -233,7 +233,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                     # ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
                     # ax.scatter(pm, phmr / prog_soft, marker='.', color='r')
 
-        im = ax.scatter(masses_plt, hmrs_plt, marker='.', color=colors, cmap='plasma')
+        im = ax.scatter(masses_plt, hmrs_plt, marker='.', c=colors, cmap='plasma')
 
         ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
