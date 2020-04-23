@@ -128,14 +128,14 @@ def main_change(masslim=1e8, hmrcut=False):
                 grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
                 gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                         physicalUnits=True, numThreads=8)[:, 4]
-                gas_sf_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/Mass', noH=True,
-                                                physicalUnits=True, numThreads=8)
-                gas_nsf_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/NSF/Mass', noH=True,
-                                                 physicalUnits=True, numThreads=8)
-                gas_sf_met = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/SmoothedMetallicity', noH=True,
-                                                physicalUnits=True, numThreads=8)
+                gas_sf_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/Mass', noH=False,
+                                           physicalUnits=False, numThreads=8)
+                gas_nsf_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/NSF/Mass', noH=False,
+                                            physicalUnits=False, numThreads=8)
+                gas_sf_met = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/SmoothedMetallicity', noH=False,
+                                          physicalUnits=False, numThreads=8)
                 gas_nsf_met = E.read_array('SUBFIND', path, snap, 'Subhalo/NSF/NSF/SmoothedMetallicity',
-                                                noH=True, physicalUnits=True, numThreads=8)
+                                                noH=False, physicalUnits=False, numThreads=8)
                 gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                       noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
 
@@ -143,15 +143,15 @@ def main_change(masslim=1e8, hmrcut=False):
                 prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
                 prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
                 prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
-                                        physicalUnits=True, numThreads=8)[:, 4]
-                prog_gas_sf_mass = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SF/Mass', noH=True,
-                                                physicalUnits=True, numThreads=8)
-                prog_gas_nsf_mass = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/NSF/Mass', noH=True,
-                                                 physicalUnits=True, numThreads=8)
-                prog_gas_sf_met = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SF/SmoothedMetallicity', noH=True,
-                                                physicalUnits=True, numThreads=8)
+                                             physicalUnits=True, numThreads=8)[:, 4]
+                prog_gas_sf_mass = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SF/Mass', noH=False,
+                                                physicalUnits=False, numThreads=8)
+                prog_gas_nsf_mass = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/NSF/Mass', noH=False,
+                                                 physicalUnits=False, numThreads=8)
+                prog_gas_sf_met = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SF/SmoothedMetallicity',
+                                               noH=False, physicalUnits=False, numThreads=8)
                 prog_gas_nsf_met = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/NSF/NSF/SmoothedMetallicity',
-                                                noH=True, physicalUnits=True, numThreads=8)
+                                                noH=False, physicalUnits=False, numThreads=8)
                 prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                            noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
             except ValueError:
