@@ -189,15 +189,25 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
 
         for snap, prog_snap in zip(forest_snaps, forest_progsnaps):
 
+            z_str = snap.split('z')[1].split('p')
+            z = float(z_str[0] + '.' + z_str[1])
+
+            z_str_prog = prog_snap.split('z')[1].split('p')
+            zp = float(z_str_prog[0] + '.' + z_str_prog[1])
+
+            # Define comoving softening length in kpc
+            soft = 0.001802390 / 0.677 * 1 / (1 + z)
+            prog_soft = 0.001802390 / 0.677 * 1 / (1 + zp)
+
             for halo in forest[snap]:
 
                 mass = masses[snap][halo]
                 hmr = masses[snap][halo]
-                
+
                 if mass == 0 or hmr == 0:
                     continue
 
-                ax.scatter(mass, hmr, marker='.', color='b')
+                ax.scatter(mass, hmr / soft, marker='.', color='b')
 
                 # Get prog data
                 prog_hmrs = []
@@ -214,7 +224,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                         continue
                     print(pm, phmr, mass - pm, hmr - phmr)
                     # ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
-                    ax.scatter(pm, phmr, marker='.', color='b')
+                    ax.scatter(pm, phmr / prog_soft, marker='.', color='b')
 
         ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
