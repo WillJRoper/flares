@@ -37,7 +37,7 @@ def get_forest(z0halo, treepath):
     forest_dict = defaultdict(set)
 
     # Create snapshot list in reverse order (present day to past) for the progenitor searching loop
-    snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
+    snaplist =  ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
                 '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
                 '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
     snaplist.reverse()
@@ -182,8 +182,8 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
 
         hmrs, masses, progs = get_evolution(forest, path, graphpath, snaplist)
 
-        forest_snaps = list(forest.keys())[1:]
-        forest_progsnaps = list(forest.keys())[:-1]
+        forest_snaps = list(forest.keys())
+        forest_progsnaps = list(forest.keys())
 
         fig = plt.figure()
         ax = fig.add_subplot(111)
@@ -257,8 +257,8 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         fig.savefig('plots/Evolution_HalfMassRadius_Mass' + str(root) + '.png',
                     bbox_inches='tight')
 
-        if count >= lim:
-            break
+        # if count >= lim:
+        #     break
 
 
 main_evolve(reg='00', root_snap='011_z004p770', lim=1)
