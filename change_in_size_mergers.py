@@ -45,7 +45,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
             print(i, ind, "Galaxy has no dark matter")
             continue
 
-        if len(progs) < 2:
+        if len(progs) != 2:
 
             # Define change in properties
             delta_hmrs[ind] = 2**30
@@ -286,8 +286,8 @@ def main_change(masslim=1e8, hmrcut=False):
     maj_dry_inds = np.logical_and(major_minor >= majlowlim, wet_dry <= dryuplim)
     min_dry_inds = np.logical_and(np.logical_and(major_minor < majlowlim, major_minor >= minlowlim), wet_dry <= dryuplim)
     acc_dry_inds = np.logical_and(major_minor < minlowlim, wet_dry <= dryuplim)
-    maj_mix_inds = np.logical_and(major_minor >= 0.3, np.logical_and(wet_dry < wetlowlim, wet_dry > dryuplim))
-    min_mix_inds = np.logical_and(np.logical_and(major_minor < 0.3, major_minor >= 0.1), np.logical_and(wet_dry < wetlowlim, wet_dry > dryuplim))
+    maj_mix_inds = np.logical_and(major_minor >= majlowlim, np.logical_and(wet_dry < wetlowlim, wet_dry > dryuplim))
+    min_mix_inds = np.logical_and(np.logical_and(major_minor < majlowlim, major_minor >= minlowlim), np.logical_and(wet_dry < wetlowlim, wet_dry > dryuplim))
     acc_mix_inds = np.logical_and(major_minor < minlowlim, np.logical_and(wet_dry < wetlowlim, wet_dry > dryuplim))
 
     # Set up plot
