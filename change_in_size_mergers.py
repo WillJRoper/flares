@@ -31,7 +31,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
     for ind, i in enumerate(gals):
 
         # Get this halo's stellar mass and half mass radius
-        mass, hmr = gal_data[snap][i]['m'], gal_data[snap][i]['hmr']
+        mass, hmr, hy = gal_data[snap][i]['m'], gal_data[snap][i]['hmr'], gal_data[snap][i]['hy']
 
         # Get progenitors
         try:
@@ -61,8 +61,8 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
                 prog_cont = hdf[str(i)]['prog_npart_contribution'][...]
                 prog_masses = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
                 prog_hmrs = np.array([gal_data[prog_snap][p]['hmr'] for p in progs])
-                prog_gas_mass = hdf[str(i)]['Prog_gas_mass'][...] * 10**10
-                prog_stellar_mass = hdf[str(i)]['Prog_stellar_mass'][...] * 10**10
+                prog_gas_mass = np.array([gal_data[prog_snap][p]['hy'] for p in progs])
+                prog_stellar_mass = np.array([gal_data[prog_snap][p]['m'] for p in progs])
             except KeyError:
                 # Define change in properties
                 delta_hmrs[ind] = 2 ** 30
@@ -128,6 +128,14 @@ def main_change(masslim=1e8, hmrcut=False):
                 grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
                 gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                         physicalUnits=True, numThreads=8)[:, 4]
+                gas_sf_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/Mass', noH=True,
+                                                physicalUnits=True, numThreads=8)[:, 4]
+                gas_nsf_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/NSF/Mass', noH=True,
+                                                 physicalUnits=True, numThreads=8)[:, 4]
+                gas_sf_met = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/SmoothedMetallicity', noH=True,
+                                                physicalUnits=True, numThreads=8)[:, 4]
+                gas_nsf_met = E.read_array('SUBFIND', path, snap, 'Subhalo/NSF/NSF/SmoothedMetallicity',
+                                                noH=True, physicalUnits=True, numThreads=8)[:, 4]
                 gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                       noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
 
@@ -136,12 +144,24 @@ def main_change(masslim=1e8, hmrcut=False):
                 prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
                 prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
                                         physicalUnits=True, numThreads=8)[:, 4]
+                prog_gas_sf_mass = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SF/Mass', noH=True,
+                                                physicalUnits=True, numThreads=8)[:, 4]
+                prog_gas_nsf_mass = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/NSF/Mass', noH=True,
+                                                 physicalUnits=True, numThreads=8)[:, 4]
+                prog_gas_sf_met = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SF/SmoothedMetallicity', noH=True,
+                                                physicalUnits=True, numThreads=8)[:, 4]
+                prog_gas_nsf_met = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/NSF/NSF/SmoothedMetallicity',
+                                                noH=True, physicalUnits=True, numThreads=8)[:, 4]
                 prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                            noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
             except ValueError:
                 continue
             except OSError:
                 continue
+
+            # Convert gas masses to hydrogen masses
+            hydrogen_mass = gas_nsf_mass * (1 - gas_nsf_met) + gas_sf_mass * (1 - gas_sf_met)
+            prog_hydrogen_mass = prog_gas_nsf_mass * (1 - prog_gas_nsf_met) + prog_gas_sf_mass * (1 - prog_gas_sf_met)
 
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
@@ -177,10 +197,10 @@ def main_change(masslim=1e8, hmrcut=False):
 
             # Initialise galaxy data
             gal_data = {snap: {}, prog_snap: {}}
-            for m, hmr, i in zip(gal_ms, gal_hmrs, halo_ids):
-                gal_data[snap][i] = {'m': m, 'hmr': hmr}
-            for m, hmr, i in zip(prog_gal_ms, prog_gal_hmrs, prog_ids):
-                gal_data[prog_snap][i] = {'m': m, 'hmr': hmr}
+            for m, hmr, hy, i in zip(gal_ms, gal_hmrs, hydrogen_mass, halo_ids):
+                gal_data[snap][i] = {'m': m, 'hmr': hmr, 'hy': hy}
+            for m, hmr, hy, i in zip(prog_gal_ms, prog_gal_hmrs, prog_hydrogen_mass, prog_ids):
+                gal_data[prog_snap][i] = {'m': m, 'hmr': hmr, 'hy': hy}
 
             # Get change in stellar mass and half mass radius
             try:
