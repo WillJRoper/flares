@@ -195,6 +195,10 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         fig = plt.figure()
         ax = fig.add_subplot(111)
 
+        masses_plt = []
+        hmrs_plt = []
+        colors = []
+
         for snap, prog_snap, col in zip(forest_snaps, forest_progsnaps, cols):
 
             z_str = snap.split('z')[1].split('p')
@@ -215,7 +219,9 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                 if mass == 0 or hmr == 0:
                     continue
 
-                ax.scatter(mass, hmr / soft, marker='.', color=col)
+                masses_plt.append(mass)
+                hmrs_plt.append(hmr / soft)
+                colors.append(col)
 
                 # # Get prog data
                 # prog_hmrs = []
@@ -234,13 +240,15 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                     # ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
                     # ax.scatter(pm, phmr / prog_soft, marker='.', color='r')
 
+        im = ax.scatter(masses_plt, hmrs_plt, marker='.', color=colors)
+
         ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
 
         ax.set_yscale('log')
         ax.set_xscale('log')
 
-        cbar = fig.colorbar()
+        cbar = fig.colorbar(im)
         cbar.ax.set_ylabel(r'$z$')
 
         fig.savefig('plots/Evolution_HalfMassRadius_Mass' + str(root) + '.png',
