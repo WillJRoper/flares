@@ -185,13 +185,6 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         forest_snaps = list(forest.keys())[1:]
         forest_progsnaps = list(forest.keys())[:-1]
 
-        zs = []
-        for snap in forest_snaps:
-            z_str = snap.split('z')[1].split('p')
-            zs.append(float(z_str[0] + '.' + z_str[1]))
-
-        cols = mpl.cm.plasma(zs)
-
         fig = plt.figure()
         ax = fig.add_subplot(111)
 
@@ -221,7 +214,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
 
                 masses_plt.append(mass)
                 hmrs_plt.append(hmr / soft)
-                colors.append(col)
+                colors.append(z)
 
                 # # Get prog data
                 # prog_hmrs = []
@@ -240,7 +233,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                     # ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
                     # ax.scatter(pm, phmr / prog_soft, marker='.', color='r')
 
-        im = ax.scatter(masses_plt, hmrs_plt, marker='.', color=colors)
+        im = ax.scatter(masses_plt, hmrs_plt, marker='.', color=colors, cmap='plasma')
 
         ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
