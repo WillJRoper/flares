@@ -4,6 +4,7 @@ ml.use('Agg')
 import numpy as np
 from collections import defaultdict
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import matplotlib.gridspec as gridspec
 from matplotlib.colors import LogNorm
 import eagle_IO as E
@@ -123,7 +124,6 @@ def get_evolution(forest, path, graphpath, snaps):
 
         # Get halo properties
         for halo in forest[snap]:
-            print(gal_hmrs[halo_ids == halo], gal_ms[halo_ids == halo])
             hmrs[snap][halo] = gal_hmrs[halo_ids == halo]
             masses[snap][halo] = gal_ms[halo_ids == halo]
             progs[snap][halo] = hdf[str(halo)]['Prog_haloIDs'][...]
@@ -185,10 +185,17 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         forest_snaps = list(forest.keys())[1:]
         forest_progsnaps = list(forest.keys())[:-1]
 
+        zs = []
+        for snap in forest_snaps:
+            z_str = snap.split('z')[1].split('p')
+            zs.append(float(z_str[0] + '.' + z_str[1]))
+
+        cols = mpl.cm.plasma(zs)
+
         fig = plt.figure()
         ax = fig.add_subplot(111)
 
-        for snap, prog_snap in zip(forest_snaps, forest_progsnaps):
+        for snap, prog_snap, col in zip(forest_snaps, forest_progsnaps, cols):
 
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
@@ -198,7 +205,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
 
             # Define comoving softening length in kpc
             soft = 0.001802390 / 0.677 * 1 / (1 + z)
-            prog_soft = 0.001802390 / 0.677 * 1 / (1 + zp)
+            # prog_soft = 0.001802390 / 0.677 * 1 / (1 + zp)
 
             for halo in forest[snap]:
 
@@ -208,30 +215,33 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                 if mass == 0 or hmr == 0:
                     continue
 
-                ax.scatter(mass, hmr / soft, marker='.', color='b')
+                ax.scatter(mass, hmr / soft, marker='.', color=col)
 
-                # Get prog data
-                prog_hmrs = []
-                prog_mass = []
-                for prog in progs[snap][halo]:
-                    try:
-                        prog_hmrs.append(hmrs[prog_snap][prog])
-                        prog_mass.append(masses[prog_snap][prog])
-                    except KeyError:
-                        continue
+                # # Get prog data
+                # prog_hmrs = []
+                # prog_mass = []
+                # for prog in progs[snap][halo]:
+                #     try:
+                #         prog_hmrs.append(hmrs[prog_snap][prog])
+                #         prog_mass.append(masses[prog_snap][prog])
+                #     except KeyError:
+                #         continue
 
-                for phmr, pm in zip(prog_hmrs, prog_mass):
-                    if pm == 0 or phmr == 0:
-                        continue
-                    print(pm, phmr, mass - pm, hmr - phmr)
-                    ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
-                    ax.scatter(pm, phmr / prog_soft, marker='.', color='r')
+                # for phmr, pm in zip(prog_hmrs, prog_mass):
+                #     if pm == 0 or phmr == 0:
+                #         continue
+                #     print(pm, phmr, mass - pm, hmr - phmr)
+                    # ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
+                    # ax.scatter(pm, phmr / prog_soft, marker='.', color='r')
 
         ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
 
         ax.set_yscale('log')
         ax.set_xscale('log')
+
+        cbar = fig.colorbar()
+        cbar.ax.set_ylabel(r'$z$')
 
         fig.savefig('plots/Evolution_HalfMassRadius_Mass' + str(root) + '.png',
                     bbox_inches='tight')
