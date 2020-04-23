@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib
 import h5py
-import eagle_IO as E
+from eagle_IO.eagle_IO import eagle_IO as E
 import os
 import gc
 import sys
