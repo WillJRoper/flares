@@ -129,13 +129,13 @@ def main_change(masslim=1e8, hmrcut=False):
                 gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                         physicalUnits=True, numThreads=8)[:, 4]
                 gas_sf_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/Mass', noH=True,
-                                                physicalUnits=True, numThreads=8)[:, 4]
+                                                physicalUnits=True, numThreads=8)
                 gas_nsf_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/NSF/Mass', noH=True,
-                                                 physicalUnits=True, numThreads=8)[:, 4]
+                                                 physicalUnits=True, numThreads=8)
                 gas_sf_met = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/SmoothedMetallicity', noH=True,
-                                                physicalUnits=True, numThreads=8)[:, 4]
+                                                physicalUnits=True, numThreads=8)
                 gas_nsf_met = E.read_array('SUBFIND', path, snap, 'Subhalo/NSF/NSF/SmoothedMetallicity',
-                                                noH=True, physicalUnits=True, numThreads=8)[:, 4]
+                                                noH=True, physicalUnits=True, numThreads=8)
                 gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                       noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
 
@@ -145,13 +145,13 @@ def main_change(masslim=1e8, hmrcut=False):
                 prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
                                         physicalUnits=True, numThreads=8)[:, 4]
                 prog_gas_sf_mass = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SF/Mass', noH=True,
-                                                physicalUnits=True, numThreads=8)[:, 4]
+                                                physicalUnits=True, numThreads=8)
                 prog_gas_nsf_mass = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/NSF/Mass', noH=True,
-                                                 physicalUnits=True, numThreads=8)[:, 4]
+                                                 physicalUnits=True, numThreads=8)
                 prog_gas_sf_met = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SF/SmoothedMetallicity', noH=True,
-                                                physicalUnits=True, numThreads=8)[:, 4]
+                                                physicalUnits=True, numThreads=8)
                 prog_gas_nsf_met = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/NSF/NSF/SmoothedMetallicity',
-                                                noH=True, physicalUnits=True, numThreads=8)[:, 4]
+                                                noH=True, physicalUnits=True, numThreads=8)
                 prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                            noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
             except ValueError:
