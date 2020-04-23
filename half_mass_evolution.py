@@ -192,7 +192,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         hmrs_plt = []
         colors = []
 
-        for snap, prog_snap, col in zip(forest_snaps, forest_progsnaps):
+        for snap, prog_snap in zip(forest_snaps, forest_progsnaps):
 
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
