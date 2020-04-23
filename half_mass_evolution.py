@@ -218,6 +218,9 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                 hmrs_plt.extend(hmr / soft)
                 colors.append(z)
 
+                if z < 5:
+                    ax.scatter(mass, hmr, marker='*', color='k')
+
                 # # Get prog data
                 # prog_hmrs = []
                 # prog_mass = []
