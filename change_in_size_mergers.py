@@ -129,9 +129,9 @@ def main_change(masslim=1e8, hmrcut=False):
                 gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                         physicalUnits=True, numThreads=8)[:, 4]
                 gas_sf_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/Mass', noH=False,
-                                           physicalUnits=False, numThreads=8)
+                                           physicalUnits=False, numThreads=8) * 10**10
                 gas_nsf_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/NSF/Mass', noH=False,
-                                            physicalUnits=False, numThreads=8)
+                                            physicalUnits=False, numThreads=8) * 10**10
                 gas_sf_met = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/SmoothedMetallicity', noH=False,
                                           physicalUnits=False, numThreads=8)
                 gas_nsf_met = E.read_array('SUBFIND', path, snap, 'Subhalo/NSF/SmoothedMetallicity',
@@ -145,9 +145,9 @@ def main_change(masslim=1e8, hmrcut=False):
                 prog_gal_hmrs = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/HalfMassRad', noH=True,
                                              physicalUnits=True, numThreads=8)[:, 4]
                 prog_gas_sf_mass = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SF/Mass', noH=False,
-                                                physicalUnits=False, numThreads=8)
+                                                physicalUnits=False, numThreads=8) * 10**10
                 prog_gas_nsf_mass = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/NSF/Mass', noH=False,
-                                                 physicalUnits=False, numThreads=8)
+                                                 physicalUnits=False, numThreads=8) * 10**10
                 prog_gas_sf_met = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SF/SmoothedMetallicity',
                                                noH=False, physicalUnits=False, numThreads=8)
                 prog_gas_nsf_met = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/NSF/SmoothedMetallicity',
