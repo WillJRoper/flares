@@ -233,6 +233,10 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                     # ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
                     # ax.scatter(pm, phmr / prog_soft, marker='.', color='r')
 
+        masses_plt = np.array(masses_plt)
+        hmrs_plt = np.array(hmrs_plt)
+        colors = np.array(colors)
+
         im = ax.scatter(masses_plt[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8], marker='.',
                         c=mpl.cm.plasma(colors[masses_plt > 1e8]))
 
