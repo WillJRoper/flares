@@ -202,7 +202,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
             for halo in forest[snap]:
 
                 mass = masses[snap][halo]
-                hmr = masses[snap][halo]
+                hmr = hmrs[snap][halo]
 
                 if mass == 0 or hmr == 0:
                     continue
@@ -220,11 +220,11 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                         continue
 
                 for pm, phmr in zip(prog_hmrs, prog_mass):
-                    if pm == 0 or phmr  == 0:
+                    if pm == 0 or phmr == 0:
                         continue
                     print(pm, phmr, mass - pm, hmr - phmr)
                     # ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
-                    ax.scatter(pm, phmr / prog_soft, marker='.', color='b')
+                    ax.scatter(pm, phmr / prog_soft, marker='.', color='r')
 
         ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
