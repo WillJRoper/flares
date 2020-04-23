@@ -208,7 +208,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
 
                 for pm, phmr in zip(prog_hmrs, prog_mass):
                     print(pm, phmr, mass - pm, hmr - phmr)
-                    ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
+                    # ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
                     ax.scatter(pm, phmr, marker='.', color='b')
 
         ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
