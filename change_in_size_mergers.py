@@ -160,6 +160,7 @@ def main_change(masslim=1e8, hmrcut=False):
                 continue
 
             # Convert gas masses to hydrogen masses
+            print(gas_nsf_mass.shape, (1 - gas_nsf_met).shape, gas_sf_mass.shape, (1 - gas_sf_met).shape)
             hydrogen_mass = gas_nsf_mass * (1 - gas_nsf_met) + gas_sf_mass * (1 - gas_sf_met)
             prog_hydrogen_mass = prog_gas_nsf_mass * (1 - prog_gas_nsf_met) + prog_gas_sf_mass * (1 - prog_gas_sf_met)
 
