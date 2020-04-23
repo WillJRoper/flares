@@ -92,7 +92,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
 def main_change(masslim=1e8, hmrcut=False):
 
     regions = []
-    for reg in range(0, 2):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -331,7 +331,7 @@ def main_change(masslim=1e8, hmrcut=False):
         if len(major_minor) > 0:
 
             H, bin_edges = np.histogram(np.log10(major_minor)[np.where(np.log10(major_minor) < np.inf)],
-                                        bins=int(np.sqrt(len(major_minor))))
+                                        bins=100)
 
             bin_wid = bin_edges[1] - bin_edges[0]
             bin_cents = bin_edges[1:] - (bin_wid / 2)
