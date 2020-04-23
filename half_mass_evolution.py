@@ -212,8 +212,8 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                 if mass == 0 or hmr == 0:
                     continue
 
-                masses_plt.append(mass)
-                hmrs_plt.append(hmr / soft)
+                masses_plt.extend(mass)
+                hmrs_plt.extend(hmr / soft)
                 colors.append(z)
 
                 # # Get prog data
