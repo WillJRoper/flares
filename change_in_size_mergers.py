@@ -36,6 +36,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
         # Get progenitors
         try:
             progs = hdf[str(i)]['Prog_haloIDs'][...]
+            progs = progs[hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10 > 0]
         except KeyError:
             # Define change in properties
             delta_hmrs[ind] = 2**30
@@ -91,7 +92,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
 def main_change(masslim=1e8, hmrcut=False):
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 2):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
