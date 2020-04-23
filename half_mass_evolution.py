@@ -240,7 +240,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         colors = np.array(colors)
 
         im = ax.scatter(masses_plt[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8], marker='.',
-                        c=colors, cmap='plasma')
+                        c=colors[masses_plt > 1e8], cmap='plasma')
 
         ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
