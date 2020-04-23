@@ -212,6 +212,12 @@ def main_change(masslim=1e8, hmrcut=False):
     major_minor = major_minor[okinds]
     wet_dry = wet_dry[okinds]
 
+    # Define limits
+    majlowlim = 0.5
+    minlowlim = 0.05
+    wetlowlim = 10
+    dryuplim = 1
+
     # Set up plot
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -241,7 +247,8 @@ def main_change(masslim=1e8, hmrcut=False):
     bin_cents = bin_edges[1:] - (bin_wid / 2)
 
     # Plot results
-    plt.bar(bin_cents, np.log10(H), color='k', edgecolor='k', alpha=0.6, width=bin_wid)
+    ax.bar(bin_cents, np.log10(H), color='k', edgecolor='k', alpha=0.6, width=bin_wid)
+    ax.axvline(np.log10(majlowlim))
 
     # Label axes
     ax.set_xlabel(r'$\log_{10}(M_{secondary}/M_{primary})$')
@@ -263,7 +270,7 @@ def main_change(masslim=1e8, hmrcut=False):
     bin_cents = bin_edges[1:] - (bin_wid / 2)
 
     # Plot results
-    plt.bar(bin_cents, np.log10(H), color='k', edgecolor='k', alpha=0.6, width=bin_wid)
+    ax.bar(bin_cents, np.log10(H), color='k', edgecolor='k', alpha=0.6, width=bin_wid)
 
     # Label axes
     ax.set_xlabel(r'$\log_{10}(f_{\mathrm{gas,merger}})$')
@@ -272,12 +279,6 @@ def main_change(masslim=1e8, hmrcut=False):
     fig.savefig('plots/wetdrymerger_hist.png', bbox_inches='tight')
 
     plt.close()
-
-    # Define limits
-    majlowlim = 0.3
-    minlowlim = 0.1
-    wetlowlim = 0.5
-    dryuplim = 0.2
 
     # Get major/minor/accretion and wet/mix/dry divisions
     maj_wet_inds = np.logical_and(major_minor >= majlowlim, wet_dry >= wetlowlim)
