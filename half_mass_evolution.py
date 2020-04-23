@@ -193,6 +193,9 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
 
                 mass = masses[snap][halo]
                 hmr = masses[snap][halo]
+                
+                if mass == 0 or hmr == 0:
+                    continue
 
                 ax.scatter(mass, hmr, marker='.', color='b')
 
@@ -207,6 +210,8 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
                         continue
 
                 for pm, phmr in zip(prog_hmrs, prog_mass):
+                    if pm == 0 or phmr  == 0:
+                        continue
                     print(pm, phmr, mass - pm, hmr - phmr)
                     # ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
                     ax.scatter(pm, phmr, marker='.', color='b')
