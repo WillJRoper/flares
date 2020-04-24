@@ -286,6 +286,8 @@ def main_change(masslim=1e8, hmrcut=False):
         delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
         fbs_plt = np.concatenate(list(fbs_dict[snap].values()))
 
+        print(fbs_plt)
+
         okinds = np.logical_and(xs_plt > 0, delta_hmr_plt > 0)
         xs_plt = xs_plt[okinds]
         fbs_plt = fbs_plt[okinds]
