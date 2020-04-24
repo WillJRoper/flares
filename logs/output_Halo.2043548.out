@@ -1,0 +1,585 @@
+====
+Starting job 2043548 at Fri 24 Apr 02:34:28 BST 2020 for user dc-rope1.
+Running on nodes: m6527
+====
+424
+('04', '003_z012p000', '004_z011p000', '005_z010p000')
+Reading in 'PartType1/ParticleIDs' for z = 11.0 using 8 thread(s) took 11.78942s
+Reading in 'PartType1/ParticleIDs' for z = 11.0 using 8 thread(s) took 1.687572s
+Reading in 'PartType1/GroupNumber' for z = 11.0 using 8 thread(s) took 0.125668s
+Reading in 'PartType1/SubGroupNumber' for z = 11.0 using 8 thread(s) took 0.116037s
+Reading in 'PartType1/GroupNumber' for z = 12.0 using 8 thread(s) took 0.323124s
+Reading in 'PartType1/SubGroupNumber' for z = 12.0 using 8 thread(s) took 0.20157s
+Reading in 'PartType1/ParticleIDs' for z = 12.0 using 8 thread(s) took 0.295713s
+Reading in 'PartType1/GroupNumber' for z = 10.0 using 8 thread(s) took 0.620133s
+Reading in 'PartType1/SubGroupNumber' for z = 10.0 using 8 thread(s) took 0.303687s
+Reading in 'PartType1/ParticleIDs' for z = 10.0 using 8 thread(s) took 0.448619s
+Graph progress:  0 % 69991.0
+Graph progress:  1 % 55595.0
+Graph progress:  2 % 13053.0
+Graph progress:  3 % 31833.0
+Graph progress:  4 % 6444.0
+Graph progress:  5 % 44292.0
+Graph progress:  6 % 17259.0
+Graph progress:  7 % 65381.0
+Graph progress:  8 % 35646.0
+Graph progress:  9 % 62046.0
+Graph progress:  10 % 15254.0
+Graph progress:  11 % 28.0
+Graph progress:  12 % 45622.0
+Graph progress:  13 % 3668.00001
+Graph progress:  14 % 21487.0
+Graph progress:  15 % 12379.0
+Graph progress:  16 % 20424.0
+Graph progress:  17 % 586.00001
+Graph progress:  18 % 6164.0
+Graph progress:  19 % 2069.00003
+Graph progress:  20 % 52096.0
+Graph progress:  21 % 1856.0
+Graph progress:  22 % 16571.0
+Graph progress:  23 % 52800.0
+Graph progress:  24 % 59616.0
+Graph progress:  25 % 24349.0
+Graph progress:  26 % 1722.0
+Graph progress:  27 % 21508.0
+Graph progress:  28 % 56913.0
+Graph progress:  29 % 69810.0
+Graph progress:  30 % 1902.0
+Graph progress:  31 % 66713.0
+Graph progress:  32 % 99.00006
+Graph progress:  33 % 6890.00002
+Graph progress:  34 % 46460.0
+Graph progress:  35 % 51615.0
+Graph progress:  36 % 36821.0
+Graph progress:  37 % 34133.0
+Graph progress:  38 % 33619.0
+Graph progress:  39 % 12646.0
+Graph progress:  40 % 69830.0
+Graph progress:  41 % 8959.0
+Graph progress:  42 % 37649.0
+Graph progress:  43 % 9774.0
+Graph progress:  44 % 63472.0
+Graph progress:  45 % 37683.0
+Graph progress:  46 % 4079.0
+Graph progress:  47 % 15587.0
+Graph progress:  48 % 210.0
+Graph progress:  49 % 2375.00001
+Graph progress:  50 % 11233.0
+Graph progress:  51 % 49100.0
+Graph progress:  52 % 22124.0
+Graph progress:  53 % 3939.0
+Graph progress:  54 % 21000.0
+Graph progress:  55 % 48970.0
+Graph progress:  56 % 24041.0
+Graph progress:  57 % 54444.0
+Graph progress:  58 % 20774.0
+Graph progress:  59 % 6780.0
+Graph progress:  60 % 48372.0
+Graph progress:  61 % 5585.00001
+Graph progress:  62 % 56475.0
+Graph progress:  63 % 31560.0
+Graph progress:  64 % 183.00002
+Graph progress:  65 % 55070.00001
+Graph progress:  66 % 56032.0
+Graph progress:  67 % 2062.0
+Graph progress:  68 % 36890.0
+Graph progress:  69 % 21149.0
+Graph progress:  70 % 23742.00001
+Graph progress:  71 % 69896.0
+Graph progress:  72 % 29.00007
+Graph progress:  73 % 12583.0
+Graph progress:  74 % 17492.0
+Graph progress:  75 % 54957.0
+Graph progress:  76 % 39294.0
+Graph progress:  77 % 54466.0
+Graph progress:  78 % 8378.0
+Graph progress:  79 % 56232.0
+Graph progress:  80 % 107.0
+Graph progress:  81 % 22287.00001
+Graph progress:  82 % 5051.0
+Graph progress:  83 % 47925.0
+Graph progress:  84 % 43986.0
+Graph progress:  85 % 2725.00001
+Graph progress:  86 % 16228.00001
+Graph progress:  87 % 59858.0
+Graph progress:  88 % 33059.0
+Graph progress:  89 % 30660.0
+Graph progress:  90 % 46627.0
+Graph progress:  91 % 10586.0
+Graph progress:  92 % 17546.0
+Graph progress:  93 % 67975.0
+Graph progress:  94 % 1.00019
+Graph progress:  95 % 21585.0
+Graph progress:  96 % 17394.0
+Graph progress:  97 % 7708.00001
+Graph progress:  98 % 203.00005
+Graph progress:  99 % 36524.0
+Processed 83298 halos in snapshot 004_z011p000 of particle type 1
+Reading in 'PartType4/ParticleIDs' for z = 11.0 using 8 thread(s) took 0.268132s
+Reading in 'PartType4/ParticleIDs' for z = 12.0 using 8 thread(s) took 0.567634s
+Reading in 'Subhalo/SubGroupNumber' for z = 12.0 using 8 thread(s) took 0.610468s
+Reading in 'Subhalo/GroupNumber' for z = 12.0 using 8 thread(s) took 0.356485s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 12.0 using 8 thread(s) took 0.33293s
+Reading in 'PartType4/Mass' for z = 12.0 using 8 thread(s) took 0.213466s
+Reading in 'PartType4/ParticleIDs' for z = 10.0 using 8 thread(s) took 1.436974s
+Reading in 'Subhalo/SubGroupNumber' for z = 10.0 using 8 thread(s) took 7.080137s
+Reading in 'Subhalo/GroupNumber' for z = 10.0 using 8 thread(s) took 0.388873s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 10.0 using 8 thread(s) took 0.355304s
+Reading in 'PartType4/Mass' for z = 10.0 using 8 thread(s) took 0.236924s
+Reading in 'PartType4/ParticleIDs' for z = 11.0 using 8 thread(s) took 0.222292s
+Reading in 'PartType4/GroupNumber' for z = 11.0 using 8 thread(s) took 0.236655s
+Reading in 'PartType4/SubGroupNumber' for z = 11.0 using 8 thread(s) took 0.248613s
+Reading in 'PartType4/GroupNumber' for z = 12.0 using 8 thread(s) took 0.214716s
+Reading in 'PartType4/SubGroupNumber' for z = 12.0 using 8 thread(s) took 0.238304s
+Reading in 'PartType4/ParticleIDs' for z = 12.0 using 8 thread(s) took 0.231743s
+Reading in 'PartType4/GroupNumber' for z = 10.0 using 8 thread(s) took 0.231394s
+Reading in 'PartType4/SubGroupNumber' for z = 10.0 using 8 thread(s) took 0.278481s
+Reading in 'PartType4/ParticleIDs' for z = 10.0 using 8 thread(s) took 0.235472s
+Graph progress:  0 % 1869.0
+Graph progress:  1 % 10160.0
+Graph progress:  2 % 5594.0
+Graph progress:  3 % 1946.0
+Graph progress:  4 % 116.00002
+Graph progress:  5 % 6184.0
+Graph progress:  6 % 3512.0
+Graph progress:  7 % 1857.0
+Graph progress:  8 % 4245.0
+Graph progress:  9 % 2461.00001
+Graph progress:  10 % 9612.0
+Graph progress:  11 % 28.00007
+Graph progress:  12 % 18638.0
+Graph progress:  13 % 13878.0
+Graph progress:  14 % 1349.00002
+Graph progress:  15 % 759.0
+Graph progress:  16 % 12005.0
+Graph progress:  17 % 7758.0
+Graph progress:  18 % 292.00002
+Graph progress:  19 % 6621.0
+Graph progress:  20 % 15903.0
+Graph progress:  21 % 4705.0
+Graph progress:  22 % 451.0
+Graph progress:  23 % 9334.0
+Graph progress:  24 % 79.0
+Graph progress:  25 % 1818.00001
+Graph progress:  26 % 144.00005
+Graph progress:  27 % 5964.0
+Graph progress:  28 % 7974.0
+Graph progress:  29 % 4465.0
+Graph progress:  30 % 125.00001
+Graph progress:  31 % 21397.0
+Graph progress:  32 % 7240.0
+Graph progress:  33 % 6688.0
+Graph progress:  34 % 75.00004
+Graph progress:  35 % 5287.0
+Graph progress:  36 % 6304.0
+Graph progress:  37 % 6193.0
+Graph progress:  38 % 1023.0
+Graph progress:  39 % 4391.0
+Graph progress:  40 % 13058.0
+Graph progress:  41 % 4859.0
+Graph progress:  42 % 196.0
+Graph progress:  43 % 4556.0
+Graph progress:  44 % 7896.0
+Graph progress:  45 % 17893.0
+Graph progress:  46 % 4297.0
+Graph progress:  47 % 12563.0
+Graph progress:  48 % 7374.0
+Graph progress:  49 % 9036.0
+Graph progress:  50 % 3740.0
+Graph progress:  51 % 225.00003
+Graph progress:  52 % 13575.0
+Graph progress:  53 % 1387.0
+Graph progress:  54 % 631.0
+Graph progress:  55 % 13739.0
+Graph progress:  56 % 17667.0
+Graph progress:  57 % 4840.0
+Graph progress:  58 % 21576.0
+Graph progress:  59 % 1374.00001
+Graph progress:  60 % 6059.0
+Graph progress:  61 % 15994.0
+Graph progress:  62 % 5212.0
+Graph progress:  63 % 9291.0
+Graph progress:  64 % 464.0
+Graph progress:  65 % 7005.0
+Graph progress:  66 % 9587.0
+Graph progress:  67 % 20587.0
+Graph progress:  68 % 350.00001
+Graph progress:  69 % 2519.0
+Graph progress:  70 % 14703.0
+Graph progress:  71 % 9453.0
+Graph progress:  72 % 230.00002
+Graph progress:  73 % 6469.0
+Graph progress:  74 % 10943.0
+Graph progress:  75 % 4071.0
+Graph progress:  76 % 679.0
+Graph progress:  77 % 3337.0
+Graph progress:  78 % 5562.0
+Graph progress:  79 % 6230.0
+Graph progress:  80 % 11517.0
+Graph progress:  81 % 1338.0
+Graph progress:  82 % 752.0
+Graph progress:  83 % 10966.0
+Graph progress:  84 % 1604.0
+Graph progress:  85 % 5112.0
+Graph progress:  86 % 747.0
+Graph progress:  87 % 6518.0
+Graph progress:  88 % 10893.0
+Graph progress:  89 % 1541.00001
+Graph progress:  90 % 791.0
+Graph progress:  91 % 4684.0
+Graph progress:  92 % 14827.0
+Graph progress:  93 % 291.00004
+Graph progress:  94 % 10962.0
+Graph progress:  95 % 8343.0
+Graph progress:  96 % 46.00008
+Graph progress:  97 % 9549.0
+Graph progress:  98 % 1504.0
+Graph progress:  99 % 20386.0
+Processed 8456 halos in snapshot 004_z011p000 of particle type 4
+Reading in 'PartType5/ParticleIDs' for z = 11.0 using 8 thread(s) took 0.229508s
+Reading in 'PartType5/ParticleIDs' for z = 12.0 using 8 thread(s) took 0.285536s
+Reading in 'Subhalo/SubGroupNumber' for z = 12.0 using 8 thread(s) took 0.346346s
+Reading in 'Subhalo/GroupNumber' for z = 12.0 using 8 thread(s) took 0.400384s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 12.0 using 8 thread(s) took 0.370666s
+Reading in 'PartType5/Mass' for z = 12.0 using 8 thread(s) took 0.205552s
+Reading in 'PartType5/ParticleIDs' for z = 10.0 using 8 thread(s) took 3.280468s
+Reading in 'Subhalo/SubGroupNumber' for z = 10.0 using 8 thread(s) took 0.377447s
+Reading in 'Subhalo/GroupNumber' for z = 10.0 using 8 thread(s) took 0.360317s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 10.0 using 8 thread(s) took 0.413869s
+Reading in 'PartType5/Mass' for z = 10.0 using 8 thread(s) took 0.475247s
+Reading in 'PartType5/ParticleIDs' for z = 11.0 using 8 thread(s) took 0.287032s
+Reading in 'PartType5/GroupNumber' for z = 11.0 using 8 thread(s) took 0.243377s
+Reading in 'PartType5/SubGroupNumber' for z = 11.0 using 8 thread(s) took 0.229108s
+Reading in 'PartType5/GroupNumber' for z = 12.0 using 8 thread(s) took 0.219993s
+Reading in 'PartType5/SubGroupNumber' for z = 12.0 using 8 thread(s) took 0.222446s
+Reading in 'PartType5/ParticleIDs' for z = 12.0 using 8 thread(s) took 0.220709s
+Reading in 'PartType5/GroupNumber' for z = 10.0 using 8 thread(s) took 0.227054s
+Reading in 'PartType5/SubGroupNumber' for z = 10.0 using 8 thread(s) took 0.231301s
+Reading in 'PartType5/ParticleIDs' for z = 10.0 using 8 thread(s) took 0.232792s
+Graph progress:  0 % 127.00001
+Graph progress:  1 % 53.00001
+Graph progress:  2 % 163.0
+Graph progress:  3 % 116.00001
+Graph progress:  4 % 156.0
+Graph progress:  5 % 83.00006
+Graph progress:  6 % 136.00004
+Graph progress:  7 % 26.0
+Graph progress:  8 % 12.0
+Graph progress:  9 % 122.00001
+Graph progress:  10 % 271.00001
+Graph progress:  11 % 111.0
+Graph progress:  12 % 2286.0
+Graph progress:  13 % 63.00001
+Graph progress:  14 % 89.00003
+Graph progress:  15 % 64.0
+Graph progress:  16 % 212.00003
+Graph progress:  17 % 135.0
+Graph progress:  18 % 169.0
+Graph progress:  19 % 9.0
+Graph progress:  20 % 251.00001
+Graph progress:  21 % 57.0
+Graph progress:  22 % 73.00003
+Graph progress:  23 % 65.0
+Graph progress:  24 % 79.00002
+Graph progress:  25 % 4.00015
+Graph progress:  26 % 994.0
+Graph progress:  27 % 154.0
+Graph progress:  28 % 129.0
+Graph progress:  29 % 20.0
+Graph progress:  30 % 102.0
+Graph progress:  31 % 1124.00001
+Graph progress:  32 % 88.0
+Graph progress:  33 % 87.0
+Graph progress:  34 % 41.00001
+Graph progress:  35 % 35.00001
+Graph progress:  36 % 35.0
+Graph progress:  37 % 99.00001
+Graph progress:  38 % 75.00002
+Graph progress:  39 % 189.0
+Graph progress:  40 % 158.00007
+Graph progress:  41 % 168.0
+Graph progress:  42 % 253.00001
+Graph progress:  43 % 86.00004
+Graph progress:  44 % 164.00004
+Graph progress:  45 % 40.0
+Graph progress:  46 % 59.00001
+Graph progress:  47 % 345.00001
+Graph progress:  48 % 49.0
+Graph progress:  49 % 90.0
+Graph progress:  50 % 182.0
+Graph progress:  51 % 141.0
+Graph progress:  52 % 72.00002
+Graph progress:  53 % 61.0
+Graph progress:  54 % 121.0
+Graph progress:  55 % 67.00001
+Graph progress:  56 % 66.00009
+Graph progress:  57 % 10.00001
+Graph progress:  58 % 131.0
+Graph progress:  59 % 367.0
+Graph progress:  60 % 167.0
+Graph progress:  61 % 17.00008
+Graph progress:  62 % 17.0
+Graph progress:  63 % 27.00005
+Graph progress:  64 % 151.00001
+Graph progress:  65 % 172.00001
+Graph progress:  66 % 95.0
+Graph progress:  67 % 187.0
+Graph progress:  68 % 132.0
+Graph progress:  69 % 10.00004
+Graph progress:  70 % 6.00005
+Graph progress:  71 % 173.00002
+Graph progress:  72 % 29.00005
+Graph progress:  73 % 180.0
+Graph progress:  74 % 18.0
+Graph progress:  75 % 118.0
+Graph progress:  76 % 50.0
+Graph progress:  77 % 114.0
+Graph progress:  78 % 937.0
+Graph progress:  79 % 25.0
+Graph progress:  80 % 76.0
+Graph progress:  81 % 130.00003
+Graph progress:  82 % 198.0
+Graph progress:  83 % 113.00001
+Graph progress:  84 % 98.00001
+Graph progress:  85 % 109.00001
+Graph progress:  86 % 2.0
+Graph progress:  87 % 1.00001
+Graph progress:  88 % 3.00001
+Graph progress:  89 % 94.0
+Graph progress:  90 % 305.00001
+Graph progress:  91 % 1.00011
+Graph progress:  92 % 11.00005
+Graph progress:  93 % 1.00012
+Graph progress:  94 % 11.00001
+Graph progress:  95 % 220.0
+Graph progress:  96 % 34.00001
+Graph progress:  97 % 3257.0
+Graph progress:  98 % 74.0
+Graph progress:  99 % 166.00002
+Processed 285 halos in snapshot 004_z011p000 of particle type 5
+Reading in 'PartType0/ParticleIDs' for z = 11.0 using 8 thread(s) took 11.747829s
+Reading in 'PartType0/ParticleIDs' for z = 12.0 using 8 thread(s) took 12.110995s
+Reading in 'Subhalo/SubGroupNumber' for z = 12.0 using 8 thread(s) took 0.498662s
+Reading in 'Subhalo/GroupNumber' for z = 12.0 using 8 thread(s) took 0.494328s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 12.0 using 8 thread(s) took 0.475912s
+Reading in 'PartType0/Mass' for z = 12.0 using 8 thread(s) took 0.358862s
+Reading in 'PartType0/ParticleIDs' for z = 10.0 using 8 thread(s) took 12.907161s
+Reading in 'Subhalo/SubGroupNumber' for z = 10.0 using 8 thread(s) took 0.55165s
+Reading in 'Subhalo/GroupNumber' for z = 10.0 using 8 thread(s) took 0.53413s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 10.0 using 8 thread(s) took 0.494501s
+Reading in 'PartType0/Mass' for z = 10.0 using 8 thread(s) took 0.43863s
+Reading in 'PartType0/ParticleIDs' for z = 11.0 using 8 thread(s) took 0.427446s
+Reading in 'PartType0/GroupNumber' for z = 11.0 using 8 thread(s) took 0.395531s
+Reading in 'PartType0/SubGroupNumber' for z = 11.0 using 8 thread(s) took 0.358915s
+Reading in 'PartType0/GroupNumber' for z = 12.0 using 8 thread(s) took 0.417815s
+Reading in 'PartType0/SubGroupNumber' for z = 12.0 using 8 thread(s) took 0.411277s
+Reading in 'PartType0/ParticleIDs' for z = 12.0 using 8 thread(s) took 0.455118s
+Reading in 'PartType0/GroupNumber' for z = 10.0 using 8 thread(s) took 0.567922s
+Reading in 'PartType0/SubGroupNumber' for z = 10.0 using 8 thread(s) took 0.534655s
+Reading in 'PartType0/ParticleIDs' for z = 10.0 using 8 thread(s) took 0.652549s
+Graph progress:  0 % 69991.0
+Graph progress:  1 % 55332.0
+Graph progress:  2 % 5348.0
+Graph progress:  3 % 53788.0
+Graph progress:  4 % 106.00003
+Graph progress:  5 % 4280.0
+Graph progress:  6 % 18631.0
+Graph progress:  7 % 12443.0
+Graph progress:  8 % 61719.0
+Graph progress:  9 % 32560.00001
+Graph progress:  10 % 27125.0
+Graph progress:  11 % 2151.00001
+Graph progress:  12 % 5715.0
+Graph progress:  13 % 6839.00001
+Graph progress:  14 % 10555.00001
+Graph progress:  15 % 40574.0
+Graph progress:  16 % 58740.0
+Graph progress:  17 % 11512.0
+Graph progress:  18 % 17703.0
+Graph progress:  19 % 55666.0
+Graph progress:  20 % 1217.00002
+Graph progress:  21 % 66609.0
+Graph progress:  22 % 32602.0
+Graph progress:  23 % 46770.0
+Graph progress:  24 % 487.00001
+Graph progress:  25 % 13080.0
+Graph progress:  26 % 35192.0
+Graph progress:  27 % 57270.0
+Graph progress:  28 % 43761.0
+Graph progress:  29 % 67899.0
+Graph progress:  30 % 8032.0
+Graph progress:  31 % 29862.0
+Graph progress:  32 % 44384.0
+Graph progress:  33 % 57794.0
+Graph progress:  34 % 26599.0
+Graph progress:  35 % 37107.0
+Graph progress:  36 % 67804.0
+Graph progress:  37 % 10887.0
+Graph progress:  38 % 65832.0
+Graph progress:  39 % 8543.00001
+Graph progress:  40 % 52326.0
+Graph progress:  41 % 33942.0
+Graph progress:  42 % 70649.0
+Graph progress:  43 % 10499.00001
+Graph progress:  44 % 39704.0
+Graph progress:  45 % 36.0
+Graph progress:  46 % 23789.0
+Graph progress:  47 % 60506.0
+Graph progress:  48 % 2033.0
+Graph progress:  49 % 51509.0
+Graph progress:  50 % 35517.0
+Graph progress:  51 % 496.00002
+Graph progress:  52 % 4490.00001
+Graph progress:  53 % 51526.0
+Graph progress:  54 % 39262.0
+Graph progress:  55 % 62396.0
+Graph progress:  56 % 8338.0
+Graph progress:  57 % 28175.0
+Graph progress:  58 % 52610.0
+Graph progress:  59 % 37643.0
+Graph progress:  60 % 14146.0
+Graph progress:  61 % 61685.0
+Graph progress:  62 % 21322.0
+Graph progress:  63 % 4742.0
+Graph progress:  64 % 6850.00001
+Graph progress:  65 % 44760.0
+Graph progress:  66 % 11006.0
+Graph progress:  67 % 58449.0
+Graph progress:  68 % 8505.00001
+Graph progress:  69 % 51397.0
+Graph progress:  70 % 11141.0
+Graph progress:  71 % 42734.0
+Graph progress:  72 % 3343.00001
+Graph progress:  73 % 36376.0
+Graph progress:  74 % 978.00004
+Graph progress:  75 % 52988.0
+Graph progress:  76 % 49023.0
+Graph progress:  77 % 64538.0
+Graph progress:  78 % 15573.0
+Graph progress:  79 % 64535.0
+Graph progress:  80 % 21492.0
+Graph progress:  81 % 28665.0
+Graph progress:  82 % 9451.0
+Graph progress:  83 % 44629.0
+Graph progress:  84 % 22627.0
+Graph progress:  85 % 1814.00001
+Graph progress:  86 % 25249.0
+Graph progress:  87 % 60932.0
+Graph progress:  88 % 63234.0
+Graph progress:  89 % 32751.0
+Graph progress:  90 % 701.00002
+Graph progress:  91 % 64023.0
+Graph progress:  92 % 25664.00001
+Graph progress:  93 % 10424.0
+Graph progress:  94 % 59529.0
+Graph progress:  95 % 2754.00003
+Graph progress:  96 % 46897.0
+Graph progress:  97 % 32130.0
+Graph progress:  98 % 55494.0
+Graph progress:  99 % 3197.00003
+Processed 83003 halos in snapshot 004_z011p000 of particle type 0
+Write progress:  0 % 69991.0
+Write progress:  1 % 55595.0
+Write progress:  2 % 13053.0
+Write progress:  3 % 31833.0
+Write progress:  4 % 6444.0
+Write progress:  5 % 44292.0
+Write progress:  6 % 17259.0
+Write progress:  7 % 65381.0
+Write progress:  8 % 35646.0
+Write progress:  9 % 62046.0
+Write progress:  10 % 15254.0
+Write progress:  11 % 28.0
+Write progress:  12 % 45622.0
+Write progress:  13 % 3668.00001
+Write progress:  14 % 21487.0
+Write progress:  15 % 12379.0
+Write progress:  16 % 20424.0
+Write progress:  17 % 586.00001
+Write progress:  18 % 6164.0
+Write progress:  19 % 2069.00003
+Write progress:  20 % 52096.0
+Write progress:  21 % 1856.0
+Write progress:  22 % 16571.0
+Write progress:  23 % 52800.0
+Write progress:  24 % 59616.0
+Write progress:  25 % 24349.0
+Write progress:  26 % 1722.0
+Write progress:  27 % 21508.0
+Write progress:  28 % 56913.0
+Write progress:  29 % 69810.0
+Write progress:  30 % 1902.0
+Write progress:  31 % 66713.0
+Write progress:  32 % 99.00006
+Write progress:  33 % 6890.00002
+Write progress:  34 % 46460.0
+Write progress:  35 % 51615.0
+Write progress:  36 % 36821.0
+Write progress:  37 % 34133.0
+Write progress:  38 % 33619.0
+Write progress:  39 % 12646.0
+Write progress:  40 % 69830.0
+Write progress:  41 % 8959.0
+Write progress:  42 % 37649.0
+Write progress:  43 % 9774.0
+Write progress:  44 % 63472.0
+Write progress:  45 % 37683.0
+Write progress:  46 % 4079.0
+Write progress:  47 % 15587.0
+Write progress:  48 % 210.0
+Write progress:  49 % 2375.00001
+Write progress:  50 % 11233.0
+Write progress:  51 % 49100.0
+Write progress:  52 % 22124.0
+Write progress:  53 % 3939.0
+Write progress:  54 % 21000.0
+Write progress:  55 % 48970.0
+Write progress:  56 % 24041.0
+Write progress:  57 % 54444.0
+Write progress:  58 % 20774.0
+Write progress:  59 % 6780.0
+Write progress:  60 % 48372.0
+Write progress:  61 % 5585.00001
+Write progress:  62 % 56475.0
+Write progress:  63 % 31560.0
+Write progress:  64 % 183.00002
+Write progress:  65 % 55070.00001
+Write progress:  66 % 56032.0
+Write progress:  67 % 2062.0
+Write progress:  68 % 36890.0
+Write progress:  69 % 21149.0
+Write progress:  70 % 23742.00001
+Write progress:  71 % 69896.0
+Write progress:  72 % 29.00007
+Write progress:  73 % 12583.0
+Write progress:  74 % 17492.0
+Write progress:  75 % 54957.0
+Write progress:  76 % 39294.0
+Write progress:  77 % 54466.0
+Write progress:  78 % 8378.0
+Write progress:  79 % 56232.0
+Write progress:  80 % 107.0
+Write progress:  81 % 22287.00001
+Write progress:  82 % 5051.0
+Write progress:  83 % 47925.0
+Write progress:  84 % 43986.0
+Write progress:  85 % 2725.00001
+Write progress:  86 % 16228.00001
+Write progress:  87 % 59858.0
+Write progress:  88 % 33059.0
+Write progress:  89 % 30660.0
+Write progress:  90 % 46627.0
+Write progress:  91 % 10586.0
+Write progress:  92 % 17546.0
+Write progress:  93 % 67975.0
+Write progress:  94 % 1.00019
+Write progress:  95 % 21585.0
+Write progress:  96 % 17394.0
+Write progress:  97 % 7708.00001
+Write progress:  98 % 203.00005
+Write progress:  99 % 36524.0
+Job done, info follows...
+       JobID    JobName  Partition     MaxRSS    Elapsed ExitCode 
+------------ ---------- ---------- ---------- ---------- -------- 
+2042958_425  MEGA-FLAR+     cosma6              00:17:45      0:0 
+2042958_425+     extern                         00:17:45      0:0 

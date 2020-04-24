@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "./directProgDesc.py", line 823, in <module>
+    + reg_snaps[ind][0] + '/')
+  File "./directProgDesc.py", line 560, in mainDirectProgDesc
+    stars_results_tup = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=4)
+  File "./directProgDesc.py", line 267, in partDirectProgDesc
+    physicalUnits=False, numThreads=8)[:, part_type]
+  File "/cosma/home/dp004/dc-rope1/.local/lib/python3.7/site-packages/eagle_IO-0.0.1-py3.7.egg/eagle_IO/eagle_IO.py", line 141, in read_array
+  File "<__array_function__ internals>", line 6, in concatenate
+ValueError: all the input arrays must have same number of dimensions, but the array at index 0 has 2 dimension(s) and the array at index 188 has 1 dimension(s)

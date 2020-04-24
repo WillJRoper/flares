@@ -5,7 +5,7 @@
 #SBATCH -J MEGA-FLARES #Give it something meaningful.
 #SBATCH -o logs/output_Halo.%J.out
 #SBATCH -e logs/error_Halo.%J.err
-#SBATCH -p cosma7 #or some other partition, e.g. cosma, cosma6, etc.
+#SBATCH -p cosma6 #or some other partition, e.g. cosma, cosma6, etc.
 #SBATCH -A dp004
 #SBATCH --exclusive
 #SBATCH -t 72:00:00

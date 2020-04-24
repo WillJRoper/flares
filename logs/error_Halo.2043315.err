@@ -1,0 +1,34 @@
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/lib/python3.7/multiprocessing/pool.py", line 121, in worker
+    result = (True, func(*args, **kwds))
+  File "/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/lib/python3.7/multiprocessing/pool.py", line 44, in mapstar
+    return list(map(*args))
+  File "/cosma/home/dp004/dc-rope1/.local/lib/python3.7/site-packages/eagle_IO-0.0.1-py3.7.egg/eagle_IO/eagle_IO.py", line 12, in read_hdf5
+    with h5py.File(f, 'r') as hf:
+  File "/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/lib/python3.7/site-packages/h5py/_hl/files.py", line 394, in __init__
+    swmr=swmr)
+  File "/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/lib/python3.7/site-packages/h5py/_hl/files.py", line 170, in make_fid
+    fid = h5f.open(name, flags, fapl=fapl)
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 85, in h5py.h5f.open
+OSError: Unable to open file (file signature not found)
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "./directProgDesc.py", line 823, in <module>
+    + reg_snaps[ind][0] + '/')
+  File "./directProgDesc.py", line 560, in mainDirectProgDesc
+    stars_results_tup = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=4)
+  File "./directProgDesc.py", line 286, in partDirectProgDesc
+    desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+  File "/cosma/home/dp004/dc-rope1/.local/lib/python3.7/site-packages/eagle_IO-0.0.1-py3.7.egg/eagle_IO/eagle_IO.py", line 141, in read_array
+  File "/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/lib/python3.7/site-packages/schwimmbad/multiprocessing.py", line 106, in map
+    return r.get(self.wait_timeout)
+  File "/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/lib/python3.7/multiprocessing/pool.py", line 657, in get
+    raise self._value
+OSError: Unable to open file (file signature not found)
