@@ -399,5 +399,5 @@ def main_change(masslim=1e8, hmrcut=False):
     fig.savefig('plots/change_in_halfmassradiusvsfeedback.png', bbox_inches='tight')
 
 
-main_change(masslim=10**8)
+main_change(masslim=10**9.5)
 
