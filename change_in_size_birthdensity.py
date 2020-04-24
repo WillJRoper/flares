@@ -3,6 +3,7 @@ import matplotlib as ml
 ml.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 from matplotlib.colors import LogNorm
 import eagle_IO as E
 import h5py
@@ -67,7 +68,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
     return delta_hmrs[delta_ms < 2**30], delta_ms[delta_ms < 2**30]
 
 
-def main_change(masslim=1e8):
+def main_change(masslim=1e8, hmrcut=False):
 
     regions = []
     for reg in range(0, 40):
@@ -80,21 +81,29 @@ def main_change(masslim=1e8):
     delta_ms_dict = {}
 
     # Define snapshots
-    snaps = ['001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
-             '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
-    prog_snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
-                  '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000']
+    snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
+             '006_z009p000', '007_z008p000', '008_z007p000',
+             '009_z006p000', '010_z005p000', '011_z004p770']
+    prog_snaps = ['002_z013p000', '003_z012p000', '004_z011p000',
+                  '005_z010p000', '006_z009p000', '007_z008p000',
+                  '008_z007p000', '009_z006p000', '010_z005p000']
+    axlims_x = []
+    axlims_y = []
 
-    for snap, prog_snap in zip(snaps, prog_snaps):
+    for snap in snaps:
 
         delta_hmr_dict[snap] = {}
         delta_ms_dict[snap] = {}
 
-        for reg in regions:
+    for reg in regions:
+
+        for snap, prog_snap in zip(snaps, prog_snaps):
 
             savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/'
 
             path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+
+            print(reg, snap)
 
             # Get halo IDs and halo data
             try:
@@ -127,7 +136,10 @@ def main_change(masslim=1e8):
             csoft = 0.001802390 / 0.677 * convert_pMpc
 
             # Remove particles not associated to a subgroup
-            okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 0, gal_hmrs / csoft < 1.2))
+            if hmrcut:
+                okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 0, gal_hmrs / csoft < 1.2))
+            else:
+                okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 0)
             gal_hmrs = gal_hmrs[okinds]
             gal_ms = gal_ms[okinds]
             grp_ids = grp_ids[okinds]
@@ -161,30 +173,71 @@ def main_change(masslim=1e8):
             except OSError:
                 continue
 
-    delta_hmr = []
-    delta_mass = []
-    for snap in snaps:
-        delta_hmr.append(np.concatenate(list(delta_hmr_dict[snap].values())))
-        delta_mass.append(np.concatenate(list(delta_ms_dict[snap].values())))
-
-    delta_hmr = np.concatenate(delta_hmr)
-    delta_mass = np.concatenate(delta_mass)
-
     # Set up plot
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    fig = plt.figure(figsize=(18, 10))
+    gs = gridspec.GridSpec(3, 6)
+    gs.update(wspace=0.0, hspace=0.0)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax3 = fig.add_subplot(gs[0, 2])
+    ax4 = fig.add_subplot(gs[1, 0])
+    ax5 = fig.add_subplot(gs[1, 1])
+    ax6 = fig.add_subplot(gs[1, 2])
+    ax7 = fig.add_subplot(gs[2, 0])
+    ax8 = fig.add_subplot(gs[2, 1])
+    ax9 = fig.add_subplot(gs[2, 2])
 
-    # Plot results
-    cbar = ax.hexbin(delta_mass, delta_hmr, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                     norm=LogNorm(), linewidths=0.2, cmap='viridis')
+    for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps,
+                                [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
 
-    # Label axes
-    ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}}$')
-    ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
+        z_str = snap.split('z')[1].split('p')
+        z = float(z_str[0] + '.' + z_str[1])
 
-    fig.colorbar(cbar, ax=ax)
+        xs_plt = np.concatenate(list(delta_ms_dict[snap].values()))
+        delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
 
-    fig.savefig('plots/change_in_halfmassradius.png', bbox_inches='tight')
+        okinds = np.logical_and(xs_plt > 0, delta_hmr_plt > 0)
+        xs_plt = xs_plt[okinds]
+        delta_hmr_plt = delta_hmr_plt[okinds]
+
+        if len(xs_plt) > 0:
+            cbar = ax.hexbin(xs_plt, delta_hmr_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
+                             norm=LogNorm(),
+                             linewidths=0.2, cmap='viridis')
+
+        ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                transform=ax.transAxes, horizontalalignment='right', fontsize=8)
+
+        axlims_x.extend(ax.get_xlim())
+        axlims_y.extend(ax.get_ylim())
+
+        # Label axes
+        if i == 2:
+            ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}}$')
+        if j == 0:
+            ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
+
+    for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
+        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
+        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+
+    # Remove axis labels
+    ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+    ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+
+    # fig.colorbar(cbar, ax=ax)
+
+    fig.savefig('plots/change_in_halfmassradius_redshiftsplit.png', bbox_inches='tight')
 
 
 def main_change_single_snap(snap, prog_snap, masslim=1e8):
@@ -284,12 +337,5 @@ def main_change_single_snap(snap, prog_snap, masslim=1e8):
     fig.savefig('plots/change_in_halfmassradius.png', bbox_inches='tight')
 
 
-regions = []
-for reg in range(0, 40):
-    if reg < 10:
-        regions.append('0' + str(reg))
-    else:
-        regions.append(str(reg))
-
-main_change(masslim=10**9.5)
+main_change(masslim=10**8)
 
