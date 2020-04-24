@@ -65,4 +65,4 @@ def get_fullbox_gal_cents(reg, snap='011_z004p770', mass_lim=10**9.5):
     np.savetxt('galaxy_cents.txt', gal_cops)
 
 
- get_fullbox_gal_cents(reg=0, snap='011_z004p770', mass_lim=10**9.5)
+get_fullbox_gal_cents(reg=0, snap='011_z004p770', mass_lim=10**9.5)
