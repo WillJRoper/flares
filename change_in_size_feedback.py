@@ -223,7 +223,7 @@ def main_change(masslim=1e8, hmrcut=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(xs_plt) > 0:
-            cbar = ax.hexbin(xs_plt, delta_hmr_plt, c=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
+            cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(),
                              linewidths=0.2, cmap='viridis')
 
