@@ -1,3 +1,4 @@
+#!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 import numpy as np
 import eagle_IO.eagle_IO as E
 from scipy.optimize import curve_fit
