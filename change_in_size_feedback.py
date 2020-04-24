@@ -217,75 +217,6 @@ def main_change(masslim=1e8, hmrcut=False):
         delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
         fbs_plt = np.concatenate(list(fbs_dict[snap].values()))
 
-        okinds = np.logical_and(xs_plt > 0, delta_hmr_plt > 0)
-        xs_plt = xs_plt[okinds]
-        delta_hmr_plt = delta_hmr_plt[okinds]
-        fbs_plt = fbs_plt[okinds]
-
-        if len(xs_plt) > 0:
-            cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis')
-
-        ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                transform=ax.transAxes, horizontalalignment='right', fontsize=8)
-
-        axlims_x.extend(ax.get_xlim())
-        axlims_y.extend(ax.get_ylim())
-
-        # Label axes
-        if i == 2:
-            ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}}$')
-        if j == 0:
-            ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
-
-    for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
-        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
-        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
-
-    # Remove axis labels
-    ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
-    ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                    labelright=False, labelbottom=False)
-    ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                    labelright=False, labelbottom=False)
-    ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
-    ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                    labelright=False, labelbottom=False)
-    ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                    labelright=False, labelbottom=False)
-    ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
-    ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
-
-    # fig.colorbar(cbar, ax=ax)
-
-    fig.savefig('plots/change_in_halfmassradius_feedback.png', bbox_inches='tight')
-
-    plt.close()
-
-    # Set up plot
-    fig = plt.figure(figsize=(18, 10))
-    gs = gridspec.GridSpec(3, 6)
-    gs.update(wspace=0.0, hspace=0.0)
-    ax1 = fig.add_subplot(gs[0, 0])
-    ax2 = fig.add_subplot(gs[0, 1])
-    ax3 = fig.add_subplot(gs[0, 2])
-    ax4 = fig.add_subplot(gs[1, 0])
-    ax5 = fig.add_subplot(gs[1, 1])
-    ax6 = fig.add_subplot(gs[1, 2])
-    ax7 = fig.add_subplot(gs[2, 0])
-    ax8 = fig.add_subplot(gs[2, 1])
-    ax9 = fig.add_subplot(gs[2, 2])
-
-    for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps,
-                                [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
-
-        z_str = snap.split('z')[1].split('p')
-        z = float(z_str[0] + '.' + z_str[1])
-
-        xs_plt = np.concatenate(list(delta_ms_dict[snap].values()))
-        delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
-        fbs_plt = np.concatenate(list(fbs_dict[snap].values()))
-
         print(fbs_plt)
 
         okinds = np.logical_and(xs_plt > 0, delta_hmr_plt > 0)
@@ -329,6 +260,75 @@ def main_change(masslim=1e8, hmrcut=False):
     # fig.colorbar(cbar, ax=ax)
 
     fig.savefig('plots/change_in_massvsfeedback.png', bbox_inches='tight')
+
+    plt.close()
+
+    # Set up plot
+    fig = plt.figure(figsize=(18, 10))
+    gs = gridspec.GridSpec(3, 6)
+    gs.update(wspace=0.0, hspace=0.0)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax3 = fig.add_subplot(gs[0, 2])
+    ax4 = fig.add_subplot(gs[1, 0])
+    ax5 = fig.add_subplot(gs[1, 1])
+    ax6 = fig.add_subplot(gs[1, 2])
+    ax7 = fig.add_subplot(gs[2, 0])
+    ax8 = fig.add_subplot(gs[2, 1])
+    ax9 = fig.add_subplot(gs[2, 2])
+
+    for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps,
+                                [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
+
+        z_str = snap.split('z')[1].split('p')
+        z = float(z_str[0] + '.' + z_str[1])
+
+        xs_plt = np.concatenate(list(delta_ms_dict[snap].values()))
+        delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
+        fbs_plt = np.concatenate(list(fbs_dict[snap].values()))
+
+        okinds = np.logical_and(xs_plt > 0, delta_hmr_plt > 0)
+        xs_plt = xs_plt[okinds]
+        delta_hmr_plt = delta_hmr_plt[okinds]
+        fbs_plt = fbs_plt[okinds]
+
+        if len(xs_plt) > 0:
+            cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis')
+
+        ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                transform=ax.transAxes, horizontalalignment='right', fontsize=8)
+
+        axlims_x.extend(ax.get_xlim())
+        axlims_y.extend(ax.get_ylim())
+
+        # Label axes
+        if i == 2:
+            ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}}$')
+        if j == 0:
+            ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
+
+    for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
+        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
+        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+
+    # Remove axis labels
+    ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+    ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+
+    # fig.colorbar(cbar, ax=ax)
+
+    fig.savefig('plots/change_in_halfmassradius_feedback.png', bbox_inches='tight')
 
     plt.close()
 
