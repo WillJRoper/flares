@@ -99,6 +99,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
         delta_hmr_dict[snap] = {}
         delta_ms_dict[snap] = {}
+        fbs_dict[snap] = {}
 
     for reg in regions:
 
