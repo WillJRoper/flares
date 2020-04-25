@@ -262,6 +262,8 @@ def main_change(masslim=1e8, hmrcut=False):
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
         ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
         ax.set_ylim(0.3, 3)
+        for spine in ax.spines.values():
+            spine.set_edgecolor('k')
 
     # Remove axis labels
     ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
@@ -320,13 +322,13 @@ def main_change(masslim=1e8, hmrcut=False):
                              linewidths=0.2, cmap='viridis', vmin=0.3, vmax=3)
 
             # Add colorbars
-            cax1 = inset_axes(ax, width="50%", height="3%", loc='lower right')
+            cax1 = ax.inset_axes([0.5, 0.15, 0.5, 0.2])
             cbar1 = fig.colorbar(cbar, cax=cax1, orientation="horizontal")
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$\log_{10}(M_{\star}/M_{\odot})$', color='w', labelpad=1.0)
+            cbar1.ax.set_xlabel(r'$\log_{10}(M_{\star}/M_{\odot})$', labelpad=1.0)
             cbar1.ax.xaxis.set_label_position('top')
-            # cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=7, color='w', labelcolor='w')
+            cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=5)
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -343,6 +345,8 @@ def main_change(masslim=1e8, hmrcut=False):
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
         ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
         ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+        for spine in ax.spines.values():
+            spine.set_edgecolor('k')
 
     # Remove axis labels
     ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
@@ -415,6 +419,8 @@ def main_change(masslim=1e8, hmrcut=False):
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
         ax.set_xlim(0.3, 3)
         ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+        for spine in ax.spines.values():
+            spine.set_edgecolor('k')
 
     # Remove axis labels
     ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
