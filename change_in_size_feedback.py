@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.colors import LogNorm
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from utilities import calc_ages
 import eagle_IO.eagle_IO as E
 import h5py
 import sys
@@ -15,8 +15,7 @@ import seaborn as sns
 sns.set_style('whitegrid')
 
 
-def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, 
-                         feedback, part_halo_ids, prog_feedback, prog_part_halo_ids):
+def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, part_halo_ids):
 
     # Open graph file
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r')
@@ -67,8 +66,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals,
             main_hmr = prog_hmrs[main]
 
             # Define change in properties
-            delta_fbs[ind] = np.mean(feedback[part_halo_ids == i]) / \
-                             np.mean(np.concatenate([prog_feedback[prog_part_halo_ids == p] for p in progs]))
+            delta_fbs[ind] = np.mean(feedback[part_halo_ids == i])
             delta_hmrs[ind] = hmr / main_hmr
             delta_ms[ind] = mass / np.sum(prog_masses)
 
@@ -116,6 +114,13 @@ def main_change(masslim=1e8, hmrcut=False):
 
             print(reg, snap)
 
+            # Get redshifts
+            z_str = snap.split('z')[1].split('p')
+            z = float(z_str[0] + '.' + z_str[1])
+            z_str = prog_snap.split('z')[1].split('p')
+            prog_z = float(z_str[0] + '.' + z_str[1])
+
+
             # Get the particle IDs
             part_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
             part_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
@@ -130,11 +135,8 @@ def main_change(masslim=1e8, hmrcut=False):
                                       noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
                 feedback = E.read_array('PARTDATA', path, snap, 'PartType4/Feedback_EnergyFraction',
                                         noH=False, physicalUnits=False, numThreads=8)
-
-                # Get the particle IDs
-                prog_part_subgrp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType4/SubGroupNumber', 
-                                                    numThreads=8)
-                prog_part_grp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType4/GroupNumber', numThreads=8)
+                a_born = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
+                                      physicalUnits=True, numThreads=8)
 
                 # Get halo IDs and halo data
                 prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
@@ -143,22 +145,12 @@ def main_change(masslim=1e8, hmrcut=False):
                                         physicalUnits=True, numThreads=8)[:, 4]
                 prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                            noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
-                prog_feedback = E.read_array('PARTDATA', path, prog_snap, 'PartType4/Feedback_EnergyFraction',
-                                        noH=False, physicalUnits=False, numThreads=8)
             except ValueError:
                 continue
             except OSError:
                 continue
-                
-            okinds = prog_part_subgrp_ids != 1073741824
-            prog_feedback = prog_feedback[okinds]
-            prog_part_grp_ids = prog_part_grp_ids[okinds]
-            prog_part_subgrp_ids = prog_part_subgrp_ids[okinds]
-            prog_part_halo_ids = np.zeros(prog_part_grp_ids.size, dtype=float)
-            for (ind, g), sg in zip(enumerate(prog_part_grp_ids), prog_part_subgrp_ids):
-                prog_part_halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
-                
-            okinds = part_subgrp_ids != 1073741824
+
+            okinds = np.logical_and(part_subgrp_ids != 1073741824, (1 / a_born) - 1 < prog_z)
             feedback = feedback[okinds]
             part_grp_ids = part_grp_ids[okinds]
             part_subgrp_ids = part_subgrp_ids[okinds]
@@ -208,7 +200,7 @@ def main_change(masslim=1e8, hmrcut=False):
             # Get change in stellar mass and half mass radius
             try:
                 results_tup = get_change_in_radius(snap, prog_snap, savepath, gal_data, halo_ids[gal_ms > masslim],
-                                                   feedback, part_halo_ids, prog_feedback, prog_part_halo_ids)
+                                                   feedback, part_halo_ids)
                 delta_hmr_dict[snap][reg], delta_ms_dict[snap][reg], fbs_dict[snap][reg] = results_tup
             except OSError:
                 continue
@@ -257,7 +249,7 @@ def main_change(masslim=1e8, hmrcut=False):
         if i == 2:
             ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}}$')
         if j == 0:
-            ax.set_ylabel('$<f_{\mathrm{th}}>/<f_{\mathrm{th, prog}}>$')
+            ax.set_ylabel('$<f_{\mathrm{th}}>$')
 
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
         ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
@@ -326,7 +318,7 @@ def main_change(masslim=1e8, hmrcut=False):
             cbar1 = fig.colorbar(cbar, cax=cax1, orientation="horizontal")
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$\log_{10}(M_{\star}/M_{\odot})$', labelpad=1.0)
+            cbar1.ax.set_xlabel(r'$<f_{\mathrm{th}}>$', labelpad=1.0)
             cbar1.ax.xaxis.set_label_position('top')
             cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=5)
 
@@ -412,7 +404,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r'$<f_{\mathrm{th}}>/<f_{\mathrm{th, prog}}>$')
+            ax.set_xlabel(r'$<f_{\mathrm{th}}>$')
         if j == 0:
             ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
 
