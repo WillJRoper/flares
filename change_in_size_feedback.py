@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.colors import LogNorm
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import eagle_IO.eagle_IO as E
 import h5py
 import sys
@@ -67,7 +68,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals,
 
             # Define change in properties
             delta_fbs[ind] = np.mean(feedback[part_halo_ids == i]) / \
-                             np.mean(prog_feedback[prog_part_halo_ids == mainID])
+                             np.mean(np.concatenate([prog_feedback[prog_part_halo_ids == p] for p in progs]))
             delta_hmrs[ind] = hmr / main_hmr
             delta_ms[ind] = mass / np.sum(prog_masses)
 
@@ -243,7 +244,7 @@ def main_change(masslim=1e8, hmrcut=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(xs_plt) > 0:
-            cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
+            cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -316,7 +317,16 @@ def main_change(masslim=1e8, hmrcut=False):
 
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis')
+                             linewidths=0.2, cmap='viridis')
+
+            # Add colorbars
+            cax1 = inset_axes(ax1, width="50%", height="3%", loc='lower right')
+            cbar1 = fig.colorbar(cbar, cax=cax1, orientation="horizontal")
+
+            # Label colorbars
+            cbar1.ax.set_xlabel(r'$\log_{10}(M_{\star}/M_{\odot})$', color='w', labelpad=1.0)
+            cbar1.ax.xaxis.set_label_position('top')
+            # cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=7, color='w', labelcolor='w')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -387,7 +397,7 @@ def main_change(masslim=1e8, hmrcut=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(fbs_plt) > 0:
-            cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
+            cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -425,5 +435,5 @@ def main_change(masslim=1e8, hmrcut=False):
     fig.savefig('plots/change_in_halfmassradiusvsfeedback.png', bbox_inches='tight')
 
 
-main_change(masslim=10**8)
+main_change(masslim=10**9.5)
 
