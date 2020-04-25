@@ -14,7 +14,8 @@ import seaborn as sns
 sns.set_style('whitegrid')
 
 
-def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, part_halo_ids):
+def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, 
+                         feedback, part_halo_ids, prog_feedback, prog_part_halo_ids):
 
     # Open graph file
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r')
@@ -22,7 +23,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, pa
     # Initialise arrays for results
     delta_hmrs = np.zeros(len(gals))
     delta_ms = np.zeros(len(gals))
-    fbs = np.zeros(len(gals))
+    delta_fbs = np.zeros(len(gals))
 
     print('There are', len(gals), 'Galaxies to test in snapshot', snap)
 
@@ -39,7 +40,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, pa
             # Define change in properties
             delta_hmrs[ind] = 2**30
             delta_ms[ind] = 2**30
-            fbs[ind] = 2 ** 30
+            delta_fbs[ind] = 2 ** 30
             print(i, ind, "Galaxy has no dark matter")
             continue
 
@@ -48,28 +49,31 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, pa
             # Define change in properties
             delta_hmrs[ind] = 2**30
             delta_ms[ind] = 2**30
-            fbs[ind] = 2**30
+            delta_fbs[ind] = 2**30
 
         else:
 
             # Get progenitor properties
+            progs = hdf[str(i)]['Prog_haloIDs'][...]
             prog_cont = hdf[str(i)]['prog_npart_contribution'][...]
             prog_masses = hdf[str(i)]['prog_stellar_mass_contribution'][...] * 10**10
             prog_hmrs = np.array([gal_data[prog_snap][p]['hmr'] for p in progs])
 
             # Get main progenitor information
             main = np.argmax(prog_cont)
+            mainID = progs[main]
             main_mass = prog_masses[main]
             main_hmr = prog_hmrs[main]
 
             # Define change in properties
-            fbs[ind] = np.mean(feedback[part_halo_ids == i])
+            delta_fbs[ind] = np.mean(feedback[part_halo_ids == i]) / \
+                             np.mean(prog_feedback[prog_part_halo_ids == mainID])
             delta_hmrs[ind] = hmr / main_hmr
             delta_ms[ind] = mass / np.sum(prog_masses)
 
     hdf.close()
 
-    return delta_hmrs[delta_ms < 2**30], delta_ms[delta_ms < 2**30], fbs[delta_ms < 2**30]
+    return delta_hmrs[delta_ms < 2**30], delta_ms[delta_ms < 2**30], delta_fbs[delta_ms < 2**30]
 
 
 def main_change(masslim=1e8, hmrcut=False):
@@ -126,6 +130,11 @@ def main_change(masslim=1e8, hmrcut=False):
                 feedback = E.read_array('PARTDATA', path, snap, 'PartType4/Feedback_EnergyFraction',
                                         noH=False, physicalUnits=False, numThreads=8)
 
+                # Get the particle IDs
+                prog_part_subgrp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType4/SubGroupNumber', 
+                                                    numThreads=8)
+                prog_part_grp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType4/GroupNumber', numThreads=8)
+
                 # Get halo IDs and halo data
                 prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
                 prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
@@ -133,10 +142,20 @@ def main_change(masslim=1e8, hmrcut=False):
                                         physicalUnits=True, numThreads=8)[:, 4]
                 prog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                            noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
+                prog_feedback = E.read_array('PARTDATA', path, prog_snap, 'PartType4/Feedback_EnergyFraction',
+                                        noH=False, physicalUnits=False, numThreads=8)
             except ValueError:
                 continue
             except OSError:
                 continue
+                
+            okinds = prog_part_subgrp_ids != 1073741824
+            prog_feedback = prog_feedback[okinds]
+            prog_part_grp_ids = prog_part_grp_ids[okinds]
+            prog_part_subgrp_ids = prog_part_subgrp_ids[okinds]
+            prog_part_halo_ids = np.zeros(prog_part_grp_ids.size, dtype=float)
+            for (ind, g), sg in zip(enumerate(prog_part_grp_ids), prog_part_subgrp_ids):
+                prog_part_halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
                 
             okinds = part_subgrp_ids != 1073741824
             feedback = feedback[okinds]
@@ -188,7 +207,7 @@ def main_change(masslim=1e8, hmrcut=False):
             # Get change in stellar mass and half mass radius
             try:
                 results_tup = get_change_in_radius(snap, prog_snap, savepath, gal_data, halo_ids[gal_ms > masslim],
-                                                   feedback, part_halo_ids)
+                                                   feedback, part_halo_ids, prog_feedback, prog_part_halo_ids)
                 delta_hmr_dict[snap][reg], delta_ms_dict[snap][reg], fbs_dict[snap][reg] = results_tup
             except OSError:
                 continue
@@ -224,7 +243,7 @@ def main_change(masslim=1e8, hmrcut=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(xs_plt) > 0:
-            cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log',
+            cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -237,7 +256,7 @@ def main_change(masslim=1e8, hmrcut=False):
         if i == 2:
             ax.set_xlabel(r'$M_{\star}/M_{\star, \mathrm{from progs}}$')
         if j == 0:
-            ax.set_ylabel('Feedback Energy Fraction')
+            ax.set_ylabel('$<f_{\mathrm{th}}>/<f_{\mathrm{th, prog}}>$')
 
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
         ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
@@ -368,7 +387,7 @@ def main_change(masslim=1e8, hmrcut=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(fbs_plt) > 0:
-            cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, yscale='log',
+            cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -379,7 +398,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r'Feedback Energy Fraction')
+            ax.set_xlabel(r'$<f_{\mathrm{th}}>/<f_{\mathrm{th, prog}}>$')
         if j == 0:
             ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
 
