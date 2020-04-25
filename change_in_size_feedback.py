@@ -245,7 +245,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis', marginals=True)
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -317,10 +317,10 @@ def main_change(masslim=1e8, hmrcut=False):
 
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                             linewidths=0.2, cmap='viridis', marginals=True, vmin=0.3, vmax=3)
+                             linewidths=0.2, cmap='viridis', vmin=0.3, vmax=3)
 
             # Add colorbars
-            cax1 = inset_axes(ax1, width="50%", height="3%", loc='lower right')
+            cax1 = inset_axes(ax, width="50%", height="3%", loc='lower right')
             cbar1 = fig.colorbar(cbar, cax=cax1, orientation="horizontal")
 
             # Label colorbars
@@ -398,7 +398,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
         if len(fbs_plt) > 0:
             cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis', marginals=True)
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -435,5 +435,5 @@ def main_change(masslim=1e8, hmrcut=False):
     fig.savefig('plots/change_in_halfmassradiusvsfeedback.png', bbox_inches='tight')
 
 
-main_change(masslim=10**9.5)
+main_change(masslim=10**8)
 
