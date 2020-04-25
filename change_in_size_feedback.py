@@ -368,7 +368,7 @@ def main_change(masslim=1e8, hmrcut=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(fbs_plt) > 0:
-            cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
+            cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
