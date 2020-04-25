@@ -263,6 +263,9 @@ def main_change(masslim=1e8, hmrcut=False):
 
     plt.close()
 
+    axlims_x = []
+    axlims_y = []
+
     # Set up plot
     fig = plt.figure(figsize=(18, 10))
     gs = gridspec.GridSpec(3, 6)
@@ -331,6 +334,9 @@ def main_change(masslim=1e8, hmrcut=False):
     fig.savefig('plots/change_in_halfmassradius_feedback.png', bbox_inches='tight')
 
     plt.close()
+
+    axlims_x = []
+    axlims_y = []
 
     # Set up plot
     fig = plt.figure(figsize=(18, 10))
