@@ -255,7 +255,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
         ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
-        ax.set_ylim(0.3, 3)
+        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
         for spine in ax.spines.values():
             spine.set_edgecolor('k')
 
@@ -313,7 +313,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                             linewidths=0.2, cmap='viridis', vmin=0.3, vmax=3)
+                             linewidths=0.2, cmap='viridis')
 
             # Add colorbars
             cax1 = ax.inset_axes([0.5, 0.15, 0.5, 0.2])
@@ -411,7 +411,7 @@ def main_change(masslim=1e8, hmrcut=False):
             ax.set_ylabel('$R_{1/2,\mathrm{\star}}/R_{1/2,\mathrm{\star},\mathrm{main prog}}$')
 
     for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
-        ax.set_xlim(0.3, 3)
+        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
         ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
         for spine in ax.spines.values():
             spine.set_edgecolor('k')
