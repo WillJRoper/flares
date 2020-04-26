@@ -238,7 +238,7 @@ def main_change(masslim=1e8, hmrcut=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(xs_plt) > 0:
-            cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log',
+            cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
@@ -313,16 +313,16 @@ def main_change(masslim=1e8, hmrcut=False):
 
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                             linewidths=0.2, cmap='viridis')
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
             # Add colorbars
-            cax1 = ax.inset_axes([0.5, 0.15, 0.5, 0.2])
+            cax1 = ax.inset_axes([0.5, 0.15, 0.5, 0.03])
             cbar1 = fig.colorbar(cbar, cax=cax1, orientation="horizontal")
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$<\rho_{\mathrm{birth}}>/ (\mathrm{g}/\mathrm{cm}^3)$', labelpad=1.0)
+            cbar1.ax.set_xlabel(r'$<\rho_{\mathrm{birth}}>/ (\mathrm{g}/\mathrm{cm}^3)$', labelpad=1.1, fontsize=8)
             cbar1.ax.xaxis.set_label_position('top')
-            cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=5)
+            cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=6)
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -395,7 +395,7 @@ def main_change(masslim=1e8, hmrcut=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(fbs_plt) > 0:
-            cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, yscale='log',
+            cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),

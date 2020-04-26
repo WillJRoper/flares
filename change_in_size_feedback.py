@@ -316,11 +316,11 @@ def main_change(masslim=1e8, hmrcut=False):
                              linewidths=0.2, cmap='viridis', vmin=0.3, vmax=3)
 
             # Add colorbars
-            cax1 = ax.inset_axes([0.5, 0.15, 0.5, 0.2])
+            cax1 = ax.inset_axes([0.5, 0.15, 0.5, 0.03])
             cbar1 = fig.colorbar(cbar, cax=cax1, orientation="horizontal")
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$<f_{\mathrm{th}}>$', labelpad=1.0)
+            cbar1.ax.set_xlabel(r'$<f_{\mathrm{th}}>$', labelpad=1.1, fontsize=8)
             cbar1.ax.xaxis.set_label_position('top')
             cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=5)
 
