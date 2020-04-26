@@ -9,6 +9,7 @@ from utilities import calc_ages
 from scipy.stats import binned_statistic
 import eagle_IO.eagle_IO as E
 import h5py
+import pickle
 import sys
 import seaborn as sns
 
@@ -222,8 +223,12 @@ def main_change(masslim=1e8, hmrcut=False):
                 results_tup = get_change_in_radius(snap, prog_snap, savepath, gal_data, halo_ids[gal_ms > masslim],
                                                    feedback, part_halo_ids)
                 delta_hmr_dict[snap][reg], delta_ms_dict[snap][reg], fbs_dict[snap][reg] = results_tup
+
             except OSError:
                 continue
+
+    with open('changeinsize_feedback.pck', 'wb') as pfile1:
+        pickle.dump({'hmr' : delta_hmr_dict, 'ms': delta_ms_dict, 'fb': fbs_dict}, pfile1)
 
     # Set up plot
     fig = plt.figure(figsize=(18, 10))

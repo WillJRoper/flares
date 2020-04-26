@@ -10,6 +10,7 @@ from scipy.stats import binned_statistic
 import eagle_IO.eagle_IO as E
 import h5py
 import sys
+import pickle
 import seaborn as sns
 
 
@@ -224,6 +225,9 @@ def main_change(masslim=1e8, hmrcut=False):
                 delta_hmr_dict[snap][reg], delta_ms_dict[snap][reg], fbs_dict[snap][reg] = results_tup
             except OSError:
                 continue
+
+    with open('changeinsize_birthdensity.pck', 'wb') as pfile1:
+        pickle.dump({'hmr' : delta_hmr_dict, 'ms': delta_ms_dict, 'fb': fbs_dict}, pfile1)
 
     # Set up plot
     fig = plt.figure(figsize=(18, 10))
