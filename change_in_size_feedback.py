@@ -19,7 +19,7 @@ sns.set_style('whitegrid')
 def plot_meidan_stat(xs, ys, ax, bins=None):
 
     if bins == None:
-        bin = np.min([int(np.sqrt(xs.size)), 100])
+        bin = np.histogram_bin_edges(xs, bins='fd')
     else:
         bin = bins
 
@@ -261,7 +261,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
         print(fbs_plt)
 
-        okinds = np.logical_and(xs_plt > 0, delta_hmr_plt > 0)
+        okinds = np.logical_and(xs_plt > 0, np.logical_and(delta_hmr_plt > 0, ~np.isnan(fbs_plt)))
         xs_plt = xs_plt[okinds]
         fbs_plt = fbs_plt[okinds]
 
@@ -335,7 +335,7 @@ def main_change(masslim=1e8, hmrcut=False):
         delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
         fbs_plt = np.concatenate(list(fbs_dict[snap].values()))
 
-        okinds = np.logical_and(xs_plt > 0, delta_hmr_plt > 0)
+        okinds = np.logical_and(xs_plt > 0, np.logical_and(delta_hmr_plt > 0, ~np.isnan(fbs_plt)))
         xs_plt = xs_plt[okinds]
         delta_hmr_plt = delta_hmr_plt[okinds]
         fbs_plt = fbs_plt[okinds]
@@ -419,7 +419,7 @@ def main_change(masslim=1e8, hmrcut=False):
         delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
         fbs_plt = np.concatenate(list(fbs_dict[snap].values()))
 
-        okinds = np.logical_and(xs_plt > 0, delta_hmr_plt > 0)
+        okinds = np.logical_and(xs_plt > 0, np.logical_and(delta_hmr_plt > 0, ~np.isnan(fbs_plt)))
         xs_plt = xs_plt[okinds]
         delta_hmr_plt = delta_hmr_plt[okinds]
         fbs_plt = fbs_plt[okinds]
