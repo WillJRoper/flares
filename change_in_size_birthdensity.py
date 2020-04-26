@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.colors import LogNorm
 from utilities import calc_ages
+from scipy.stats import binned_statistic
 import eagle_IO.eagle_IO as E
 import h5py
 import sys
@@ -13,6 +14,32 @@ import seaborn as sns
 
 
 sns.set_style('whitegrid')
+
+
+def plot_meidan_stat(xs, ys, ax, bins=None):
+    if bins == None:
+        bin = int(np.sqrt(xs.size))
+    else:
+        bin = bins
+
+    # Compute binned statistic
+    y_stat, binedges, n_inbin = binned_statistic(xs, ys, statistic='median', bins=bin)
+
+    # Compute bincentres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    # Plot the result
+    for i in range(bin_cents.size - 1):
+
+        i += 1
+
+        if n_inbin[i] <= 10:
+            style = '--'
+        else:
+            style = '-'
+
+        ax.plot(bin_cents[i - 1: i + 1], y_stat[i - 1: i + 1], color='r', linestyle=style)
 
 
 def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, birthdensity, part_halo_ids):
@@ -78,7 +105,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, birthdensity
 def main_change(masslim=1e8, hmrcut=False):
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 2):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -240,6 +267,7 @@ def main_change(masslim=1e8, hmrcut=False):
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
+            plot_meidan_stat(xs_plt, fbs_plt, ax)
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -314,6 +342,7 @@ def main_change(masslim=1e8, hmrcut=False):
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
+            plot_meidan_stat(xs_plt, delta_hmr_plt, ax)
 
             # Add colorbars
             cax1 = ax.inset_axes([0.5, 0.15, 0.5, 0.03])
@@ -397,6 +426,7 @@ def main_change(masslim=1e8, hmrcut=False):
         if len(fbs_plt) > 0:
             cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
+            plot_meidan_stat(fbs_plt, delta_hmr_plt, ax)
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
