@@ -19,7 +19,7 @@ sns.set_style('whitegrid')
 def plot_meidan_stat(xs, ys, ax, bins=None):
 
     if bins == None:
-        bin = np.histogram_bin_edges(xs, bins='doane')
+        bin = 50
     else:
         bin = bins
 
