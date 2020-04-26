@@ -17,6 +17,7 @@ sns.set_style('whitegrid')
 
 
 def plot_meidan_stat(xs, ys, ax, bins=None):
+
     if bins == None:
         bin = int(np.sqrt(xs.size))
     else:
@@ -34,7 +35,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
 
         i += 1
 
-        if n_inbin[i] <= 10:
+        if n_inbin[i] < 10:
             style = '--'
         else:
             style = '-'
@@ -105,7 +106,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, birthdensity
 def main_change(masslim=1e8, hmrcut=False):
 
     regions = []
-    for reg in range(0, 2):
+    for reg in range(0, 4):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -345,13 +346,13 @@ def main_change(masslim=1e8, hmrcut=False):
             plot_meidan_stat(xs_plt, delta_hmr_plt, ax)
 
             # Add colorbars
-            cax1 = ax.inset_axes([0.5, 0.15, 0.5, 0.03])
+            cax1 = ax.inset_axes([0.5, 0.1, 0.47, 0.03])
             cbar1 = fig.colorbar(cbar, cax=cax1, orientation="horizontal")
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$<\rho_{\mathrm{birth}}>/ (\mathrm{g}/\mathrm{cm}^3)$', labelpad=1.1, fontsize=8)
+            cbar1.ax.set_xlabel(r'$<\rho_{\mathrm{birth}}>/ (\mathrm{g}/\mathrm{cm}^3)$', labelpad=1.3, fontsize=9)
             cbar1.ax.xaxis.set_label_position('top')
-            cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=6)
+            cbar1.ax.tick_params(axis='x', labelsize=8)
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
