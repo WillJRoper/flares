@@ -19,7 +19,7 @@ sns.set_style('whitegrid')
 def plot_meidan_stat(xs, ys, ax, bins=None):
 
     if bins == None:
-        bin = 30
+        bin = 20
     else:
         bin = bins
 
