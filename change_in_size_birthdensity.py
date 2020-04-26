@@ -15,7 +15,7 @@ import seaborn as sns
 sns.set_style('whitegrid')
 
 
-def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, part_halo_ids):
+def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, birthdensity, part_halo_ids):
 
     # Open graph file
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r')
@@ -66,7 +66,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, pa
             main_hmr = prog_hmrs[main]
 
             # Define change in properties
-            delta_fbs[ind] = np.mean(feedback[part_halo_ids == i])
+            delta_fbs[ind] = np.mean(birthdensity[part_halo_ids == i])
             delta_hmrs[ind] = hmr / main_hmr
             delta_ms[ind] = mass / np.sum(prog_masses)
 
@@ -133,7 +133,7 @@ def main_change(masslim=1e8, hmrcut=False):
                                         physicalUnits=True, numThreads=8)[:, 4]
                 gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                       noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
-                feedback = E.read_array('PARTDATA', path, snap, 'PartType4/BirthDensity',
+                birthdensity = E.read_array('PARTDATA', path, snap, 'PartType4/BirthDensity',
                                         noH=False, physicalUnits=False, numThreads=8)
                 a_born = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
                                       physicalUnits=True, numThreads=8)
@@ -153,7 +153,7 @@ def main_change(masslim=1e8, hmrcut=False):
                 continue
 
             okinds = np.logical_and(part_subgrp_ids != 1073741824, (1 / a_born) - 1 < prog_z)
-            feedback = feedback[okinds]
+            birthdensity = birthdensity[okinds]
             part_grp_ids = part_grp_ids[okinds]
             part_subgrp_ids = part_subgrp_ids[okinds]
             part_halo_ids = np.zeros(part_grp_ids.size, dtype=float)
@@ -202,7 +202,7 @@ def main_change(masslim=1e8, hmrcut=False):
             # Get change in stellar mass and half mass radius
             try:
                 results_tup = get_change_in_radius(snap, prog_snap, savepath, gal_data, halo_ids[gal_ms > masslim],
-                                                   feedback, part_halo_ids)
+                                                   birthdensity, part_halo_ids)
                 delta_hmr_dict[snap][reg], delta_ms_dict[snap][reg], fbs_dict[snap][reg] = results_tup
             except OSError:
                 continue
@@ -275,7 +275,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
     # fig.colorbar(cbar, ax=ax)
 
-    fig.savefig('plots/change_in_massvsfeedback.png', bbox_inches='tight')
+    fig.savefig('plots/change_in_massvsbirthdensity.png', bbox_inches='tight')
 
     plt.close()
 
@@ -358,7 +358,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
     # fig.colorbar(cbar, ax=ax)
 
-    fig.savefig('plots/change_in_halfmassradius_feedback.png', bbox_inches='tight')
+    fig.savefig('plots/change_in_halfmassradius_birthdensity.png', bbox_inches='tight')
 
     plt.close()
 
@@ -432,7 +432,7 @@ def main_change(masslim=1e8, hmrcut=False):
 
     # fig.colorbar(cbar, ax=ax)
 
-    fig.savefig('plots/change_in_halfmassradiusvsfeedback.png', bbox_inches='tight')
+    fig.savefig('plots/change_in_halfmassradiusvsbirthdensity.png', bbox_inches='tight')
 
 
 main_change(masslim=10**8)
