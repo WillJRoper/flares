@@ -149,6 +149,8 @@ def main_change(masslim=1e8, hmrcut=False):
                 continue
             except OSError:
                 continue
+            except KeyError:
+                continue
 
             okinds = np.logical_and(part_subgrp_ids != 1073741824, (1 / a_born) - 1 < prog_z)
             feedback = feedback[okinds]
