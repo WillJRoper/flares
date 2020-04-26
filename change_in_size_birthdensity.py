@@ -96,7 +96,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, birthdensity
 def main_change(masslim=1e8, hmrcut=False):
 
     regions = []
-    for reg in range(0, 4):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
