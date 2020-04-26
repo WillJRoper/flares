@@ -350,7 +350,7 @@ def main_change(masslim=1e8, hmrcut=False):
             cbar1 = fig.colorbar(cbar, cax=cax1, orientation="horizontal")
 
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$<f_{\mathrm{th}}>$', labelpad=1.3, fontsize=9)
+            cbar1.ax.set_xlabel(r'$<f_{\mathrm{th}}>$', labelpad=1.5, fontsize=9)
             cbar1.ax.xaxis.set_label_position('top')
             cbar1.ax.tick_params(axis='x', labelsize=8)
 
