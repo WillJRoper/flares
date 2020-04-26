@@ -30,17 +30,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     bin_wid = binedges[1] - binedges[0]
     bin_cents = binedges[1:] - bin_wid / 2
 
-    # Plot the result
-    for i in range(bin_cents.size - 1):
-
-        i += 1
-
-        if n_inbin[i] < 10:
-            style = '--'
-        else:
-            style = '-'
-
-        ax.plot(bin_cents[i - 1: i + 1], y_stat[i - 1: i + 1], color='r', linestyle=style)
+    ax.plot(bin_cents, y_stat, color='r', linestyle='--')
 
 
 def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, part_halo_ids):

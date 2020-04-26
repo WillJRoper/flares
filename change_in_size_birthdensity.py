@@ -19,28 +19,18 @@ sns.set_style('whitegrid')
 def plot_meidan_stat(xs, ys, ax, bins=None):
 
     if bins == None:
-        bin = 30
+        bin = 20
     else:
         bin = bins
 
     # Compute binned statistic
     y_stat, binedges, n_inbin = binned_statistic(xs, ys, statistic='median', bins=bin)
-
+    print(y_stat, binedges, n_inbin)
     # Compute bincentres
     bin_wid = binedges[1] - binedges[0]
     bin_cents = binedges[1:] - bin_wid / 2
 
-    # Plot the result
-    for i in range(bin_cents.size - 1):
-
-        i += 1
-
-        if n_inbin[i] < 10:
-            style = '--'
-        else:
-            style = '-'
-
-        ax.plot(bin_cents[i - 1: i + 1], y_stat[i - 1: i + 1], color='r', linestyle=style)
+    ax.plot(bin_cents, y_stat, color='r', linestyle='--')
 
 
 def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, birthdensity, part_halo_ids):
