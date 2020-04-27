@@ -36,6 +36,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     # okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
     uni, counts = np.unique(bin_ind, return_counts=True)
+    print(y_stat, binedges)
     print(uni, counts)
     # print(okinds)
 
