@@ -42,6 +42,8 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
         if ind % 10 == 0:
             y_stat.append(np.median(stat))
             bin_cents.append(np.median(bin))
+            stat = []
+            bin = []
         else:
             stat.append(val)
             bin.append(x)
