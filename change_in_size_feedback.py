@@ -34,11 +34,9 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     bin_cents = binedges[1:] - bin_wid / 2
 
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
-
-    uni, counts = np.unique(bin_ind, return_counts=True)
-    print(y_stat, binedges)
-    print(uni, counts)
-    # print(okinds)
+    
+    # uni, counts = np.unique(bin_ind, return_counts=True)
+    # # print(okinds)
 
     # sinds = np.argsort(uni)
     # uni = uni[sinds]
@@ -99,7 +97,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     #     y_stat.pop()
     #     bin_cents.pop()
 
-    ax.plot(bin_cents, y_stat, color='r', linestyle='-')
+    ax.plot(bin_cents[okinds], y_stat[okinds], color='r', linestyle='-')
 
 
 def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, part_halo_ids):
