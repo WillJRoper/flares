@@ -33,6 +33,17 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     bin_wid = binedges[1] - binedges[0]
     bin_cents = binedges[1:] - bin_wid / 2
 
+    y_stats = []
+    bin_centss = []
+    for y, b, n in zip(y_stat, bin_cents, n_inbin):
+
+        if n_inbin < 10:
+            y_stats[-1] = np.median([y, y_stat[-1]])
+            bin_centss[-1] = np.median([b, bin_centss[-1]
+
+    y_stats = np.array(y_stats)
+    bin_centss = np.array(bin_centss)
+
     # # Sort the results
     # sinds = np.argsort(xs)
     # xs = xs[sinds]
@@ -66,9 +77,9 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     #     y_stat.pop()
     #     bin_cents.pop()
 
-    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+    okinds = np.logical_and(~np.isnan(bin_centss), ~np.isnan(y_stats))
 
-    ax.plot(bin_cents[okinds], y_stat[okinds], color='r', linestyle='-')
+    ax.plot(bin_centss[okinds], y_stats[okinds], color='r', linestyle='-')
 
 
 def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, part_halo_ids):
