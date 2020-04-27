@@ -344,7 +344,7 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
             plot_meidan_stat(xs_plt, fbs_plt, ax)
             ax.set_xscale('log')
             cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.7)
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.axhline(0.3, color='k', linestyle='--', alpha=0.9)
         ax.axhline(3, color='k', linestyle='--', alpha=0.9)
@@ -425,7 +425,7 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
             ax.set_xscale('log')
             ax.set_yscale('log')
             cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                             linewidths=0.2, cmap='Greys', vmin=0.3, vmax=3, alpha=0.7)
+                             linewidths=0.2, cmap='viridis', vmin=0.3, vmax=3)
 
             # Add colorbars
             cax1 = ax.inset_axes([0.5, 0.1, 0.47, 0.03])
@@ -511,7 +511,7 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
             plot_meidan_stat(fbs_plt, delta_hmr_plt, ax)
             ax.set_yscale('log')
             cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.7)
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.axvline(0.3, color='k', linestyle='--', alpha=0.9)
         ax.axvline(3, color='k', linestyle='--', alpha=0.9)
