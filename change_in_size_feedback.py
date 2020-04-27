@@ -58,28 +58,19 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
                 if np.isnan(y):
                     continue
 
-                if n < 20:
-                    try:
-                        y_stats[-1] = np.median([y, y_stat[-1]])
-                        bin_centss[-1] = b - bin_wid
-                        count[-1] += n
-                    except IndexError:
-                        y_stats.append(y)
-                        bin_centss.append(b)
-                        count.append(n)
-                elif counts[ind -1] < 20:
-                    try:
-                        y_stats[-1] = np.median([y, y_stat[-1]])
-                        bin_centss[-1] = b - bin_wid
-                        count[-1] += n
-                    except IndexError:
-                        y_stats.append(y)
-                        bin_centss.append(b)
-                        count.append(n)
+                if ind == 0:
+                    y_stats.append(y)
+                    bin_centss.append(b)
+                    count.append(n)
+                elif n < 20 or count[ind - 1] < 20:
+                    y_stats[-1] = np.median([y, y_stat[-1]])
+                    bin_centss[-1] = b - bin_wid
+                    count[-1] += n
                 else:
                     y_stats.append(y)
                     bin_centss.append(b)
                     count.append(n)
+
             uni = np.arange(len(bin_centss))
             counts = count[:]
 
