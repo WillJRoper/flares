@@ -19,19 +19,33 @@ sns.set_style('whitegrid')
 
 def plot_meidan_stat(xs, ys, ax, bins=None):
 
-    if bins == None:
-        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
-    else:
-        bin = bins
+    # if bins == None:
+    #     bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+    # else:
+    #     bin = bins
+    #
+    # print(bin)
+    #
+    # # Compute binned statistic
+    # y_stat, binedges, n_inbin = binned_statistic(xs, ys, statistic='median', bins=bin)
 
-    print(bin)
+    # # Compute bincentres
+    # bin_wid = binedges[1] - binedges[0]
+    # bin_cents = binedges[1:] - bin_wid / 2
 
-    # Compute binned statistic
-    y_stat, binedges, n_inbin = binned_statistic(xs, ys, statistic='median', bins=bin)
+    y_stat = []
+    bin_cents = []
+    stat = []
+    bin = []
+    for ind, val, x in zip(ys, xs):
 
-    # Compute bincentres
-    bin_wid = binedges[1] - binedges[0]
-    bin_cents = binedges[1:] - bin_wid / 2
+        if ind % 10 == 0:
+            y_stat.append(np.median(stat))
+            bin_cents.append(np.median(bin))
+        else:
+            stat.append(val)
+            bin.append(x)
+        print(ind, stat, bin, len(y_stat), len(bin_cents))
 
     ax.plot(bin_cents, y_stat, color='r', linestyle='--')
 
