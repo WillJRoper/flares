@@ -43,7 +43,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     uni = uni[sinds] - 1
     counts = counts[sinds]
 
-    count = [20, 30]
+    count = [1, 30]
     while np.min(count) < 20:
         y_stats = []
         bin_centss = []
