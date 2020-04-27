@@ -23,6 +23,8 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
         bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
     else:
         bin = bins
+        
+    print(bins)
 
     # Compute binned statistic
     y_stat, binedges, n_inbin = binned_statistic(xs, ys, statistic='median', bins=bin)
@@ -264,8 +266,6 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
         xs_plt = np.concatenate(list(delta_ms_dict[snap].values()))
         delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
         fbs_plt = np.concatenate(list(fbs_dict[snap].values()))
-
-        print(fbs_plt)
 
         okinds = np.logical_and(xs_plt > 0, np.logical_and(delta_hmr_plt > 0, ~np.isnan(fbs_plt)))
         xs_plt = xs_plt[okinds]
