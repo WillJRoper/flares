@@ -43,23 +43,31 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     uni = uni[sinds] - 1
     counts = counts[sinds]
 
-    y_stats = []
-    bin_centss = []
-    for ind, n in zip(uni, counts):
+    count = [20, 30]
+    while np.min(count) < 20:
+        y_stats = []
+        bin_centss = []
+        count = []
+        for ind, n in zip(uni, counts):
 
-        y = y_stat[ind]
-        b = bin_cents[ind]
+            y = y_stat[ind]
+            b = bin_cents[ind]
 
-        if n < 10:
-            try:
-                y_stats[-1] = np.median([y, y_stat[-1]])
-                bin_centss[-1] = b - bin_wid
-            except IndexError:
+            if n < 20:
+                try:
+                    y_stats[-1] = np.median([y, y_stat[-1]])
+                    bin_centss[-1] = b - bin_wid
+                    count[-1] += n
+                except IndexError:
+                    y_stats.append(y)
+                    bin_centss.append(b)
+                    count.append(n)
+            else:
                 y_stats.append(y)
                 bin_centss.append(b)
-        else:
-            y_stats.append(y)
-            bin_centss.append(b)
+                count.append(n)
+        uni = np.arange(len(bin_centss))
+        counts = count
 
     y_stats = np.array(y_stats)
     bin_centss = np.array(bin_centss)
@@ -338,7 +346,7 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
 
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
+                             norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.7)
             plot_meidan_stat(xs_plt, fbs_plt, ax)
 
         ax.axhline(0.3, color='k', linestyle='--', alpha=0.9)
@@ -417,7 +425,7 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
 
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                             linewidths=0.2, cmap='viridis', vmin=0.3, vmax=3, alpha=0.7)
+                             linewidths=0.2, cmap='Greys', vmin=0.3, vmax=3, alpha=0.7)
             plot_meidan_stat(xs_plt, delta_hmr_plt, ax)
 
             # Add colorbars
@@ -502,7 +510,7 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
 
         if len(fbs_plt) > 0:
             cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
+                             norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.7)
             plot_meidan_stat(fbs_plt, delta_hmr_plt, ax)
 
         ax.axvline(0.3, color='k', linestyle='--', alpha=0.9)
