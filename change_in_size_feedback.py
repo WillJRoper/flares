@@ -37,7 +37,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     bin_cents = []
     stat = []
     bin = []
-    for ind, val, x in zip(ys, xs):
+    for (ind, val), x in zip(enumerate(ys), xs):
 
         if ind % 10 == 0:
             y_stat.append(np.median(stat))
