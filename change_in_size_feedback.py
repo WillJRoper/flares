@@ -33,11 +33,11 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     bin_wid = binedges[1] - binedges[0]
     bin_cents = binedges[1:] - bin_wid / 2
 
-    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+    # okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
     uni, counts = np.unique(bin_ind, return_counts=True)
     print(uni, counts)
-    print(okinds)
+    # print(okinds)
 
     sinds = np.argsort(uni)
     uni = uni[sinds]
