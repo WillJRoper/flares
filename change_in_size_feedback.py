@@ -40,7 +40,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     print(okinds)
 
     sinds = np.argsort(uni)
-    uni = uni[sinds] - 1
+    uni = uni[sinds]
     counts = counts[sinds]
 
     y_stats = []
