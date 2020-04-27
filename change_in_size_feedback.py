@@ -20,7 +20,7 @@ sns.set_style('whitegrid')
 def plot_meidan_stat(xs, ys, ax, bins=None):
 
     if bins == None:
-        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 10)
     else:
         bin = bins
 
