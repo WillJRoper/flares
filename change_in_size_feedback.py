@@ -38,7 +38,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     xs = xs[sinds]
     ys = ys[sinds]
 
-    n_inbin = lambda x: int((xs.size**2 * 10) / (x + 1)**2)
+    n_inbin = lambda x: int((xs.size**0.5 * 10) / (x + 1)**0.5)
 
     y_stat = []
     bin_cents = []
