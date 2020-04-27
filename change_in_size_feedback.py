@@ -38,7 +38,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     xs = xs[sinds]
     ys = ys[sinds]
 
-    n_inbin = 100
+    n_inbin = 10
 
     y_stat = []
     bin_cents = []
@@ -58,12 +58,13 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
         else:
             stat.append(val)
             bin.append(x)
-        print(ind, stat, bin, len(y_stat), len(bin_cents))
+        print(len(y_stat), len(bin_cents))
 
     if len(stat) <= n_inbin / 2:
-        y_stat[-1] = np.median(stat + prev_stat)
-        bin_cents[-1] = np.median(bin + prev_bin)
-
+        y_stat[-2] = np.median(stat + prev_stat)
+        bin_cents[-2] = np.median(bin + prev_bin)
+        y_stat.pop()
+        bin_cents.pop()
 
     ax.plot(bin_cents, y_stat, color='r', linestyle='--')
 
