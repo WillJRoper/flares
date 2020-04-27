@@ -37,9 +37,12 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     bin_centss = []
     for y, b, n in zip(y_stat, bin_cents, n_inbin):
 
-        if n_inbin < 10:
+        if n < 10:
             y_stats[-1] = np.median([y, y_stat[-1]])
-            bin_centss[-1] = np.median([b, bin_centss[-1]
+            bin_centss[-1] = b - bin_wid
+        else:
+            y_stats.append(y)
+            bin_centss.append(b)
 
     y_stats = np.array(y_stats)
     bin_centss = np.array(bin_centss)
