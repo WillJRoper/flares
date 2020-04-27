@@ -36,53 +36,34 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
     uni, counts = np.unique(bin_ind, return_counts=True)
+    print(uni, counts)
+    print(okinds)
 
     sinds = np.argsort(uni)
     uni = uni[sinds] - 1
     counts = counts[sinds]
 
-    print(uni, counts)
-    print(okinds)
+    y_stats = []
+    bin_centss = []
+    count = []
+    for ind, n in zip(uni, counts):
 
-    if np.min(counts) < 20:
-        while np.min(counts) < 20 and len(bin_cents) > 2:
-            y_stats = []
-            bin_centss = []
-            count = []
-            nancount = 0
-            print(uni)
-            print(counts)
-            for ind, n in zip(uni, counts):
+        y = y_stat[ind]
+        b = bin_cents[ind]
 
-                y = y_stat[ind]
-                b = bin_cents[ind]
-
-                if np.isnan(y):
-                    nancount += 1
-                    continue
-
-                if ind - nancount == 0:
-                    y_stats.append(y)
-                    bin_centss.append(b)
-                    count.append(n)
-                elif n < 20 or count[- 1] < 20:
-                    y_stats[-1] = np.median([y, y_stat[-1]])
-                    bin_centss[-1] = b - bin_wid
-                    count[-1] += n
-                else:
-                    y_stats.append(y)
-                    bin_centss.append(b)
-                    count.append(n)
-
-            uni = np.arange(0, (bin_centss), 1)
-            counts = count[:]
-
-        y_stats = np.array(y_stats)
-        bin_centss = np.array(bin_centss)
-
-    else:
-        y_stats = y_stat
-        bin_centss = bin_cents
+        if n < 20:
+            try:
+                y_stats[-1] = np.median([y, y_stat[-1]])
+                bin_centss[-1] = b - bin_wid
+                count[-1] += n
+            except IndexError:
+                y_stats.append(y)
+                bin_centss.append(b)
+                count.append(n)
+        else:
+            y_stats.append(y)
+            bin_centss.append(b)
+            count.append(n)
 
     # # Sort the results
     # sinds = np.argsort(xs)
