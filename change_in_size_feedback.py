@@ -48,7 +48,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     prev_bin = []
     for (ind, val), x in zip(enumerate(ys), xs):
 
-        if ind % np.min([n_inbin(ind), 100]) == 0:
+        if ind % np.min([n_inbin(ind), 1000]) == 0:
             y_stat.append(np.median(stat))
             bin_cents.append(np.median(bin))
             prev_stat = stat
@@ -58,7 +58,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
         else:
             stat.append(val)
             bin.append(x)
-        print(len(y_stat), len(bin_cents))
+        print(np.min([n_inbin(ind), 1000]), len(y_stat), len(bin_cents))
 
     if len(stat) <= 10:
         y_stat[-2] = np.median(stat + prev_stat)
@@ -66,7 +66,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
         y_stat.pop()
         bin_cents.pop()
 
-    ax.plot(bin_cents, y_stat, color='r', linestyle='--')
+    ax.plot(bin_cents, y_stat, color='r', linestyle='-')
 
 
 def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, part_halo_ids):
