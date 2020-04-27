@@ -23,8 +23,8 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
         bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
     else:
         bin = bins
-        
-    print(bins)
+
+    print(bin)
 
     # Compute binned statistic
     y_stat, binedges, n_inbin = binned_statistic(xs, ys, statistic='median', bins=bin)
