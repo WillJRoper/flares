@@ -49,6 +49,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
             y_stats = []
             bin_centss = []
             count = []
+            print(uni)
             print(counts)
             for ind, n in zip(uni, counts):
 
