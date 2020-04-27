@@ -50,7 +50,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
             count = []
             print(counts)
             for ind, n in zip(uni, counts):
-    
+
                 y = y_stat[ind]
                 b = bin_cents[ind]
 
@@ -71,7 +71,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
                     bin_centss.append(b)
                     count.append(n)
             uni = np.arange(len(bin_centss))
-            counts = count
+            counts = count[:]
 
         y_stats = np.array(y_stats)
         bin_centss = np.array(bin_centss)
