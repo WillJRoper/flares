@@ -20,7 +20,7 @@ sns.set_style('whitegrid')
 def plot_meidan_stat(xs, ys, ax, bins=None):
 
     if bins == None:
-        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 50)
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 10)
     else:
         bin = bins
 
@@ -66,7 +66,9 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     #     y_stat.pop()
     #     bin_cents.pop()
 
-    ax.plot(bin_cents, y_stat, color='r', linestyle='-')
+    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+
+    ax.plot(bin_cents[okinds], y_stat[okinds], color='r', linestyle='-')
 
 
 def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, part_halo_ids):
