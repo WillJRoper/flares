@@ -24,13 +24,13 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     else:
         bin = bins
 
-    pcent16 = lambda x: np.percentile(x, 16)
-    pcent84 = lambda x: np.percentile(x, 84)
+    # pcent16 = lambda x: np.percentile(x, 16)
+    # pcent84 = lambda x: np.percentile(x, 84)
 
     # Compute binned statistics
     y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median', bins=bin)
-    stat16, binedges, bin_ind = binned_statistic(xs, ys, statistic=pcent16, bins=bin)
-    stat84, binedges, bin_ind = binned_statistic(xs, ys, statistic=pcent84, bins=bin)
+    # stat16, binedges, bin_ind = binned_statistic(xs, ys, statistic=pcent16, bins=bin)
+    # stat84, binedges, bin_ind = binned_statistic(xs, ys, statistic=pcent84, bins=bin)
 
     # Compute bincentres
     bin_wid = binedges[1] - binedges[0]
@@ -100,7 +100,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     #     y_stat.pop()
     #     bin_cents.pop()
 
-    ax.fill_between(bin_cents[okinds], stat16[okinds], stat84[okinds], color='r', alpha=0.7)
+    # ax.fill_between(bin_cents[okinds], stat16[okinds], stat84[okinds], color='r', alpha=0.7)
     ax.plot(bin_cents[okinds], y_stat[okinds], color='r', linestyle='-')
 
 
