@@ -36,12 +36,13 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
     uni, counts = np.unique(bin_ind, return_counts=True)
-    print(uni, counts)
-    print(okinds)
 
     sinds = np.argsort(uni)
     uni = uni[sinds] - 1
     counts = counts[sinds]
+
+    print(uni, counts)
+    print(okinds)
 
     if np.min(counts) < 20:
         while np.min(counts) < 20 and len(bin_cents) > 2:
@@ -58,6 +59,15 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
                     continue
 
                 if n < 20:
+                    try:
+                        y_stats[-1] = np.median([y, y_stat[-1]])
+                        bin_centss[-1] = b - bin_wid
+                        count[-1] += n
+                    except IndexError:
+                        y_stats.append(y)
+                        bin_centss.append(b)
+                        count.append(n)
+                elif counts[ind -1] < 20:
                     try:
                         y_stats[-1] = np.median([y, y_stat[-1]])
                         bin_centss[-1] = b - bin_wid
