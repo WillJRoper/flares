@@ -74,7 +74,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
                     bin_centss.append(b)
                     count.append(n)
 
-            uni = np.arange(len(bin_centss))
+            uni = np.arange(0, (bin_centss), 1)
             counts = count[:]
 
         y_stats = np.array(y_stats)
