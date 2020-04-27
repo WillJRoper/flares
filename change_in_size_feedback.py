@@ -63,7 +63,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
                     y_stats.append(y)
                     bin_centss.append(b)
                     count.append(n)
-                elif n < 20 or count[ind - 1] < 20:
+                elif n < 20 or count[- 1] < 20:
                     y_stats[-1] = np.median([y, y_stat[-1]])
                     bin_centss[-1] = b - bin_wid
                     count[-1] += n
