@@ -341,8 +341,8 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(xs_plt) > 0:
-            plot_meidan_stat(xs_plt, fbs_plt, ax)
-            ax.set_xscale('log')
+            # plot_meidan_stat(xs_plt, fbs_plt, ax)
+            # ax.set_xscale('log')
             cbar = ax.hexbin(xs_plt, fbs_plt, gridsize=100, mincnt=1, xscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
@@ -421,9 +421,9 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(xs_plt) > 0:
-            plot_meidan_stat(xs_plt, delta_hmr_plt, ax)
-            ax.set_xscale('log')
-            ax.set_yscale('log')
+            # plot_meidan_stat(xs_plt, delta_hmr_plt, ax)
+            # ax.set_xscale('log')
+            # ax.set_yscale('log')
             cbar = ax.hexbin(xs_plt, delta_hmr_plt, C=fbs_plt, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              linewidths=0.2, cmap='viridis', vmin=0.3, vmax=3)
 
@@ -508,8 +508,8 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
         fbs_plt = fbs_plt[okinds]
 
         if len(fbs_plt) > 0:
-            plot_meidan_stat(fbs_plt, delta_hmr_plt, ax)
-            ax.set_yscale('log')
+            # plot_meidan_stat(fbs_plt, delta_hmr_plt, ax)
+            # ax.set_yscale('log')
             cbar = ax.hexbin(fbs_plt, delta_hmr_plt, gridsize=100, mincnt=1, yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
