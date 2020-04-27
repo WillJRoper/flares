@@ -49,6 +49,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
             y_stats = []
             bin_centss = []
             count = []
+            nancount = 0
             print(uni)
             print(counts)
             for ind, n in zip(uni, counts):
@@ -57,9 +58,10 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
                 b = bin_cents[ind]
 
                 if np.isnan(y):
+                    nancount += 1
                     continue
 
-                if ind == 0:
+                if ind - nancount == 0:
                     y_stats.append(y)
                     bin_centss.append(b)
                     count.append(n)
