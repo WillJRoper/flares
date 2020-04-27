@@ -43,34 +43,42 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     uni = uni[sinds] - 1
     counts = counts[sinds]
 
-    count = [1, 30]
-    while np.min(count) < 20:
-        y_stats = []
-        bin_centss = []
-        count = []
-        for ind, n in zip(uni, counts):
+    if np.min(counts) < 20:
+        while np.min(counts) < 20 and len(bin_cents) > 2:
+            y_stats = []
+            bin_centss = []
+            count = []
+            print(counts)
+            for ind, n in zip(uni, counts):
+    
+                y = y_stat[ind]
+                b = bin_cents[ind]
 
-            y = y_stat[ind]
-            b = bin_cents[ind]
+                if np.isnan(y):
+                    continue
 
-            if n < 20:
-                try:
-                    y_stats[-1] = np.median([y, y_stat[-1]])
-                    bin_centss[-1] = b - bin_wid
-                    count[-1] += n
-                except IndexError:
+                if n < 20:
+                    try:
+                        y_stats[-1] = np.median([y, y_stat[-1]])
+                        bin_centss[-1] = b - bin_wid
+                        count[-1] += n
+                    except IndexError:
+                        y_stats.append(y)
+                        bin_centss.append(b)
+                        count.append(n)
+                else:
                     y_stats.append(y)
                     bin_centss.append(b)
                     count.append(n)
-            else:
-                y_stats.append(y)
-                bin_centss.append(b)
-                count.append(n)
-        uni = np.arange(len(bin_centss))
-        counts = count
+            uni = np.arange(len(bin_centss))
+            counts = count
 
-    y_stats = np.array(y_stats)
-    bin_centss = np.array(bin_centss)
+        y_stats = np.array(y_stats)
+        bin_centss = np.array(bin_centss)
+
+    else:
+        y_stats = y_stat
+        bin_centss = bin_cents
 
     # # Sort the results
     # sinds = np.argsort(xs)
