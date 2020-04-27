@@ -27,7 +27,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     print(bin)
 
     # Compute binned statistic
-    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median', bins=bin)
+    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='mean', bins=bin)
     print(y_stat, binedges)
     # Compute bincentres
     bin_wid = binedges[1] - binedges[0]
