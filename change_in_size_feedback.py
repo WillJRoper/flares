@@ -33,21 +33,37 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     # bin_wid = binedges[1] - binedges[0]
     # bin_cents = binedges[1:] - bin_wid / 2
 
+    # Sort the results
+    sinds = np.argsort(xs)
+    xs = xs[sinds]
+    ys = ys[sinds]
+
+    n_inbin = 100
+
     y_stat = []
     bin_cents = []
     stat = []
     bin = []
+    prev_stat = []
+    prev_bin = []
     for (ind, val), x in zip(enumerate(ys), xs):
 
-        if ind % 10 == 0:
+        if ind % n_inbin == 0:
             y_stat.append(np.median(stat))
             bin_cents.append(np.median(bin))
+            prev_stat = stat
+            prev_bin = bin
             stat = []
             bin = []
         else:
             stat.append(val)
             bin.append(x)
         print(ind, stat, bin, len(y_stat), len(bin_cents))
+
+    if len(stat) <= n_inbin / 2:
+        y_stat[-1] = np.median(stat + prev_stat)
+        bin_cents[-1] = np.median(bin + prev_bin)
+
 
     ax.plot(bin_cents, y_stat, color='r', linestyle='--')
 
