@@ -27,11 +27,42 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     print(bin)
 
     # Compute binned statistic
-    y_stat, binedges, n_inbin = binned_statistic(xs, ys, statistic='median', bins=bin)
-    print(y_stat.shape, binedges.shape, n_inbin.shape)
+    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median', bins=bin)
+
     # Compute bincentres
     bin_wid = binedges[1] - binedges[0]
     bin_cents = binedges[1:] - bin_wid / 2
+
+    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+
+    uni, counts = np.unique(bin_ind, return_counts=True)
+    print(uni, counts)
+    print(okinds)
+
+    sinds = np.argsort(uni)
+    uni = uni[sinds]
+    counts = counts[sinds]
+
+    y_stats = []
+    bin_centss = []
+    for ind, n in zip(uni, counts):
+
+        y = y_stat[ind]
+        b = bin_cents[ind]
+
+        if n < 10:
+            try:
+                y_stats[-1] = np.median([y, y_stat[-1]])
+                bin_centss[-1] = b - bin_wid
+            except IndexError:
+                y_stats.append(y)
+                bin_centss.append(b)
+        else:
+            y_stats.append(y)
+            bin_centss.append(b)
+
+    y_stats = np.array(y_stats)
+    bin_centss = np.array(bin_centss)
 
     # # Sort the results
     # sinds = np.argsort(xs)
@@ -66,7 +97,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
     #     y_stat.pop()
     #     bin_cents.pop()
 
-    ax.plot(bin_cents, y_stat, color='r', linestyle='-')
+    ax.plot(bin_centss, y_stats, color='r', linestyle='-')
 
 
 def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, part_halo_ids):
