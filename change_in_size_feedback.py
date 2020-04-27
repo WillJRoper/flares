@@ -19,52 +19,52 @@ sns.set_style('whitegrid')
 
 def plot_meidan_stat(xs, ys, ax, bins=None):
 
-    # if bins == None:
-    #     bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
-    # else:
-    #     bin = bins
+    if bins == None:
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 50)
+    else:
+        bin = bins
+
+    print(bin)
+
+    # Compute binned statistic
+    y_stat, binedges, n_inbin = binned_statistic(xs, ys, statistic='median', bins=bin)
+
+    # Compute bincentres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    # # Sort the results
+    # sinds = np.argsort(xs)
+    # xs = xs[sinds]
+    # ys = ys[sinds]
     #
-    # print(bin)
+    # n_inbin = lambda x: int((xs.size**10 * 10) / (x + 1)**10)
     #
-    # # Compute binned statistic
-    # y_stat, binedges, n_inbin = binned_statistic(xs, ys, statistic='median', bins=bin)
-
-    # # Compute bincentres
-    # bin_wid = binedges[1] - binedges[0]
-    # bin_cents = binedges[1:] - bin_wid / 2
-
-    # Sort the results
-    sinds = np.argsort(xs)
-    xs = xs[sinds]
-    ys = ys[sinds]
-
-    n_inbin = lambda x: int((xs.size**10 * 10) / (x + 1)**10)
-
-    y_stat = []
-    bin_cents = []
-    stat = []
-    bin = []
-    prev_stat = []
-    prev_bin = []
-    for (ind, val), x in zip(enumerate(ys), xs):
-
-        if ind % np.min([n_inbin(ind), 1000]) == 0:
-            y_stat.append(np.median(stat))
-            bin_cents.append(np.median(bin))
-            prev_stat = stat
-            prev_bin = bin
-            stat = []
-            bin = []
-        else:
-            stat.append(val)
-            bin.append(x)
-        print(np.min([n_inbin(ind), 1000]), len(y_stat), len(bin_cents))
-
-    if len(stat) <= 10:
-        y_stat[-2] = np.median(stat + prev_stat)
-        bin_cents[-2] = np.median(bin + prev_bin)
-        y_stat.pop()
-        bin_cents.pop()
+    # y_stat = []
+    # bin_cents = []
+    # stat = []
+    # bin = []
+    # prev_stat = []
+    # prev_bin = []
+    # for (ind, val), x in zip(enumerate(ys), xs):
+    #
+    #     if ind % np.min([n_inbin(ind), 1000]) == 0:
+    #         y_stat.append(np.median(stat))
+    #         bin_cents.append(np.median(bin))
+    #         prev_stat = stat
+    #         prev_bin = bin
+    #         stat = []
+    #         bin = []
+    #     else:
+    #         stat.append(val)
+    #         bin.append(x)
+    #     print(np.min([n_inbin(ind), 1000]), len(y_stat), len(bin_cents))
+    #
+    # if len(stat) <= 10:
+    #     y_stat[-2] = np.median(stat + prev_stat)
+    #     bin_cents[-2] = np.median(bin + prev_bin)
+    #     y_stat.pop()
+    #     bin_cents.pop()
 
     ax.plot(bin_cents, y_stat, color='r', linestyle='-')
 
