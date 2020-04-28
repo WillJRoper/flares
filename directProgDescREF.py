@@ -18,8 +18,12 @@ def get_current_part_IDs(path, snap, part_type, part_ids):
                                       numThreads=8)
     except ValueError:
         group_part_ids = np.array([])
-    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+    try:
+        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+    except ValueError:
+        grp_ids = np.array([])
+        subgrp_ids = np.array([])
 
     # Remove particles not associated to a subgroup
     okinds = np.logical_and(subgrp_ids != 1073741824, grp_ids >= 0)
