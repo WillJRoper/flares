@@ -37,7 +37,7 @@ model.create_Lnu_grid(F)
 def plot_meidan_stat(xs, ys, ax, bins=None):
 
     if bins == None:
-        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 30)
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
     else:
         bin = bins
 
