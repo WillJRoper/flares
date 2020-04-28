@@ -9,6 +9,7 @@ import pickle
 import os
 import numba as nb
 from utilities import calc_ages, get_Z_LOS
+from scipy.stats import binned_statistic
 from astropy.cosmology import Planck13 as cosmo
 import seaborn as sns
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
@@ -31,6 +32,25 @@ F = FLARE.filters.add_filters(filters, new_lam = model.lam)
 
 # --- create new L grid for each filter. In units of erg/s/Hz
 model.create_Lnu_grid(F)
+
+
+def plot_meidan_stat(xs, ys, ax, bins=None):
+
+    if bins == None:
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 30)
+    else:
+        bin = bins
+
+    # Compute binned statistics
+    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median', bins=bin)
+
+    # Compute bincentres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+
+    ax.plot(bin_cents[okinds], y_stat[okinds], color='r', linestyle='-')
 
 
 def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
@@ -238,6 +258,7 @@ for f in fs:
             cbar = ax.hexbin(xs_plt, half_mass_rads_plt / csoft, gridsize=100, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(),
                              linewidths=0.2, cmap='viridis')
+            plot_meidan_stat(xs_plt, half_mass_rads_plt / csoft, ax)
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
