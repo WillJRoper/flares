@@ -71,8 +71,12 @@ def get_part_halo_data(path, snap, prog_snap, desc_snap, part_type):
             snap_part_ids = np.array([])
 
         if prog_snap != None:
-            progsnap_part_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                             numThreads=8)
+            try:
+                progsnap_part_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                                 numThreads=8)
+            except ValueError:
+                progsnap_part_ids = np.array([])
+
             # Get halo IDs and halo data
             prog_subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
             prog_grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
@@ -94,8 +98,12 @@ def get_part_halo_data(path, snap, prog_snap, desc_snap, part_type):
             preprog_gal_ms = np.array([])
 
         if desc_snap != None:
-            descsnap_part_ids = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                             numThreads=8)
+            try:
+                descsnap_part_ids = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                                 numThreads=8)
+            except ValueError:
+                descsnap_part_ids = np.array([])
+
             # Get halo IDs and halo data
             desc_subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
             desc_grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
