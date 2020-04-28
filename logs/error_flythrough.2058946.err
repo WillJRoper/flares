@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "./flythrough_animation_frame_adjust.py", line 72, in <module>
+    single_frame(reg, snap, num=int(sys.argv[1]))
+  File "./flythrough_animation_frame_adjust.py", line 33, in single_frame
+    img_gas = np.load('animationdata/gas_animationdata_reg' + reg + '_snap' + snap + '_angle%05d.npy'%num)
+  File "/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/lib/python3.7/site-packages/numpy/lib/npyio.py", line 428, in load
+    fid = open(os_fspath(file), "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'animationdata/gas_animationdata_reg00_snap010_z005p000_angle01339.npy'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "./flythrough_animation_frame_adjust.py", line 75, in <module>
+    single_sphere(reg, snap, soft=csoft, num=int(sys.argv[1]))
+  File "/cosma7/data/dp004/dc-rope1/FLARES/flares/flythrough_animation.py", line 167, in single_sphere
+    grp_cops = E.read_array('SUBFIND', path, snap, 'FOF/GroupCentreOfPotential',
+AttributeError: module 'eagle_IO' has no attribute 'read_array'
