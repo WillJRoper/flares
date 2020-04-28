@@ -145,13 +145,22 @@ def get_part_halo_data(path, snap, prog_snap, desc_snap, part_type):
 
 def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, predirectpart_masses, 
                    predirect_sub_ids, predirect_gal_ms):
-    
-    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber',
-                           numThreads=8)
-    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber',
-                              numThreads=8)
-    direct_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                 numThreads=8)
+
+    try:
+        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber',
+                               numThreads=8)
+    except ValueError:
+        grp_ids = np.array([])
+    try:
+        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber',
+                                  numThreads=8)
+    except ValueError:
+        subgrp_ids = np.array([])
+    try:
+        direct_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                     numThreads=8)
+    except ValueError:
+        direct_part_ids = np.array([])
 
     # Remove particles not associated to a subgroup
     okinds = np.logical_and(subgrp_ids != 1073741824, grp_ids >= 0)
