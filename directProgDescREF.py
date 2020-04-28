@@ -451,6 +451,10 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     predesc_gal_ms = data[5]
     predesc_sub_ids = data[6]
 
+    # If no part IDs exist exit
+    if len(part_ids) == 0:
+        return {}, {}, {}
+
     # =============== Current Snapshot ===============
 
     # Get particle IDs for each halo in the current snapshot
