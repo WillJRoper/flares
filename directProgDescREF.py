@@ -64,7 +64,11 @@ def get_part_halo_data(path, snap, prog_snap, desc_snap, part_type):
         predesc_sub_ids = np.array([])
     else:
         # Get the particle IDs in each snapshot
-        snap_part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+        try:
+            snap_part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                         numThreads=8)
+        except ValueError:
+            snap_part_ids = np.array([])
 
         if prog_snap != None:
             progsnap_part_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
