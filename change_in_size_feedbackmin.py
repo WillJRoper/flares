@@ -155,7 +155,10 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals, feedback, pa
             main_hmr = prog_hmrs[main]
 
             # Define change in properties
-            delta_fbs[ind] = np.min(feedback[part_halo_ids == i])
+            if len(feedback[part_halo_ids == i]) > 0:
+                delta_fbs[ind] = np.min(feedback[part_halo_ids == i])
+            else:
+                delta_fbs[ind] = 0
             delta_hmrs[ind] = hmr / main_hmr
             delta_ms[ind] = mass / np.sum(prog_masses)
 
