@@ -13,8 +13,11 @@ matplotlib.use('Agg')
 def get_current_part_IDs(path, snap, part_type, part_ids):
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                  numThreads=8)
+    try:
+        group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                      numThreads=8)
+    except ValueError:
+        group_part_ids = np.array([])
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
 
