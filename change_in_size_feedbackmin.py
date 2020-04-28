@@ -183,7 +183,7 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
 
     if load:
 
-        with open('changeinsize_feedback.pck', 'rb') as pfile1:
+        with open('changeinsize_feedbackmin.pck', 'rb') as pfile1:
             save_dict = pickle.load(pfile1)
         delta_hmr_dict = save_dict['hmr']
         delta_ms_dict = save_dict['ms']
@@ -305,7 +305,7 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
                 except OSError:
                     continue
 
-        with open('changeinsize_feedback.pck', 'wb') as pfile1:
+        with open('changeinsize_feedbackmin.pck', 'wb') as pfile1:
             pickle.dump({'hmr' : delta_hmr_dict, 'ms': delta_ms_dict, 'fb': fbs_dict}, pfile1)
 
     axlims_x = []
@@ -553,5 +553,5 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
     fig.savefig('plots/change_in_halfmassradiusvsfeedbackmin.png', bbox_inches='tight')
 
 
-main_change(masslim=10**8, load=True)
+main_change(masslim=10**8, load=False)
 
