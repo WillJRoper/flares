@@ -83,9 +83,12 @@ def get_part_halo_data(path, snap, prog_snap, desc_snap, part_type):
             preprog_gal_ms = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                           noH=False,
                                           physicalUnits=False, numThreads=8)[:, part_type]
-            preprogpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass',
-                                              noH=False,
-                                              physicalUnits=False, numThreads=8)
+            try:
+                preprogpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass',
+                                                  noH=False,
+                                                  physicalUnits=False, numThreads=8)
+            except ValueError:
+                preprogpart_masses = np.array([])
 
             preprog_sub_ids = np.zeros(prog_grp_ids.size, dtype=float)
             for (ind, g), sg in zip(enumerate(prog_grp_ids), prog_subgrp_ids):
@@ -110,9 +113,12 @@ def get_part_halo_data(path, snap, prog_snap, desc_snap, part_type):
             predesc_gal_ms = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                           noH=False,
                                           physicalUnits=False, numThreads=8)[:, part_type]
-            predescpart_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/Mass',
-                                              noH=False,
-                                              physicalUnits=False, numThreads=8)
+            try:
+                predescpart_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/Mass',
+                                                  noH=False,
+                                                  physicalUnits=False, numThreads=8)
+            except ValueError:
+                predescpart_masses = np.array([])
 
             predesc_sub_ids = np.zeros(desc_grp_ids.size, dtype=float)
             for (ind, g), sg in zip(enumerate(desc_grp_ids), desc_subgrp_ids):
