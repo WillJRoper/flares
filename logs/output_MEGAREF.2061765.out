@@ -1,0 +1,125 @@
+====
+Starting job 2061765 at Tue 28 Apr 23:45:30 BST 2020 for user dc-rope1.
+Running on nodes: m7347
+====
+['000_z020p000', '001_z015p132', '002_z009p993', '003_z008p988', '004_z008p075', '005_z007p050', '006_z005p971', '007_z005p487', '008_z005p037', '009_z004p485', '010_z003p984', '011_z003p528', '012_z003p017', '013_z002p478', '014_z002p237', '015_z002p012', '016_z001p737', '017_z001p487', '018_z001p259', '019_z001p004', '020_z000p865', '021_z000p736', '022_z000p615', '023_z000p503', '024_z000p366', '025_z000p271', '026_z000p183', '027_z000p101', '028_z000p000']
+[None, '000_z020p000', '001_z015p132', '002_z009p993', '003_z008p988', '004_z008p075', '005_z007p050', '006_z005p971', '007_z005p487', '008_z005p037', '009_z004p485', '010_z003p984', '011_z003p528', '012_z003p017', '013_z002p478', '014_z002p237', '015_z002p012', '016_z001p737', '017_z001p487', '018_z001p259', '019_z001p004', '020_z000p865', '021_z000p736', '022_z000p615', '023_z000p503', '024_z000p366', '025_z000p271', '026_z000p183', '027_z000p101']
+['001_z015p132', '002_z009p993', '003_z008p988', '004_z008p075', '005_z007p050', '006_z005p971', '007_z005p487', '008_z005p037', '009_z004p485', '010_z003p984', '011_z003p528', '012_z003p017', '013_z002p478', '014_z002p237', '015_z002p012', '016_z001p737', '017_z001p487', '018_z001p259', '019_z001p004', '020_z000p865', '021_z000p736', '022_z000p615', '023_z000p503', '024_z000p366', '025_z000p271', '026_z000p183', '027_z000p101', '028_z000p000', None]
+028_z000p000
+Reading in 'PartType1/ParticleIDs' for z = 0.0 using 8 thread(s) took 56.842393s
+Reading in 'PartType1/ParticleIDs' for z = 0.0 using 8 thread(s) took 37.550117s
+Reading in 'PartType1/GroupNumber' for z = 0.0 using 8 thread(s) took 21.132137s
+Reading in 'PartType1/SubGroupNumber' for z = 0.0 using 8 thread(s) took 21.090953s
+Reading in 'PartType1/GroupNumber' for z = 0.101 using 8 thread(s) took 39.064678s
+Reading in 'PartType1/SubGroupNumber' for z = 0.101 using 8 thread(s) took 29.131693s
+Reading in 'PartType1/ParticleIDs' for z = 0.101 using 8 thread(s) took 49.452928s
+Processed 2269084 halos in snapshot 028_z000p000 of particle type 1
+Reading in 'PartType4/ParticleIDs' for z = 0.0 using 8 thread(s) took 49.574645s
+Reading in 'PartType4/ParticleIDs' for z = 0.101 using 8 thread(s) took 48.573982s
+Reading in 'Subhalo/SubGroupNumber' for z = 0.101 using 8 thread(s) took 111.888372s
+Reading in 'Subhalo/GroupNumber' for z = 0.101 using 8 thread(s) took 4.912977s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 0.101 using 8 thread(s) took 7.915034s
+Reading in 'PartType4/Mass' for z = 0.101 using 8 thread(s) took 85.922629s
+Reading in 'PartType4/ParticleIDs' for z = 0.0 using 8 thread(s) took 79.631659s
+Reading in 'PartType4/GroupNumber' for z = 0.0 using 8 thread(s) took 14.614369s
+Reading in 'PartType4/SubGroupNumber' for z = 0.0 using 8 thread(s) took 11.451476s
+Reading in 'PartType4/GroupNumber' for z = 0.101 using 8 thread(s) took 11.730605s
+Reading in 'PartType4/SubGroupNumber' for z = 0.101 using 8 thread(s) took 10.186002s
+Reading in 'PartType4/ParticleIDs' for z = 0.101 using 8 thread(s) took 19.025277s
+Processed 325561 halos in snapshot 028_z000p000 of particle type 4
+Reading in 'PartType5/ParticleIDs' for z = 0.0 using 8 thread(s) took 5.75167s
+Reading in 'PartType5/ParticleIDs' for z = 0.101 using 8 thread(s) took 6.187161s
+Reading in 'Subhalo/SubGroupNumber' for z = 0.101 using 8 thread(s) took 3.859055s
+Reading in 'Subhalo/GroupNumber' for z = 0.101 using 8 thread(s) took 3.832974s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 0.101 using 8 thread(s) took 4.100767s
+Reading in 'PartType5/Mass' for z = 0.101 using 8 thread(s) took 4.678827s
+Reading in 'PartType5/ParticleIDs' for z = 0.0 using 8 thread(s) took 4.839043s
+Reading in 'PartType5/GroupNumber' for z = 0.0 using 8 thread(s) took 4.309334s
+Reading in 'PartType5/SubGroupNumber' for z = 0.0 using 8 thread(s) took 3.994928s
+Reading in 'PartType5/GroupNumber' for z = 0.101 using 8 thread(s) took 4.157931s
+Reading in 'PartType5/SubGroupNumber' for z = 0.101 using 8 thread(s) took 3.729109s
+Reading in 'PartType5/ParticleIDs' for z = 0.101 using 8 thread(s) took 3.884384s
+Processed 115001 halos in snapshot 028_z000p000 of particle type 5
+Reading in 'PartType0/ParticleIDs' for z = 0.0 using 8 thread(s) took 70.387937s
+Reading in 'PartType0/ParticleIDs' for z = 0.101 using 8 thread(s) took 68.401226s
+Reading in 'Subhalo/SubGroupNumber' for z = 0.101 using 8 thread(s) took 4.296817s
+Reading in 'Subhalo/GroupNumber' for z = 0.101 using 8 thread(s) took 4.368364s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 0.101 using 8 thread(s) took 4.49703s
+Reading in 'PartType0/Mass' for z = 0.101 using 8 thread(s) took 22.504796s
+Reading in 'PartType0/ParticleIDs' for z = 0.0 using 8 thread(s) took 38.549756s
+Reading in 'PartType0/GroupNumber' for z = 0.0 using 8 thread(s) took 23.279225s
+Reading in 'PartType0/SubGroupNumber' for z = 0.0 using 8 thread(s) took 20.347912s
+Reading in 'PartType0/GroupNumber' for z = 0.101 using 8 thread(s) took 23.757948s
+Reading in 'PartType0/SubGroupNumber' for z = 0.101 using 8 thread(s) took 19.41448s
+Reading in 'PartType0/ParticleIDs' for z = 0.101 using 8 thread(s) took 36.547162s
+Processed 560360 halos in snapshot 028_z000p000 of particle type 0
+Job done, info follows...
+       JobID    JobName  Partition     MaxRSS    Elapsed ExitCode 
+------------ ---------- ---------- ---------- ---------- -------- 
+2061765_29     MEGA-REF     cosma7              04:41:15      0:0 
+2061765_29.+     extern                         04:41:15      0:0 
+2061765_1      MEGA-REF     cosma7              00:26:54      0:0 
+2061765_1.b+      batch            177002015K   00:26:54      0:0 
+2061765_1.e+     extern                  127K   00:26:54      0:0 
+2061765_2      MEGA-REF     cosma7              00:38:00      0:0 
+2061765_2.b+      batch            260500843K   00:38:00      0:0 
+2061765_2.e+     extern                  250K   00:38:00      0:0 
+2061765_3      MEGA-REF     cosma7              00:48:23      0:0 
+2061765_3.b+      batch            269066590K   00:48:23      0:0 
+2061765_3.e+     extern                  123K   00:48:23      0:0 
+2061765_4      MEGA-REF     cosma7              01:14:02      0:0 
+2061765_4.b+      batch            265979570K   01:14:02      0:0 
+2061765_4.e+     extern                  256K   01:14:02      0:0 
+2061765_5      MEGA-REF     cosma7              01:46:40      0:0 
+2061765_5.b+      batch            264544403K   01:46:40      0:0 
+2061765_5.e+     extern                  188K   01:46:40      0:0 
+2061765_6      MEGA-REF     cosma7              02:44:39      0:0 
+2061765_6.b+      batch            279696780K   02:44:39      0:0 
+2061765_6.e+     extern                  188K   02:44:39      0:0 
+2061765_7      MEGA-REF     cosma7              04:10:01      0:0 
+2061765_7.b+      batch            287875151K   04:10:01      0:0 
+2061765_7.e+     extern                  160K   04:10:01      0:0 
+2061765_8      MEGA-REF     cosma7              04:53:51      0:0 
+2061765_8.e+     extern                         04:53:51      0:0 
+2061765_9      MEGA-REF     cosma7              04:53:51      0:0 
+2061765_9.e+     extern                         04:53:51      0:0 
+2061765_10     MEGA-REF     cosma7              04:53:16      0:0 
+2061765_10.+     extern                         04:53:16      0:0 
+2061765_11     MEGA-REF     cosma7              04:53:16      0:0 
+2061765_11.+     extern                         04:53:16      0:0 
+2061765_12     MEGA-REF     cosma7              04:47:15      0:0 
+2061765_12.+     extern                         04:47:15      0:0 
+2061765_13     MEGA-REF     cosma7              04:47:15      0:0 
+2061765_13.+     extern                         04:47:15      0:0 
+2061765_14     MEGA-REF     cosma7              04:46:51      0:0 
+2061765_14.+     extern                         04:46:51      0:0 
+2061765_15     MEGA-REF     cosma7              04:46:51      0:0 
+2061765_15.+     extern                         04:46:51      0:0 
+2061765_16     MEGA-REF     cosma7              04:33:26      0:0 
+2061765_16.+      batch            335152962K   04:33:26      0:0 
+2061765_16.+     extern                  128K   04:33:26      0:0 
+2061765_17     MEGA-REF     cosma7              04:35:22      0:0 
+2061765_17.+      batch            345293420K   04:35:22      0:0 
+2061765_17.+     extern                  122K   04:35:22      0:0 
+2061765_18     MEGA-REF     cosma7              04:45:51      0:0 
+2061765_18.+     extern                         04:45:51      0:0 
+2061765_19     MEGA-REF     cosma7              04:45:51      0:0 
+2061765_19.+     extern                         04:45:51      0:0 
+2061765_20     MEGA-REF     cosma7              04:42:51      0:0 
+2061765_20.+     extern                         04:42:51      0:0 
+2061765_21     MEGA-REF     cosma7              04:42:51      0:0 
+2061765_21.+     extern                         04:42:51      0:0 
+2061765_22     MEGA-REF     cosma7              04:42:15      0:0 
+2061765_22.+     extern                         04:42:15      0:0 
+2061765_23     MEGA-REF     cosma7              04:42:15      0:0 
+2061765_23.+     extern                         04:42:15      0:0 
+2061765_24     MEGA-REF     cosma7              04:42:15      0:0 
+2061765_24.+     extern                         04:42:15      0:0 
+2061765_25     MEGA-REF     cosma7              04:42:15      0:0 
+2061765_25.+     extern                         04:42:15      0:0 
+2061765_26     MEGA-REF     cosma7              04:41:15      0:0 
+2061765_26.+     extern                         04:41:15      0:0 
+2061765_27     MEGA-REF     cosma7              04:41:15      0:0 
+2061765_27.+     extern                         04:41:15      0:0 
+2061765_28     MEGA-REF     cosma7              04:41:15      0:0 
+2061765_28.+     extern                         04:41:15      0:0 
