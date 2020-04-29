@@ -1,0 +1,87 @@
+====
+Starting job 2061818 at Tue 28 Apr 23:39:53 BST 2020 for user dc-rope1.
+Running on nodes: m7308
+====
+['000_z020p000', '001_z015p132', '002_z009p993', '003_z008p988', '004_z008p075', '005_z007p050', '006_z005p971', '007_z005p487', '008_z005p037', '009_z004p485', '010_z003p984', '011_z003p528', '012_z003p017', '013_z002p478', '014_z002p237', '015_z002p012', '016_z001p737', '017_z001p487', '018_z001p259', '019_z001p004', '020_z000p865', '021_z000p736', '022_z000p615', '023_z000p503', '024_z000p366', '025_z000p271', '026_z000p183', '027_z000p101', '028_z000p000']
+[None, '000_z020p000', '001_z015p132', '002_z009p993', '003_z008p988', '004_z008p075', '005_z007p050', '006_z005p971', '007_z005p487', '008_z005p037', '009_z004p485', '010_z003p984', '011_z003p528', '012_z003p017', '013_z002p478', '014_z002p237', '015_z002p012', '016_z001p737', '017_z001p487', '018_z001p259', '019_z001p004', '020_z000p865', '021_z000p736', '022_z000p615', '023_z000p503', '024_z000p366', '025_z000p271', '026_z000p183', '027_z000p101']
+['001_z015p132', '002_z009p993', '003_z008p988', '004_z008p075', '005_z007p050', '006_z005p971', '007_z005p487', '008_z005p037', '009_z004p485', '010_z003p984', '011_z003p528', '012_z003p017', '013_z002p478', '014_z002p237', '015_z002p012', '016_z001p737', '017_z001p487', '018_z001p259', '019_z001p004', '020_z000p865', '021_z000p736', '022_z000p615', '023_z000p503', '024_z000p366', '025_z000p271', '026_z000p183', '027_z000p101', '028_z000p000', None]
+013_z002p478
+Reading in 'PartType1/ParticleIDs' for z = 2.478 using 8 thread(s) took 67.647356s
+Reading in 'PartType1/ParticleIDs' for z = 2.478 using 8 thread(s) took 28.477135s
+Reading in 'PartType1/GroupNumber' for z = 2.478 using 8 thread(s) took 16.978877s
+Reading in 'PartType1/SubGroupNumber' for z = 2.478 using 8 thread(s) took 11.743934s
+Reading in 'PartType1/GroupNumber' for z = 3.017 using 8 thread(s) took 371.622777s
+Reading in 'PartType1/SubGroupNumber' for z = 3.017 using 8 thread(s) took 16.728902s
+Reading in 'PartType1/ParticleIDs' for z = 3.017 using 8 thread(s) took 25.74527s
+Reading in 'PartType1/GroupNumber' for z = 2.237 using 8 thread(s) took 32.413585s
+Reading in 'PartType1/SubGroupNumber' for z = 2.237 using 8 thread(s) took 18.48031s
+Reading in 'PartType1/ParticleIDs' for z = 2.237 using 8 thread(s) took 32.365326s
+Processed 3044297 halos in snapshot 013_z002p478 of particle type 1
+Reading in 'PartType4/ParticleIDs' for z = 2.478 using 8 thread(s) took 8.706588s
+Reading in 'PartType4/ParticleIDs' for z = 3.017 using 8 thread(s) took 9.054644s
+Reading in 'Subhalo/SubGroupNumber' for z = 3.017 using 8 thread(s) took 15.041087s
+Reading in 'Subhalo/GroupNumber' for z = 3.017 using 8 thread(s) took 3.137433s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 3.017 using 8 thread(s) took 3.299265s
+Reading in 'PartType4/Mass' for z = 3.017 using 8 thread(s) took 5.679935s
+Reading in 'PartType4/ParticleIDs' for z = 2.237 using 8 thread(s) took 13.063237s
+Reading in 'Subhalo/SubGroupNumber' for z = 2.237 using 8 thread(s) took 6.40255s
+Reading in 'Subhalo/GroupNumber' for z = 2.237 using 8 thread(s) took 3.951708s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 2.237 using 8 thread(s) took 6.537464s
+Reading in 'PartType4/Mass' for z = 2.237 using 8 thread(s) took 7.588547s
+Reading in 'PartType4/ParticleIDs' for z = 2.478 using 8 thread(s) took 9.326497s
+Reading in 'PartType4/GroupNumber' for z = 2.478 using 8 thread(s) took 6.075287s
+Reading in 'PartType4/SubGroupNumber' for z = 2.478 using 8 thread(s) took 3.963597s
+Reading in 'PartType4/GroupNumber' for z = 3.017 using 8 thread(s) took 3.786902s
+Reading in 'PartType4/SubGroupNumber' for z = 3.017 using 8 thread(s) took 4.170947s
+Reading in 'PartType4/ParticleIDs' for z = 3.017 using 8 thread(s) took 4.530366s
+Reading in 'PartType4/GroupNumber' for z = 2.237 using 8 thread(s) took 3.831065s
+Reading in 'PartType4/SubGroupNumber' for z = 2.237 using 8 thread(s) took 4.56258s
+Reading in 'PartType4/ParticleIDs' for z = 2.237 using 8 thread(s) took 6.658889s
+Processed 512702 halos in snapshot 013_z002p478 of particle type 4
+Reading in 'PartType5/ParticleIDs' for z = 2.478 using 8 thread(s) took 4.465563s
+Reading in 'PartType5/ParticleIDs' for z = 3.017 using 8 thread(s) took 6.906825s
+Reading in 'Subhalo/SubGroupNumber' for z = 3.017 using 8 thread(s) took 3.332327s
+Reading in 'Subhalo/GroupNumber' for z = 3.017 using 8 thread(s) took 3.484369s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 3.017 using 8 thread(s) took 3.60915s
+Reading in 'PartType5/Mass' for z = 3.017 using 8 thread(s) took 4.322699s
+Reading in 'PartType5/ParticleIDs' for z = 2.237 using 8 thread(s) took 7.544269s
+Reading in 'Subhalo/SubGroupNumber' for z = 2.237 using 8 thread(s) took 3.12584s
+Reading in 'Subhalo/GroupNumber' for z = 2.237 using 8 thread(s) took 3.153572s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 2.237 using 8 thread(s) took 3.465752s
+Reading in 'PartType5/Mass' for z = 2.237 using 8 thread(s) took 5.565371s
+Reading in 'PartType5/ParticleIDs' for z = 2.478 using 8 thread(s) took 7.780648s
+Reading in 'PartType5/GroupNumber' for z = 2.478 using 8 thread(s) took 4.677259s
+Reading in 'PartType5/SubGroupNumber' for z = 2.478 using 8 thread(s) took 3.611247s
+Reading in 'PartType5/GroupNumber' for z = 3.017 using 8 thread(s) took 4.131825s
+Reading in 'PartType5/SubGroupNumber' for z = 3.017 using 8 thread(s) took 2.973048s
+Reading in 'PartType5/ParticleIDs' for z = 3.017 using 8 thread(s) took 3.091709s
+Reading in 'PartType5/GroupNumber' for z = 2.237 using 8 thread(s) took 3.574314s
+Reading in 'PartType5/SubGroupNumber' for z = 2.237 using 8 thread(s) took 3.11665s
+Reading in 'PartType5/ParticleIDs' for z = 2.237 using 8 thread(s) took 3.123267s
+Processed 114473 halos in snapshot 013_z002p478 of particle type 5
+Reading in 'PartType0/ParticleIDs' for z = 2.478 using 8 thread(s) took 60.355093s
+Reading in 'PartType0/ParticleIDs' for z = 3.017 using 8 thread(s) took 62.317291s
+Reading in 'Subhalo/SubGroupNumber' for z = 3.017 using 8 thread(s) took 4.032649s
+Reading in 'Subhalo/GroupNumber' for z = 3.017 using 8 thread(s) took 3.844419s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 3.017 using 8 thread(s) took 4.134544s
+Reading in 'PartType0/Mass' for z = 3.017 using 8 thread(s) took 18.837015s
+Reading in 'PartType0/ParticleIDs' for z = 2.237 using 8 thread(s) took 64.560824s
+Reading in 'Subhalo/SubGroupNumber' for z = 2.237 using 8 thread(s) took 4.092688s
+Reading in 'Subhalo/GroupNumber' for z = 2.237 using 8 thread(s) took 4.195425s
+Reading in 'Subhalo/ApertureMeasurements/Mass/030kpc' for z = 2.237 using 8 thread(s) took 4.382378s
+Reading in 'PartType0/Mass' for z = 2.237 using 8 thread(s) took 20.910804s
+Reading in 'PartType0/ParticleIDs' for z = 2.478 using 8 thread(s) took 40.125712s
+Reading in 'PartType0/GroupNumber' for z = 2.478 using 8 thread(s) took 22.612964s
+Reading in 'PartType0/SubGroupNumber' for z = 2.478 using 8 thread(s) took 19.612147s
+Reading in 'PartType0/GroupNumber' for z = 3.017 using 8 thread(s) took 58.283015s
+Reading in 'PartType0/SubGroupNumber' for z = 3.017 using 8 thread(s) took 33.577998s
+Reading in 'PartType0/ParticleIDs' for z = 3.017 using 8 thread(s) took 79.11615s
+Reading in 'PartType0/GroupNumber' for z = 2.237 using 8 thread(s) took 21.367913s
+Reading in 'PartType0/SubGroupNumber' for z = 2.237 using 8 thread(s) took 66.32457s
+Reading in 'PartType0/ParticleIDs' for z = 2.237 using 8 thread(s) took 30.881234s
+Processed 1646969 halos in snapshot 013_z002p478 of particle type 0
+Job done, info follows...
+       JobID    JobName  Partition     MaxRSS    Elapsed ExitCode 
+------------ ---------- ---------- ---------- ---------- -------- 
+2061765_14     MEGA-REF     cosma7              05:10:20      0:0 
+2061765_14.+     extern                         05:10:20      0:0 
