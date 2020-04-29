@@ -393,9 +393,9 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
         z_str = snap.split('z')[1].split('p')
         z = float(z_str[0] + '.' + z_str[1])
 
-        xs_plt = np.concatenate(list(delta_ms_dict[snap].values()))
-        delta_hmr_plt = np.concatenate(list(delta_hmr_dict[snap].values()))
-        fbs_plt = np.concatenate(list(fbs_dict[snap].values()))
+        xs_plt = delta_ms_dict[snap]
+        delta_hmr_plt = delta_hmr_dict[snap]
+        fbs_plt = fbs_dict[snap]
 
         okinds = np.logical_and(np.logical_and(fbs_plt > 0, ~np.isnan(xs_plt)),
                                 np.logical_and(delta_hmr_plt > 0, ~np.isnan(fbs_plt)))
