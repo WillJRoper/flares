@@ -105,7 +105,7 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
 
             savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/REF/'
 
-            path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data/'
+            path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
 
             # Get redshifts
             z_str = snap.split('z')[1].split('p')

@@ -637,6 +637,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
                 (nprog, prog_haloids, prog_npart, prog_mass_contribution,
                  ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results[haloID]
+                print(results[haloID])
 
                 sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
                 for ind, prog in enumerate(prog_haloids):
