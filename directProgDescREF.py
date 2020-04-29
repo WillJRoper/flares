@@ -612,8 +612,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         dmprogs[haloID] = sim_prog_haloids
         dmdescs[haloID] = sim_desc_haloids
 
-    hdf.close()
-
     # Clear memory of unsused dictionaries
     del results_dm, internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm
     gc.collect()
@@ -623,8 +621,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         results, internal_to_sim_haloID_desc, internal_to_sim_haloID_prog = partDirectProgDesc(snap, prog_snap,
                                                                                                desc_snap, path,
                                                                                                part_type=ptype)
-        # Open HDF5 file
-        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'w')
 
         for num, haloID in enumerate(halo_ids_lst):
 
@@ -637,7 +633,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
                 (nprog, prog_haloids, prog_npart, prog_mass_contribution,
                  ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results[haloID]
-                print(results[haloID])
 
                 sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
                 for ind, prog in enumerate(prog_haloids):
@@ -739,10 +734,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                     halo.create_dataset('Desc_bh_mass', data=np.array([]),
                                         dtype=int)  # number of particles in each descendant
 
-        hdf.close()
-
         del results, internal_to_sim_haloID_desc, internal_to_sim_haloID_prog
         gc.collect()
+
+    hdf.close()
 
 
 def ascend(a):
