@@ -138,7 +138,7 @@ def get_data(masslim=1e8, load=False):
     return stellar_bd_dict, stellar_met_dict
 
 
-stellar_met_dict, stellar_bd_dict = get_data(masslim=10**9.5, load=load)
+stellar_met_dict, stellar_bd_dict = get_data(masslim=10**9.5, load=True)
 
 stellar_met = np.concatenate(list(stellar_met_dict.values()))
 stellar_bd = np.concatenate(list(stellar_bd_dict.values()))
