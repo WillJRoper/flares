@@ -16,12 +16,10 @@ def get_current_part_IDs(path, snap, part_type, part_ids):
     try:
         group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                       numThreads=8)
-    except ValueError:
-        group_part_ids = np.array([])
-    try:
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
         subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
     except ValueError:
+        group_part_ids = np.array([])
         grp_ids = np.array([])
         subgrp_ids = np.array([])
 
@@ -575,14 +573,12 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     dmprogs = {}
     dmdescs = {}
 
-    print(results_dm.keys())
-
     # Loop over dark matter results writing them out
     for num, haloID in enumerate(results_dm):
 
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
          ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[haloID]
-
+        print(nprog, ndesc)
         if nprog < 1 and ndesc < 1:
             continue
 
