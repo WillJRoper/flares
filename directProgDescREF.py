@@ -571,7 +571,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
          ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[haloID]
-        print(nprog, ndesc)
+        # print(nprog, ndesc)
         if nprog < 1 and ndesc < 1 or len(current_halo_pids) < 20:
             continue
 
