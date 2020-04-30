@@ -1,3 +1,4 @@
+#!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 """
 Creates the plot of metallicity against birth density, with
 the background coloured by f_E.
