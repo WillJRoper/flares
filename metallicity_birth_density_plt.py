@@ -9,7 +9,7 @@ import numpy as np
 import pickle
 import eagle_IO.eagle_IO as E
 
-from unyt import mh, cm, Gyr, g
+from unyt import mh, cm, Gyr, g, Msun
 from matplotlib.colors import LogNorm
 
 
@@ -138,18 +138,18 @@ def get_data(masslim=1e8, load=False):
     return stellar_bd_dict, stellar_met_dict
 
 
-stellar_met_dict, stellar_bd_dict = get_data(masslim=10**9.5, load=False)
+stellar_met_dict, stellar_bd_dict = get_data(masslim=10**9.5, load=load)
 
 stellar_met = np.concatenate(list(stellar_met_dict.values()))
 stellar_bd = np.concatenate(list(stellar_bd_dict.values()))
-
+print(stellar_met, stellar_bd)
 # plt.style.use("mnras.mplstyle")
 
 # EAGLE parameters
 parameters = {"f_E,min": 0.3,
               "f_E,max": 3,
-              "n_Z": 0.87,
-              "n_n": 0.87,
+              "n_Z": 1.0,
+              "n_n": 1.0,
               "Z_pivot": 0.1 * 0.012,
               "n_pivot": 0.67}
 
@@ -181,16 +181,16 @@ fig, ax = plt.subplots()
 
 ax.loglog()
 
-mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, norm=LogNorm(1e-2, 1e1))
+mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, norm=LogNorm(1e-1, 1e1))
 
 fig.colorbar(mappable, label="Feedback energy fraction $f_E$", pad=0)
 
 metal_mass_fractions = stellar_met
 
-H, _, _ = np.histogram2d((stellar_bd * g / cm**3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
+H, _, _ = np.histogram2d((stellar_bd * Msun / cm**3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
                          bins=[birth_density_bins, metal_mass_fraction_bins])
 
-ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="Pastel1")
+ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="viridis")
 
 # Add line showing SF law
 sf_threshold_density = star_formation_parameters["threshold_n0"] * \
@@ -199,7 +199,7 @@ sf_threshold_density = star_formation_parameters["threshold_n0"] * \
 ax.plot(sf_threshold_density, metal_mass_fraction_bins, linestyle="dashed", label="SF threshold")
 
 legend = ax.legend(markerfirst=True, loc="lower left")
-plt.setp(legend.get_texts(), color="white")
+plt.setp(legend.get_texts())
 
 ax.set_xlabel("Stellar Birth Density [$n_H$ cm$^{-3}$]")
 ax.set_ylabel("Smoothed Metal Mass Fraction $Z$ []")
