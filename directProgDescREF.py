@@ -471,7 +471,8 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     preprog_sub_ids = data[4]
     predesc_gal_ms = data[5]
     predesc_sub_ids = data[6]
-
+    print(part_ids)
+    print(predesc_sub_ids)
     # If no part IDs exist exit
     if len(part_ids) == 0:
         return {}, {}, {}
@@ -480,7 +481,9 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
     # Get particle IDs for each halo in the current snapshot
     halo_id_part_inds, sinds, unsort_part_ids = get_current_part_IDs(path, snap, part_type, part_ids)
-
+    print(len(halo_id_part_inds))
+    print(sinds)
+    print(unsort_part_ids)
     # =============== Progenitor Snapshot ===============
 
     # Only look for descendant data if there is a descendant snapshot
@@ -503,7 +506,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         prog_sub_ids = np.array([], copy=False)
         prog_gal_ms = np.array([], copy=False)
         internal_to_sim_haloID_prog = {}
-
+    print(prog_snap_haloIDs)
     # =============== Descendant Snapshot ===============
 
     # Only look for descendant data if there is a descendant snapshot
@@ -526,7 +529,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         desc_sub_ids = np.array([], copy=False)
         desc_gal_ms = np.array([], copy=False)
         internal_to_sim_haloID_desc = {}
-        
+    print(desc_snap_haloIDs)
     # Clean up arrays that are no longer needed
     del sinds, unsort_part_ids, part_ids
     gc.collect()
@@ -561,9 +564,6 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/'):
 
-    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType1/SubLength',
-                              numThreads=8)
-
     # Get the direct progenitors and descendents for the dark matter halos
     results_dm, internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm = partDirectProgDesc(snap, prog_snap,
                                                                                                     desc_snap, path,
@@ -583,7 +583,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
          ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[haloID]
         print(nprog, ndesc)
-        if nprog < 1 and ndesc < 1:
+        if nprog < 1 and ndesc < 1 or len(current_halo_pids) < 20:
             continue
 
         sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
