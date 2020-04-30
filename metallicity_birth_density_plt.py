@@ -102,7 +102,7 @@ def get_data(masslim=1e8, load=False):
                 gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                       noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
                 gal_bd = E.read_array('PARTDATA', path, snap, 'PartType4/BirthDensity', noH=True,
-                                        physicalUnits=True, numThreads=8)[:, 4]
+                                        physicalUnits=True, numThreads=8)
                 gal_met = E.read_array('PARTDATA', path, snap, 'PartType4/Metallicity', noH=True,
                                        physicalUnits=True, numThreads=8)
             except ValueError:
