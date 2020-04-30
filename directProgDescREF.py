@@ -148,17 +148,13 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
     try:
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber',
                                numThreads=8)
-    except ValueError:
-        grp_ids = np.array([])
-    try:
         subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber',
                                   numThreads=8)
-    except ValueError:
-        subgrp_ids = np.array([])
-    try:
         direct_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                      numThreads=8)
     except ValueError:
+        grp_ids = np.array([])
+        subgrp_ids = np.array([])
         direct_part_ids = np.array([])
 
     # Remove particles not associated to a subgroup
@@ -174,10 +170,8 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         direct_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
     sorted_index = np.searchsorted(part_ids, direct_part_ids)
-
     yindex = np.take(sinds, sorted_index, mode="clip")
     mask = unsort_part_ids[yindex] != direct_part_ids
-
     result = np.ma.array(yindex, mask=mask)
 
     part_groups = direct_halo_ids[np.logical_not(result.mask)]
@@ -200,11 +194,8 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         direct_sub_ids = []
         direct_gal_ms = []
         for direct, m in zip(predirect_sub_ids, predirect_gal_ms):
-            try:
-                direct_sub_ids.append(sim_to_internal_haloID_direct[direct])
-                direct_gal_ms.append(m)
-            except KeyError:
-                continue
+            direct_sub_ids.append(sim_to_internal_haloID_direct[direct])
+            direct_gal_ms.append(m)
 
         direct_sub_ids = np.array(direct_sub_ids)
         direct_gal_ms = np.array(direct_gal_ms)
@@ -471,8 +462,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     preprog_sub_ids = data[4]
     predesc_gal_ms = data[5]
     predesc_sub_ids = data[6]
-    print(part_ids)
-    print(predesc_sub_ids)
+
     # If no part IDs exist exit
     if len(part_ids) == 0:
         return {}, {}, {}
@@ -481,9 +471,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
     # Get particle IDs for each halo in the current snapshot
     halo_id_part_inds, sinds, unsort_part_ids = get_current_part_IDs(path, snap, part_type, part_ids)
-    print(len(halo_id_part_inds))
-    print(sinds)
-    print(unsort_part_ids)
+
     # =============== Progenitor Snapshot ===============
 
     # Only look for descendant data if there is a descendant snapshot
@@ -507,6 +495,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         prog_gal_ms = np.array([], copy=False)
         internal_to_sim_haloID_prog = {}
     print(prog_snap_haloIDs)
+    print(prog_counts)
     # =============== Descendant Snapshot ===============
 
     # Only look for descendant data if there is a descendant snapshot
