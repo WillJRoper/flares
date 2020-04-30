@@ -575,6 +575,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     dmprogs = {}
     dmdescs = {}
 
+    print(results_dm.keys())
+
     # Loop over dark matter results writing them out
     for num, haloID in enumerate(results_dm):
 
