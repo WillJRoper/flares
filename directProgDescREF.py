@@ -156,7 +156,7 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         grp_ids = np.array([])
         subgrp_ids = np.array([])
         direct_part_ids = np.array([])
-
+    print(np.unique(grp_ids))
     # Remove particles not associated to a subgroup
     okinds = np.logical_and(subgrp_ids != 1073741824, grp_ids >= 0)
     direct_part_ids = direct_part_ids[okinds]
@@ -164,7 +164,7 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
     subgrp_ids = subgrp_ids[okinds]
     if part_type != 1:
         predirectpart_masses = predirectpart_masses[okinds]
-
+    print(np.unique(grp_ids))
     direct_halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         direct_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
@@ -204,11 +204,13 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         direct_gal_ms = np.array(direct_gal_ms)
 
     else:
+        print("part type is 1")
         direct_gal_ms = np.array([], copy=False)
         direct_sub_ids = np.array([], copy=False)
+        directpart_masses = np.array([], copy=False)
         direct_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
-        directpart_masses = np.full(len(part_ids), -2, dtype=float)
         for ind, direct in zip(parts_in_groups, part_groups):
+            print(ind, direct)
             direct_snap_haloIDs[ind] = sim_to_internal_haloID_direct[direct]
 
     # Get all the unique halo IDs in this snapshot and the number of times they appear
@@ -482,6 +484,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
         id_data = get_direct_IDs(path, prog_snap, sinds, unsort_part_ids, part_ids, part_type, preprogpart_masses,
                                  preprog_sub_ids, preprog_gal_ms)
+        print(id_data)
         prog_snap_haloIDs = id_data[0]
         prog_counts = id_data[1]
         progpart_masses = id_data[2]
@@ -521,7 +524,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         desc_sub_ids = np.array([], copy=False)
         desc_gal_ms = np.array([], copy=False)
         internal_to_sim_haloID_desc = {}
-    print(desc_snap_haloIDs)
+    print(np.unique(desc_snap_haloIDs))
     # Clean up arrays that are no longer needed
     del sinds, unsort_part_ids, part_ids
     gc.collect()
