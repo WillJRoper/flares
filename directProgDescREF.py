@@ -194,8 +194,11 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         direct_sub_ids = []
         direct_gal_ms = []
         for direct, m in zip(predirect_sub_ids, predirect_gal_ms):
-            direct_sub_ids.append(sim_to_internal_haloID_direct[direct])
-            direct_gal_ms.append(m)
+            try:
+                direct_sub_ids.append(sim_to_internal_haloID_direct[direct])
+                direct_gal_ms.append(m)
+            except KeyError:
+                continue
 
         direct_sub_ids = np.array(direct_sub_ids)
         direct_gal_ms = np.array(direct_gal_ms)
@@ -494,7 +497,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         prog_sub_ids = np.array([], copy=False)
         prog_gal_ms = np.array([], copy=False)
         internal_to_sim_haloID_prog = {}
-    print(prog_snap_haloIDs)
+    print(np.unique(prog_snap_haloIDs))
     print(prog_counts)
     # =============== Descendant Snapshot ===============
 
