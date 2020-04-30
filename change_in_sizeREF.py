@@ -4,6 +4,7 @@ ml.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+import matplotlib.gridspec as gridspec
 import eagle_IO.eagle_IO as E
 import h5py
 import sys
