@@ -88,8 +88,6 @@ def get_data(masslim=1e8, load=False):
 
         for snap, prog_snap in zip(snaps, prog_snaps):
 
-            savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/REF/'
-
             path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
 
             # Get particle IDs

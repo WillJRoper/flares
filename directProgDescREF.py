@@ -19,6 +19,7 @@ def get_current_part_IDs(path, snap, part_type, part_ids):
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
         subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
     except ValueError:
+        print("There were no particle IDs in", path, snap)
         group_part_ids = np.array([])
         grp_ids = np.array([])
         subgrp_ids = np.array([])
@@ -559,6 +560,9 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
 
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/'):
+
+    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType1/SubLength',
+                              numThreads=8)
 
     # Get the direct progenitors and descendents for the dark matter halos
     results_dm, internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm = partDirectProgDesc(snap, prog_snap,
