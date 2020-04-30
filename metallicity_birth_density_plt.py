@@ -9,7 +9,7 @@ import numpy as np
 import pickle
 import eagle_IO.eagle_IO as E
 
-from unyt import mh, cm, Gyr, g, Msun
+from unyt import mh, cm, Gyr, g, Msun, Mpc
 from matplotlib.colors import LogNorm
 
 
@@ -187,7 +187,7 @@ fig.colorbar(mappable, label="Feedback energy fraction $f_E$", pad=0)
 
 metal_mass_fractions = stellar_met
 
-H, _, _ = np.histogram2d((stellar_bd * Msun / cm**3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
+H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc**3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
                          bins=[birth_density_bins, metal_mass_fraction_bins])
 
 ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="viridis")
