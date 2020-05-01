@@ -330,7 +330,7 @@ plt.setp(legend.get_texts())
 try:
     fontsize = legend.get_texts()[0].get_fontsize()
 except:
-    fontsize=6
+    fontsize = 6
 
 
 ax9.text(0.975, 0.025, "\n".join([f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" for k, v in parameters.items()]),

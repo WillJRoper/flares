@@ -164,7 +164,7 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
     subgrp_ids = subgrp_ids[okinds]
 
     if part_type == 1:
-        print("in direct read ins")
+        print("in direct read ins", snap)
         print(direct_part_ids.shape)
         print(grp_ids.shape)
         print(subgrp_ids.shape)
@@ -493,6 +493,8 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     if len(part_ids) == 0:
         return {}, {}, {}
 
+    pre_part_ids = np.copy(part_ids)
+
     # =============== Current Snapshot ===============
 
     # Get particle IDs for each halo in the current snapshot
@@ -500,7 +502,8 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     if part_type == 1:
         print(unsort_part_ids.shape)
         print(part_ids.shape)
-        print(halo_id_part_inds)
+        print(len(halo_id_part_inds))
+        print(part_ids == pre_part_ids)
     # =============== Progenitor Snapshot ===============
 
     # Only look for descendant data if there is a descendant snapshot
