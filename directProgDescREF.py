@@ -189,8 +189,10 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         print(sinds.shape)
         print(part_ids.shape)
         print(unsort_part_ids.shape)
-        print(part_ids)
-        print(direct_part_ids)
+        trues = []
+        for p in direct_part_ids:
+            trues.append(p in part_ids)
+        print("partdata part ids in snap part ids", np.unique(trues))
 
     sorted_index = np.searchsorted(part_ids, direct_part_ids)
     yindex = np.take(sinds, sorted_index, mode="clip")
