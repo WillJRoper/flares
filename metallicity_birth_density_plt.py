@@ -142,7 +142,7 @@ stellar_met_dict, stellar_bd_dict = get_data(masslim=10**9.5, load=True)
 
 stellar_met = np.concatenate(list(stellar_met_dict.values()))
 stellar_bd = np.concatenate(list(stellar_bd_dict.values()))
-print(stellar_met, stellar_bd)
+print(stellar_met, (stellar_bd  * Msun / Mpc**3 / mh).to(1 / cm ** 3).value)
 # plt.style.use("mnras.mplstyle")
 
 # EAGLE parameters
