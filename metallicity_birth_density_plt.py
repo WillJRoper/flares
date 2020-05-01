@@ -179,8 +179,6 @@ f_E_grid = parameters["f_E,min"] + (parameters["f_E,max"] - parameters["f_E,min"
     * (birth_density_grid / parameters["n_pivot"]) ** (-parameters["n_n"])
 )
 
-Begin plotting
-
 fig, ax = plt.subplots()
 
 ax.loglog()
