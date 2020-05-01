@@ -179,69 +179,69 @@ f_E_grid = parameters["f_E,min"] + (parameters["f_E,max"] - parameters["f_E,min"
     * (birth_density_grid / parameters["n_pivot"]) ** (-parameters["n_n"])
 )
 
-# Begin plotting
+Begin plotting
 
-# fig, ax = plt.subplots()
-#
-# ax.loglog()
-#
-# mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, norm=LogNorm(1e-1, 1e1))
-#
-# fig.colorbar(mappable, label="Feedback energy fraction $f_E$", pad=0)
-#
-# metal_mass_fractions = stellar_met
-# stellar_bd = stellar_bd
-#
-# H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc**3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
-#                          bins=[birth_density_bins, metal_mass_fraction_bins])
-#
-# ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="viridis")
-#
-# # Add line showing SF law
-# sf_threshold_density = star_formation_parameters["threshold_n0"] * \
-#                        (metal_mass_fraction_bins
-#                         / star_formation_parameters["threshold_Z0"]) ** (star_formation_parameters["slope"])
-# ax.plot(sf_threshold_density, metal_mass_fraction_bins, linestyle="dashed", label="SF threshold")
-#
-# legend = ax.legend(markerfirst=True, loc="lower left")
-# plt.setp(legend.get_texts())
-#
-# ax.set_xlabel("Stellar Birth Density [$n_H$ cm$^{-3}$]")
-# ax.set_ylabel("Smoothed Metal Mass Fraction $Z$")
-#
-# try:
-#     fontsize=legend.get_texts()[0].get_fontsize()
-# except:
-#     fontsize=6
-#
-#
-# ax.text(
-#     0.975,
-#     0.025,
-#     "\n".join(
-#         [f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" for k, v in parameters.items()]
-#     ),
-#     color="white",
-#     transform=ax.transAxes,
-#     ha="right",
-#     va="bottom",
-#     fontsize=fontsize,
-# )
-#
-# ax.text(
-#     0.975,
-#     0.975,
-#     "Contour lines linearly spaced",
-#     color="white",
-#     transform=ax.transAxes,
-#     ha="right",
-#     va="top",
-#     fontsize=fontsize,
-# )
-#
-# fig.savefig(f"plots/birth_density_metallicity.png")
-#
-# plt.close()
+fig, ax = plt.subplots()
+
+ax.loglog()
+
+mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, norm=LogNorm(1e-1, 1e1))
+
+fig.colorbar(mappable, label="Feedback energy fraction $f_E$", pad=0)
+
+metal_mass_fractions = stellar_met
+stellar_bd = stellar_bd
+
+H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc**3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
+                         bins=[birth_density_bins, metal_mass_fraction_bins])
+
+ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
+
+# Add line showing SF law
+sf_threshold_density = star_formation_parameters["threshold_n0"] * \
+                       (metal_mass_fraction_bins
+                        / star_formation_parameters["threshold_Z0"]) ** (star_formation_parameters["slope"])
+ax.plot(sf_threshold_density, metal_mass_fraction_bins, linestyle="dashed", label="SF threshold")
+
+legend = ax.legend(markerfirst=True, loc="lower left")
+plt.setp(legend.get_texts())
+
+ax.set_xlabel("Stellar Birth Density [$n_H$ cm$^{-3}$]")
+ax.set_ylabel("Smoothed Metal Mass Fraction $Z$")
+
+try:
+    fontsize=legend.get_texts()[0].get_fontsize()
+except:
+    fontsize=6
+
+
+ax.text(
+    0.975,
+    0.025,
+    "\n".join(
+        [f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" for k, v in parameters.items()]
+    ),
+    color="white",
+    transform=ax.transAxes,
+    ha="right",
+    va="bottom",
+    fontsize=fontsize,
+)
+
+ax.text(
+    0.975,
+    0.975,
+    "Contour lines linearly spaced",
+    color="white",
+    transform=ax.transAxes,
+    ha="right",
+    va="top",
+    fontsize=fontsize,
+)
+
+fig.savefig(f"plots/birth_density_metallicity.png")
+
+plt.close()
 
 axlims_x = []
 axlims_y = []
@@ -277,13 +277,13 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         cax1 = ax.inset_axes([0.05, 0.95, 0.3, 0.03])
         cbar1 = fig.colorbar(mappable, cax=cax1, orientation="horizontal", label="Feedback energy fraction $f_E$")
 
-    metal_mass_fractions = np.concatenate(list(stellar_met_dict[snap].values()))
-    stellar_bd = np.concatenate(list(stellar_bd_dict[snap].values())) * 10**10
+    metal_mass_fractions = np.array(stellar_met_dict[snap])
+    stellar_bd = np.array(stellar_bd_dict[snap]) * 10**10
 
     H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
                              bins=[birth_density_bins, metal_mass_fraction_bins])
 
-    ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="viridis")
+    ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
 
     # Add line showing SF law
     sf_threshold_density = star_formation_parameters["threshold_n0"] * \
