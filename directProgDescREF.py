@@ -69,8 +69,6 @@ def get_part_halo_data(path, snap, prog_snap, desc_snap, part_type):
     if part_type == 1:
         part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
 
-        print("percentile", np.percentile(part_ids, 16))
-
         preprogpart_masses = np.array([])
         predescpart_masses = np.array([])
         preprog_gal_ms = np.array([])
@@ -147,11 +145,6 @@ def get_part_halo_data(path, snap, prog_snap, desc_snap, part_type):
         # Combine the particle id arrays and only take unique values
         part_ids = np.unique(np.concatenate([snap_part_ids, progsnap_part_ids, descsnap_part_ids]))
 
-    # DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    okinds = part_ids < 1407374870714
-    part_ids = part_ids[okinds]
-    # DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-
     return (part_ids, preprogpart_masses, predescpart_masses, preprog_gal_ms, preprog_sub_ids,
             predesc_gal_ms, predesc_sub_ids)
 
@@ -165,18 +158,11 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber',
                                   numThreads=8)
         direct_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                     numThreads=8)
+                                       numThreads=8)
     except ValueError:
         grp_ids = np.array([])
         subgrp_ids = np.array([])
         direct_part_ids = np.array([])
-
-    # DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    okinds = direct_part_ids < 1407374870714
-    direct_part_ids = direct_part_ids[okinds]
-    grp_ids = grp_ids[okinds]
-    subgrp_ids = subgrp_ids[okinds]
-    # DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
 
     # Remove particles not associated to a subgroup
     okinds = subgrp_ids != 1073741824
@@ -203,6 +189,8 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         print(sinds.shape)
         print(part_ids.shape)
         print(unsort_part_ids.shape)
+        print(part_ids)
+        print(direct_part_ids)
 
     sorted_index = np.searchsorted(part_ids, direct_part_ids)
     yindex = np.take(sinds, sorted_index, mode="clip")
