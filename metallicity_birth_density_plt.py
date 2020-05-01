@@ -138,9 +138,9 @@ def get_data(masslim=1e8, load=False):
     return stellar_bd_dict, stellar_met_dict
 
 
-snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
-         '013_z002p478', '017_z001p487', '018_z001p259',
-         '019_z001p004', '020_z000p865', '024_z000p366']
+snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000',
+         '009_z006p000', '010_z005p000', '011_z004p770']
 
 stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=True)
 
@@ -165,8 +165,8 @@ star_formation_parameters = {"threshold_Z0": 0.002,
 number_of_bins = 128
 
 # Constants; these could be put in the parameter file but are rarely changed.
-birth_density_bins = np.logspace(-3, 6, number_of_bins)
-metal_mass_fraction_bins = np.logspace(-8, 0, number_of_bins)
+birth_density_bins = np.logspace(-3, 6.8, number_of_bins)
+metal_mass_fraction_bins = np.logspace(-5.9, 0, number_of_bins)
 
 # Now need to make background grid of f_E.
 birth_density_grid, metal_mass_fraction_grid = np.meshgrid(
@@ -179,67 +179,67 @@ f_E_grid = parameters["f_E,min"] + (parameters["f_E,max"] - parameters["f_E,min"
     * (birth_density_grid / parameters["n_pivot"]) ** (-parameters["n_n"])
 )
 
-fig, ax = plt.subplots()
-
-ax.loglog()
-
-mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, norm=LogNorm(1e-1, 1e1))
-
-fig.colorbar(mappable, label="Feedback energy fraction $f_E$", pad=0)
-
-metal_mass_fractions = stellar_met
-stellar_bd = stellar_bd
-
-H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc**3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
-                         bins=[birth_density_bins, metal_mass_fraction_bins])
-
-ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
-
-# Add line showing SF law
-sf_threshold_density = star_formation_parameters["threshold_n0"] * \
-                       (metal_mass_fraction_bins
-                        / star_formation_parameters["threshold_Z0"]) ** (star_formation_parameters["slope"])
-ax.plot(sf_threshold_density, metal_mass_fraction_bins, linestyle="dashed", label="SF threshold")
-
-legend = ax.legend(markerfirst=True, loc="lower left")
-plt.setp(legend.get_texts())
-
-ax.set_xlabel("Stellar Birth Density [$n_H$ cm$^{-3}$]")
-ax.set_ylabel("Smoothed Metal Mass Fraction $Z$")
-
-try:
-    fontsize=legend.get_texts()[0].get_fontsize()
-except:
-    fontsize=6
-
-
-ax.text(
-    0.975,
-    0.025,
-    "\n".join(
-        [f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" for k, v in parameters.items()]
-    ),
-    color="white",
-    transform=ax.transAxes,
-    ha="right",
-    va="bottom",
-    fontsize=fontsize,
-)
-
-ax.text(
-    0.975,
-    0.975,
-    "Contour lines linearly spaced",
-    color="white",
-    transform=ax.transAxes,
-    ha="right",
-    va="top",
-    fontsize=fontsize,
-)
-
-fig.savefig(f"plots/birth_density_metallicity.png")
-
-plt.close()
+# fig, ax = plt.subplots()
+#
+# ax.loglog()
+#
+# mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, norm=LogNorm(1e-1, 1e1))
+#
+# fig.colorbar(mappable, label="Feedback energy fraction $f_{th}$", pad=0)
+#
+# metal_mass_fractions = stellar_met
+# stellar_bd = stellar_bd
+#
+# H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc**3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
+#                          bins=[birth_density_bins, metal_mass_fraction_bins])
+#
+# ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
+#
+# # Add line showing SF law
+# sf_threshold_density = star_formation_parameters["threshold_n0"] * \
+#                        (metal_mass_fraction_bins
+#                         / star_formation_parameters["threshold_Z0"]) ** (star_formation_parameters["slope"])
+# ax.plot(sf_threshold_density, metal_mass_fraction_bins, linestyle="dashed", label="SF threshold")
+#
+# legend = ax.legend(markerfirst=True, loc="lower left")
+# plt.setp(legend.get_texts())
+#
+# ax.set_xlabel("Stellar Birth Density [$n_H$ cm$^{-3}$]")
+# ax.set_ylabel("Smoothed Metal Mass Fraction $Z$")
+#
+# try:
+#     fontsize=legend.get_texts()[0].get_fontsize()
+# except:
+#     fontsize=6
+#
+#
+# ax.text(
+#     0.975,
+#     0.025,
+#     "\n".join(
+#         [f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" for k, v in parameters.items()]
+#     ),
+#     color="white",
+#     transform=ax.transAxes,
+#     ha="right",
+#     va="bottom",
+#     fontsize=fontsize,
+# )
+#
+# ax.text(
+#     0.975,
+#     0.975,
+#     "Contour lines linearly spaced",
+#     color="white",
+#     transform=ax.transAxes,
+#     ha="right",
+#     va="top",
+#     fontsize=fontsize,
+# )
+#
+# fig.savefig(f"plots/birth_density_metallicity.png")
+#
+# plt.close()
 
 axlims_x = []
 axlims_y = []
@@ -272,8 +272,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     if i == 0 and j == 0:
         # Add colorbars
-        cax1 = ax.inset_axes([0.05, 0.95, 0.3, 0.03])
-        cbar1 = fig.colorbar(mappable, cax=cax1, orientation="horizontal", label="Feedback energy fraction $f_E$")
+        cax1 = ax.inset_axes([0.1, 0.1, 0.3, 0.03])
+        cbar1 = fig.colorbar(mappable, cax=cax1, orientation="horizontal")
+        cbar1.ax.set_xlabel(r'$f_{th}$', labelpad=1.5, fontsize=9, color='w')
+        cbar1.ax.xaxis.set_label_position('top')
+        cbar1.ax.tick_params(axis='x', labelsize=8, color='w')
 
     metal_mass_fractions = np.array(stellar_met_dict[snap])
     stellar_bd = np.array(stellar_bd_dict[snap]) * 10**10
@@ -289,7 +292,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
                             / star_formation_parameters["threshold_Z0"]) ** (star_formation_parameters["slope"])
     ax.plot(sf_threshold_density, metal_mass_fraction_bins, linestyle="dashed", label="SF threshold")
 
-    ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+    ax.text(0.1, 0.95, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
     axlims_x.extend(ax.get_xlim())
@@ -321,7 +324,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-legend = ax7.legend(markerfirst=True, loc="lower left")
+legend = ax7.legend(markerfirst=True, loc="lower left", fontsize=8)
 plt.setp(legend.get_texts())
 
 try:

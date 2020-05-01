@@ -167,7 +167,7 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         print("in direct read ins")
         print(direct_part_ids.shape)
         print(grp_ids.shape)
-        print(subgrp_ids)
+        print(subgrp_ids.shape)
 
     if part_type != 1:
         predirectpart_masses = predirectpart_masses[okinds]
