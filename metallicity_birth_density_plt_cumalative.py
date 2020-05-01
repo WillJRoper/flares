@@ -78,13 +78,10 @@ def get_data(masslim=1e8, load=False):
     snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
              '006_z009p000', '007_z008p000', '008_z007p000',
              '009_z006p000', '010_z005p000', '011_z004p770']
-    prog_snaps = ['002_z013p000', '003_z012p000', '004_z011p000',
-                  '005_z010p000', '006_z009p000', '007_z008p000',
-                  '008_z007p000', '009_z006p000', '010_z005p000']
 
     if load:
 
-        with open('metvsbd.pck', 'rb') as pfile1:
+        with open('metvsbd_cumalative.pck', 'rb') as pfile1:
             save_dict = pickle.load(pfile1)
         stellar_met_dict = save_dict['met']
         stellar_bd_dict = save_dict['bd']
@@ -101,7 +98,7 @@ def get_data(masslim=1e8, load=False):
 
         for reg in regions:
 
-            for snap, prog_snap in zip(snaps, prog_snaps):
+            for snap in snaps:
 
                 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
@@ -118,8 +115,6 @@ def get_data(masslim=1e8, load=False):
                                             physicalUnits=True, numThreads=8)
                     gal_met = E.read_array('PARTDATA', path, snap, 'PartType4/Metallicity', noH=True,
                                            physicalUnits=True, numThreads=8)
-                    gal_aborn = E.read_array('PARTDATA', path, snap, 'PartType4/Metallicity', noH=True,
-                                             physicalUnits=True, numThreads=8)
                 except ValueError:
                     continue
                 except OSError:
@@ -129,8 +124,6 @@ def get_data(masslim=1e8, load=False):
 
                 z_str = snap.split('z')[1].split('p')
                 z = float(z_str[0] + '.' + z_str[1])
-                z_str = prog_snap.split('z')[1].split('p')
-                prog_z = float(z_str[0] + '.' + z_str[1])
 
                 # Remove particles not associated to a subgroup
                 okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > masslim)
@@ -145,17 +138,13 @@ def get_data(masslim=1e8, load=False):
                 for halo in halo_ids:
 
                     # Add stars from these galaxies
-                    part_inds = list(halo_part_inds[halo])
-                    parts_bd = gal_bd[part_inds]
-                    parts_met = gal_met[part_inds]
-                    parts_aborn = gal_aborn[part_inds]
-                    stellar_bd.extend(parts_bd[(1 / parts_aborn) - 1 < prog_z])
-                    stellar_met.extend(parts_met[(1 / parts_aborn) - 1 < prog_z])
+                    stellar_bd.extend(gal_bd[list(halo_part_inds[halo])])
+                    stellar_met.extend(gal_met[list(halo_part_inds[halo])])
 
                 stellar_bd_dict[snap][reg] = stellar_bd
                 stellar_met_dict[snap][reg] = stellar_met
 
-        with open('metvsbd.pck', 'wb') as pfile1:
+        with open('metvsbd_cumalative.pck', 'wb') as pfile1:
             pickle.dump({'bd': stellar_bd_dict, 'met': stellar_met_dict}, pfile1)
 
     return stellar_bd_dict, stellar_met_dict
@@ -298,4 +287,4 @@ ax9.text(0.975, 0.025, "\n".join([f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" f
 ax3.text(0.975, 0.975, "Contour lines linearly spaced", color="k", transform=ax3.transAxes, ha="right", va="top",
          fontsize=fontsize)
 
-fig.savefig('plots/birthdensity_metallicity_redshift.png', bbox_inches='tight')
+fig.savefig('plots/birthdensity_metallicity_cumalative_redshift.png', bbox_inches='tight')
