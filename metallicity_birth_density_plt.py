@@ -277,8 +277,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         cax1 = ax.inset_axes([0.05, 0.95, 0.3, 0.03])
         cbar1 = fig.colorbar(mappable, cax=cax1, orientation="horizontal", label="Feedback energy fraction $f_E$")
 
-    metal_mass_fractions = stellar_met_dict[snap]
-    stellar_bd = stellar_bd_dict[snap] * 10**10
+    metal_mass_fractions = np.concatenate(list(stellar_met_dict[snap].values()))
+    stellar_bd = np.concatenate(list(stellar_bd_dict[snap].values())) * 10**10
 
     H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
                              bins=[birth_density_bins, metal_mass_fraction_bins])
