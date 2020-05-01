@@ -62,6 +62,8 @@ def get_part_halo_data(path, snap, prog_snap, desc_snap, part_type):
     if part_type == 1:
         part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
 
+        print("percentile", np.percentile(part_ids, 16))
+
         preprogpart_masses = np.array([])
         predescpart_masses = np.array([])
         preprog_gal_ms = np.array([])
