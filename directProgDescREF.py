@@ -25,7 +25,7 @@ def get_current_part_IDs(path, snap, part_type, part_ids):
         subgrp_ids = np.array([])
 
     # Remove particles not associated to a subgroup
-    okinds = np.logical_and(subgrp_ids != 1073741824, grp_ids >= 0)
+    okinds = subgrp_ids != 1073741824
     group_part_ids = group_part_ids[okinds]
     grp_ids = grp_ids[okinds]
     subgrp_ids = subgrp_ids[okinds]
@@ -35,7 +35,7 @@ def get_current_part_IDs(path, snap, part_type, part_ids):
 
     # Sort particle IDS
     part_ids = np.sort(part_ids)
-    unsort_part_ids = part_ids[:]
+    unsort_part_ids = np.copy(part_ids)
     sinds = np.argsort(part_ids)
     part_ids = part_ids[sinds]
 
@@ -156,18 +156,32 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         grp_ids = np.array([])
         subgrp_ids = np.array([])
         direct_part_ids = np.array([])
-    print(np.unique(grp_ids))
+
     # Remove particles not associated to a subgroup
-    okinds = np.logical_and(subgrp_ids != 1073741824, grp_ids >= 0)
+    okinds = subgrp_ids != 1073741824
     direct_part_ids = direct_part_ids[okinds]
     grp_ids = grp_ids[okinds]
     subgrp_ids = subgrp_ids[okinds]
+
+    if part_type == 1:
+        print("in direct read ins")
+        print(direct_part_ids.shape)
+        print(grp_ids.shape)
+        print(subgrp_ids)
+
     if part_type != 1:
         predirectpart_masses = predirectpart_masses[okinds]
-    print(np.unique(grp_ids))
+
     direct_halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         direct_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+    if part_type == 1:
+        print("in direct pre particle matching")
+        print(direct_halo_ids.shape)
+        print(sinds.shape)
+        print(part_ids.shape)
+        print(unsort_part_ids.shape)
 
     sorted_index = np.searchsorted(part_ids, direct_part_ids)
     yindex = np.take(sinds, sorted_index, mode="clip")
@@ -183,6 +197,12 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
     for i, p in enumerate(np.unique(part_groups)):
         internal_to_sim_haloID_direct[i] = p
         sim_to_internal_haloID_direct[p] = i
+
+    if part_type == 1:
+        print("post matching")
+        print(part_groups.shape)
+        print(parts_in_groups.shape)
+        print(len(sim_to_internal_haloID_direct))
 
     if part_type != 1:
         direct_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
@@ -467,7 +487,8 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     preprog_sub_ids = data[4]
     predesc_gal_ms = data[5]
     predesc_sub_ids = data[6]
-
+    if part_type == 1:
+        print(part_ids.shape)
     # If no part IDs exist exit
     if len(part_ids) == 0:
         return {}, {}, {}
@@ -476,7 +497,10 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
     # Get particle IDs for each halo in the current snapshot
     halo_id_part_inds, sinds, unsort_part_ids = get_current_part_IDs(path, snap, part_type, part_ids)
-
+    if part_type == 1:
+        print(unsort_part_ids.shape)
+        print(part_ids.shape)
+        print(halo_id_part_inds)
     # =============== Progenitor Snapshot ===============
 
     # Only look for descendant data if there is a descendant snapshot
@@ -484,7 +508,6 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
         id_data = get_direct_IDs(path, prog_snap, sinds, unsort_part_ids, part_ids, part_type, preprogpart_masses,
                                  preprog_sub_ids, preprog_gal_ms)
-        print(id_data)
         prog_snap_haloIDs = id_data[0]
         prog_counts = id_data[1]
         progpart_masses = id_data[2]
