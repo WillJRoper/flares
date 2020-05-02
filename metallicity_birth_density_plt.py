@@ -118,7 +118,7 @@ def get_data(masslim=1e8, load=False):
                                             physicalUnits=True, numThreads=8)
                     gal_met = E.read_array('PARTDATA', path, snap, 'PartType4/Metallicity', noH=True,
                                            physicalUnits=True, numThreads=8)
-                    gal_aborn = E.read_array('PARTDATA', path, snap, 'PartType4/Metallicity', noH=True,
+                    gal_aborn = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
                                              physicalUnits=True, numThreads=8)
                 except ValueError:
                     continue
@@ -165,7 +165,7 @@ snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000',
          '009_z006p000', '010_z005p000', '011_z004p770']
 
-stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=True)
+stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=False)
 
 # plt.style.use("mnras.mplstyle")
 
@@ -240,20 +240,20 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     metal_mass_fractions = np.concatenate(list(stellar_met_dict[snap].values()))
     stellar_bd = (np.concatenate(list(stellar_bd_dict[snap].values()))
                   * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
-    okinds = np.logical_and(stellar_bd > 0, metal_mass_fractions > 0)
-    stellar_bd = stellar_bd[okinds]
-    metal_mass_fractions = metal_mass_fractions[okinds]
+    # okinds = np.logical_and(stellar_bd > 0, metal_mass_fractions > 0)
+    # stellar_bd = stellar_bd[okinds]
+    # metal_mass_fractions = metal_mass_fractions[okinds]
 
-    # H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
-    #                          bins=[birth_density_bins, metal_mass_fraction_bins])
-    #
-    # ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
+    H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
+                             bins=[birth_density_bins, metal_mass_fraction_bins])
 
-    if len(stellar_bd) > 0:
-        # plot_meidan_stat(xs_plt, fbs_plt, ax)
-        # ax.set_xscale('log')
-        cbar = ax.hexbin(stellar_bd, metal_mass_fractions, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                         norm=LogNorm(), linewidths=0.2, cmap='magma')
+    ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
+
+    # if len(stellar_bd) > 0:
+    #     # plot_meidan_stat(xs_plt, fbs_plt, ax)
+    #     # ax.set_xscale('log')
+    #     cbar = ax.hexbin(stellar_bd, metal_mass_fractions, gridsize=100, mincnt=1, xscale='log', yscale='log',
+    #                      norm=LogNorm(), linewidths=0.2, cmap='magma')
 
     # Add line showing SF law
     sf_threshold_density = star_formation_parameters["threshold_n0"] * \
@@ -305,7 +305,7 @@ except:
 ax9.text(0.975, 0.025, "\n".join([f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" for k, v in parameters.items()]),
          color="k", transform=ax9.transAxes, ha="right", va="bottom", fontsize=fontsize)
 
-ax3.text(0.975, 0.975, "Contour lines linearly spaced", color="k", transform=ax3.transAxes, ha="right", va="top",
+ax3.text(0.975, 0.975, "Contour lines \n linearly spaced", color="k", transform=ax3.transAxes, ha="right", va="top",
          fontsize=fontsize)
 
 fig.savefig('plots/birthdensity_metallicity_redshift.png', bbox_inches='tight')

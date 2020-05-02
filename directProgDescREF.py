@@ -184,19 +184,12 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         direct_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-    set_part_ids = set(part_ids)
-
     if part_type == 1:
         print("in direct pre particle matching")
         print(direct_halo_ids.shape)
         print(sinds.shape)
         print(part_ids.shape)
         print(unsort_part_ids.shape)
-        trues = []
-        for p in direct_part_ids:
-            if p not in set_part_ids:
-                print("somethings up", p)
-            trues.append(p in set_part_ids)
 
     sorted_index = np.searchsorted(part_ids, direct_part_ids)
     yindex = np.take(sinds, sorted_index, mode="clip")
