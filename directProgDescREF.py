@@ -245,7 +245,6 @@ def get_direct_IDs(path, snap, sinds, unsort_part_ids, part_ids, part_type, pred
         directpart_masses = np.array([], copy=False)
         direct_snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
         for ind, direct in zip(parts_in_groups, part_groups):
-            print(ind, direct)
             direct_snap_haloIDs[ind] = sim_to_internal_haloID_direct[direct]
 
     # Get all the unique halo IDs in this snapshot and the number of times they appear
