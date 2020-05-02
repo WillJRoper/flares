@@ -287,7 +287,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if len(stellar_bd) > 0:
         # plot_meidan_stat(xs_plt, fbs_plt, ax)
         # ax.set_xscale('log')
-        cbar = ax.hexbin(stellar_bd, stellar_met, gridsize=100, mincnt=1, xscale='log', yscale='log',
+        cbar = ax.hexbin(stellar_bd, metal_mass_fractions, gridsize=100, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='magma')
 
     # Add line showing SF law
