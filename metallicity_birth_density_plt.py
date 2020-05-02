@@ -1,7 +1,7 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 """
 Creates the plot of metallicity against birth density, with
-the background coloured by f_E.
+the background coloured by f_th.
 """
 
 import matplotlib.pyplot as plt
@@ -170,8 +170,8 @@ stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=True)
 # plt.style.use("mnras.mplstyle")
 
 # EAGLE parameters
-parameters = {"f_E,min": 0.3,
-              "f_E,max": 3,
+parameters = {"f_th,min": 0.3,
+              "f_th,max": 3,
               "n_Z": 1.0,
               "n_n": 1.0,
               "Z_pivot": 0.1 * 0.012,
@@ -188,12 +188,12 @@ number_of_bins = 128
 birth_density_bins = np.logspace(-3, 6.8, number_of_bins)
 metal_mass_fraction_bins = np.logspace(-5.9, 0, number_of_bins)
 
-# Now need to make background grid of f_E.
+# Now need to make background grid of f_th.
 birth_density_grid, metal_mass_fraction_grid = np.meshgrid(
     0.5 * (birth_density_bins[1:] + birth_density_bins[:-1]),
     0.5 * (metal_mass_fraction_bins[1:] + metal_mass_fraction_bins[:-1]))
 
-f_E_grid = parameters["f_E,min"] + (parameters["f_E,max"] - parameters["f_E,min"]) / (
+f_th_grid = parameters["f_th,min"] + (parameters["f_th,max"] - parameters["f_th,min"]) / (
     1.0
     + (metal_mass_fraction_grid / parameters["Z_pivot"]) ** parameters["n_Z"]
     * (birth_density_grid / parameters["n_pivot"]) ** (-parameters["n_n"])
@@ -226,7 +226,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     ax.loglog()
 
-    mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, norm=LogNorm(0.3, 3))
+    mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_th_grid, vmin=0.3, vmax=3)
 
     if i == 0 and j == 0:
 
@@ -240,6 +240,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     metal_mass_fractions = np.concatenate(list(stellar_met_dict[snap].values()))
     stellar_bd = (np.concatenate(list(stellar_bd_dict[snap].values()))
                   * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
+    okinds = np.logical_and(stellar_bd > 0, metal_mass_fractions > 0)
+    stellar_bd = stellar_bd[okinds]
+    metal_mass_fractions = metal_mass_fractions[okinds]
 
     # H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
     #                          bins=[birth_density_bins, metal_mass_fraction_bins])

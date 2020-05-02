@@ -265,7 +265,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     ax.loglog()
 
-    mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, norm=LogNorm(0.3, 3))
+    mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, vmin=0.3, vmax=3)
 
     if i == 0 and j == 0:
 
@@ -278,6 +278,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     metal_mass_fractions = np.array(stellar_met_dict[snap])
     stellar_bd = (np.array(stellar_bd_dict[snap]) * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
+    okinds = np.logical_and(stellar_bd > 0, metal_mass_fractions > 0)
+    stellar_bd = stellar_bd[okinds]
+    metal_mass_fractions = metal_mass_fractions[okinds]
 
     # H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
     #                          bins=[birth_density_bins, metal_mass_fraction_bins])
