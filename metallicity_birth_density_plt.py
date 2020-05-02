@@ -161,11 +161,11 @@ def get_data(masslim=1e8, load=False):
     return stellar_bd_dict, stellar_met_dict
 
 
-snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
-         '013_z002p478', '017_z001p487', '018_z001p259',
-         '019_z001p004', '020_z000p865', '024_z000p366']
+snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000',
+         '009_z006p000', '010_z005p000', '011_z004p770']
 
-stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=False)
+stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=True)
 
 # plt.style.use("mnras.mplstyle")
 
