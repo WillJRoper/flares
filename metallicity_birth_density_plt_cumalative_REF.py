@@ -149,8 +149,8 @@ stellar_bd = np.concatenate(list(stellar_bd_dict.values())) * 10**10
 # EAGLE parameters
 parameters = {"f_E,min": 0.3,
               "f_E,max": 3,
-              "n_Z": 0.87,
-              "n_n": 0.87,
+              "n_Z": 1.0,
+              "n_n": 1.0,
               "Z_pivot": 0.1 * 0.012,
               "n_pivot": 0.67}
 
@@ -265,7 +265,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     ax.loglog()
 
-    mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, norm=LogNorm(1e-1, 1e1))
+    mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_E_grid, norm=LogNorm(0.3, 3))
 
     if i == 0 and j == 0:
 
@@ -277,12 +277,18 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         cbar1.ax.tick_params(axis='x', labelsize=8)
 
     metal_mass_fractions = np.array(stellar_met_dict[snap])
-    stellar_bd = np.array(stellar_bd_dict[snap]) * 10**10
+    stellar_bd = (np.array(stellar_bd_dict[snap]) * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
 
-    H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
-                             bins=[birth_density_bins, metal_mass_fraction_bins])
+    # H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
+    #                          bins=[birth_density_bins, metal_mass_fraction_bins])
+    #
+    # ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
 
-    ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
+    if len(stellar_bd) > 0:
+        # plot_meidan_stat(xs_plt, fbs_plt, ax)
+        # ax.set_xscale('log')
+        cbar = ax.hexbin(stellar_bd, stellar_met, gridsize=100, mincnt=1, xscale='log', yscale='log',
+                         norm=LogNorm(), linewidths=0.2, cmap='magma')
 
     # Add line showing SF law
     sf_threshold_density = star_formation_parameters["threshold_n0"] * \
