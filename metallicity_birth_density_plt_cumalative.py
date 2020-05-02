@@ -226,8 +226,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         cbar1.ax.xaxis.set_label_position('top')
         cbar1.ax.tick_params(axis='x', labelsize=8)
 
-    metal_mass_fractions = np.array(stellar_met_dict[snap])
-    stellar_bd = (np.array(stellar_bd_dict[snap]) * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
+    metal_mass_fractions = np.concatenate(list(stellar_met_dict[snap].values()))
+    stellar_bd = (np.concatenate(list(stellar_bd_dict[snap].values()))
+                  * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
 
     # H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
     #                          bins=[birth_density_bins, metal_mass_fraction_bins])
