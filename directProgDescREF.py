@@ -24,13 +24,6 @@ def get_current_part_IDs(path, snap, part_type, part_ids):
         grp_ids = np.array([])
         subgrp_ids = np.array([])
 
-    # DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    okinds = group_part_ids < 1407374870714
-    group_part_ids = group_part_ids[okinds]
-    grp_ids = grp_ids[okinds]
-    subgrp_ids = subgrp_ids[okinds]
-    # DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-
     # Remove particles not associated to a subgroup
     okinds = subgrp_ids != 1073741824
     group_part_ids = group_part_ids[okinds]
