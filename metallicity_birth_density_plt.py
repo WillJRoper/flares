@@ -49,7 +49,7 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
 
     # Get the index of particles in the snapshot array from the in group array
     sorted_index = np.searchsorted(part_ids, group_part_ids)
-    yindex = np.take(sinds, sorted_index, mode="clip")
+    yindex = np.take(sinds, sorted_index, mode="raise")
     mask = unsort_part_ids[yindex] != group_part_ids
     result = np.ma.array(yindex, mask=mask)
 
