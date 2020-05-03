@@ -19,7 +19,7 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
 
     # Open graph file
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r')
-    print(hdf.keys())
+
     # Initialise arrays for results
     delta_hmrs = np.zeros(len(gals))
     delta_ms = np.zeros(len(gals))
@@ -264,7 +264,7 @@ def main_change(masslim=1e8, hmrcut=False, load=False):
 
     # fig.colorbar(cbar, ax=ax)
 
-    fig.savefig('plots/change_in_halfmassradiusREF.png', bbox_inches='tight')
+    fig.savefig('plots/change_in_halfmassradiusredshiftREF.png', bbox_inches='tight')
 
 
 regions = []
