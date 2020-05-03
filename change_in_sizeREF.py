@@ -57,7 +57,14 @@ def get_change_in_radius(snap, prog_snap, savepath, gal_data, gals):
 
             # Get main progenitor information
             main = np.argmax(prog_cont)
-            main_mass = prog_masses[main]
+            try:
+                main_mass = prog_masses[main]
+            except IndexError:
+                # Define change in properties
+                delta_hmrs[ind] = 2 ** 30
+                delta_ms[ind] = 2 ** 30
+                print(i, ind, "Broken progenitors")
+                continue
             main_hmr = prog_hmrs[main]
 
             # Define change in properties
