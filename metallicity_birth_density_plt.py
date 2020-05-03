@@ -244,7 +244,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     # stellar_bd = stellar_bd[okinds]
     # metal_mass_fractions = metal_mass_fractions[okinds]
 
-    H, _, _ = np.histogram2d((stellar_bd * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, metal_mass_fractions,
+    H, _, _ = np.histogram2d(stellar_bd, metal_mass_fractions,
                              bins=[birth_density_bins, metal_mass_fraction_bins])
 
     ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
