@@ -13,6 +13,7 @@ from astropy.cosmology import Planck13 as cosmo
 import seaborn as sns
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
+from scipy.stats import binned_statistic
 from SynthObs.SED import models
 matplotlib.use('Agg')
 
@@ -27,8 +28,24 @@ model.dust_BC = ('simple', {'slope': -1.0})
 filters = FLARE.filters.NIRCam
 F = FLARE.filters.add_filters(filters, new_lam = model.lam)
 
-# --- create new L grid for each filter. In units of erg/s/Hz
-model.create_Lnu_grid(F)
+
+def plot_meidan_stat(xs, ys, ax, bins=None):
+
+    if bins == None:
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+    else:
+        bin = bins
+
+    # Compute binned statistics
+    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median', bins=bin)
+
+    # Compute bincentres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+
+    ax.plot(bin_cents[okinds], y_stat[okinds], color='r', linestyle='-')
 
 
 def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
@@ -50,7 +67,7 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
     tauVs_BC = 2.0 * (gal_mets / 0.01)
 
     # Extract the flux in nanoJansky
-    L = (models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
+    L = (models.generate_Fnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
                                    tauVs_BC, F, 'JWST.NIRCAM.' + f) * u.nJy).decompose()
 
     return L
@@ -122,12 +139,13 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
         try:
             print(all_gal_poss[id])
             ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
-                            all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model, F, i, j, f)
+                            all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
+                            F, i, j, f)
 
             # Compute half mass radii
             hls[ind] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
             ms[ind] = np.sum(gal_ms[id])
-            print(hls[ind])
+
         except KeyError:
             continue
 
@@ -150,7 +168,7 @@ for reg in reg_ints:
     else:
         regions.append(str(reg))
 
-fs = ['F150W', ]
+fs = ['F150W', 'F200W', 'F150W2', 'F322W2', 'F444W', 'F277W', 'F210M', 'F300M']
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
 i, j = 0, 1
 
@@ -209,9 +227,8 @@ for f in fs:
         half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
         xs_plt = xs_plt[xs_plt > 1e8]
 
-        cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log',
-                         norm=LogNorm(),
-                         linewidths=0.2, cmap='viridis')
+        cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log',
+                         yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
