@@ -160,7 +160,8 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
 #     else:
 #         regions.append(str(reg))
 regions = []
-reg_ints = list(range(0, 40))
+reg_ints = list(range(39, -1, -1))
+print(reg_ints)
 # reg_ints.append(39)
 for reg in reg_ints:
     if reg < 10:
@@ -168,7 +169,7 @@ for reg in reg_ints:
     else:
         regions.append(str(reg))
 
-fs = ['F150W2', 'F200W', 'F322W2', 'F444W', 'F277W', 'F210M', 'F300M']
+fs = ['F322W2', 'F150W2', 'F150W', 'F444W']
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
 i, j = 0, 1
 
