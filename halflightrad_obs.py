@@ -160,15 +160,15 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
 #     else:
 #         regions.append(str(reg))
 regions = []
-reg_ints = list(range(0, 2))
-reg_ints.append(39)
+reg_ints = list(range(0, 40))
+# reg_ints.append(39)
 for reg in reg_ints:
     if reg < 10:
         regions.append('0' + str(reg))
     else:
         regions.append(str(reg))
 
-fs = ['F150W', 'F200W', 'F150W2', 'F322W2', 'F444W', 'F277W', 'F210M', 'F300M']
+fs = ['F150W2', 'F200W', 'F322W2', 'F444W', 'F277W', 'F210M', 'F300M']
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
 i, j = 0, 1
 
@@ -227,8 +227,10 @@ for f in fs:
         half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
         xs_plt = xs_plt[xs_plt > 1e8]
 
-        cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log',
-                         yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
+        if len(xs_plt) > 0:
+            cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log',
+                             yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
+            plot_meidan_stat(xs_plt, half_mass_rads_plt / csoft, ax)
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
