@@ -137,7 +137,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
 
         # Get the luminosities
         try:
-            print(all_gal_poss[id])
+            # print(all_gal_poss[id])
             ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
                             all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
                             F, i, j, f)
