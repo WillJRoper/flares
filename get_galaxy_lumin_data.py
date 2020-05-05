@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib
 import eagle_IO as E
 import numba as nb
+import astropy.units as u
 import gc
 import os
 import sys
