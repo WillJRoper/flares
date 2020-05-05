@@ -204,8 +204,9 @@ def get_main(path, snap, savepath):
                             physicalUnits=True, numThreads=8)
     gal_sml = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothingLength', noH=True,
                            physicalUnits=True, numThreads=8)
-    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+    subfind_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
+    subfind_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                             physicalUnits=True, numThreads=8)
     pre_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
@@ -220,18 +221,20 @@ def get_main(path, snap, savepath):
                           numThreads=8) * 10**10
 
     # Remove particles not in a subgroup
-    nosub_mask = np.logical_and(subgrp_ids != 1073741824, pre_gal_ms > 1e8)
+    okinds = np.logical_and(subfind_subgrp_ids != 1073741824, pre_gal_ms > 1e8)
+    subfind_grp_ids = subfind_grp_ids[okinds]
+    subfind_subgrp_ids = subfind_subgrp_ids[okinds]
+    gal_cops = gal_cops[okinds]
+    nosub_mask = subgrp_ids != 1073741824
     all_poss = all_poss[nosub_mask, :]
     gal_sml = gal_sml[nosub_mask]
-    grp_ids = grp_ids[nosub_mask]
-    subgrp_ids = subgrp_ids[nosub_mask]
     a_born = a_born[nosub_mask]
     metallicities = metallicities[nosub_mask]
     masses = masses[nosub_mask]
 
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-    halo_ids = np.zeros(grp_ids.size, dtype=float)
-    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+    halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
+    for (ind, g), sg in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
     # Calculate ages
