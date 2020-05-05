@@ -325,15 +325,12 @@ def get_main(path, snap, savepath):
 
                 # Compute half mass radii
                 hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls.value)
-                ms[ind2, ind1] = np.sum(gal_ms[id])
+                ms[ind2, ind1] = np.sum(gal_ms[id]) / 10**10
                 tot_l[ind2, ind1] = np.sum(ls.value)
 
         print(hls)
         print(ms)
         print(tot_l)
-        print(hls.max())
-        print(ms.max())
-        print(tot_l.max())
 
         # Write out the results for this filter
         filt = hdf.create_group(f)  # create halo group
