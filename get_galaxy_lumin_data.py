@@ -1,7 +1,7 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 import numpy as np
 import matplotlib
-import eagle_IO as E
+import eagle_IO.eagle_IO as E
 import numba as nb
 import astropy.units as u
 import gc
