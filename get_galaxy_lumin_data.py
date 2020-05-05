@@ -328,10 +328,6 @@ def get_main(path, snap, savepath):
                 ms[ind2, ind1] = np.sum(gal_ms[id]) / 10**10
                 tot_l[ind2, ind1] = np.sum(ls.value)
 
-        print(hls)
-        print(ms)
-        print(tot_l)
-
         # Write out the results for this filter
         filt = hdf.create_group(f)  # create halo group
         filt.create_dataset('half_lift_rad', data=hls, dtype=int)  # Half light radius [Mpc]

@@ -25,7 +25,9 @@ source activate flares-env
 ./metallicity_birth_density_plt.py
 #./metallicity_birth_density_plt_cumalative_REF.py
 ./metallicity_birth_density_plt_REF.py
+./metallicity_birth_density_plt_meanden.py
 ./metallicity_birth_density_plt_AGNdT9.py
+./metallicity_birth_density_plt_lowmass.py
 
 source deactivate
 
