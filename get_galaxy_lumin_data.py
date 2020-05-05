@@ -23,7 +23,7 @@ model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
 filters = FLARE.filters.NIRCam
 F = FLARE.filters.add_filters(filters, new_lam = model.lam)
-
+print(FLARE.filters.NIRCam)
 
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
     """ A function to find the indexes and halo IDs associated to particles/a particle producing an array for each
@@ -319,22 +319,14 @@ def get_main(path, snap, savepath):
             for ind2, id in enumerate(halo_ids):
 
                 # Get the luminosities
-                try:
-                    ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
-                                    all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
-                                    F, i, j, f)
+                ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
+                                all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
+                                F, i, j, f)
 
-                    # Compute half mass radii
-                    hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
-                    ms[ind, ind1] = np.sum(gal_ms[id]) / 10**10
-                    tot_l[ind, ind1] = np.sum(ls)
-
-                except KeyError:
-                    print("Galaxy", id, "did not appear in one of the dictionaries")
-                    hls[ind2, ind1] = -9999
-                    ms[ind, ind1] = -9999
-                    tot_l[ind, ind1] = -9999
-                    continue
+                # Compute half mass radii
+                hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
+                ms[ind, ind1] = np.sum(gal_ms[id]) / 10**10
+                tot_l[ind, ind1] = np.sum(ls)
 
         # Write out the results for this filter
         filt = hdf.create_group(f)  # create halo group
