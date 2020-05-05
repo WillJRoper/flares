@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib
 import eagle_IO as E
-import pickle
+import numba as nb
 import gc
 import os
 import sys
