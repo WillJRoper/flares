@@ -180,7 +180,7 @@ for reg in range(0, 2):
 #     else:
 #         regions.append(str(reg))
 
-fs = ['F150W', 'F150W2', 'F444W']
+fs = ['F150W', 'F200W', 'F444W']
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
 ii, jj = 0, 1
 
