@@ -197,7 +197,7 @@ def get_main(path, snap, savepath):
     header = kinp['header']
     kbins = header.item()['bins']
 
-    conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
+    conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2).value
 
     # Load all necessary arrays
     all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
@@ -322,6 +322,8 @@ def get_main(path, snap, savepath):
                 ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
                                 all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
                                 F, i, j, f.split(".")[-1])
+
+                print(ls)
 
                 # Compute half mass radii
                 hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
