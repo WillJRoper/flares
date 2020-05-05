@@ -324,10 +324,9 @@ def get_main(path, snap, savepath):
                                 F, i, j, f.split(".")[-1])
 
                 # Compute half mass radii
-                print("masses", gal_ms[id], np.sum(gal_ms[id]))
                 hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls.value)
-                ms[ind, ind1] = np.sum(gal_ms[id]) / 10**10
-                tot_l[ind, ind1] = np.sum(ls.value)
+                ms[ind2, ind1] = np.sum(gal_ms[id])
+                tot_l[ind2, ind1] = np.sum(ls.value)
 
         print(hls)
         print(ms)
