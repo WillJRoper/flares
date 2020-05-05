@@ -150,7 +150,7 @@ snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
          '013_z002p478', '017_z001p487', '018_z001p259',
          '019_z001p004', '020_z000p865', '024_z000p366']
 
-stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=True)
+stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=False)
 
 stellar_met = np.concatenate(list(stellar_met_dict.values()))
 stellar_bd = np.concatenate(list(stellar_bd_dict.values())) * 10**10

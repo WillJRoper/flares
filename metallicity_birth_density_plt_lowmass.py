@@ -133,7 +133,7 @@ def get_data(masslim=1e8, load=False):
                 prog_z = float(z_str[0] + '.' + z_str[1])
 
                 # Remove particles not associated to a subgroup
-                okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 1e8, gal_ms < 10**9.5))
+                okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 1e8, gal_ms < 10**9))
                 grp_ids = grp_ids[okinds]
                 subgrp_ids = subgrp_ids[okinds]
                 halo_ids = np.zeros(grp_ids.size, dtype=float)
