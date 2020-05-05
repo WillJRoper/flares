@@ -321,7 +321,7 @@ def get_main(path, snap, savepath):
                 # Get the luminosities
                 ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
                                 all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
-                                F, i, j, f.split((".")[-1]))
+                                F, i, j, f.split(".")[-1])
 
                 # Compute half mass radii
                 hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
