@@ -82,7 +82,7 @@ def createSimpleImgs(X, Y, masses, ages, metals, gal_met_surfden, smls, redshift
 		
 		# Extract the flux in nanoJansky
 		L = (models.generate_Fnu_array(model, masses, ages, metals, tauVs_ISM,
-									   tauVs_BC, F, 'JWST.NIRCAM.' + NIRCf) * u.nJy).decompose()
+									   tauVs_BC, F, 'JWST.NIRCAM.' + NIRCf) * u.nJy)
 
 		# Extarct the transmission curve and wavelengths
 		T_curve = FLARE.filters.filter('JWST.NIRCAM.' + NIRCf).T

@@ -148,7 +148,7 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
 
     # Extract the flux in nanoJansky
     L = (models.generate_Fnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
-                                   tauVs_BC, F, 'JWST.NIRCAM.' + f) * u.nJy).decompose()
+                                   tauVs_BC, F, 'JWST.NIRCAM.' + f) * u.nJy)
 
     return L
 
@@ -324,6 +324,7 @@ def get_main(path, snap, savepath):
                                 F, i, j, f.split(".")[-1])
 
                 # Compute half mass radii
+                print("masses", gal_ms[id], np.sum(gal_ms[id]))
                 hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls.value)
                 ms[ind, ind1] = np.sum(gal_ms[id]) / 10**10
                 tot_l[ind, ind1] = np.sum(ls.value)
