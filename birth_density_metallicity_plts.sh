@@ -21,10 +21,11 @@ module load pythonconda3/4.5.4
 source activate flares-env
 
 # Run the program
-./metallicity_birth_density_plt_cumalative.py
+#./metallicity_birth_density_plt_cumalative.py
 ./metallicity_birth_density_plt.py
-./metallicity_birth_density_plt_cumalative_REF.py
+#./metallicity_birth_density_plt_cumalative_REF.py
 ./metallicity_birth_density_plt_REF.py
+./metallicity_birth_density_plt_AGNdT9.py
 
 source deactivate
 

@@ -150,7 +150,7 @@ snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
          '013_z002p478', '017_z001p487', '018_z001p259',
          '019_z001p004', '020_z000p865', '024_z000p366']
 
-stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=False)
+stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=True)
 
 stellar_met = np.concatenate(list(stellar_met_dict.values()))
 stellar_bd = np.concatenate(list(stellar_bd_dict.values())) * 10**10
@@ -258,7 +258,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if i == 2:
         ax.set_xlabel("Stellar Birth Density [$n_H$ cm$^{-3}$]")
     if j == 0:
-        ax.set_ylabel("Smoothed Metal Mass Fraction $Z$")
+        ax.set_ylabel("Stellar Metal Mass Fraction $Z$")
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
     ax.set_xlim(10**-3, 10**6.8)
