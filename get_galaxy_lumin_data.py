@@ -319,14 +319,18 @@ def get_main(path, snap, savepath):
             for ind2, id in enumerate(halo_ids):
 
                 # Get the luminosities
-                ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
-                                all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
-                                F, i, j, f.split(".")[-1])
+                try:
+                    ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
+                                    all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
+                                    F, i, j, f.split(".")[-1])
 
-                # Compute half mass radii
-                hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls.value)
-                ms[ind2, ind1] = np.sum(gal_ms[id]) / 10**10
-                tot_l[ind2, ind1] = np.sum(ls.value)
+                    # Compute half mass radii
+                    hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls.value)
+                    ms[ind2, ind1] = np.sum(gal_ms[id]) / 10**10
+                    tot_l[ind2, ind1] = np.sum(ls.value)
+                except KeyError:
+                    print("Galaxy", id, "Does not appear in the dictionaries")
+                    continue
 
         # Write out the results for this filter
         filt = hdf.create_group(f)  # create halo group
