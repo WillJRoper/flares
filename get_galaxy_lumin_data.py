@@ -7,6 +7,8 @@ import gc
 import os
 import sys
 from utilities import calc_ages, get_Z_LOS
+import h5py
+from astropy.cosmology import Planck13 as cosmo
 import FLARE.filters
 from SynthObs.SED import models
 matplotlib.use('Agg')
@@ -159,6 +161,12 @@ def calc_light_mass_rad(poss, ls):
     sinds = np.argsort(rs)
     rs = rs[sinds]
     ls = ls[sinds]
+    ls = ls[rs < 30/1e3]
+    rs = rs[rs < 30/1e3]
+    ms = ms[rs < 30/1e3]
+
+    if len(ls) < 20:
+        return -9999, -9999
 
     # Get the cumalative sum of masses
     l_profile = np.cumsum(ls)
@@ -174,11 +182,21 @@ def calc_light_mass_rad(poss, ls):
     return hmr
 
 
-def get_main(path, snap, reg):
+def get_main(path, snap, savepath):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
+
+    model.create_Fnu_grid(F, z, cosmo)
+
+    kinp = np.load('/cosma/home/dp004/dc-rope1/cosma7/FLARES/flares/los_extinction/kernel_sph-anarchy.npz',
+                   allow_pickle=True)
+    lkernel = kinp['kernel']
+    header = kinp['header']
+    kbins = header.item()['bins']
+
+    conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
 
     # Load all necessary arrays
     all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
@@ -191,20 +209,19 @@ def get_main(path, snap, reg):
     gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                             physicalUnits=True, numThreads=8)
+    pre_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                            physicalUnits=True, numThreads=8)[:, 4] * 10**10
 
     # Load data for luminosities
     a_born = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
                           physicalUnits=True, numThreads=8)
     metallicities = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothedMetallicity', noH=True,
                                  physicalUnits=True, numThreads=8)
-    masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
-
-    print(gal_ids)
-    print(gal_gids)
-    print(gal_cops)
+    masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True,
+                          numThreads=8) * 10**10
 
     # Remove particles not in a subgroup
-    nosub_mask = subgrp_ids != 1073741824
+    nosub_mask = np.logical_and(subgrp_ids != 1073741824, pre_gal_ms > 1e8)
     all_poss = all_poss[nosub_mask, :]
     gal_sml = gal_sml[nosub_mask]
     grp_ids = grp_ids[nosub_mask]
@@ -233,7 +250,6 @@ def get_main(path, snap, reg):
     means = {}
     for id, cop in zip(halo_ids, gal_cops):
         mask = halo_part_inds[id]
-        id = float(str(int(g)) + '.' + str(int(sg)))
         all_gal_poss[id] = all_poss[mask, :]
         gal_ages[id] = ages[mask]
         gal_mets[id] = metallicities[mask]
@@ -256,7 +272,6 @@ def get_main(path, snap, reg):
     # Get gas particle information
     gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True,
                                 numThreads=8)
-    ggrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', numThreads=8)
     gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
     gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothedMetallicity', noH=True,
                                      physicalUnits=True, numThreads=8)
@@ -268,20 +283,24 @@ def get_main(path, snap, reg):
     # Remove particles not in a subgroup
     nosub_mask = gsubgrp_ids != 1073741824
     gas_all_poss = gas_all_poss[nosub_mask, :]
-    ggrp_ids = ggrp_ids[nosub_mask]
-    gsubgrp_ids = gsubgrp_ids[nosub_mask]
     gas_metallicities = gas_metallicities[nosub_mask]
     gas_smooth_ls = gas_smooth_ls[nosub_mask]
     gas_masses = gas_masses[nosub_mask]
+
+    # Get particle indices
+    ghalo_part_inds = get_subgroup_part_inds(path, snap, part_type=0, all_parts=False, sorted=False)
 
     # Get the position of each of these galaxies
     gas_mets = {}
     gas_ms = {}
     gas_smls = {}
     all_gas_poss = {}
-    for g, sg in zip(gal_gids, gal_ids):
-        mask = (ggrp_ids == g) & (gsubgrp_ids == sg)
-        id = float(str(int(g)) + '.' + str(int(sg)))
+    for id in halo_ids:
+        try:
+            mask = ghalo_part_inds[id]
+        except KeyError:
+            print("Galaxy", id, "has no gas")
+            continue
         all_gas_poss[id] = gas_all_poss[mask, :]
         gas_mets[id] = gas_metallicities[mask]
         gas_ms[id] = gas_masses[mask]
@@ -295,12 +314,45 @@ def get_main(path, snap, reg):
 
     print('Got gas properties')
 
-    save_dict = {'gal_ages': gal_ages, 'gal_mets': gal_mets, 'gal_ms': gal_ms, 'gas_mets': gas_mets,
-                 'gas_ms': gas_ms, 'gal_smls': gal_smls, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
-                 'all_gal_poss': all_gal_poss, 'means': means}
+    # Open the HDF5 file
+    hdf = h5py.File(savepath + 'ObsWebbLumins_' + snap + '.hdf5', 'w')
+    hdf.create_dataset('orientation', data=[(0, 1), (1, 2), (0, 2)])  # Mass contribution
+    hdf.create_dataset('galaxy_ids', data=halo_ids)  # Mass contribution
 
-    with open('UVimg_data/stellardata_reg' + reg + '_snap' + snap + '.pck', 'wb') as pfile1:
-        pickle.dump(save_dict, pfile1)
+    # Loop over filters
+    for f in FLARE.filters.NIRCam:
+
+        print("Extracting data for filter:", f)
+
+        # Create images for these galaxies
+        hls = np.zeros((len(gal_ages), 3))
+        ms = np.zeros((len(gal_ages), 3))
+        tot_l = np.zeros((len(gal_ages), 3))
+        for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
+            for ind2, id in enumerate(gal_ages.keys()):
+
+                # Get the luminosities
+                try:
+                    ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
+                                    all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
+                                    F, i, j, f)
+
+                    # Compute half mass radii
+                    hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls)
+                    ms[ind, ind1] = np.sum(gal_ms[id]) / 10**10
+                    tot_l[ind, ind1] = np.sum(ls)
+
+                except KeyError:
+                    print("Galaxy", id, "did not appear in one of the dictionaries")
+                    continue
+
+        # Write out the results for this filter
+        filt = hdf.create_group(f)  # create halo group
+        filt.create_dataset('half_lift_rad', data=hls, dtype=int)  # Half light radius [Mpc]
+        filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=int)  # Aperture mass [Msun * 10*10]
+        filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=int)  # Aperture Luminosity [nJy]
+
+
 
 
 regions = []
@@ -312,8 +364,6 @@ for reg in range(0, 40):
 
 snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
-
-npart_lim=10**2
 
 reg_snaps = []
 for reg in regions:
@@ -327,10 +377,6 @@ print(reg_snaps[ind])
 reg, snap = reg_snaps[ind]
 
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg_snaps[ind][0] + '/'
 
-files = os.listdir('UVimg_data/')
-
-if 'stellardata_reg' + reg + '_snap' + snap + '.pck' in files:
-    print('File Exists', reg, snap)
-else:
-    get_main(path, snap, reg)
+get_main(path, snap, savepath)

@@ -26,7 +26,6 @@ model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
 model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
 
-
 # Define the filters: FAKE.FAKE are just top-hat filters using for extracting rest-frame quantities.
 filters = ['FAKE.TH.'+f for f in ['FUV','NUV','V']]
 F = FLARE.filters.add_filters(filters, new_lam = model.lam)
