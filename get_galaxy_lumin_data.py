@@ -205,8 +205,6 @@ def get_main(path, snap, savepath):
                            physicalUnits=True, numThreads=8)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
-    gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-    gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                             physicalUnits=True, numThreads=8)
     pre_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
@@ -317,7 +315,7 @@ def get_main(path, snap, savepath):
     # Open the HDF5 file
     hdf = h5py.File(savepath + 'ObsWebbLumins_' + snap + '.hdf5', 'w')
     hdf.create_dataset('orientation', data=[(0, 1), (1, 2), (0, 2)])  # Mass contribution
-    hdf.create_dataset('galaxy_ids', data=halo_ids)  # Mass contribution
+    hdf.create_dataset('galaxy_ids', data=halo_ids)  # galaxy ids
 
     # Loop over filters
     for f in FLARE.filters.NIRCam:
@@ -329,7 +327,7 @@ def get_main(path, snap, savepath):
         ms = np.zeros((len(gal_ages), 3))
         tot_l = np.zeros((len(gal_ages), 3))
         for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
-            for ind2, id in enumerate(gal_ages.keys()):
+            for ind2, id in enumerate(halo_ids):
 
                 # Get the luminosities
                 try:
@@ -344,6 +342,9 @@ def get_main(path, snap, savepath):
 
                 except KeyError:
                     print("Galaxy", id, "did not appear in one of the dictionaries")
+                    hls[ind2, ind1] = -9999
+                    ms[ind, ind1] = -9999
+                    tot_l[ind, ind1] = -9999
                     continue
 
         # Write out the results for this filter
@@ -351,6 +352,8 @@ def get_main(path, snap, savepath):
         filt.create_dataset('half_lift_rad', data=hls, dtype=int)  # Half light radius [Mpc]
         filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=int)  # Aperture mass [Msun * 10*10]
         filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=int)  # Aperture Luminosity [nJy]
+
+    hdf.close()
 
 
 
