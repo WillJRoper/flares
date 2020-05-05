@@ -164,7 +164,6 @@ def calc_light_mass_rad(poss, ls):
     ls = ls[sinds]
     ls = ls[rs < 30/1e3]
     rs = rs[rs < 30/1e3]
-    ms = ms[rs < 30/1e3]
 
     if len(ls) < 20:
         return -9999, -9999
