@@ -83,6 +83,11 @@ def calc_light_mass_rad(poss, ls):
     sinds = np.argsort(rs)
     rs = rs[sinds]
     ls = ls[sinds]
+    ls = ls[rs < 30/1e3]
+    rs = rs[rs < 30/1e3]
+
+    if len(ls) < 20:
+        return 0.0, 0.0
 
     # Get the cumalative sum of masses
     l_profile = np.cumsum(ls)
@@ -136,6 +141,9 @@ def hl_main(snap, reg, model, F, f, npart_lim=0, conv=1, i=0, j=1):
     hls = np.zeros(len(gal_ages))
     ms = np.zeros(len(gal_ages))
     for ind, id in enumerate(gal_ages.keys()):
+
+        if len(gal_ages[id]) == 0:
+            continue
 
         # Get the luminosities
         try:
