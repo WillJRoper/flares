@@ -225,12 +225,6 @@ def get_main(path, snap, savepath):
     subfind_grp_ids = subfind_grp_ids[okinds]
     subfind_subgrp_ids = subfind_subgrp_ids[okinds]
     gal_cops = gal_cops[okinds]
-    nosub_mask = subgrp_ids != 1073741824
-    all_poss = all_poss[nosub_mask, :]
-    gal_sml = gal_sml[nosub_mask]
-    a_born = a_born[nosub_mask]
-    metallicities = metallicities[nosub_mask]
-    masses = masses[nosub_mask]
 
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
     halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
@@ -261,7 +255,7 @@ def get_main(path, snap, savepath):
 
     print('There are', len(gal_ages.keys()), 'galaxies')
 
-    del subgrp_ids, ages, all_poss, metallicities, masses, gal_sml, a_born, grp_ids
+    del subgrp_ids, ages, all_poss, metallicities, masses, gal_sml, a_born
 
     gc.collect()
 
