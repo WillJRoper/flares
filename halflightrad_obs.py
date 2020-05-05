@@ -137,8 +137,6 @@ def hl_main(snap, reg, model, F, f, npart_lim=0, conv=1, i=0, j=1):
     ms = np.zeros(len(gal_ages))
     for ind, id in enumerate(gal_ages.keys()):
 
-        print('Computing luminosities for', id)
-
         # Get the luminosities
         try:
             # print(all_gal_poss[id])
@@ -151,6 +149,7 @@ def hl_main(snap, reg, model, F, f, npart_lim=0, conv=1, i=0, j=1):
             ms[ind] = np.sum(gal_ms[id])
 
         except KeyError:
+            print("Galaxy", id, "did not appear in the dictionary")
             continue
 
     return hls[ms > 0], ms[ms > 0]
@@ -173,9 +172,9 @@ for reg in range(0, 2):
 #     else:
 #         regions.append(str(reg))
 
-fs = ['F322W2', 'F150W2', 'F150W', 'F444W']
+fs = ['F150W', 'F150W2', 'F444W']
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
-i, j = 0, 1
+ii, jj = 0, 1
 
 snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000',
@@ -199,7 +198,7 @@ for f in fs:
             print(reg, snap)
             try:
                 half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = hl_main(snap, reg, model, F, f,
-                                                                                conv=conv, i=i, j=j)
+                                                                                conv=conv, i=ii, j=jj)
             except FileNotFoundError:
                 continue
 
@@ -267,7 +266,7 @@ for f in fs:
     ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
     ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-    fig.savefig('plots/HalfLightRadius_all_snaps_' + f + '_coords' + str(i) + '-' + str(j) + '.png',
+    fig.savefig('plots/HalfLightRadius_all_snaps_' + f + '_coords' + str(ii) + '-' + str(jj) + '.png',
                 bbox_inches='tight')
 
     plt.close(fig)
