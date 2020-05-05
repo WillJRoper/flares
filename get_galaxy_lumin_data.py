@@ -204,7 +204,6 @@ def get_main(path, snap, savepath):
                             physicalUnits=True, numThreads=8)
     gal_sml = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothingLength', noH=True,
                            physicalUnits=True, numThreads=8)
-    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
     subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
     subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
@@ -255,7 +254,7 @@ def get_main(path, snap, savepath):
 
     print('There are', len(gal_ages.keys()), 'galaxies')
 
-    del subgrp_ids, ages, all_poss, metallicities, masses, gal_sml, a_born
+    del ages, all_poss, metallicities, masses, gal_sml, a_born
 
     gc.collect()
 
@@ -268,20 +267,12 @@ def get_main(path, snap, savepath):
     # Get gas particle information
     gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True,
                                 numThreads=8)
-    gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
     gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothedMetallicity', noH=True,
                                      physicalUnits=True, numThreads=8)
     gas_smooth_ls = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True,
                                  numThreads=8)
     gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True,
                               numThreads=8) * 10**10
-
-    # Remove particles not in a subgroup
-    nosub_mask = gsubgrp_ids != 1073741824
-    gas_all_poss = gas_all_poss[nosub_mask, :]
-    gas_metallicities = gas_metallicities[nosub_mask]
-    gas_smooth_ls = gas_smooth_ls[nosub_mask]
-    gas_masses = gas_masses[nosub_mask]
 
     # Get particle indices
     ghalo_part_inds = get_subgroup_part_inds(path, snap, part_type=0, all_parts=False, sorted=False)
@@ -304,7 +295,7 @@ def get_main(path, snap, savepath):
 
     print('Got particle IDs')
 
-    del gsubgrp_ids, gas_all_poss, gas_metallicities, gas_smooth_ls, gas_masses
+    del gas_all_poss, gas_metallicities, gas_smooth_ls, gas_masses
 
     gc.collect()
 
