@@ -9,6 +9,7 @@ import sys
 from utilities import calc_ages, get_Z_LOS
 import h5py
 from astropy.cosmology import Planck13 as cosmo
+os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
 from SynthObs.SED import models
 matplotlib.use('Agg')

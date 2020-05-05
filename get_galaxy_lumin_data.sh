@@ -3,8 +3,8 @@
 #SBATCH --array=1-480
 #SBATCH --cpus-per-task=8
 #SBATCH -J FLARES-WEBBDATA #Give it something meaningful.
-#SBATCH -o logs/output_Halo.%J.out
-#SBATCH -e logs/error_Halo.%J.err
+#SBATCH -o logs/output_WEBBDATA.%J.out
+#SBATCH -e logs/error_WEBBDATA.%J.err
 #SBATCH -p cosma6 #or some other partition, e.g. cosma, cosma6, etc.
 #SBATCH -A dp004
 #SBATCH --exclusive
@@ -19,7 +19,7 @@ module purge
 #load the modules used to build your program.
 module load pythonconda3/4.5.4
 
-source activate DMLJ-env
+source activate flares-env
 
 i=$(($SLURM_ARRAY_TASK_ID - 1))
 
