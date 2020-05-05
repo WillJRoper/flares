@@ -98,7 +98,7 @@ def calc_light_mass_rad(poss, ls):
     return hmr
 
 
-def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
+def hl_main(snap, reg, model, F, f, npart_lim=0, conv=1, i=0, j=1):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -112,9 +112,13 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
     header = kinp['header']
     kbins = header.item()['bins']
 
-    with open('UVimg_data/stellardata_reg' + reg + '_snap'
-              + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'rb') as pfile1:
-        save_dict = pickle.load(pfile1)
+    if npart_lim > 0:
+        with open('UVimg_data/stellardata_reg' + reg + '_snap'
+                  + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'rb') as pfile1:
+            save_dict = pickle.load(pfile1)
+    else:
+        with open('UVimg_data/stellardata_reg' + reg + '_snap' + snap + '.pck', 'rb') as pfile1:
+            save_dict = pickle.load(pfile1)
 
     gal_ages = save_dict['gal_ages']
     gal_mets = save_dict['gal_mets']
@@ -152,22 +156,22 @@ def hl_main(snap, reg, model, F, f, npart_lim=10**2, conv=1, i=0, j=1):
     return hls[ms > 0], ms[ms > 0]
 
 
-# regions = []
-# for reg in range(0, 1):
-#
-#     if reg < 10:
-#         regions.append('0' + str(reg))
-#     else:
-#         regions.append(str(reg))
 regions = []
-reg_ints = list(range(39, -1, -1))
-print(reg_ints)
-# reg_ints.append(39)
-for reg in reg_ints:
+for reg in range(0, 2):
+
     if reg < 10:
         regions.append('0' + str(reg))
     else:
         regions.append(str(reg))
+# regions = []
+# reg_ints = list(range(39, -1, -1))
+# print(reg_ints)
+# reg_ints.append(39)
+# for reg in reg_ints:
+#     if reg < 10:
+#         regions.append('0' + str(reg))
+#     else:
+#         regions.append(str(reg))
 
 fs = ['F322W2', 'F150W2', 'F150W', 'F444W']
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
