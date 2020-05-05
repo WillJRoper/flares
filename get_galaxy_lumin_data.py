@@ -197,7 +197,7 @@ def get_main(path, snap, savepath):
     header = kinp['header']
     kbins = header.item()['bins']
 
-    conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2).value
+    conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
 
     # Load all necessary arrays
     all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
