@@ -306,7 +306,7 @@ def get_main(path, snap, savepath):
 
     print('Got particle IDs')
 
-    del ggrp_ids, gsubgrp_ids, gas_all_poss, gas_metallicities, gas_smooth_ls, gas_masses
+    del gsubgrp_ids, gas_all_poss, gas_metallicities, gas_smooth_ls, gas_masses
 
     gc.collect()
 
