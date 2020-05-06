@@ -323,7 +323,7 @@ def get_main(path, snap, savepath, filters):
                                     F, i, j, f)
 
                     # Compute half mass radii
-                    hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls.value)
+                    hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls.value, i, j)
                     ms[ind2, ind1] = np.sum(gal_ms[id]) / 10**10
                     tot_l[ind2, ind1] = np.sum(ls.value)
                 except KeyError:
