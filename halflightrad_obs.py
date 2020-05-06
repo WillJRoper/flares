@@ -191,7 +191,7 @@ axlims_x = []
 axlims_y = []
 
 # Define comoving softening length in kpc
-csoft = 0.001802390 / 0.677 * 1e3
+csoft = 0.001802390 / 0.677
 for f in fs:
     half_mass_rads_dict = {}
     xaxis_dict = {}
@@ -242,9 +242,9 @@ for f in fs:
         if len(xs_plt) > 0:
             cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log',
                              yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
-            plot_meidan_stat(xs_plt, half_mass_rads_plt / csoft, ax)
+            plot_meidan_stat(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), ax)
 
-        ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
         axlims_x.extend(ax.get_xlim())
