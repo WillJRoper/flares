@@ -16,15 +16,6 @@ from SynthObs.SED import models
 matplotlib.use('Agg')
 
 
-# Define SED model
-model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
-                            path_to_SPS_grid = FLARE.FLARE_dir + '/data/SPS/nebular/3.0/') # DEFINE SED GRID -
-model.dust_ISM = ('simple', {'slope': -1.0})
-model.dust_BC = ('simple', {'slope': -1.0})
-filters = FLARE.filters.NIRCam
-F = FLARE.filters.add_filters(filters, new_lam = model.lam)
-print(FLARE.filters.NIRCam)
-
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
     """ A function to find the indexes and halo IDs associated to particles/a particle producing an array for each
 
@@ -147,17 +138,21 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
     tauVs_BC = 2.0 * (gal_mets / 0.01)
 
     # Extract the flux in nanoJansky
-    L = (models.generate_Fnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
-                                   tauVs_BC, F, 'JWST.NIRCAM.' + f) * u.nJy)
+    if f.split(".")[0] == 'FAKE':
+        L = (models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
+                                       tauVs_BC, F, f) * u.nJy)
+    else:
+        L = (models.generate_Fnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
+                                       tauVs_BC, F, f) * u.nJy)
 
     return L
 
 
 @nb.njit(nogil=True, parallel=True)
-def calc_light_mass_rad(poss, ls):
+def calc_light_mass_rad(poss, ls, i, j):
 
     # Get galaxy particle indices
-    rs = np.sqrt(poss[:, 0]**2 + poss[:, 1]**2 + poss[:, 2]**2)
+    rs = np.sqrt(poss[:, i]**2 + poss[:, j]**2)
 
     # Sort the radii and masses
     sinds = np.argsort(rs)
@@ -183,13 +178,11 @@ def calc_light_mass_rad(poss, ls):
     return hmr
 
 
-def get_main(path, snap, savepath):
+def get_main(path, snap, savepath, filters):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
-
-    model.create_Fnu_grid(F, z, cosmo)
 
     kinp = np.load('/cosma/home/dp004/dc-rope1/cosma7/FLARES/flares/los_extinction/kernel_sph-anarchy.npz',
                    allow_pickle=True)
@@ -307,7 +300,12 @@ def get_main(path, snap, savepath):
     hdf.create_dataset('galaxy_ids', data=halo_ids)  # galaxy ids
 
     # Loop over filters
-    for f in FLARE.filters.NIRCam:
+    for f in filters:
+
+        if f.split(".")[0] == 'FAKE':
+            model.create_Lnu_grid(F)
+        else:
+            model.create_Fnu_grid(F, z, cosmo)
 
         print("Extracting data for filter:", f)
 
@@ -322,7 +320,7 @@ def get_main(path, snap, savepath):
                 try:
                     ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
                                     all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
-                                    F, i, j, f.split(".")[-1])
+                                    F, i, j, f)
 
                     # Compute half mass radii
                     hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls.value)
@@ -341,7 +339,15 @@ def get_main(path, snap, savepath):
     hdf.close()
 
 
-
+# Define SED model
+model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
+                            path_to_SPS_grid = FLARE.FLARE_dir + '/data/SPS/nebular/3.0/') # DEFINE SED GRID -
+model.dust_ISM = ('simple', {'slope': -1.0})
+model.dust_BC = ('simple', {'slope': -1.0})
+filters = FLARE.filters.NIRCam
+filters.extend(['FAKE.TH.'+f for f in ['FUV','NUV','V']])
+F = FLARE.filters.add_filters(filters, new_lam = model.lam)
+print(filters)
 
 regions = []
 for reg in range(0, 40):
@@ -367,4 +373,4 @@ reg, snap = reg_snaps[ind]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg_snaps[ind][0] + '/'
 
-get_main(path, snap, savepath)
+get_main(path, snap, savepath, filters)

@@ -636,7 +636,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     del results_dm, internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm
     gc.collect()
 
-    for ptype in [4, 5, 0]:
+    # for ptype in [4, 5, 0]:
+    for ptype in [4, 5]:
 
         results, internal_to_sim_haloID_desc, internal_to_sim_haloID_prog = partDirectProgDesc(snap, prog_snap,
                                                                                                desc_snap, path,
