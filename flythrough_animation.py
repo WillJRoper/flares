@@ -222,5 +222,4 @@ def single_sphere(reg, snap, soft, num, runall=True):
 csoft = 0.001802390 / 0.677
 
 reg, snap = '30', '010_z005p000'
-if __name__ == '__main__':
-    single_sphere(reg, snap, soft=csoft, num=int(sys.argv[1]))
+single_sphere(reg, snap, soft=csoft, num=int(sys.argv[1]))
