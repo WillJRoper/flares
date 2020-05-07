@@ -188,11 +188,11 @@ def single_sphere(reg, snap, soft, num, runall=True):
     # Define anchors
     anchors = {}
     anchors['sim_times'] = [0.0, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
-    anchors['id_frames'] = [0, 180, 750, 840, 930, 1500, 1680, 2000]
+    anchors['id_frames'] = [0, 45, 188, 210, 232, 375, 420, 500]
     anchors['id_targets'] = [0, 'pass', 2, 'pass', 'pass', 'pass', 'pass', 0]
-    anchors['r'] = [lbox * 3 / 4, 'pass', lbox / 100, 'same', 'same', 'pass', 'pass', lbox * 3 / 4]
+    anchors['r'] = [lbox * 3 / 4, 'pass', lbox / 100, 'same', 'pass', 'pass', 'pass', lbox * 3 / 4]
     anchors['t'] = [0, 'pass', 'pass', -180, 'pass', -270, 'pass', -360]
-    anchors['p'] = [0, 'pass', 'pass', 'pass', 'pass', 'same', 'pass', 360 * 3]
+    anchors['p'] = [0, 'pass', 'pass', 'pass', 'pass', 'pass', 'pass', 360 * 3]
     anchors['zoom'] = [1., 'same', 'same', 'same', 'same', 'same', 'same', 'same']
     anchors['extent'] = [10, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
 
@@ -221,6 +221,6 @@ def single_sphere(reg, snap, soft, num, runall=True):
 # Define softening lengths
 csoft = 0.001802390 / 0.677
 
-reg, snap = '00', '010_z005p000'
+reg, snap = '30', '010_z005p000'
 if __name__ == '__main__':
     single_sphere(reg, snap, soft=csoft, num=int(sys.argv[1]))
