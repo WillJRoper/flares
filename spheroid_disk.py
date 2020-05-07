@@ -139,22 +139,22 @@ def get_ratio(pos, cent):
     return ratio
 
 
-def get_data(snap, masslim=1e8):
+def get_data(snap, part_type, masslim=1e8):
 
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
     # Get particle IDs
-    halo_part_inds = get_subgroup_part_inds(path, snap, part_type=4, all_parts=False)
+    halo_part_inds = get_subgroup_part_inds(path, snap, part_type=part_type, all_parts=False)
 
     # Get halo IDs and halo data
     try:
         subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
         grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
         gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                              noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
+                              noH=False, physicalUnits=False, numThreads=8)[:, part_type] * 10**10
         gal_cop = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', numThreads=8)
-        gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', numThreads=8)[:, 4]
-        gal_coord = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
+        gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', numThreads=8)[:, part_type]
+        gal_coord = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
                                  physicalUnits=True, numThreads=8)
     except ValueError:
         return [], [], []
@@ -205,6 +205,8 @@ snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
 axlims_x = []
 axlims_y = []
 
+part_type = 0
+
 # Define comoving softening length in kpc
 csoft = 0.001802390 / 0.677
 ratios_dict = {}
@@ -221,7 +223,7 @@ for reg in regions:
 
         print(reg, snap)
         try:
-            ratios_dict[snap][reg], masses_dict[snap][reg], half_mass_rads_dict[snap][reg] = get_data(snap,
+            ratios_dict[snap][reg], masses_dict[snap][reg], half_mass_rads_dict[snap][reg] = get_data(snap, part_type,
                                                                                                       masslim=1e8)
         except FileNotFoundError:
             continue
@@ -289,7 +291,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/Axis_ratio_vs_HMRredshift.png',
+fig.savefig('plots/Axis_ratio_vs_HMRredshift' + str(part_type) + '.png',
             bbox_inches='tight')
 
 plt.close(fig)
@@ -359,7 +361,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/Axis_ratio_vs_mass_redshift.png',
+fig.savefig('plots/Axis_ratio_vs_mass_redshift' + str(part_type) + '.png',
             bbox_inches='tight')
 
 plt.close(fig)
