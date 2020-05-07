@@ -6,7 +6,7 @@ import matplotlib.gridspec as gridspec
 from unyt import mh, cm, Gyr, g, Msun, Mpc
 from matplotlib.colors import LogNorm
 import numba as nb
-import flares as fl
+import flares.flares as fl
 
 
 @nb.njit(nogil=True, parallel=True)
