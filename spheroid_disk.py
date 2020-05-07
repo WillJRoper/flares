@@ -294,6 +294,9 @@ fig.savefig('plots/Axis_ratio_vs_HMRredshift.png',
 
 plt.close(fig)
 
+axlims_x = []
+axlims_y = []
+
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
 gs = gridspec.GridSpec(3, 6)
