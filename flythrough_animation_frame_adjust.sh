@@ -1,11 +1,11 @@
 #!/bin/bash -l
 #SBATCH --ntasks 1 # The number of cores you need...
-#SBATCH --array=1-1000
+#SBATCH --array=1-500
 #SBATCH --cpus-per-task=8
 #SBATCH -J FLARES-pysphv #Give it something meaningful.
 #SBATCH -o logs/output_flythrough.%J.out
 #SBATCH -e logs/error_flythrough.%J.err
-#SBATCH -p cosma7 #or some other partition, e.g. cosma, cosma6, etc.
+#SBATCH -p cosma6 #or some other partition, e.g. cosma, cosma6, etc.
 #SBATCH -A dp004
 #SBATCH --exclusive
 #SBATCH -t 72:00:00
@@ -21,7 +21,7 @@ module load pythonconda3/4.5.4
 
 source activate flares-env
 
-i=$(($SLURM_ARRAY_TASK_ID - 1 + 1000))
+i=$(($SLURM_ARRAY_TASK_ID - 1))
 
 # Run the program
 ./flythrough_animation_frame_adjust.py $i
