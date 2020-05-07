@@ -6,10 +6,6 @@ import matplotlib.gridspec as gridspec
 from unyt import mh, cm, Gyr, g, Msun, Mpc
 from matplotlib.colors import LogNorm
 import numba as nb
-from flares import flares
-
-
-fl = flares
 
 
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
@@ -148,7 +144,7 @@ def get_data(snap, masslim=1e8):
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
     # Get particle IDs
-    halo_part_inds = fl.get_subgroup_part_inds(path, snap, part_type=4, all_parts=False)
+    halo_part_inds = get_subgroup_part_inds(path, snap, part_type=4, all_parts=False)
 
     # Get halo IDs and halo data
     try:
