@@ -10,7 +10,6 @@ from scipy.spatial import ConvexHull
 import eagle_IO.eagle_IO as E
 import sys
 from guppy import hpy; h=hpy()
-import gc
 import os
 
 
@@ -179,13 +178,10 @@ def single_sphere(reg, snap, soft, num, runall=True):
     targets.append(grp_cops[0, :] - centre)
     targets.append(grp_cops[1, :] - centre)
 
-    del grp_cops, grp_ms
-    gc.collect()
-
     # Define the box size
     lbox = (15 / 0.677) * 2
 
-    # Define anchors
+    # Define anchors dict for camera parameters
     anchors = {}
     anchors['sim_times'] = [0.0, 'same', 'same', 'same', 'same', 'same', 'same', 'same']
     anchors['id_frames'] = [0, 45, 188, 210, 232, 375, 420, 500]

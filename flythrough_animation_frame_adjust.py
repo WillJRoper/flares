@@ -5,13 +5,8 @@ import numpy as np
 from sphviewer.tools import cmaps, Blend
 import matplotlib.pyplot as plt
 from flythrough_animation import single_sphere
-from astropy.visualization import SqrtStretch
-from skimage import exposure
-from skimage import img_as_float
-import PIL
 import sys
 from guppy import hpy; h=hpy()
-import os
 
 
 def get_normalised_image(img, vmin=None, vmax=None):
@@ -58,7 +53,7 @@ def single_frame(reg, snap, num):
     ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                    labeltop=False, labelright=False, labelbottom=False)
 
-    fig.savefig('plots/spheres/All/all_parts_animation_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
+    fig.savefig('plots/spheres/All/edit_all_parts_animation_reg' + reg + '_snap' + snap + '_angle%05d.png'%num,
                 bbox_inches='tight')
     plt.close(fig)
 
@@ -66,11 +61,11 @@ def single_frame(reg, snap, num):
 # Define softening lengths
 csoft = 0.001802390 / 0.677
 
-reg, snap = '00', '010_z005p000'
+reg, snap = '30', '010_z005p000'
 print(int(sys.argv[1]))
 try:
     single_frame(reg, snap, num=int(sys.argv[1]))
 except FileNotFoundError:
-    print("Need to generate this file")
+    print("Need to generate this file:", reg, snap)
     single_sphere(reg, snap, soft=csoft, num=int(sys.argv[1]))
-    single_frame(reg, snap, num=num)
+    single_frame(reg, snap, num=int(sys.argv[1]))
