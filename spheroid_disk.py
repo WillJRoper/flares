@@ -153,7 +153,7 @@ def get_data(snap, masslim=1e8):
         gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                               noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10**10
         gal_cop = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', numThreads=8)
-        gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', numThreads=8)
+        gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', numThreads=8)[:, 4]
         gal_coord = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
                                  physicalUnits=True, numThreads=8)
     except ValueError:
@@ -174,8 +174,10 @@ def get_data(snap, masslim=1e8):
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
 
+    print("There are", len(halo_ids), "galaxies in snapshot", snap)
+
     ratios = []
-    masses= []
+    masses = []
     hmrs = []
     for halo, cop, m, hmr in zip(halo_ids, gal_cop, gal_ms, gal_hmr):
 
