@@ -7,7 +7,7 @@ from sphviewer.tools import cmaps, Blend, camera_tools
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from scipy.spatial import ConvexHull
-import eagle_IO as E
+import eagle_IO.eagle_IO as E
 import sys
 from guppy import hpy; h=hpy()
 import gc
