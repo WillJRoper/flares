@@ -192,7 +192,7 @@ def get_data(snap, masslim=1e8):
 
 
 regions = []
-for reg in range(0, 2):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -257,9 +257,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     if len(rat_plt) > 0:
         cbar = ax.hexbin(half_mass_rads_plt / (csoft / (1 + z)), rat_plt, gridsize=100, mincnt=1, xscale='log',
-                         yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
+                         norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
-    ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+    ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
     axlims_x.extend(ax.get_xlim())
@@ -324,9 +324,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     if len(rat_plt) > 0:
         cbar = ax.hexbin(half_mass_rads_plt, rat_plt, gridsize=100, mincnt=1, xscale='log',
-                         yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
+                         norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
-    ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+    ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
     axlims_x.extend(ax.get_xlim())
