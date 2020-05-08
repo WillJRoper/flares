@@ -11,6 +11,7 @@ import eagle_IO.eagle_IO as E
 import matplotlib.gridspec as gridspec
 from unyt import mh, cm, Gyr, g, Msun, Mpc
 from matplotlib.colors import LogNorm
+from scipy.stats import binned_statistic
 
 
 def plot_meidan_stat(xs, ys, ax, bins=None):
