@@ -152,7 +152,8 @@ def get_data(snap, part_type, masslim=1e8):
         grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
         gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                               noH=False, physicalUnits=False, numThreads=8)[:, part_type] * 10**10
-        gal_cop = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', numThreads=8)
+        gal_cop = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
+                                 physicalUnits=True, numThreads=8)
         gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', numThreads=8)[:, part_type]
         gal_coord = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
                                  physicalUnits=True, numThreads=8)
