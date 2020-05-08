@@ -139,19 +139,12 @@ def get_data(masslim=1e8, load=False):
                                              physicalUnits=True, numThreads=8)
                     gal_cop = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                            physicalUnits=True, numThreads=8)
-                    gal_aborn = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
-                                             physicalUnits=True, numThreads=8)
                 except ValueError:
                     continue
                 except OSError:
                     continue
                 except KeyError:
                     continue
-
-                z_str = snap.split('z')[1].split('p')
-                z = float(z_str[0] + '.' + z_str[1])
-                z_str = prog_snap.split('z')[1].split('p')
-                prog_z = float(z_str[0] + '.' + z_str[1])
 
                 # Remove particles not associated to a subgroup
                 okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > masslim)
@@ -171,9 +164,8 @@ def get_data(masslim=1e8, load=False):
                     part_inds = list(halo_part_inds[halo])
                     parts_bd = gal_bd[part_inds]
                     parts_rs = np.linalg.norm(gal_coord[part_inds, :] - cop, axis=1)
-                    parts_aborn = gal_aborn[part_inds]
-                    stellar_bd.extend(parts_bd[(1 / parts_aborn) - 1 < prog_z])
-                    stellar_rad.extend(parts_rs[(1 / parts_aborn) - 1 < prog_z] * 1e3)
+                    stellar_bd.extend(parts_bd)
+                    stellar_rad.extend(parts_rs * 1e3)
 
                 stellar_bd_dict[snap][reg] = stellar_bd
                 stellar_rad_dict[snap][reg] = stellar_rad
@@ -263,4 +255,4 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/birthdensity_profile.png', bbox_inches='tight')
+fig.savefig('plots/birthdensity_profile_cumalative.png', bbox_inches='tight')

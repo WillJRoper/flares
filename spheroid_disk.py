@@ -6,6 +6,10 @@ import matplotlib.gridspec as gridspec
 from unyt import mh, cm, Gyr, g, Msun, Mpc
 from matplotlib.colors import LogNorm
 import numba as nb
+import seaborn as sns
+
+
+sns.set_style('whitegrid')
 
 
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
