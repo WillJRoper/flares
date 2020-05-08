@@ -161,6 +161,8 @@ def get_data(masslim=1e8, load=False):
                 for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                     halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
 
+                print("There are", len(halo_ids), "galaxies in snapshot", snap, "in region", reg)
+
                 stellar_bd = []
                 stellar_rad = []
                 for halo, cop in zip(halo_ids, gal_cop):
