@@ -150,6 +150,7 @@ def get_data(masslim=1e8, load=False):
                 okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > masslim)
                 grp_ids = grp_ids[okinds]
                 subgrp_ids = subgrp_ids[okinds]
+                gal_cop = gal_cop[okinds]
                 halo_ids = np.zeros(grp_ids.size, dtype=float)
                 for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                     halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
@@ -213,9 +214,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     rads = np.concatenate(list(stellar_rad_dict[snap].values()))
     stellar_bd = (np.concatenate(list(stellar_bd_dict[snap].values()))
                   * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
-    # okinds = np.logical_and(stellar_bd > 0, metal_mass_fractions > 0)
-    # stellar_bd = stellar_bd[okinds]
-    # metal_mass_fractions = metal_mass_fractions[okinds]
+    okinds = np.logical_and(stellar_bd > 0, rads > 0)
+    stellar_bd = stellar_bd[okinds]
+    rads = rads[okinds]
 
     if len(stellar_bd) > 0:
         cbar = ax.hexbin(rads, stellar_bd, gridsize=100, mincnt=1, xscale='log', yscale='log',
