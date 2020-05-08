@@ -190,7 +190,7 @@ snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
 axlims_x = []
 axlims_y = []
 
-# Define comoving softening length in kpc
+# Define comoving softening length in Mpc
 csoft = 0.001802390 / 0.677
 for f in fs:
     half_mass_rads_dict = {}
