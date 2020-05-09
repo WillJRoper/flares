@@ -222,7 +222,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         cbar = ax.hexbin(rads, stellar_bd, gridsize=100, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='magma')
         plot_meidan_stat(rads, stellar_bd, ax)
-        ax.axvline((csoft / (1 + z)), color='k', linestyle='--')
+        ax.axvline(csoft / (1 + z), color='k', linestyle='--')
 
     ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='left', fontsize=8)
@@ -237,6 +237,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         ax.set_ylabel("Stellar Birth Density [$n_H$ cm$^{-3}$]")
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
+    print(np.min(axlims_x), np.min(axlims_y))
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
     ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
     for spine in ax.spines.values():
