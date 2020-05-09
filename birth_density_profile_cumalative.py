@@ -87,7 +87,7 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
 def get_data(masslim=1e8, load=False):
 
     regions = []
-    for reg in range(0, 2):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
