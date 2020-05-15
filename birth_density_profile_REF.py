@@ -215,7 +215,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z = float(z_str[0] + '.' + z_str[1])
 
     rads = stellar_rad_dict[snap]
-    stellar_bd = (stellar_bd_dict[snap] * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
+    stellar_bd = (np.array(stellar_bd_dict[snap]) * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
     okinds = np.logical_and(stellar_bd > 0, rads > 0)
     stellar_bd = stellar_bd[okinds]
     rads = rads[okinds]
