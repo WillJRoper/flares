@@ -94,16 +94,16 @@ def get_data(masslim=1e8, load=False):
             regions.append(str(reg))
 
     # Define snapshots
-    snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
-             '006_z009p000', '007_z008p000', '008_z007p000',
-             '009_z006p000', '010_z005p000', '011_z004p770']
-    prog_snaps = ['002_z013p000', '003_z012p000', '004_z011p000',
-                  '005_z010p000', '006_z009p000', '007_z008p000',
-                  '008_z007p000', '009_z006p000', '010_z005p000']
+    snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
+             '013_z002p478', '017_z001p487', '018_z001p259',
+             '019_z001p004', '020_z000p865', '024_z000p366']
+    prog_snaps = ['003_z008p988', '007_z005p487', '009_z004p485',
+                  '012_z003p017', '016_z001p737', '017_z001p487',
+                  '018_z001p259', '019_z001p004', '023_z000p503']
 
     if load:
 
-        with open('bd_profile.pck', 'rb') as pfile1:
+        with open('bd_profileREF.pck', 'rb') as pfile1:
             save_dict = pickle.load(pfile1)
         stellar_rad_dict = save_dict['met']
         stellar_bd_dict = save_dict['bd']
@@ -113,84 +113,79 @@ def get_data(masslim=1e8, load=False):
         stellar_rad_dict = {}
         stellar_bd_dict = {}
 
-        for snap in snaps:
+        for snap, prog_snap in zip(snaps, prog_snaps):
 
-            stellar_rad_dict[snap] = {}
-            stellar_bd_dict[snap] = {}
+            path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
 
-        for reg in regions:
+            # Get particle IDs
+            halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
 
-            for snap, prog_snap in zip(snaps, prog_snaps):
+            # Get halo IDs and halo data
+            try:
+                subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+                grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+                gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                      noH=True, physicalUnits=True, numThreads=8)[:, 4] * 10**10
+                gal_bd = E.read_array('PARTDATA', path, snap, 'PartType4/BirthDensity', noH=True,
+                                        physicalUnits=True, numThreads=8)
+                gal_coord = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
+                                         physicalUnits=False, numThreads=8)
+                gal_cop = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
+                                       physicalUnits=False, numThreads=8)
+                gal_aborn = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', numThreads=8)
+            except ValueError:
+                continue
+            except OSError:
+                continue
+            except KeyError:
+                continue
 
-                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+            z_str = snap.split('z')[1].split('p')
+            z = float(z_str[0] + '.' + z_str[1])
+            z_str = prog_snap.split('z')[1].split('p')
+            prog_z = float(z_str[0] + '.' + z_str[1])
 
-                # Get particle IDs
-                halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
+            # Remove particles not associated to a subgroup
+            okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > masslim)
+            grp_ids = grp_ids[okinds]
+            subgrp_ids = subgrp_ids[okinds]
+            gal_cop = gal_cop[okinds]
+            halo_ids = np.zeros(grp_ids.size, dtype=float)
+            for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+                halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
 
-                # Get halo IDs and halo data
-                try:
-                    subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-                    grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-                    gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                          noH=True, physicalUnits=True, numThreads=8)[:, 4] * 10**10
-                    gal_bd = E.read_array('PARTDATA', path, snap, 'PartType4/BirthDensity', noH=True,
-                                            physicalUnits=True, numThreads=8)
-                    gal_coord = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
-                                             physicalUnits=False, numThreads=8)
-                    gal_cop = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
-                                           physicalUnits=False, numThreads=8)
-                    gal_aborn = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', numThreads=8)
-                except ValueError:
-                    continue
-                except OSError:
-                    continue
-                except KeyError:
-                    continue
+            print("There are", len(halo_ids), "galaxies in snapshot", snap)
 
-                z_str = snap.split('z')[1].split('p')
-                z = float(z_str[0] + '.' + z_str[1])
-                z_str = prog_snap.split('z')[1].split('p')
-                prog_z = float(z_str[0] + '.' + z_str[1])
+            stellar_bd = []
+            stellar_rad = []
+            for halo, cop in zip(halo_ids, gal_cop):
 
-                # Remove particles not associated to a subgroup
-                okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > masslim)
-                grp_ids = grp_ids[okinds]
-                subgrp_ids = subgrp_ids[okinds]
-                gal_cop = gal_cop[okinds]
-                halo_ids = np.zeros(grp_ids.size, dtype=float)
-                for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-                    halo_ids[ind] = float(str(int(g)) + '.%05d'%int(sg))
+                # Add stars from these galaxies
+                part_inds = list(halo_part_inds[halo])
+                parts_bd = gal_bd[part_inds]
+                parts_rs = np.linalg.norm(gal_coord[part_inds, :] - cop, axis=1)
+                parts_aborn = gal_aborn[part_inds]
+                ok_inds = np.logical_and((1 / parts_aborn) - 1 < prog_z, parts_rs < 0.03)
+                stellar_bd.extend(parts_bd[ok_inds])
+                stellar_rad.extend(parts_rs[ok_inds] * 1e3)
 
-                print("There are", len(halo_ids), "galaxies in snapshot", snap, "in region", reg)
+            stellar_bd_dict[snap] = stellar_bd
+            stellar_rad_dict[snap] = stellar_rad
 
-                stellar_bd = []
-                stellar_rad = []
-                for halo, cop in zip(halo_ids, gal_cop):
-
-                    # Add stars from these galaxies
-                    part_inds = list(halo_part_inds[halo])
-                    parts_bd = gal_bd[part_inds]
-                    parts_rs = np.linalg.norm(gal_coord[part_inds, :] - cop, axis=1)
-                    parts_aborn = gal_aborn[part_inds]
-                    ok_inds = np.logical_and((1 / parts_aborn) - 1 < prog_z, parts_rs < 0.03)
-                    stellar_bd.extend(parts_bd[ok_inds])
-                    stellar_rad.extend(parts_rs[ok_inds] * 1e3)
-
-                stellar_bd_dict[snap][reg] = stellar_bd
-                stellar_rad_dict[snap][reg] = stellar_rad
-
-        with open('bd_profile.pck', 'wb') as pfile1:
+        with open('bd_profileREF.pck', 'wb') as pfile1:
             pickle.dump({'bd': stellar_bd_dict, 'met': stellar_rad_dict}, pfile1)
 
     return stellar_bd_dict, stellar_rad_dict
 
 
-snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
-         '006_z009p000', '007_z008p000', '008_z007p000',
-         '009_z006p000', '010_z005p000', '011_z004p770']
+# Define snapshots
+snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
+         '013_z002p478', '017_z001p487', '018_z001p259',
+         '019_z001p004', '020_z000p865', '024_z000p366']
 
 # Define comoving softening length in kpc
 csoft = 0.001802390 / 0.677 * 1e3
+psoft = 0.000474390 / 0.677 * 1e3
 
 stellar_bd_dict, stellar_rad_dict = get_data(masslim=10**9.5, load=False)
 
@@ -219,9 +214,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    rads = np.concatenate(list(stellar_rad_dict[snap].values()))
-    stellar_bd = (np.concatenate(list(stellar_bd_dict[snap].values()))
-                  * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
+    rads = stellar_rad_dict[snap]
+    stellar_bd = (stellar_bd_dict[snap] * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
     okinds = np.logical_and(stellar_bd > 0, rads > 0)
     stellar_bd = stellar_bd[okinds]
     rads = rads[okinds]
@@ -230,11 +224,15 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         cbar = ax.hexbin(rads, stellar_bd, gridsize=100, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='magma')
         plot_meidan_stat(rads, stellar_bd, ax)
+
         axlims_x.extend(ax.get_xlim())
         axlims_y.extend(ax.get_ylim())
     else:
         ax.loglog()
-    ax.axvline(csoft, color='k', linestyle='--')
+    if z > 1:
+        ax.axvline(csoft, color='k', linestyle='--')
+    else:
+        ax.axvline(psoft, color='k', linestyle='--')
 
     ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='left', fontsize=8)
@@ -266,4 +264,4 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/birthdensity_profile.png', bbox_inches='tight')
+fig.savefig('plots/birthdensity_profileREF.png', bbox_inches='tight')
