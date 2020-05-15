@@ -136,11 +136,10 @@ def get_data(masslim=1e8, load=False):
                     gal_bd = E.read_array('PARTDATA', path, snap, 'PartType4/BirthDensity', noH=True,
                                             physicalUnits=True, numThreads=8)
                     gal_coord = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
-                                             physicalUnits=True, numThreads=8)
+                                             physicalUnits=False, numThreads=8)
                     gal_cop = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
-                                           physicalUnits=True, numThreads=8)
-                    gal_aborn = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
-                                             physicalUnits=True, numThreads=8)
+                                           physicalUnits=False, numThreads=8)
+                    gal_aborn = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', numThreads=8)
                 except ValueError:
                     continue
                 except OSError:
@@ -173,8 +172,9 @@ def get_data(masslim=1e8, load=False):
                     parts_bd = gal_bd[part_inds]
                     parts_rs = np.linalg.norm(gal_coord[part_inds, :] - cop, axis=1)
                     parts_aborn = gal_aborn[part_inds]
-                    stellar_bd.extend(parts_bd[(1 / parts_aborn) - 1 < prog_z])
-                    stellar_rad.extend(parts_rs[(1 / parts_aborn) - 1 < prog_z] * 1e3)
+                    ok_inds = np.logical_and((1 / parts_aborn) - 1 < prog_z, parts_rs < 0.03)
+                    stellar_bd.extend(parts_bd[ok_inds])
+                    stellar_rad.extend(parts_rs[ok_inds] * 1e3)
 
                 stellar_bd_dict[snap][reg] = stellar_bd
                 stellar_rad_dict[snap][reg] = stellar_rad
@@ -230,17 +230,17 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         cbar = ax.hexbin(rads, stellar_bd, gridsize=100, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='magma')
         plot_meidan_stat(rads, stellar_bd, ax)
-        ax.axvline((csoft / (1 + z)), color='k', linestyle='--')
+        ax.axvline((csoft), color='k', linestyle='--')
+
+        axlims_x.extend(ax.get_xlim())
+        axlims_y.extend(ax.get_ylim())
 
     ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='left', fontsize=8)
 
-    axlims_x.extend(ax.get_xlim())
-    axlims_y.extend(ax.get_ylim())
-
     # Label axes
     if i == 2:
-        ax.set_xlabel("$R$ / [pkpc]")
+        ax.set_xlabel("$R$ / [ckpc]")
     if j == 0:
         ax.set_ylabel("Stellar Birth Density [$n_H$ cm$^{-3}$]")
 
