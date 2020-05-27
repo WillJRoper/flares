@@ -243,6 +243,13 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             ax3.set_ylabel(axlabels[int(j)])
             ax6.set_xlabel(axlabels[int(i)])
 
+            ax1.text(0.1, 0.9, 'Dark Matter', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                    transform=ax1.transAxes, horizontalalignment='left', fontsize=8)
+            ax3.text(0.1, 0.9, 'Gas', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                    transform=ax3.transAxes, horizontalalignment='left', fontsize=8)
+            ax5.text(0.1, 0.9, f'Stars', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                    transform=ax5.transAxes, horizontalalignment='left', fontsize=8)
+
             # Set titles
             ax2.set_title('Surrounding particles')
             ax1.set_title('Galaxy particles')
@@ -266,4 +273,4 @@ reg = '0000'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-img_main(path, snap, reg, res, soft=csoft, npart_lim=10**4, imgtype='DMless')
+img_main(path, snap, reg, res, soft=csoft, npart_lim=10**4, imgtype='compact')
