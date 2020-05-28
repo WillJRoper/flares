@@ -287,11 +287,11 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             ax6.set_xlabel(axlabels[int(i)])
 
             ax1.text(0.1, 0.9, 'Dark Matter', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                    transform=ax1.transAxes, horizontalalignment='left', fontsize=8)
+                    transform=ax1.transAxes, horizontalalignment='left', fontsize=6)
             ax3.text(0.1, 0.9, 'Gas', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                    transform=ax3.transAxes, horizontalalignment='left', fontsize=8)
+                    transform=ax3.transAxes, horizontalalignment='left', fontsize=6)
             ax5.text(0.1, 0.9, f'Stars', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                    transform=ax5.transAxes, horizontalalignment='left', fontsize=8)
+                    transform=ax5.transAxes, horizontalalignment='left', fontsize=6)
 
             # Set titles
             ax2.set_title('Surrounding particles')
@@ -308,7 +308,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
 csoft = 0.001802390 / 0.677
 
 # Define resolution
-res = csoft / 4
+res = csoft / 20
 print(100 / res, 'pixels in', '100 kpc')
 
 # Define region variables
