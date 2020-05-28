@@ -286,11 +286,11 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             ax3.set_ylabel(axlabels[int(j)])
             ax6.set_xlabel(axlabels[int(i)])
 
-            ax1.text(0.1, 0.9, 'Dark Matter', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            ax1.text(0.1, 0.85, 'Dark Matter', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                     transform=ax1.transAxes, horizontalalignment='left', fontsize=6)
-            ax3.text(0.1, 0.9, 'Gas', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            ax3.text(0.1, 0.85, 'Gas', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                     transform=ax3.transAxes, horizontalalignment='left', fontsize=6)
-            ax5.text(0.1, 0.9, f'Stars', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            ax5.text(0.1, 0.85, f'Stars', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                     transform=ax5.transAxes, horizontalalignment='left', fontsize=6)
 
             # Set titles
