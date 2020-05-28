@@ -267,14 +267,19 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             ax5.imshow(np.arcsinh(galimgs[4][key]), extent=extents[4][key], cmap='Greys')
             ax6.imshow(np.arcsinh(surundimgs[4][key]), extent=extents[4][key], cmap='Greys')
 
-            circle = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
+            circle1 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
+            circle2 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
+            circle3 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
+            circle4 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
+            circle5 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
+            circle6 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
 
-            ax1.add_artist(circle)
-            ax2.add_artist(circle)
-            ax3.add_artist(circle)
-            ax4.add_artist(circle)
-            ax5.add_artist(circle)
-            ax6.add_artist(circle)
+            ax1.add_artist(circle1)
+            ax2.add_artist(circle2)
+            ax3.add_artist(circle3)
+            ax4.add_artist(circle4)
+            ax5.add_artist(circle5)
+            ax6.add_artist(circle6)
 
             # Label axes
             ax5.set_xlabel(axlabels[int(i)])
