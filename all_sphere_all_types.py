@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from scipy.spatial import ConvexHull
 import eagle_IO.eagle_IO as E
+import sphviewer
 import sys
 import pickle
 
@@ -122,13 +123,22 @@ def single_sphere(reg, snap, soft, t=0):
 
     save_dict = {}
 
+    # Set up pysphviewer objects
+    part_gas = sphviewer.Particles(poss_gas, mass=masses_gas, hsml=smls_gas)
+    part_DM = sphviewer.Particles(poss_DM, mass=masses_DM, hsml=smls_DM)
+    gas_scene = sphviewer.Scene(part_gas)
+    DM_scene = sphviewer.Scene(part_DM)
+
     for num, p in enumerate(ps):
 
+        gas_scene.update_camera(r=lbox * 3/4, t=t, p=p, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
+                                extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+        DM_scene.update_camera(r=lbox * 3/4, t=t, p=p, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
+                                extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+
         # Define particles
-        qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-                           xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-        qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-                           xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+        render_gas = sphviewer.Render(gas_scene)
+        render_DM = sphviewer.Render(DM_scene)
         # qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
         #                    xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
@@ -140,8 +150,8 @@ def single_sphere(reg, snap, soft, t=0):
         # Get each particle type image
         # imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image(), 'stars': qv_stars.get_image()}
         # extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent(), 'stars': qv_stars.get_extent()}
-        imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image()}
-        extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent()}
+        imgs = {'gas': render_gas.get_image(), 'dm': render_DM.get_image()}
+        extents = {'gas': render_gas.get_extent(), 'dm': render_DM.get_extent()}
 
         # Convert images to rgb arrays
         rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
