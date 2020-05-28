@@ -238,6 +238,15 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             ax5.imshow(np.arcsinh(galimgs[4][key]), extent=extents[4][key], cmap='Greys')
             ax6.imshow(np.arcsinh(surundimgs[4][key]), extent=extents[4][key], cmap='Greys')
 
+            circle = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
+
+            ax1.add_artist(circle)
+            ax2.add_artist(circle)
+            ax3.add_artist(circle)
+            ax4.add_artist(circle)
+            ax5.add_artist(circle)
+            ax6.add_artist(circle)
+
             # Label axes
             ax5.set_xlabel(axlabels[int(i)])
             ax3.set_ylabel(axlabels[int(j)])
@@ -262,7 +271,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
 
 
 # Define comoving softening length in Mpc
-csoft = 0.001802390/0.677
+csoft = 0.001802390 / 0.677
 
 # Define resolution
 res = csoft / 4
