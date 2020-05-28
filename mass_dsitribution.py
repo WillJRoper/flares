@@ -12,6 +12,57 @@ import itertools
 matplotlib.use('Agg')
 
 
+def get_part_ids(sim, snapshot, part_type, all_parts=False):
+
+    # Get the particle IDs
+    if all_parts:
+        part_ids = E.read_array('SNAP', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+    else:
+        part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
+                                numThreads=8)
+
+    # Extract the halo IDs (group names/keys) contained within this snapshot
+    group_part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
+                                  numThreads=8)
+    grp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/GroupNumber',
+                           numThreads=8)
+    subgrp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/SubGroupNumber',
+                              numThreads=8)
+
+    # Remove particles not associated to a subgroup
+    okinds = subgrp_ids != 1073741824
+    group_part_ids = group_part_ids[okinds]
+    grp_ids = grp_ids[okinds]
+    subgrp_ids = subgrp_ids[okinds]
+
+    # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
+    halo_ids = np.zeros(grp_ids.size, dtype=float)
+    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+        halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+    # Sort particle IDs
+    unsort_part_ids = np.copy(part_ids)
+    sinds = np.argsort(part_ids)
+    part_ids = part_ids[sinds]
+
+    # Get the index of particles in the snapshot array from the in group array
+    sorted_index = np.searchsorted(part_ids, group_part_ids)
+    yindex = np.take(sinds, sorted_index, mode="raise")
+    mask = unsort_part_ids[yindex] != group_part_ids
+    result = np.ma.array(yindex, mask=mask)
+
+    # Apply mask to the id arrays
+    part_groups = halo_ids[np.logical_not(result.mask)]
+    parts_in_groups = result.data[np.logical_not(result.mask)]
+
+    # Produce a dictionary containing the index of particles in each halo
+    halo_part_inds = {}
+    for ind, grp in zip(parts_in_groups, part_groups):
+        halo_part_inds.setdefault(grp, set()).update({ind})
+
+    return halo_part_inds, halo_ids
+
+
 def get_parts_in_gal(ID, poss, IDs):
 
     # Get particle positions
@@ -91,26 +142,18 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
     all_poss = {}
     means = {}
 
+    assert part_types[0] == 4, "Initial partilce type must be 4 (star)"
+
     for part_type in part_types:
 
         print('Loading particle type', part_type)
 
-        # Load all necessary arrays
-        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
-        all_poss[part_type] = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True, numThreads=8)
-        part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-        group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-        halo_ids = np.zeros_like(grp_ids, dtype=float)
-        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            halo_ids[ind] = float(str(g) + '.' + str(sg + 1))
+        # Get positions
+        all_poss[part_type] = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/Coordinates',
+                                           noH=True, numThreads=8)
 
-        # Translate ID into indices
-        ind_to_pid = {}
-        pid_to_ind = {}
-        for ind, pid in enumerate(part_ids):
-            ind_to_pid[ind] = pid
-            pid_to_ind[pid] = ind
+        # Get the particles in the halos
+        halo_id_part_inds, halo_ids = get_part_ids(path, snap, part_type, all_parts=True)
 
         # Get IDs
         if part_type == 4 and imgtype == 'compact':
@@ -121,16 +164,14 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             # Get the half mass radii for each group
             half_mass_rads_dict = {}
             for r, g, sg in zip(half_mass_rads, grp_ID, subgrp_ID):
-                half_mass_rads_dict[str(g) + '.' + str(sg + 1)] = r
-
-            print(len(half_mass_rads), len(grp_ID), len(subgrp_ID))
+                half_mass_rads_dict[float(str(int(g)) + '.%05d' % int(sg))] = r
 
             # Get the IDs above the npart threshold
             ids, counts = np.unique(halo_ids, return_counts=True)
             ids = set(ids[counts > npart_lim])
 
             for id in list(ids):
-                if half_mass_rads_dict[str(id)] > soft / (1 + z) * 1.2:
+                if half_mass_rads_dict[id] > soft / (1 + z) * 1.2:
                     ids.remove(id)
 
         elif part_type == 4 and imgtype == 'DMless':
@@ -142,7 +183,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             # Get the half mass radii for each group
             masses_dict = {}
             for ms, g, sg in zip(masses, grp_ID, subgrp_ID):
-                masses_dict[str(g) + '.' + str(sg + 1)] = ms
+                masses_dict[float(str(int(g)) + '.%05d' % int(sg))] = ms
 
             # Get the IDs above the npart threshold
             ids, counts = np.unique(halo_ids, return_counts=True)
@@ -156,18 +197,6 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
 
         elif part_type == 4 and imgtype not in ['compact', 'DMless']:
             print('Invalid type, should be one of:', ['compact', 'DMless'])
-
-        # Get the particles in the halos
-        halo_id_part_inds = {}
-        for pid, simid in zip(group_part_ids, halo_ids):
-            if simid not in ids:
-                continue
-            try:
-                halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
-            except KeyError:
-                ind_to_pid[len(part_ids) + 1] = pid
-                pid_to_ind[pid] = len(part_ids) + 1
-                halo_id_part_inds.setdefault(simid, set()).update({pid_to_ind[pid]})
 
         print('There are', len(ids), 'galaxies above the cutoff')
 
