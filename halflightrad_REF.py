@@ -36,6 +36,40 @@ F = FLARE.filters.add_filters(filters, new_lam = model.lam)
 model.create_Lnu_grid(F)
 
 
+def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
+    """ A function to find the indexes and halo IDs associated to particles/a particle producing an array for each
+
+    :param halo_ids:
+    :param part_ids:
+    :param group_part_ids:
+    :return:
+    """
+
+    # Sort particle IDs if required and store an unsorted version in an array
+    if sorted:
+        part_ids = np.sort(part_ids)
+    unsort_part_ids = np.copy(part_ids)
+
+    # Get the indices that would sort the array (if the array is sorted this is just a range form 0-Npart)
+    if sorted:
+        sinds = np.arange(part_ids.size)
+    else:
+        sinds = np.argsort(part_ids)
+        part_ids = part_ids[sinds]
+
+    # Get the index of particles in the snapshot array from the in particles in a group array
+    sorted_index = np.searchsorted(part_ids, group_part_ids)  # find the indices that would sort the array
+    yindex = np.take(sinds, sorted_index, mode="raise")  # take the indices at the indices found above
+    mask = unsort_part_ids[yindex] != group_part_ids  # define the mask based on these particles
+    result = np.ma.array(yindex, mask=mask)  # create a mask array
+
+    # Apply the mask to the id arrays to get halo ids and the particle indices
+    part_groups = halo_ids[np.logical_not(result.mask)]  # halo ids
+    parts_in_groups = result.data[np.logical_not(result.mask)]  # particle indices
+
+    return parts_in_groups, part_groups
+
+
 def get_subgroup_part_inds(sim, snapshot, part_type, all_parts=False, sorted=False):
     ''' A function to efficiently produce a dictionary of particle indexes from EAGLE particle data arrays
         for SUBFIND subgroups.
