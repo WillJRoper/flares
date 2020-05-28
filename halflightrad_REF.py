@@ -14,6 +14,7 @@ from astropy.cosmology import Planck13 as cosmo
 import seaborn as sns
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
+import gc
 from SynthObs.SED import models
 matplotlib.use('Agg')
 
@@ -32,6 +33,199 @@ F = FLARE.filters.add_filters(filters, new_lam = model.lam)
 
 # --- create new L grid for each filter. In units of erg/s/Hz
 model.create_Lnu_grid(F)
+
+
+def get_subgroup_part_inds(sim, snapshot, part_type, all_parts=False, sorted=False):
+    ''' A function to efficiently produce a dictionary of particle indexes from EAGLE particle data arrays
+        for SUBFIND subgroups.
+
+    :param sim:        Path to the snapshot file [str]
+    :param snapshot:   Snapshot identifier [str]
+    :param part_type:  The integer representing the particle type
+                       (0, 1, 4, 5: gas, dark matter, stars, black hole) [int]
+    :param all_parts:  Flag for whether to use all particles (SNAP group)
+                       or only particles in halos (PARTDATA group)  [bool]
+    :param sorted:     Flag for whether to produce indices in a sorted particle ID array
+                       or unsorted (order they are stored in) [bool]
+    :return:
+    '''
+
+    # Get the particle IDs for this particle type using eagle_IO
+    if all_parts:
+
+        # Get all particles in the simulation
+        part_ids = E.read_array('SNAP', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
+                                numThreads=8)
+
+        # Get only those particles in a halo
+        group_part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
+                                      numThreads=8)
+
+    else:
+
+        # Get only those particles in a halo
+        part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
+                                numThreads=8)
+
+        # A copy of this array is needed for the extraction method
+        group_part_ids = np.copy(part_ids)
+
+    # Extract the group ID and subgroup ID each particle is contained within
+    grp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/GroupNumber',
+                           numThreads=8)
+    subgrp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/SubGroupNumber',
+                              numThreads=8)
+
+    # Ensure no subgroup ID exceeds 99999
+    assert subgrp_ids.max() < 99999, "Found too many subgroups, need to increase subgroup format string above %05d"
+
+    # Remove particles not associated to a subgroup (subgroupnumber == 2**30 == 1073741824)
+    okinds = subgrp_ids != 1073741824
+    group_part_ids = group_part_ids[okinds]
+    grp_ids = grp_ids[okinds]
+    subgrp_ids = subgrp_ids[okinds]
+
+    # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
+    halo_ids = np.zeros(grp_ids.size, dtype=float)
+    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+        halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+    parts_in_groups, part_groups = get_part_inds(halo_ids, part_ids, group_part_ids, sorted)
+
+    # Produce a dictionary containing the index of particles in each halo
+    halo_part_inds = {}
+    for ind, grp in zip(parts_in_groups, part_groups):
+        halo_part_inds.setdefault(grp, set()).update({ind})
+
+    # Now the dictionary is fully populated convert values from sets to arrays for indexing
+    for key, val in halo_part_inds.items():
+        halo_part_inds[key] = np.array(list(val))
+
+    return halo_part_inds
+
+
+def get_main(path, snap):
+
+    # Get the redshift
+    z_str = snap.split('z')[1].split('p')
+    z = float(z_str[0] + '.' + z_str[1])
+
+    # Load all necessary arrays
+    all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
+                            physicalUnits=True, numThreads=8)
+    gal_sml = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothingLength', noH=True,
+                           physicalUnits=True, numThreads=8)
+    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
+    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+    gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+    gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+    gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
+                            physicalUnits=True, numThreads=8)
+
+    # Load data for luminosities
+    a_born = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
+                          physicalUnits=True, numThreads=8)
+    metallicities = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothedMetallicity', noH=True,
+                                 physicalUnits=True, numThreads=8)
+    masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True,
+                          numThreads=8) * 10 ** 10
+
+    # Remove particles not in a subgroup
+    nosub_mask = subgrp_ids != 1073741824
+    all_poss = all_poss[nosub_mask, :]
+    gal_sml = gal_sml[nosub_mask]
+    grp_ids = grp_ids[nosub_mask]
+    subgrp_ids = subgrp_ids[nosub_mask]
+    a_born = a_born[nosub_mask]
+    metallicities = metallicities[nosub_mask]
+    masses = masses[nosub_mask]
+
+    # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
+    halo_ids = np.zeros(grp_ids.size, dtype=float)
+    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+        halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+    # Calculate ages
+    ages = calc_ages(z, a_born)
+
+    # Get particle indices
+    halo_part_inds = get_subgroup_part_inds(path, snap, part_type=4, all_parts=False, sorted=False)
+
+    # Get the position of each of these galaxies
+    gal_ages = {}
+    gal_mets = {}
+    gal_ms = {}
+    gal_smls = {}
+    all_gal_poss = {}
+    means = {}
+    for id, cop in zip(halo_ids, gal_cops):
+        mask = halo_part_inds[id]
+        all_gal_poss[id] = all_poss[mask, :]
+        gal_ages[id] = ages[mask]
+        gal_mets[id] = metallicities[mask]
+        gal_ms[id] = masses[mask]
+        gal_smls[id] = gal_sml[mask]
+        means[id] = cop
+
+    print('There are', len(gal_ages.keys()), 'galaxies')
+
+    del subgrp_ids, ages, all_poss, metallicities, masses, gal_sml, a_born, grp_ids
+
+    gc.collect()
+
+    # If there are no galaxies exit
+    if len(gal_ages.keys()) == 0:
+        return
+
+    print('Got galaxy properties')
+
+    # Get gas particle information
+    gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True,
+                                numThreads=8)
+    gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
+    gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothedMetallicity', noH=True,
+                                     physicalUnits=True, numThreads=8)
+    gas_smooth_ls = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True,
+                                 numThreads=8)
+    gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True,
+                              numThreads=8) * 10 ** 10
+
+    # Remove particles not in a subgroup
+    nosub_mask = gsubgrp_ids != 1073741824
+    gas_all_poss = gas_all_poss[nosub_mask, :]
+    gas_metallicities = gas_metallicities[nosub_mask]
+    gas_smooth_ls = gas_smooth_ls[nosub_mask]
+    gas_masses = gas_masses[nosub_mask]
+
+    # Get particle indices
+    halo_part_inds = get_subgroup_part_inds(path, snap, part_type=0, all_parts=False, sorted=False)
+
+    # Get the position of each of these galaxies
+    gas_mets = {}
+    gas_ms = {}
+    gas_smls = {}
+    all_gas_poss = {}
+    for g, sg in zip(gal_gids, gal_ids):
+        id = float(str(int(g)) + '.%05d' % int(sg))
+        mask = halo_part_inds[id]
+        all_gas_poss[id] = gas_all_poss[mask, :]
+        gas_mets[id] = gas_metallicities[mask]
+        gas_ms[id] = gas_masses[mask]
+        gas_smls[id] = gas_smooth_ls[mask]
+
+    print('Got particle IDs')
+
+    del gsubgrp_ids, gas_all_poss, gas_metallicities, gas_smooth_ls, gas_masses
+
+    gc.collect()
+
+    print('Got gas properties')
+
+    save_dict = {'gal_ages': gal_ages, 'gal_mets': gal_mets, 'gal_ms': gal_ms, 'gas_mets': gas_mets,
+                 'gas_ms': gas_ms, 'gal_smls': gal_smls, 'gas_smls': gas_smls, 'all_gas_poss': all_gas_poss,
+                 'all_gal_poss': all_gal_poss, 'means': means}
+
+    return save_dict
 
 
 def plot_meidan_stat(xs, ys, ax, bins=None):
@@ -107,7 +301,7 @@ def calc_light_mass_rad(poss, ls, ms):
     return hmr, np.sum(ms)
 
 
-def hl_main(snap, reg, model, F, f, npart_lim=0, conv=1, i=0, j=1, dust=False):
+def hl_main(snap, model, F, f, conv=1, i=0, j=1, dust=False):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -120,13 +314,10 @@ def hl_main(snap, reg, model, F, f, npart_lim=0, conv=1, i=0, j=1, dust=False):
     lkernel = kinp['kernel']
     header = kinp['header']
     kbins = header.item()['bins']
-    if npart_lim > 0:
-        with open('UVimg_data/stellardata_reg' + reg + '_snap'
-                  + snap + '_npartgreaterthan' + str(npart_lim) + '.pck', 'rb') as pfile1:
-            save_dict = pickle.load(pfile1)
-    else:
-        with open('UVimg_data/stellardata_reg' + reg + '_snap' + snap + '.pck', 'rb') as pfile1:
-            save_dict = pickle.load(pfile1)
+
+    path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
+
+    save_dict = get_main(path, snap)
 
     gal_ages = save_dict['gal_ages']
     gal_mets = save_dict['gal_mets']
@@ -177,14 +368,15 @@ for reg in reg_ints:
     else:
         regions.append(str(reg))
 
-fs = ['mass', 'FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV']
+# fs = ['mass', 'FAKE.TH.V', 'FAKE.TH.NUV', 'FAKE.TH.FUV']
+fs = ['mass']
 conv = (u.solMass / u.Mpc ** 2).to(u.g / u.cm ** 2)
 ii, jj = 0, 1
 dust = False
 
-snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
-         '006_z009p000', '007_z008p000', '008_z007p000',
-         '009_z006p000', '010_z005p000', '011_z004p770']
+snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
+         '013_z002p478', '017_z001p487', '018_z001p259',
+         '019_z001p004', '020_z000p865', '024_z000p366']
 axlims_x = []
 axlims_y = []
 
@@ -195,16 +387,14 @@ for f in fs:
         half_mass_rads_dict[snap] = {}
         xaxis_dict[snap] = {}
 
-    for reg in regions:
+    for snap in snaps:
 
-        for snap in snaps:
-
-            print(reg, snap)
-            try:
-                half_mass_rads_dict[snap][reg], xaxis_dict[snap][reg] = hl_main(snap, reg, model, F, f,
-                                                                                conv=conv, i=ii, j=jj, dust=dust)
-            except FileNotFoundError:
-                continue
+        print(snap)
+        try:
+            half_mass_rads_dict[snap], xaxis_dict[snap] = hl_main(snap, model, F, f,
+                                                                  conv=conv, i=ii, j=jj, dust=dust)
+        except FileNotFoundError:
+            continue
 
 
     # Set up plot

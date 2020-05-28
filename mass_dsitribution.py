@@ -4,10 +4,13 @@ import matplotlib.pyplot as plt
 import matplotlib
 import eagle_IO.eagle_IO as E
 from matplotlib.lines import Line2D
+import matplotlib.gridspec as gridspec
 import seaborn as sns
 import pickle
 import itertools
 matplotlib.use('Agg')
+
+sns.set_style("white")
 
 
 def get_part_ids(sim, snapshot, part_type, all_parts=False):
@@ -129,7 +132,7 @@ def create_img(res, all_poss, gal_poss, mean, lim):
     return galimgs, surundimgs, extents
 
 
-def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, imgtype='compact', lim=0.04):
+def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, imgtype='compact', lim=0.035):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -257,13 +260,15 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             i, j = key.split('-')
 
             # Set up figure
-            fig = plt.figure(figsize=(9, 4))
-            ax1 = fig.add_subplot(321)
-            ax2 = fig.add_subplot(322)
-            ax3 = fig.add_subplot(323)
-            ax4 = fig.add_subplot(324)
-            ax5 = fig.add_subplot(325)
-            ax6 = fig.add_subplot(326)
+            fig = plt.figure(figsize=(4, 9))
+            gs = gridspec.GridSpec(ncols=2, nrows=3)
+            gs.update(wspace=0.0, hspace=0.0)
+            ax1 = fig.add_subplot(gs[0, 0])
+            ax2 = fig.add_subplot(gs[0, 1])
+            ax3 = fig.add_subplot(gs[1, 0])
+            ax4 = fig.add_subplot(gs[1, 1])
+            ax5 = fig.add_subplot(gs[2, 0])
+            ax6 = fig.add_subplot(gs[2, 1])
 
             # Draw images
             ax1.imshow(np.arcsinh(galimgs[1][key]), extent=extents[1][key], cmap='Greys')
@@ -273,12 +278,12 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             ax5.imshow(np.arcsinh(galimgs[4][key]), extent=extents[4][key], cmap='Greys')
             ax6.imshow(np.arcsinh(surundimgs[4][key]), extent=extents[4][key], cmap='Greys')
 
-            circle1 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
-            circle2 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
-            circle3 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
-            circle4 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
-            circle5 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
-            circle6 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
+            circle1 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='-')
+            circle2 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='-')
+            circle3 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='-')
+            circle4 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='-')
+            circle5 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='-')
+            circle6 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='-')
 
             app1 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='g', linestyle='--')
             app2 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='g', linestyle='--')
@@ -327,8 +332,8 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                             labeltop=False, labelright=False, labelbottom=False)
 
-            custom_lines = [Line2D([0], [0], color='r', lw=4),
-                            Line2D([0], [0], color='g', lw=4)]
+            custom_lines = [Line2D([0], [0], color='r', lw=3),
+                            Line2D([0], [0], color='g', lw=3, linestyle='--')]
 
             ax6.legend(custom_lines, ['Softening', '$30$ ckpc aperture'])
 

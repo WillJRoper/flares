@@ -138,10 +138,6 @@ def get_main(path, snap, reg):
                                  physicalUnits=True, numThreads=8)
     masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True, numThreads=8) * 10**10
 
-    print(gal_ids)
-    print(gal_gids)
-    print(gal_cops)
-
     # Remove particles not in a subgroup
     nosub_mask = subgrp_ids != 1073741824
     all_poss = all_poss[nosub_mask, :]
@@ -172,7 +168,6 @@ def get_main(path, snap, reg):
     means = {}
     for id, cop in zip(halo_ids, gal_cops):
         mask = halo_part_inds[id]
-        id = float(str(int(g)) + '.' + str(int(sg)))
         all_gal_poss[id] = all_poss[mask, :]
         gal_ages[id] = ages[mask]
         gal_mets[id] = metallicities[mask]
@@ -195,7 +190,6 @@ def get_main(path, snap, reg):
     # Get gas particle information
     gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True,
                                 numThreads=8)
-    ggrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', numThreads=8)
     gsubgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
     gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothedMetallicity', noH=True,
                                      physicalUnits=True, numThreads=8)
@@ -207,11 +201,12 @@ def get_main(path, snap, reg):
     # Remove particles not in a subgroup
     nosub_mask = gsubgrp_ids != 1073741824
     gas_all_poss = gas_all_poss[nosub_mask, :]
-    ggrp_ids = ggrp_ids[nosub_mask]
-    gsubgrp_ids = gsubgrp_ids[nosub_mask]
     gas_metallicities = gas_metallicities[nosub_mask]
     gas_smooth_ls = gas_smooth_ls[nosub_mask]
     gas_masses = gas_masses[nosub_mask]
+
+    # Get particle indices
+    halo_part_inds = get_subgroup_part_inds(path, snap, part_type=0, all_parts=False, sorted=False)
 
     # Get the position of each of these galaxies
     gas_mets = {}
@@ -219,8 +214,8 @@ def get_main(path, snap, reg):
     gas_smls = {}
     all_gas_poss = {}
     for g, sg in zip(gal_gids, gal_ids):
-        mask = (ggrp_ids == g) & (gsubgrp_ids == sg)
-        id = float(str(int(g)) + '.' + str(int(sg)))
+        id = float(str(int(g)) + '.%05d' % int(sg))
+        mask = halo_part_inds[id]
         all_gas_poss[id] = gas_all_poss[mask, :]
         gas_mets[id] = gas_metallicities[mask]
         gas_ms[id] = gas_masses[mask]
@@ -228,7 +223,7 @@ def get_main(path, snap, reg):
 
     print('Got particle IDs')
 
-    del ggrp_ids, gsubgrp_ids, gas_all_poss, gas_metallicities, gas_smooth_ls, gas_masses
+    del gsubgrp_ids, gas_all_poss, gas_metallicities, gas_smooth_ls, gas_masses
 
     gc.collect()
 
