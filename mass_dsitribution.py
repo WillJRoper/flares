@@ -2,10 +2,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-import astropy.units as u
-from matplotlib.colors import LogNorm
-import matplotlib.gridspec as gridspec
 import eagle_IO.eagle_IO as E
+from matplotlib.lines import Line2D
 import seaborn as sns
 import pickle
 import itertools
@@ -131,7 +129,7 @@ def create_img(res, all_poss, gal_poss, mean, lim):
     return galimgs, surundimgs, extents
 
 
-def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, imgtype='compact', lim=0.08):
+def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, imgtype='compact', lim=0.04):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -142,7 +140,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
     all_poss = {}
     means = {}
 
-    assert part_types[0] == 4, "Initial partilce type must be 4 (star)"
+    assert part_types[0] == 4, "Initial particle type must be 4 (star)"
 
     for part_type in part_types:
 
@@ -158,13 +156,17 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
         # Get IDs
         if part_type == 4 and imgtype == 'compact':
             half_mass_rads = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True, numThreads=8)[:, 4]
+            cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
+                                  numThreads=8)
             grp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subgrp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
 
             # Get the half mass radii for each group
             half_mass_rads_dict = {}
-            for r, g, sg in zip(half_mass_rads, grp_ID, subgrp_ID):
+            cops_dict = {}
+            for r, cop, g, sg in zip(half_mass_rads, cops, grp_ID, subgrp_ID):
                 half_mass_rads_dict[float(str(int(g)) + '.%05d' % int(sg))] = r
+                cops_dict[float(str(int(g)) + '.%05d' % int(sg))] = cop
 
             # Get the IDs above the npart threshold
             ids, counts = np.unique(halo_ids, return_counts=True)
@@ -177,13 +179,17 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
         elif part_type == 4 and imgtype == 'DMless':
             masses = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
                                   numThreads=8)
+            cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
+                                  numThreads=8)
             grp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subgrp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
 
             # Get the half mass radii for each group
             masses_dict = {}
-            for ms, g, sg in zip(masses, grp_ID, subgrp_ID):
+            cops_dict = {}
+            for ms,cop,  g, sg in zip(masses, cops, grp_ID, subgrp_ID):
                 masses_dict[float(str(int(g)) + '.%05d' % int(sg))] = ms
+                cops_dict[float(str(int(g)) + '.%05d' % int(sg))] = cop
 
             # Get the IDs above the npart threshold
             ids, counts = np.unique(halo_ids, return_counts=True)
@@ -214,7 +220,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
                 all_gal_poss[part_type][id] = np.array([])
 
             if part_type == 4:
-                means[id] = all_gal_poss[part_type][id].mean(axis=0)
+                means[id] = cops_dict[id]
 
     print('Extracted galaxy positions')
 
@@ -251,7 +257,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             i, j = key.split('-')
 
             # Set up figure
-            fig = plt.figure()
+            fig = plt.figure(figsize=(9, 4))
             ax1 = fig.add_subplot(321)
             ax2 = fig.add_subplot(322)
             ax3 = fig.add_subplot(323)
@@ -274,12 +280,26 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             circle5 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
             circle6 = plt.Circle((0., 0.), soft, facecolor='none', edgecolor='r', linestyle='--')
 
+            app1 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='g', linestyle='--')
+            app2 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='g', linestyle='--')
+            app3 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='g', linestyle='--')
+            app4 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='g', linestyle='--')
+            app5 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='g', linestyle='--')
+            app6 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='g', linestyle='--')
+
             ax1.add_artist(circle1)
             ax2.add_artist(circle2)
             ax3.add_artist(circle3)
             ax4.add_artist(circle4)
             ax5.add_artist(circle5)
             ax6.add_artist(circle6)
+
+            ax1.add_artist(app1)
+            ax2.add_artist(app2)
+            ax3.add_artist(app3)
+            ax4.add_artist(app4)
+            ax5.add_artist(app5)
+            ax6.add_artist(app6)
 
             # Label axes
             ax5.set_xlabel(axlabels[int(i)])
@@ -292,6 +312,25 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
                     transform=ax3.transAxes, horizontalalignment='left', fontsize=6)
             ax5.text(0.1, 0.85, f'Stars', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                     transform=ax5.transAxes, horizontalalignment='left', fontsize=6)
+
+            # Remove ticks
+            ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax4.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+
+            custom_lines = [Line2D([0], [0], color='r', lw=4),
+                            Line2D([0], [0], color='g', lw=4)]
+
+            ax6.legend(custom_lines, ['Softening', '$30$ ckpc aperture'])
 
             # Set titles
             ax2.set_title('Surrounding particles')
