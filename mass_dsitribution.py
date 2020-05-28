@@ -260,7 +260,7 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             i, j = key.split('-')
 
             # Set up figure
-            fig = plt.figure(figsize=(4, 9))
+            fig = plt.figure(figsize=(4, 7))
             gs = gridspec.GridSpec(ncols=2, nrows=3)
             gs.update(wspace=0.0, hspace=0.0)
             ax1 = fig.add_subplot(gs[0, 0])
@@ -335,11 +335,11 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
             custom_lines = [Line2D([0], [0], color='r', lw=3),
                             Line2D([0], [0], color='g', lw=3, linestyle='--')]
 
-            ax6.legend(custom_lines, ['Softening', '$30$ ckpc aperture'])
+            ax6.legend(custom_lines, ['Softening', '$30$ ckpc aperture'], fontsize=6)
 
             # Set titles
-            ax2.set_title('Surrounding particles')
-            ax1.set_title('Galaxy particles')
+            ax2.set_title('Surrounding particles', fontsize=8)
+            ax1.set_title('Galaxy particles', fontsize=8)
 
             fig.savefig('plots/massdistributions/'+ imgtype + '_reg' + str(reg) + '_snap' + snap +
                         '_gal' + str(id).split('.')[0] + 'p' + str(id).split('.')[1] + '_coords' + key + 'png',
