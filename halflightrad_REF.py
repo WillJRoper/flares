@@ -16,6 +16,7 @@ os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
 import gc
 from SynthObs.SED import models
+import eagle_IO.eagle_IO as E
 matplotlib.use('Agg')
 
 
