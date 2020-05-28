@@ -41,8 +41,7 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
         halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
     # Sort particle IDs
-    part_ids = np.sort(part_ids)  # this is optional
-    unsort_part_ids = part_ids[:]
+    unsort_part_ids = np.copy(part_ids)
     sinds = np.argsort(part_ids)
     part_ids = part_ids[sinds]
 
