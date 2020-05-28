@@ -10,6 +10,7 @@ from scipy.optimize import curve_fit
 from scipy.spatial import ConvexHull
 import eagle_IO.eagle_IO as E
 import sys
+import pickle
 
 
 def _sphere(coords, a, b, c, r):
@@ -72,7 +73,7 @@ def get_sphere_data(path, snap, part_type, soft):
     return poss, masses, smls
 
 
-def single_sphere(reg, snap, soft, t=0, p=0):
+def single_sphere(reg, snap, soft, t=0):
 
     # Define path
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
@@ -116,47 +117,57 @@ def single_sphere(reg, snap, soft, t=0, p=0):
     # Define the box size
     lbox = (15 / 0.677) * 2
 
-    # Define particles
-    qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-                       xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-                       xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-    # qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-    #                    xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+    # Define rotations
+    ps = np.linspace(0, 360, 180)
 
-    # Get colormaps
-    cmap_gas = ml.cm.magma
-    cmap_dm = ml.cm.Greys_r
-    # cmap_stars = ml.cm.Greys_r
+    save_dict = {}
 
-    # Get each particle type image
-    # imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image(), 'stars': qv_stars.get_image()}
-    # extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent(), 'stars': qv_stars.get_extent()}
-    imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image()}
-    extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent()}
+    for num, p in enumerate(ps):
 
-    # Convert images to rgb arrays
-    rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
-                                            vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()+7)))
-    rgb_DM = cmap_dm(get_normalised_image(np.log10(imgs['dm']),
-                                          vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min()-0.5)))
-    # rgb_stars = cmap_stars(get_normalised_image(np.log10(imgs['stars']),
-    #                                             vmin=np.log10(imgs['stars'][np.where(imgs['stars'] != 0.0)].min())))
+        # Define particles
+        qv_gas = QuickView(poss_gas, mass=masses_gas, hsml=smls_gas, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
+                           xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+        qv_DM = QuickView(poss_DM, mass=masses_DM, hsml=smls_DM, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
+                           xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
+        # qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
+        #                    xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
-    # rgb_gas[rgb_gas == 0.0] = np.nan
-    # rgb_DM[rgb_DM == 0.0] = np.nan
-    # rgb_stars[rgb_stars == 0.0] = np.nan
+        # Get colormaps
+        cmap_gas = ml.cm.magma
+        cmap_dm = ml.cm.Greys_r
+        # cmap_stars = ml.cm.Greys_r
 
-    blend1 = Blend.Blend(rgb_DM, rgb_gas)
-    dmgas_output = blend1.Overlay()
-    # blend2 = Blend.Blend(dmgas_output, rgb_stars)
-    # rgb_output = blend2.Overlay()
-    rgb_output = dmgas_output
+        # Get each particle type image
+        # imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image(), 'stars': qv_stars.get_image()}
+        # extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent(), 'stars': qv_stars.get_extent()}
+        imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image()}
+        extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent()}
 
-    return rgb_output, extents['gas']
+        # Convert images to rgb arrays
+        rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
+                                                vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()+7)))
+        rgb_DM = cmap_dm(get_normalised_image(np.log10(imgs['dm']),
+                                              vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min()-0.5)))
+        # rgb_stars = cmap_stars(get_normalised_image(np.log10(imgs['stars']),
+        #                                             vmin=np.log10(imgs['stars'][np.where(imgs['stars'] != 0.0)].min())))
+
+        # rgb_gas[rgb_gas == 0.0] = np.nan
+        # rgb_DM[rgb_DM == 0.0] = np.nan
+        # rgb_stars[rgb_stars == 0.0] = np.nan
+
+        blend1 = Blend.Blend(rgb_DM, rgb_gas)
+        dmgas_output = blend1.Overlay()
+        # blend2 = Blend.Blend(dmgas_output, rgb_stars)
+        # rgb_output = blend2.Overlay()
+        rgb_output = dmgas_output
+
+        save_dict[num] = {'img': rgb_output, 'extent': extents['gas']}
+
+    with open(f"spheresdata/spheregird_img_data_{reg}_{snap}.pck", 'wb') as pfile:
+        pickle.dump(save_dict, pfile)
 
 
-def spheregrid(snap, soft, t=0, p=0, num=0):
+def spheregrid(snap):
 
     # Define region list
     regions = []
@@ -166,28 +177,33 @@ def spheregrid(snap, soft, t=0, p=0, num=0):
         else:
             regions.append(str(reg))
 
-    fig = plt.figure(figsize=(8*3.95, 5*4))
-    gs = gridspec.GridSpec(nrows=5, ncols=8)
-    gs.update(wspace=0.0, hspace=0.0)
+    for num in range(180):
 
-    pltgrid = []
-    for i in range(5):
-        for j in range(8):
-            pltgrid.append((i, j))
+        fig = plt.figure(figsize=(8 * 3.95, 5 * 4))
+        gs = gridspec.GridSpec(nrows=5, ncols=8)
+        gs.update(wspace=0.0, hspace=0.0)
 
-    for reg, (i, j) in zip(regions, pltgrid):
+        pltgrid = []
+        for i in range(5):
+            for j in range(8):
+                pltgrid.append((i, j))
 
-        ax = fig.add_subplot(gs[i, j])
+        for reg, (i, j) in zip(regions, pltgrid):
 
-        img, extent = single_sphere(reg, snap, soft, t, p)
+            with open(f"spheresdata/spheregird_img_data_{reg}_{snap}.pck", 'rb') as pfile:
+                save_dict = pickle.load(pfile)
 
-        ax.imshow(img, extent=extent, origin='lower')
-        ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
-                       labeltop=False, labelright=False, labelbottom=False)
+            ax = fig.add_subplot(gs[i, j])
 
-    fig.savefig('plots/spheres/All/all_parts_grid_sphere_snap' + snap + '_angle%05d.png'%num,
-                bbox_inches='tight', facecolor='k')
-    plt.close(fig)
+            img, extent = save_dict[num]['img'], save_dict[num]['extent']
+
+            ax.imshow(img, extent=extent, origin='lower')
+            ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                           labeltop=False, labelright=False, labelbottom=False)
+
+        fig.savefig('plots/spheres/All/all_parts_grid_sphere_snap' + snap + '_angle%05d.png'%num,
+                    bbox_inches='tight', facecolor='k')
+        plt.close(fig)
 
 
 # Define softening lengths
@@ -205,17 +221,20 @@ csoft = 0.001802390 / 0.677
 # snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
 #          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 #
-# # Define a list of regions and snapshots
-# reg_snaps = []
-# for snap in snaps:
-#
-#     for reg in regions:
-#
-#         reg_snaps.append((reg, snap))
+# Define region list
+regions = []
+for reg in range(0, 40):
+    if reg < 10:
+        regions.append('0' + str(reg))
+    else:
+        regions.append(str(reg))
 
 ind = int(sys.argv[1])
 # print(reg_snaps[ind])
 # reg, snap = reg_snaps[ind]
-reg, snap = '00', '010_z005p000'
-ps = np.linspace(0, 360, 360)
-spheregrid(snap, soft=csoft, p=ps[ind], num=ind)
+reg, snap = regions[ind], '010_z005p000'
+
+if int(sys.argv[2]) == 0:
+    single_sphere(reg, snap, csoft, t=0)
+if int(sys.argv[2]) == 1:
+    spheregrid(snap)

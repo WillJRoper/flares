@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH --ntasks 1 # The number of cores you need...
-#SBATCH --array=1-360%20
+#SBATCH --array=1-40
 #SBATCH --cpus-per-task=8
 #SBATCH -J FLARES-SphereGrid #Give it something meaningful.
 #SBATCH -o logs/output_spheregrid.%J.out
@@ -24,7 +24,7 @@ source activate flares-env
 i=$(($SLURM_ARRAY_TASK_ID - 1))
 
 # Run the program
-./all_sphere_all_types.py $i
+./all_sphere_all_types.py $i 0
 
 source deactivate
 
