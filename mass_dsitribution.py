@@ -204,7 +204,32 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
                 elif any(masses_dict[id][[0, 1, 5]] > 0.0):
                     ids.remove(id)
 
-        elif part_type == 4 and imgtype not in ['compact', 'DMless']:
+        elif part_type == 4 and imgtype == 'extreme':
+            masses = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                                  numThreads=8)
+            cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
+                                  numThreads=8)
+            grp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+            subgrp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+
+            # Get the half mass radii for each group
+            masses_dict = {}
+            cops_dict = {}
+            for ms,cop,  g, sg in zip(masses, cops, grp_ID, subgrp_ID):
+                masses_dict[float(str(int(g)) + '.%05d' % int(sg))] = ms
+                cops_dict[float(str(int(g)) + '.%05d' % int(sg))] = cop
+
+            # Get the IDs above the npart threshold
+            ids, counts = np.unique(halo_ids, return_counts=True)
+            ids = set(ids[ids >= 0])
+
+            for id in list(ids):
+                if str(id).split('.')[1] == '1073741825':
+                    ids.remove(id)
+                elif str(id).split('.')[0] != '3':
+                    ids.remove(id)
+
+        elif part_type == 4 and imgtype not in ['compact', 'DMless', 'extreme']:
             print('Invalid type, should be one of:', ['compact', 'DMless'])
 
         print('There are', len(ids), 'galaxies above the cutoff')
