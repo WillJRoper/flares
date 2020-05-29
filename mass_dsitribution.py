@@ -209,15 +209,20 @@ def img_main(path, snap, reg, res, soft, part_types=(4, 0, 1), npart_lim=10**3, 
                                   numThreads=8)
             cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                                   numThreads=8)
+            sfs = E.read_array('SUBFIND', path, snap, 'Subhalo/SF/Mass', noH=True,
+                                numThreads=8)
             grp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subgrp_ID = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
 
             # Get the half mass radii for each group
             masses_dict = {}
             cops_dict = {}
-            for ms,cop,  g, sg in zip(masses, cops, grp_ID, subgrp_ID):
+            for ms, cop, sf, g, sg in zip(masses, cops, sfs, grp_ID, subgrp_ID):
                 masses_dict[float(str(int(g)) + '.%05d' % int(sg))] = ms
                 cops_dict[float(str(int(g)) + '.%05d' % int(sg))] = cop
+                if int(g) == 3 and int(sg) == 0:
+                    print("starforming mass", sf * 10**10)
+                    return
 
             # Get the IDs above the npart threshold
             ids, counts = np.unique(halo_ids, return_counts=True)
