@@ -503,10 +503,10 @@ for f in fs:
     ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
     if f != 'mass':
-        fig.savefig('plots/HalfLightRadius_all_snaps_' + f + '_coords' + str(ii) + '-' + str(jj) + '.png',
+        fig.savefig('plots/HalfLightRadius_all_snaps_' + f + '_coords' + str(ii) + '-' + str(jj) + 'REF.png',
                     bbox_inches='tight')
     else:
-        fig.savefig('plots/HalfMassRadius_all_snaps_coords' + str(ii) + '-' + str(jj) + '.png',
+        fig.savefig('plots/HalfMassRadius_all_snaps_coords' + str(ii) + '-' + str(jj) + 'REF.png',
                     bbox_inches='tight')
 
     plt.close(fig)
