@@ -385,4 +385,4 @@ reg = '0000'
 snap = '010_z005p000'
 path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
-img_main(path, snap, reg, res, soft=csoft, npart_lim=10**4, imgtype='DMless')
+img_main(path, snap, reg, res, soft=csoft, npart_lim=10**4, imgtype='extreme')
