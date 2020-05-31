@@ -209,6 +209,9 @@ ind = int(sys.argv[1])
 # reg, snap = reg_snaps[ind]
 reg, snap = regions[ind], '010_z005p000'
 
+# Define path
+path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+
 # Get the spheres centre
 centre, radius, mindist = spherical_region(path, snap)
 
@@ -228,9 +231,6 @@ for num, p in enumerate(ps):
     print(p)
 
     if int(sys.argv[2]) == 0:
-
-        # Define path
-        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
         rgb_gas, extent = get_single_sphere_imgs(gas_scene, cmap_gas, gas_vmin, p, t=0)
         rgb_dm, _ = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
