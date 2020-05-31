@@ -74,114 +74,67 @@ def get_sphere_data(path, snap, part_type, soft):
     return poss, masses, smls
 
 
-def single_sphere(reg, snap, soft, t=0):
+def set_up_single_sphere(reg, snap, soft, centre, part_type):
 
     # Define path
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-    # Get the spheres centre
-    centre, radius, mindist = spherical_region(path, snap)
-
     # Get plot data
-    poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
-    poss_DM, masses_DM, smls_DM = get_sphere_data(path, snap, part_type=1, soft=soft)
-    # poss_stars, masses_stars, smls_stars = get_sphere_data(path, snap, part_type=4, soft=None)
+    poss, masses, smls = get_sphere_data(path, snap, part_type, soft=soft)
 
     # Centre particles
-    poss_gas -= centre
-    poss_DM -= centre
-    # poss_stars -= centre
+    poss -= centre
 
     print("Centered positions")
 
+    # Calculate radii
+    rs = np.linalg.norm(poss, axis=1)
+
     # Remove boundary particles
-    rgas = np.linalg.norm(poss_gas, axis=1)
-    rDM = np.linalg.norm(poss_DM, axis=1)
-    # rstars = np.linalg.norm(poss_stars, axis=1)
-    okinds_gas = rgas < 14 / 0.677
-    poss_gas = poss_gas[okinds_gas, :]
-    masses_gas = masses_gas[okinds_gas]
-    smls_gas = smls_gas[okinds_gas]
-    okinds_DM = rDM < 14 / 0.677
-    poss_DM = poss_DM[okinds_DM, :]
-    masses_DM = masses_DM[okinds_DM]
-    smls_DM = smls_DM[okinds_DM]
-    # okinds_stars = rstars < 14 / 0.677
-    # poss_stars = poss_stars[okinds_stars, :]
-    # masses_stars = masses_stars[okinds_stars]
-    # smls_stars = smls_stars[okinds_stars]
+    okinds = rs < 14 / 0.677
+    poss = poss[okinds, :]
+    masses = masses[okinds]
+    smls = smls[okinds]
 
-    print('There are', len(masses_gas), 'gas particles in region', reg)
-    print('There are', len(masses_DM), 'DM particles in region', reg)
-    # print('There are', len(masses_stars), 'star particles in the region')
+    print('There are', len(masses), part_type, 'particles in region', reg)
 
-    # fig = plt.figure(1, figsize=(7, 7))
+    # Set up pysphviewer objects
+    part = sphviewer.Particles(poss, mass=masses, hsml=smls)
+    scene = sphviewer.Scene(part)
+
+    return scene
+
+def get_single_sphere_imgs(scene, cmap, vmin_correction, p, t):
 
     # Define the box size
     lbox = (15 / 0.677) * 2
 
-    # Define rotations
-    ps = np.linspace(0, 360, 180)
+    scene.update_camera(r=lbox * 3/4, t=t, p=p, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
+                        extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
 
-    save_dict = {}
+    # Define particles
+    render = sphviewer.Render(scene)
 
-    # Set up pysphviewer objects
-    part_gas = sphviewer.Particles(poss_gas, mass=masses_gas, hsml=smls_gas)
-    part_DM = sphviewer.Particles(poss_DM, mass=masses_DM, hsml=smls_DM)
-    gas_scene = sphviewer.Scene(part_gas)
-    DM_scene = sphviewer.Scene(part_DM)
+    # Get image
+    img = render.get_image()
+    extent = render.get_extent()
 
-    for num, p in enumerate(ps):
+    # Convert images to rgb arrays
+    rgb = cmap(get_normalised_image(np.log10(img), vmin=np.log10(img[np.where(img != 0.0)].min() + vmin_correction)))
 
-        print(p)
-
-        gas_scene.update_camera(r=lbox * 3/4, t=t, p=p, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
-                                extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-        DM_scene.update_camera(r=lbox * 3/4, t=t, p=p, roll=0, xsize=5000, ysize=5000, x=0, y=0, z=0,
-                                extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-
-        # Define particles
-        render_gas = sphviewer.Render(gas_scene)
-        render_DM = sphviewer.Render(DM_scene)
-        # qv_stars = QuickView(poss_stars, mass=masses_stars, hsml=smls_stars, plot=False, r=lbox * 3/4, t=t, p=p, roll=0,
-        #                    xsize=5000, ysize=5000, x=0, y=0, z=0, extent=[-lbox / 2., lbox / 2., -lbox / 2., lbox / 2.])
-
-        # Get colormaps
-        cmap_gas = ml.cm.magma
-        cmap_dm = ml.cm.Greys_r
-        # cmap_stars = ml.cm.Greys_r
-
-        # Get each particle type image
-        # imgs = {'gas': qv_gas.get_image(), 'dm': qv_DM.get_image(), 'stars': qv_stars.get_image()}
-        # extents = {'gas': qv_gas.get_extent(), 'dm': qv_DM.get_extent(), 'stars': qv_stars.get_extent()}
-        imgs = {'gas': render_gas.get_image(), 'dm': render_DM.get_image()}
-        extents = {'gas': render_gas.get_extent(), 'dm': render_DM.get_extent()}
-
-        # Convert images to rgb arrays
-        rgb_gas = cmap_gas(get_normalised_image(np.log10(imgs['gas']),
-                                                vmin=np.log10(imgs['gas'][np.where(imgs['gas'] != 0.0)].min()+7)))
-        rgb_DM = cmap_dm(get_normalised_image(np.log10(imgs['dm']),
-                                              vmin=np.log10(imgs['dm'][np.where(imgs['dm'] != 0.0)].min()-0.5)))
-        # rgb_stars = cmap_stars(get_normalised_image(np.log10(imgs['stars']),
-        #                                             vmin=np.log10(imgs['stars'][np.where(imgs['stars'] != 0.0)].min())))
-
-        # rgb_gas[rgb_gas == 0.0] = np.nan
-        # rgb_DM[rgb_DM == 0.0] = np.nan
-        # rgb_stars[rgb_stars == 0.0] = np.nan
-
-        blend1 = Blend.Blend(rgb_DM, rgb_gas)
-        dmgas_output = blend1.Overlay()
-        # blend2 = Blend.Blend(dmgas_output, rgb_stars)
-        # rgb_output = blend2.Overlay()
-        rgb_output = dmgas_output
-
-        save_dict[num] = {'img': rgb_output, 'extent': extents['gas']}
-
-    with open(f"spheresdata/spheregird_img_data_{reg}_{snap}.pck", 'wb') as pfile:
-        pickle.dump(save_dict, pfile)
+    return rgb, extent
 
 
-def spheregrid(snap):
+def blend(rgb_DM, rgb_gas):
+
+    blend1 = Blend.Blend(rgb_DM, rgb_gas)
+    dmgas_output = blend1.Overlay()
+    rgb_output = dmgas_output
+
+    return rgb_output
+
+
+def spheregrid(snap, nframes):
 
     # Define region list
     regions = []
@@ -191,7 +144,7 @@ def spheregrid(snap):
         else:
             regions.append(str(reg))
 
-    for num in range(180):
+    for num in range(nframes):
 
         fig = plt.figure(figsize=(8 * 3.95, 5 * 4))
         gs = gridspec.GridSpec(nrows=5, ncols=8)
@@ -243,12 +196,48 @@ for reg in range(0, 40):
     else:
         regions.append(str(reg))
 
+# Define path
+path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+
+# Get colormaps
+cmap_gas = ml.cm.magma
+cmap_dm = ml.cm.Greys_r
+
+# Minimum corrections
+dm_vmin = 7
+gas_vmin = -0.5
+
 ind = int(sys.argv[1])
 # print(reg_snaps[ind])
 # reg, snap = reg_snaps[ind]
 reg, snap = regions[ind], '010_z005p000'
 
-if int(sys.argv[2]) == 0:
-    single_sphere(reg, snap, csoft, t=0)
+# Get the spheres centre
+centre, radius, mindist = spherical_region(path, snap)
+
+nframes = 180
+
+# Define rotations
+ps = np.linspace(0, 360, nframes)
+
+# Set up particle objects
+dm_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=1)
+gas_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=0)
+
+save_dict = {}
+
+for num, p in enumerate(ps):
+
+    print(p)
+
+    if int(sys.argv[2]) == 0:
+
+        rgb_gas, extent = get_single_sphere_imgs(gas_scene, cmap_gas, gas_vmin, p, t=0)
+        rgb_dm, _ = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
+
+        rgb = blend(rgb_dm, rgb_gas)
+
+        save_dict[num] = {'img': rgb, 'extent': extent}
+
 if int(sys.argv[2]) == 1:
     spheregrid(snap)
