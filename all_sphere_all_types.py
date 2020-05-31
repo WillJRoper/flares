@@ -79,13 +79,13 @@ def single_sphere(reg, snap, soft, t=0):
     # Define path
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
+    # Get the spheres centre
+    centre, radius, mindist = spherical_region(path, snap)
+
     # Get plot data
     poss_gas, masses_gas, smls_gas = get_sphere_data(path, snap, part_type=0, soft=None)
     poss_DM, masses_DM, smls_DM = get_sphere_data(path, snap, part_type=1, soft=soft)
     # poss_stars, masses_stars, smls_stars = get_sphere_data(path, snap, part_type=4, soft=None)
-
-    # Get the spheres centre
-    centre, radius, mindist = spherical_region(path, snap)
 
     # Centre particles
     poss_gas -= centre
