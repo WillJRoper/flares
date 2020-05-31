@@ -92,6 +92,8 @@ def single_sphere(reg, snap, soft, t=0):
     poss_DM -= centre
     # poss_stars -= centre
 
+    print("Centered positions")
+
     # Remove boundary particles
     rgas = np.linalg.norm(poss_gas, axis=1)
     rDM = np.linalg.norm(poss_DM, axis=1)
