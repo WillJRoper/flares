@@ -196,9 +196,6 @@ for reg in range(0, 40):
     else:
         regions.append(str(reg))
 
-# Define path
-path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
-
 # Get colormaps
 cmap_gas = ml.cm.magma
 cmap_dm = ml.cm.Greys_r
@@ -231,6 +228,9 @@ for num, p in enumerate(ps):
     print(p)
 
     if int(sys.argv[2]) == 0:
+
+        # Define path
+        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
         rgb_gas, extent = get_single_sphere_imgs(gas_scene, cmap_gas, gas_vmin, p, t=0)
         rgb_dm, _ = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
