@@ -5,7 +5,7 @@
 #SBATCH -J FLARES-SphereGrid #Give it something meaningful.
 #SBATCH -o logs/output_spheregrid.%J.out
 #SBATCH -e logs/error_spheregrid.%J.err
-#SBATCH -p cosma6 #or some other partition, e.g. cosma, cosma6, etc.
+#SBATCH -p cosma7 #or some other partition, e.g. cosma, cosma6, etc.
 #SBATCH -A dp004
 #SBATCH --exclusive
 #SBATCH -t 72:00:00
@@ -24,7 +24,7 @@ source activate flares-env
 i=$(($SLURM_ARRAY_TASK_ID - 1))
 
 # Run the program
-./all_sphere_all_types.py $i 0
+./all_sphere_all_types.py $i
 
 source deactivate
 
