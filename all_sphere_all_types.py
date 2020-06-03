@@ -228,21 +228,21 @@ gas_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=0)
 
 save_dict = {}
 
-if int(sys.argv[2]) == 0:
+# if int(sys.argv[2]) == 0:
+#
+#     for num, p in enumerate(ps):
+#
+#         print(p)
+#
+#         rgb_gas, extent = get_single_sphere_imgs(gas_scene, cmap_gas, gas_vmin, p, t=0)
+#         rgb_dm, _ = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
+#
+#         rgb = blend(rgb_dm, rgb_gas)
+#
+#         save_dict[num] = {'img': rgb, 'extent': extent}
+#
+#     with open(f"spheresdata/spheregird_img_data_{reg}_{snap}.pck", 'wb') as pfile:
+#         pickle.dump(save_dict, pfile)
 
-    for num, p in enumerate(ps):
 
-        print(p)
-
-        rgb_gas, extent = get_single_sphere_imgs(gas_scene, cmap_gas, gas_vmin, p, t=0)
-        rgb_dm, _ = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
-
-        rgb = blend(rgb_dm, rgb_gas)
-
-        save_dict[num] = {'img': rgb, 'extent': extent}
-
-    with open(f"spheresdata/spheregird_img_data_{reg}_{snap}.pck", 'wb') as pfile:
-        pickle.dump(save_dict, pfile)
-
-if int(sys.argv[2]) == 1:
-    spheregrid(snap, nframes)
+spheregrid(snap, nframes)
