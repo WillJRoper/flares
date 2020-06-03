@@ -36,7 +36,7 @@ F = FLARE.filters.add_filters(filters, new_lam = model.lam)
 model.create_Lnu_grid(F)
 
 
-def get_part_ids(sim, snapshot, part_type, all_parts=False):
+def get_part_inds(sim, snapshot, part_type, all_parts=False):
 
     # Get the particle IDs
     if all_parts:
