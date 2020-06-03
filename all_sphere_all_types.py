@@ -217,7 +217,7 @@ path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 # Get the spheres centre
 centre, radius, mindist = spherical_region(path, snap)
 
-nframes = 50
+nframes = 180
 #
 # Define rotations
 ps = np.linspace(0, 360, nframes)
