@@ -132,7 +132,7 @@ def get_main(path, snap):
     ages = calc_ages(z, a_born)
 
     # Get particle indices
-    halo_part_inds = get_part_inds(path, snap, part_type=4, all_parts=False, sorted=False)
+    halo_part_inds = get_part_inds(path, snap, part_type=4, all_parts=False)
 
     # Get the position of each of these galaxies
     gal_ages = {}
@@ -181,7 +181,7 @@ def get_main(path, snap):
     gas_masses = gas_masses[nosub_mask]
 
     # Get particle indices
-    halo_part_inds = get_part_inds(path, snap, part_type=0, all_parts=False, sorted=False)
+    halo_part_inds = get_part_inds(path, snap, part_type=0, all_parts=False)
 
     # Get the position of each of these galaxies
     gas_mets = {}
