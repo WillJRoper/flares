@@ -157,6 +157,8 @@ def spheregrid(snap, nframes):
 
         for reg, (i, j) in zip(regions, pltgrid):
 
+            print(reg, i, j)
+
             with open(f"spheresdata/spheregird_img_data_{reg}_{snap}.pck", 'rb') as pfile:
                 save_dict = pickle.load(pfile)
 
