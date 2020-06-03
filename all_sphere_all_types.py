@@ -214,34 +214,32 @@ reg, snap = regions[ind], '010_z005p000'
 # Define path
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-# # Get the spheres centre
-# centre, radius, mindist = spherical_region(path, snap)
-#
-nframes = 180
-#
-# # Define rotations
-# ps = np.linspace(0, 360, nframes)
-#
-# # Set up particle objects
-# dm_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=1)
-# gas_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=0)
-#
-# save_dict = {}
+# Get the spheres centre
+centre, radius, mindist = spherical_region(path, snap)
 
-# if int(sys.argv[2]) == 0:
+nframes = 50
 #
-#     for num, p in enumerate(ps):
-#
-#         print(p)
-#
-#         rgb_gas, extent = get_single_sphere_imgs(gas_scene, cmap_gas, gas_vmin, p, t=0)
-#         rgb_dm, _ = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
-#
-#         rgb = blend(rgb_dm, rgb_gas)
-#
-#         save_dict[num] = {'img': rgb, 'extent': extent}
-#
-#     with open(f"spheresdata/spheregird_img_data_{reg}_{snap}.pck", 'wb') as pfile:
-#         pickle.dump(save_dict, pfile)
+# Define rotations
+ps = np.linspace(0, 360, nframes)
+
+# Set up particle objects
+dm_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=1)
+gas_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=0)
+
+save_dict = {}
+
+for num, p in enumerate(ps):
+
+    print(p)
+
+    rgb_gas, extent = get_single_sphere_imgs(gas_scene, cmap_gas, gas_vmin, p, t=0)
+    rgb_dm, _ = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
+
+    rgb = blend(rgb_dm, rgb_gas)
+
+    save_dict[num] = {'img': rgb, 'extent': extent}
+
+with open(f"spheresdata/spheregird_img_data_{reg}_{snap}.pck", 'wb') as pfile:
+    pickle.dump(save_dict, pfile)
 
 spheregrid(snap, nframes)
