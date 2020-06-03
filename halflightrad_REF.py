@@ -190,7 +190,7 @@ def get_main(path, snap):
     all_gas_poss = {}
     for g, sg in zip(gal_gids, gal_ids):
         id = float(str(int(g)) + '.%05d' % int(sg))
-        mask = halo_part_inds[id]
+        mask = list(halo_part_inds[id])
         all_gas_poss[id] = gas_all_poss[mask, :]
         gas_mets[id] = gas_metallicities[mask]
         gas_ms[id] = gas_masses[mask]
