@@ -24,7 +24,7 @@ source activate flares-env
 i=$(($SLURM_ARRAY_TASK_ID - 1))
 
 # Run the program
-./all_sphere_all_types.py $i 0
+./all_sphere_all_types.py $i 1
 
 source deactivate
 
