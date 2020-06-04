@@ -400,8 +400,11 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
                 snaps.append(int(snap.split('_')[0]))
 
                 for prog in progs[snap][halo]:
-                    hmr_plot_pairs.update((hmrs[prog_snap][prog] / soft, hmr / soft))
-                    snap_plot_pairs.update((prog_snap, snap))
+                    try:
+                        hmr_plot_pairs.update((hmrs[prog_snap][prog] / soft, hmr / soft))
+                        snap_plot_pairs.update((prog_snap, snap))
+                    except KeyError:
+                        continue
 
         masses_plt = np.array(masses_plt)
         hmrs_plt = np.array(hmrs_plt)
