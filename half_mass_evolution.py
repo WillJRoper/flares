@@ -43,7 +43,7 @@ def get_forest(z0halo, treepath):
     snaplist.reverse()
 
     # Initialise the halo's set for tree walking
-    halos = {float(z0halo) + (11 * 1000000)}
+    halos = {(z0halo, '011_z004p770')}
 
     # Initialise the forest dictionary with the present day halo as the first entry
     forest_dict[snaplist[0]] = halos
@@ -73,16 +73,12 @@ def get_forest(z0halo, treepath):
             # Loop over halos in this snapshot
             for halo in halos:
 
-                # Remove snapshot ID from halo ID
-                halo -= (int(snap.split('_')[0]) * 1000000)
-
                 # Open this snapshots root group
                 snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
-                forest_dict.setdefault(prog_snap, set()).update(set((int(prog_snap.split('_')[0]) * 1000000) +
-                                                                    snap_tree_data[str(halo)]['Prog_haloIDs'][...]))
+                forest_dict.setdefault(prog_snap, set()).update({(prog_snap, snap_tree_data[str(halo)]['Prog_haloIDs'][...])})
                 snap_tree_data.close()
 
             # Add any new halos not found in found halos to the new halos set
@@ -100,16 +96,12 @@ def get_forest(z0halo, treepath):
             # Loop over the progenitor halos
             for halo in halos:
 
-                # Remove snapshot ID from halo ID
-                halo -= (int(snap.split('_')[0]) * 1000000)
-
                 # Open this snapshots root group
                 snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
-                forest_dict.setdefault(desc_snap, set()).update(set((int(desc_snap.split('_')[0]) * 1000000) +
-                                                                    snap_tree_data[str(halo)]['Desc_haloIDs'][...]))
+                forest_dict.setdefault(desc_snap, set()).update({(desc_snap, snap_tree_data[str(halo)]['Desc_haloIDs'][...])})
 
                 snap_tree_data.close()
 
@@ -127,7 +119,7 @@ def get_forest(z0halo, treepath):
             del forest_dict[snap]
             continue
 
-        forest_dict[snap] = np.array(list(forest_dict[snap])) - (int(snap.split('_')[0]) * 1000000)
+        forest_dict[snap] = np.array([halo[1] for halo in forest_dict[snap]])
 
     return forest_dict
 
