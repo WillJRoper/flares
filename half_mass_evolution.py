@@ -381,7 +381,8 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         cbar = fig.colorbar(im)
         cbar.ax.set_ylabel(r'$M_{\mathrm{\star}}/M_\odot$')
 
-        fig.savefig('plots/Evolution/Graph_HalfMassRadius_Mass' + str(root) + '.png',
+        fig.savefig('plots/Evolution/Graph_HalfMassRadius_Mass' + str(root).split('.')[0] +
+                    'p' + str(root).split('.')[0] + '.png',
                     bbox_inches='tight')
 
         if count >= lim:
