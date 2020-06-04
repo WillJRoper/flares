@@ -78,7 +78,8 @@ def get_forest(z0halo, treepath):
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
-                forest_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
+                forest_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in
+                                                                 snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
                 snap_tree_data.close()
 
             # Add any new halos not found in found halos to the new halos set
@@ -101,7 +102,8 @@ def get_forest(z0halo, treepath):
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
-                forest_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
+                forest_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in
+                                                                 snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
 
                 snap_tree_data.close()
 
@@ -368,6 +370,8 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
         masses_plt = []
         hmrs_plt = []
         snaps = []
+        hmr_plot_pairs = set()
+        snap_plot_pairs = set()
 
         for snap, prog_snap in zip(forest_snaps, forest_progsnaps):
 
@@ -395,32 +399,20 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
                 hmrs_plt.extend(hmr / soft)
                 snaps.append(int(snap.split('_')[0]))
 
-                # if z < 5:
-                #     ax.scatter(int(snap.split('_')[0]), hmr, s=masses / max(masses) * 50, marker='*', color='k')
-
-                # # Get prog data
-                # prog_hmrs = []
-                # prog_mass = []
-                # for prog in progs[snap][halo]:
-                #     try:
-                #         prog_hmrs.append(hmrs[prog_snap][prog])
-                #         prog_mass.append(masses[prog_snap][prog])
-                #     except KeyError:
-                #         continue
-
-                # for phmr, pm in zip(prog_hmrs, prog_mass):
-                #     if pm == 0 or phmr == 0:
-                #         continue
-                #     print(pm, phmr, mass - pm, hmr - phmr)
-                    # ax.arrow(pm[0], phmr[0], mass[0] - pm[0], hmr[0] - phmr[0])
-                    # ax.scatter(pm, phmr / prog_soft, marker='.', color='r')
+                hmr_plot_pairs.update({(hmrs[prog_snap][prog] / soft, hmr / soft) for prog in progs[snap][halo]})
+                snap_plot_pairs.update({(prog_snap, snap) for prog in progs[snap][halo]})
 
         masses_plt = np.array(masses_plt)
         hmrs_plt = np.array(hmrs_plt)
         snaps = np.array(snaps)
+        snap_plot_pairs = list(snap_plot_pairs)
+        hmr_plot_pairs = list(hmr_plot_pairs)
+
+        for hpair, spair in zip(hmr_plot_pairs, snap_plot_pairs):
+            ax.plot(spair, hpair, linestyle='--', color='k')
 
         im = ax.scatter(snaps[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8],
-                        s=np.log10(masses_plt)[masses_plt > 1e8] / max(np.log10(masses_plt)) * 30, cmap='plasma')
+                        s=np.log10(masses_plt[masses_plt > 1e8] / max(masses_plt)) * 30, cmap='plasma')
 
         ax.set_xlabel(r'$S_{\mathrm{num}}$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
