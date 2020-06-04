@@ -77,7 +77,7 @@ def get_forest(z0halo, treepath):
                 halo -= (int(snap.split('_')[0]) * 1000000)
 
                 # Open this snapshots root group
-                snap_tree_data = h5py.File(treepath + snap + '.hdf5', 'r')
+                snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
@@ -104,7 +104,7 @@ def get_forest(z0halo, treepath):
                 halo -= (int(snap.split('_')[0]) * 1000000)
 
                 # Open this snapshots root group
-                snap_tree_data = h5py.File(treepath + snap + '.hdf5', 'r')
+                snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
