@@ -401,7 +401,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
 
                 for prog in progs[snap][halo]:
                     try:
-                        hmr_plot_pairs.update((hmrs[prog_snap][prog] / soft, hmr / soft))
+                        hmr_plot_pairs.update((hmrs[prog_snap][prog][0] / soft, hmr / soft))
                         snap_plot_pairs.update((prog_snap, snap))
                     except KeyError:
                         continue
