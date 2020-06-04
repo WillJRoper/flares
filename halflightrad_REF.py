@@ -98,7 +98,6 @@ def get_main(path, snap):
                             physicalUnits=True, numThreads=8)
     gal_sml = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothingLength', noH=True,
                            physicalUnits=True, numThreads=8)
-    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
     gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
     gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
@@ -117,15 +116,17 @@ def get_main(path, snap):
     nosub_mask = subgrp_ids != 1073741824
     all_poss = all_poss[nosub_mask, :]
     gal_sml = gal_sml[nosub_mask]
-    grp_ids = grp_ids[nosub_mask]
-    subgrp_ids = subgrp_ids[nosub_mask]
     a_born = a_born[nosub_mask]
     metallicities = metallicities[nosub_mask]
     masses = masses[nosub_mask]
+    nosub_mask = gal_ids != 1073741824
+    gal_ids = gal_ids[nosub_mask]
+    gal_gids = gal_gids[nosub_mask]
+    gal_cops = gal_cops[nosub_mask]
 
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-    halo_ids = np.zeros(grp_ids.size, dtype=float)
-    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+    halo_ids = np.zeros(gal_ids.size, dtype=float)
+    for (ind, g), sg in zip(enumerate(gal_gids), gal_ids):
         halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
     # Calculate ages
@@ -188,8 +189,7 @@ def get_main(path, snap):
     gas_ms = {}
     gas_smls = {}
     all_gas_poss = {}
-    for g, sg in zip(gal_gids, gal_ids):
-        id = float(str(int(g)) + '.%05d' % int(sg))
+    for id in halo_ids:
         mask = list(halo_part_inds[id])
         all_gas_poss[id] = gas_all_poss[mask, :]
         gas_mets[id] = gas_metallicities[mask]
@@ -326,14 +326,19 @@ def hl_main(snap, model, F, f, conv=1, i=0, j=1, dust=False):
             continue
         if np.sum(gal_ms[id]) < 1e8:
             continue
+
         gas_poss = all_gas_poss[id]
         gal_poss = all_gal_poss[id]
         # means[id] = np.mean(gal_poss, axis=0)
         gal_poss -= means[id]
         gas_poss -= means[id]
-        ls = get_lumins(gal_poss, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
-                        gas_poss, gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
-                        F, i, j, f, dust)
+
+        if f == 'mass':
+            ls = gal_ms[id]
+        else:
+            ls = get_lumins(gal_poss, gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
+                            gas_poss, gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
+                            F, i, j, f, dust)
 
         # Compute half mass radii
         hls[ind], ms[ind] = calc_light_mass_rad(gal_poss, ls, gal_ms[id])
