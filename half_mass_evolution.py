@@ -78,7 +78,7 @@ def get_forest(z0halo, treepath):
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
-                forest_dict.setdefault(prog_snap, set()).update({(prog_snap, snap_tree_data[str(halo[0])]['Prog_haloIDs'][...])})
+                forest_dict.setdefault(prog_snap, set()).update({(prog_snap, p) for p in snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
                 snap_tree_data.close()
 
             # Add any new halos not found in found halos to the new halos set
@@ -101,7 +101,7 @@ def get_forest(z0halo, treepath):
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
-                forest_dict.setdefault(desc_snap, set()).update({(desc_snap, snap_tree_data[str(halo[0])]['Desc_haloIDs'][...])})
+                forest_dict.setdefault(desc_snap, set()).update({(desc_snap, d) for d in snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
 
                 snap_tree_data.close()
 
