@@ -38,39 +38,95 @@ def get_forest(z0halo, treepath):
 
     # Create snapshot list in reverse order (present day to past) for the progenitor searching loop
     snaplist =  ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
-                '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
-                '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+                 '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
+                 '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
     snaplist.reverse()
-    print(snaplist)
 
     # Initialise the halo's set for tree walking
-    halos = {z0halo}
+    halos = {int(z0halo) + (11 * 1000000)}
 
     # Initialise the forest dictionary with the present day halo as the first entry
     forest_dict[snaplist[0]] = halos
 
+    # Initialise the set of new found halos used to loop until no new halos are found
+    new_halos = halos
+
+    # Initialise the set of found halos used to check if the halo has been found or not
+    found_halos = set()
+
     # =============== Progenitors ===============
 
-    # Loop over snapshots and progenitor snapshots
-    for prog_snap, snap in zip(snaplist[1:], snaplist[:-1]):
+    # Loop until no new halos are found
+    while len(new_halos) != 0:
 
-        print(snap, prog_snap)
+        # Overwrite the last set of new_halos
+        new_halos = set()
 
-        # Assign the halos variable for the next stage of the tree
-        halos = forest_dict[snap]
+        # =============== Progenitors ===============
 
-        # Loop over halos in this snapshot
-        for halo in halos:
+        # Loop over snapshots and progenitor snapshots
+        for prog_snap, snap in zip(snaplist[1:], snaplist[:-1]):
 
-            # Open this snapshots root group
-            snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+            # Assign the halos variable for the next stage of the tree
+            halos = forest_dict[snap]
 
-            # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
-            # in addition to the halo ID
-            forest_dict.setdefault(prog_snap, set()).update(set((snap_tree_data[str(halo)]['Prog_haloIDs'][...])))
-            snap_tree_data.close()
+            # Loop over halos in this snapshot
+            for halo in halos:
+
+                # Remove snapshot ID from halo ID
+                halo -= (int(snap) * 1000000)
+
+                # Open this snapshots root group
+                snap_tree_data = h5py.File(treepath + snap + '.hdf5', 'r')
+
+                # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
+                # in addition to the halo ID
+                forest_dict.setdefault(prog_snap, set()).update(set((int(prog_snap.split('_')[0]) * 1000000) +
+                                                                    snap_tree_data[str(halo)]['Prog_haloIDs'][...]))
+                snap_tree_data.close()
+
+            # Add any new halos not found in found halos to the new halos set
+            new_halos.update(forest_dict[prog_snap] - found_halos)
+
+        # =============== Descendants ===============
+
+        # Loop over halos found during the progenitor step
+        snapshots = list(reversed(list(forest_dict.keys())))
+        for desc_snap, snap in zip(snapshots[1:], snapshots[:-1]):
+
+            # Assign the halos variable for the next stage of the tree
+            halos = forest_dict[snap]
+
+            # Loop over the progenitor halos
+            for halo in halos:
+                # Remove snapshot ID from halo ID
+                halo -= (int(snap) * 1000000)
+
+                # Open this snapshots root group
+                snap_tree_data = h5py.File(treepath + snap + '.hdf5', 'r')
+
+                # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
+                # in addition to the halo ID
+                forest_dict.setdefault(desc_snap, set()).update(set((int(desc_snap.split('_')[0]) * 1000000) +
+                                                                    snap_tree_data[str(halo)]['Desc_haloIDs'][...]))
+
+                snap_tree_data.close()
+
+            # Redefine the new halos set to have any new halos not found in found halos
+            new_halos.update(forest_dict[desc_snap] - found_halos)
+
+        # Add the new_halos to the found halos set
+        found_halos.update(new_halos)
 
     forest_snaps = list(forest_dict.keys())
+
+    for snap in forest_snaps:
+
+        if len(forest_dict[snap]) == 0:
+            del forest_dict[snap]
+            continue
+
+        forest_dict[snap] = np.array(list(forest_dict[snap])) - (int(snap) * 1000000)
 
     return forest_dict
 
@@ -261,7 +317,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         #     break
 
 
-def main_evolve(reg, root_snap='011_z004p770', lim=1):
+def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
 
     snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
                 '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
@@ -310,7 +366,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
 
         hmrs, masses, progs = get_evolution(forest, path, graphpath, snaplist)
 
-        forest_snaps = list(forest.keys())[1:]
+        forest_snaps = list(forest.keys())
         forest_progsnaps = list(forest.keys())[:-1]
 
         fig = plt.figure()
@@ -371,7 +427,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         snaps = np.array(snaps)
 
         im = ax.scatter(snaps[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8],
-                        s=masses_plt[masses_plt > 1e8] / max(masses_plt) * 30, cmap='plasma')
+                        s=np.log10(masses_plt)[masses_plt > 1e8] / max(np.log10(masses_plt)) * 30, cmap='plasma')
 
         ax.set_xlabel(r'$S_{\mathrm{num}}$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
@@ -389,4 +445,4 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
             break
 
 
-main_evolve(reg='00', root_snap='011_z004p770', lim=1)
+main_evolve_graph(reg='00', root_snap='011_z004p770', lim=1)
