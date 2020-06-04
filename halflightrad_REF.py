@@ -143,7 +143,10 @@ def get_main(path, snap):
     all_gal_poss = {}
     means = {}
     for id, cop in zip(halo_ids, gal_cops):
-        mask = list(halo_part_inds[id])
+        try:
+            mask = list(halo_part_inds[id])
+        except KeyError:
+            continue
         all_gal_poss[id] = all_poss[mask, :]
         gal_ages[id] = ages[mask]
         gal_mets[id] = metallicities[mask]
