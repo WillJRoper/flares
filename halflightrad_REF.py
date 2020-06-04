@@ -94,22 +94,22 @@ def get_main(path, snap):
     z = float(z_str[0] + '.' + z_str[1])
 
     # Load all necessary arrays
-    all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
+    all_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True,
                             physicalUnits=True, numThreads=8)
-    gal_sml = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothingLength', noH=True,
+    gal_sml = E.read_array('SNAP', path, snap, 'PartType4/SmoothingLength', noH=True,
                            physicalUnits=True, numThreads=8)
-    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+    subgrp_ids = E.read_array('SNAP', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
     gal_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
     gal_gids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                             physicalUnits=True, numThreads=8)
 
     # Load data for luminosities
-    a_born = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
+    a_born = E.read_array('SNAP', path, snap, 'PartType4/StellarFormationTime', noH=True,
                           physicalUnits=True, numThreads=8)
-    metallicities = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothedMetallicity', noH=True,
+    metallicities = E.read_array('SNAP', path, snap, 'PartType4/SmoothedMetallicity', noH=True,
                                  physicalUnits=True, numThreads=8)
-    masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True,
+    masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True,
                           numThreads=8) * 10 ** 10
 
     # Remove particles not in a subgroup
@@ -133,7 +133,7 @@ def get_main(path, snap):
     ages = calc_ages(z, a_born)
 
     # Get particle indices
-    halo_part_inds = get_part_inds(path, snap, part_type=4, all_parts=False)
+    halo_part_inds = get_part_inds(path, snap, part_type=4, all_parts=True)
 
     # Get the position of each of these galaxies
     gal_ages = {}
@@ -143,10 +143,7 @@ def get_main(path, snap):
     all_gal_poss = {}
     means = {}
     for id, cop in zip(halo_ids, gal_cops):
-        try:
-            mask = list(halo_part_inds[id])
-        except KeyError:
-            continue
+        mask = list(halo_part_inds[id])
         all_gal_poss[id] = all_poss[mask, :]
         gal_ages[id] = ages[mask]
         gal_mets[id] = metallicities[mask]
