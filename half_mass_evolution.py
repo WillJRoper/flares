@@ -43,7 +43,7 @@ def get_forest(z0halo, treepath):
     snaplist.reverse()
 
     # Initialise the halo's set for tree walking
-    halos = {int(z0halo) + (11 * 1000000)}
+    halos = {float(z0halo) + (11 * 1000000)}
 
     # Initialise the forest dictionary with the present day halo as the first entry
     forest_dict[snaplist[0]] = halos
@@ -435,8 +435,8 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
 
         ax.set_yscale('log')
 
-        cbar = fig.colorbar(im)
-        cbar.ax.set_ylabel(r'$M_{\mathrm{\star}}/M_\odot$')
+        # cbar = fig.colorbar(im)
+        # cbar.ax.set_ylabel(r'$M_{\mathrm{\star}}/M_\odot$')
 
         fig.savefig('plots/Evolution/Graph_HalfMassRadius_Mass' + str(root).split('.')[0] +
                     'p' + str(root).split('.')[0] + '.png',
