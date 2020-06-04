@@ -74,7 +74,7 @@ def get_forest(z0halo, treepath):
             for halo in halos:
 
                 # Remove snapshot ID from halo ID
-                halo -= (int(snap) * 1000000)
+                halo -= (int(snap.split('_')[0]) * 1000000)
 
                 # Open this snapshots root group
                 snap_tree_data = h5py.File(treepath + snap + '.hdf5', 'r')
@@ -99,8 +99,9 @@ def get_forest(z0halo, treepath):
 
             # Loop over the progenitor halos
             for halo in halos:
+
                 # Remove snapshot ID from halo ID
-                halo -= (int(snap) * 1000000)
+                halo -= (int(snap.split('_')[0]) * 1000000)
 
                 # Open this snapshots root group
                 snap_tree_data = h5py.File(treepath + snap + '.hdf5', 'r')
@@ -126,7 +127,7 @@ def get_forest(z0halo, treepath):
             del forest_dict[snap]
             continue
 
-        forest_dict[snap] = np.array(list(forest_dict[snap])) - (int(snap) * 1000000)
+        forest_dict[snap] = np.array(list(forest_dict[snap])) - (int(snap.split('_')[0]) * 1000000)
 
     return forest_dict
 
