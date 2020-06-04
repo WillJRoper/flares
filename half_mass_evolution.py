@@ -121,7 +121,7 @@ def get_forest(z0halo, treepath):
             del forest_dict[snap]
             continue
 
-        forest_dict[snap] = np.array([halo[0] for halo in forest_dict[snap]])
+        forest_dict[snap] = np.array([float(halo[0]) for halo in forest_dict[snap]])
 
     return forest_dict
 
@@ -175,9 +175,9 @@ def get_evolution(forest, path, graphpath, snaps):
 
         # Get halo properties
         for halo in forest[snap]:
-            hmrs[snap][halo] = gal_hmrs[halo_ids == halo]
-            masses[snap][halo] = gal_ms[halo_ids == halo]
-            progs[snap][halo] = hdf[str(halo)]['Prog_haloIDs'][...]
+            hmrs[snap][float(halo)] = gal_hmrs[halo_ids == halo]
+            masses[snap][float(halo)] = gal_ms[halo_ids == halo]
+            progs[snap][float(halo)] = hdf[str(halo)]['Prog_haloIDs'][...]
 
         hdf.close()
 
@@ -399,8 +399,9 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
                 hmrs_plt.extend(hmr / soft)
                 snaps.append(int(snap.split('_')[0]))
 
-                hmr_plot_pairs.update({(hmrs[prog_snap][prog] / soft, hmr / soft) for prog in progs[snap][halo]})
-                snap_plot_pairs.update({(prog_snap, snap) for prog in progs[snap][halo]})
+                for prog in progs[snap][halo]:
+                    hmr_plot_pairs.update((hmrs[prog_snap][prog] / soft, hmr / soft))
+                    snap_plot_pairs.update((prog_snap, snap))
 
         masses_plt = np.array(masses_plt)
         hmrs_plt = np.array(hmrs_plt)
