@@ -371,7 +371,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         snaps = np.array(snaps)
 
         im = ax.scatter(snaps[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8],
-                        s=masses_plt[masses_plt > 1e8] / max(masses) * 30, cmap='plasma')
+                        s=masses_plt[masses_plt > 1e8] / max(masses_plt) * 30, cmap='plasma')
 
         ax.set_xlabel(r'$S_{\mathrm{num}}$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
