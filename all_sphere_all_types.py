@@ -160,12 +160,14 @@ def spheregrid(snap, nframes):
 
             print(reg, i, j)
 
-            with open(f"spheresdata/spheregird_img_data_{reg}_{snap}.pck", 'rb') as pfile:
-                save_dict = pickle.load(pfile)
+            # Load the current snapshot data
+            hdf = h5py.File(f'spheresdata/spheregird_img_data_{reg}_{snap}.hdf5', 'r')
 
             ax = fig.add_subplot(gs[i, j])
 
-            img, extent = save_dict[num]['img'], save_dict[num]['extent']
+            img, extent = hdf[str(num)]['img'][...], hdf[str(num)].attrs['extent']
+
+            hdf.close()
 
             ax.imshow(img, extent=extent, origin='lower')
             ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
