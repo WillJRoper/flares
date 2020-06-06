@@ -409,7 +409,7 @@ for f in fs:
         convert_pMpc = 1 / (1 + z)
 
         # Define comoving softening length in kpc
-        csoft = 0.001802390 / 0.677 * convert_pMpc
+        csoft = 0.001802390 / 0.677 * 1 / (1 + z)
 
         xs = np.concatenate(list(xaxis_dict[snap].values()))
         half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))

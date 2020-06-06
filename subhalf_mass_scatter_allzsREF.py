@@ -5,7 +5,7 @@ import matplotlib
 import astropy.units as u
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
-import eagle_IO as E
+import eagle_IO.eagle_IO as E
 import seaborn as sns
 import pickle
 import itertools
@@ -24,6 +24,26 @@ axlims_y = []
 # # Define comoving softening length in kpc
 # csoft = 0.001802390/0.677*1e3
 
+
+def plot_meidan_stat(xs, ys, ax, bins=None):
+
+    if bins == None:
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+    else:
+        bin = bins
+
+    # Compute binned statistics
+    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median', bins=bin)
+
+    # Compute bincentres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+
+    ax.plot(bin_cents[okinds], y_stat[okinds], color='r', linestyle='-')
+
+
 half_mass_rads_dict = {}
 xaxis_dict = {}
 
@@ -32,7 +52,7 @@ for snap in snaps:
     print(snap)
 
     half_mass_rads_dict[snap] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                  numThreads=8)[:, 4] * 1e3
+                                                  numThreads=8)[:, 4]
     xaxis_dict[snap] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                          noH=True, numThreads=8)[:, 4] * 10**10
 
@@ -56,6 +76,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
+    if z <= 1:
+        soft = 0.000474390 / 0.677 * 1 / (1 + z)
+    else:
+        soft = 0.001802390 / 0.677 * 1 / (1 + z)
+
     xs = xaxis_dict[snap]
     half_mass_rads_plt = half_mass_rads_dict[snap]
     
@@ -66,8 +91,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     
     # cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
     #                  linewidths=0.2, cmap='viridis')  # uncomment to include softening
-    cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
-                     linewidths=0.2, cmap='viridis')
+    cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log',
+                     norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -80,7 +105,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         ax.set_xlabel(r'$M_{\star}/M_\odot$')
     if j == 0:
         # ax.set_ylabel('$R_{1/2}/\epsilon$')  # uncomment to include softening
-        ax.set_ylabel('$R_{1/2}/\mathrm{pkpc}$')
+        ax.set_ylabel('$R_{1/2}/\epsilon$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
