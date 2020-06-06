@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import astropy.units as u
+from scipy.stats import binned_statistic
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
 import eagle_IO.eagle_IO as E
