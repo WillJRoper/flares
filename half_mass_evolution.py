@@ -401,8 +401,8 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
 
                 for prog in progs[snap][halo]:
                     try:
-                        hmr_plot_pairs.update((hmrs[prog_snap][prog][0] / soft, hmr[0] / soft))
-                        snap_plot_pairs.update((prog_snap.split('_')[0], snap.split('_')[0]))
+                        hmr_plot_pairs.update({(hmrs[prog_snap][prog][0] / soft, hmr[0] / soft)})
+                        snap_plot_pairs.update({(prog_snap.split('_')[0], snap.split('_')[0])})
                     except KeyError:
                         continue
 
@@ -419,7 +419,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
         #     ax.plot(spair, hpair, linestyle='--', color='k')
 
         im = ax.scatter(snaps[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8],
-                        s=np.log10(masses_plt[masses_plt > 1e8] / max(masses_plt)) * 30, cmap='plasma')
+                        s=masses_plt[masses_plt > 1e8] / max(masses_plt) * 30, cmap='plasma')
 
         ax.set_xlabel(r'$S_{\mathrm{num}}$')
         ax.set_ylabel('$R_{1/2,\mathrm{\star}}/\epsilon$')
