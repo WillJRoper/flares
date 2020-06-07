@@ -35,6 +35,7 @@ def get_forest(z0halo, treepath):
 
     # Initialise dictionary instances
     forest_dict = defaultdict(set)
+    main_branch = {'011_z004p770': z0halo}
 
     # Create snapshot list in reverse order (present day to past) for the progenitor searching loop
     snaplist =  ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
@@ -54,10 +55,28 @@ def get_forest(z0halo, treepath):
     # Initialise the set of found halos used to check if the halo has been found or not
     found_halos = set()
 
+    # Get the main branch
+    main = z0halo
+    # Loop over snapshots
+    for snap in snaplist[:-1]:
+
+        # Open this snapshots root group
+        snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+
+        main_branch[snap] = snap_tree_data[str(main)]['Prog_haloIDs'][0]
+        main = main_branch[snap]
+
+        snap_tree_data.close()
+
     # =============== Progenitors ===============
+
+    count = 0
 
     # Loop until no new halos are found
     while len(new_halos) != 0:
+
+        print(count)
+        count += 1
 
         # Overwrite the last set of new_halos
         new_halos = set()
@@ -123,7 +142,7 @@ def get_forest(z0halo, treepath):
 
         forest_dict[snap] = np.array([float(halo[0]) for halo in forest_dict[snap]])
 
-    return forest_dict
+    return forest_dict, main_branch
 
 
 def forest_worker(z0halo, treepath):
@@ -136,12 +155,14 @@ def forest_worker(z0halo, treepath):
     return forest_dict
 
 
-def get_evolution(forest, path, graphpath, snaps):
+def get_evolution(forest, main_branch, path, graphpath, snaps):
 
     # Set up dictionaries to store data
     hmrs = {}
     masses = {}
     progs = {}
+    main_snap = []
+    main_hmr = []
 
     for snap in snaps:
 
@@ -173,6 +194,9 @@ def get_evolution(forest, path, graphpath, snaps):
         # Open graph file
         hdf = h5py.File(graphpath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
+        main_snap.append(int(snap.split('_')[0]))
+        main_hmr.append(gal_hmrs[halo_ids == main_branch[snap]])
+
         # Get halo properties
         for halo in forest[snap]:
             hmrs[snap][float(halo)] = gal_hmrs[halo_ids == halo]
@@ -181,7 +205,7 @@ def get_evolution(forest, path, graphpath, snaps):
 
         hdf.close()
 
-    return hmrs, masses, progs
+    return hmrs, masses, progs, main_snap, main_hmr
 
 
 def main_evolve(reg, root_snap='011_z004p770', lim=1):
@@ -229,9 +253,9 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
         count += 1
 
         # Get the graph
-        forest = forest_worker(root, graphpath)
+        forest, main_branch = forest_worker(root, graphpath)
 
-        hmrs, masses, progs = get_evolution(forest, path, graphpath, snaplist)
+        hmrs, masses, progs, main_snap, main_hmr = get_evolution(forest, main_branch, path, graphpath, snaplist)
 
         forest_snaps = list(forest.keys())
         forest_progsnaps = list(forest.keys())
@@ -357,12 +381,14 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
         count += 1
 
         # Get the graph
-        forest = forest_worker(root, graphpath)
+        forest, main_branch = forest_worker(root, graphpath)
 
-        hmrs, masses, progs = get_evolution(forest, path, graphpath, snaplist)
+        hmrs, masses, progs, main_snap, main_hmr = get_evolution(forest, main_branch, path, graphpath, snaplist)
+
 
         forest_snaps = list(forest.keys())
-        forest_progsnaps = list(forest.keys())[:-1].insert(0, None)
+        forest_progsnaps = [None, ]
+        forest_progsnaps.extend(list(forest.keys())[:-1])
 
         fig = plt.figure()
         ax = fig.add_subplot(111)
@@ -412,6 +438,8 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
         for hpair, spair in zip(hmr_plot_pairs, snap_plot_pairs):
             print(hpair, spair)
             ax.plot(spair, hpair, linestyle='--', color='k')
+
+        ax.plot(main_snap, main_hmr, linestyle='_', color='r')
 
         im = ax.scatter(snaps[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8],
                         s=masses_plt[masses_plt > 1e8] / max(masses_plt) * 30, cmap='plasma')
