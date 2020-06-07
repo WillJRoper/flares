@@ -62,8 +62,15 @@ def get_forest(z0halo, treepath):
 
         # Open this snapshots root group
         snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
-        main_branch[prog_snap] = snap_tree_data[str(main)]['Prog_haloIDs'][0]
-        main = main_branch[prog_snap]
+        progs = snap_tree_data[str(main)]['Prog_haloIDs'][...]
+        pconts = snap_tree_data[str(main)]['prog_npart_contribution'][...]
+        sinds = np.argsort(pconts)
+        try:
+            main_branch[prog_snap] = progs[sinds][-1]
+            main = main_branch[prog_snap]
+        except IndexError:
+            snap_tree_data.close()
+            break
 
         snap_tree_data.close()
 
@@ -96,8 +103,8 @@ def get_forest(z0halo, treepath):
             # Loop over halos in this snapshot
             for halo in halos:
 
-                if halo in found_halos:
-                    continue
+                # if halo in found_halos:
+                #     continue
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
@@ -123,8 +130,7 @@ def get_forest(z0halo, treepath):
             # Loop over the progenitor halos
             for halo in halos:
 
-                if halo in found_halos:
-                    continue
+                # if halo zinue
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
