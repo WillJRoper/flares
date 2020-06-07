@@ -91,17 +91,22 @@ def get_forest(z0halo, treepath):
             # Assign the halos variable for the next stage of the tree
             halos = forest_dict[snap]
 
+            # Open this snapshots root group
+            snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+
             # Loop over halos in this snapshot
             for halo in halos:
 
-                # Open this snapshots root group
-                snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+                if halo in found_halos:
+                    continue
+                else:
+                    found_halos.update(halo)
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
                 forest_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in
                                                                  snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
-                snap_tree_data.close()
+            snap_tree_data.close()
 
             # Add any new halos not found in found halos to the new halos set
             new_halos.update(forest_dict[prog_snap] - found_halos)
@@ -115,18 +120,23 @@ def get_forest(z0halo, treepath):
             # Assign the halos variable for the next stage of the tree
             halos = forest_dict[snap]
 
+            # Open this snapshots root group
+            snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+
             # Loop over the progenitor halos
             for halo in halos:
 
-                # Open this snapshots root group
-                snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+                if halo in found_halos:
+                    continue
+                else:
+                    found_halos.update(halo)
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
                 forest_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in
                                                                  snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
 
-                snap_tree_data.close()
+            snap_tree_data.close()
 
             # Redefine the new halos set to have any new halos not found in found halos
             new_halos.update(forest_dict[desc_snap] - found_halos)
