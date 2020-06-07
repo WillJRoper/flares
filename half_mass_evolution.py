@@ -62,14 +62,8 @@ def get_forest(z0halo, treepath):
 
         # Open this snapshots root group
         snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
-        progs = snap_tree_data[str(main)]['Prog_haloIDs'][...]
-        pconts = snap_tree_data[str(main)]['prog_npart_contribution'][...]
-        sinds = np.argsort(pconts)[::-1]
-        try:
-            main_branch[prog_snap] = progs[sinds][0]
-            main = main_branch[prog_snap]
-        except IndexError:
-            continue
+        main_branch[prog_snap] = snap_tree_data[str(main)]['Prog_haloIDs'][0]
+        main = main_branch[prog_snap]
 
         snap_tree_data.close()
 
@@ -186,6 +180,12 @@ def get_evolution(forest, main_branch, path, graphpath, snaps):
 
     for snap in forest.keys():
 
+        z_str = snap.split('z')[1].split('p')
+        z = float(z_str[0] + '.' + z_str[1])
+
+        # Define comoving softening length in kpc
+        soft = 0.001802390 / 0.677 * 1 / (1 + z)
+
         # Get halo IDs and halo data
         subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
         grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
@@ -208,7 +208,7 @@ def get_evolution(forest, main_branch, path, graphpath, snaps):
         hdf = h5py.File(graphpath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
         try:
-            main_hmr.append(gal_hmrs[halo_ids == main_branch[snap]][0])
+            main_hmr.append(gal_hmrs[halo_ids == main_branch[snap]][0] / soft)
             main_snap.append(int(snap.split('_')[0]))
         except IndexError:
             continue
@@ -453,7 +453,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
         snaps = np.array(snaps)
         snap_plot_pairs = list(snap_plot_pairs)
         hmr_plot_pairs = list(hmr_plot_pairs)
-        main_snap, main_hmr = np.array(main_snap), np.array(main_hmr) / soft
+        main_snap, main_hmr = np.array(main_snap), np.array(main_hmr)
 
         # for hpair, spair in zip(hmr_plot_pairs, snap_plot_pairs):
         #     print(hpair, spair)
