@@ -65,9 +65,11 @@ def get_forest(z0halo, treepath):
         progs = snap_tree_data[str(main)]['Prog_haloIDs'][...]
         pconts = snap_tree_data[str(main)]['prog_npart_contribution'][...]
         sinds = np.argsort(pconts)
-
-        main_branch[snap] = progs[sinds][0]
-        main = main_branch[snap]
+        try:
+            main_branch[snap] = progs[sinds][0]
+            main = main_branch[snap]
+        except IndexError:
+            continue
 
         snap_tree_data.close()
 
