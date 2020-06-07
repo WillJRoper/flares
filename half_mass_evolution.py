@@ -390,7 +390,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
                 mass = masses[snap][halo]
                 hmr = hmrs[snap][halo]
 
-                if mass == 0 or hmr == 0:
+                if mass < 1e8:
                     continue
 
                 print(z)
@@ -402,7 +402,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
                 for prog in progs[snap][halo]:
                     try:
                         hmr_plot_pairs.update({(hmrs[prog_snap][prog][0] / soft, hmr[0] / soft)})
-                        snap_plot_pairs.update({(prog_snap.split('_')[0], snap.split('_')[0])})
+                        snap_plot_pairs.update({(int(prog_snap.split('_')[0]), int(snap.split('_')[0]))})
                     except KeyError:
                         continue
 
@@ -411,9 +411,6 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
         snaps = np.array(snaps)
         snap_plot_pairs = list(snap_plot_pairs)
         hmr_plot_pairs = list(hmr_plot_pairs)
-
-        print(snap_plot_pairs)
-        print(hmr_plot_pairs)
 
         for hpair, spair in zip(hmr_plot_pairs, snap_plot_pairs):
             ax.plot(spair, hpair, linestyle='--', color='k')
