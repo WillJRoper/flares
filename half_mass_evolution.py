@@ -82,6 +82,7 @@ def get_forest(z0halo, treepath):
 
         # Overwrite the last set of new_halos
         new_halos = set()
+        halos_to_check = {}
 
         # =============== Progenitors ===============
 
@@ -89,7 +90,7 @@ def get_forest(z0halo, treepath):
         for prog_snap, snap in zip(snaplist[1:], snaplist[:-1]):
 
             # Assign the halos variable for the next stage of the tree
-            halos = forest_dict[snap]
+            halos = halos_to_check[snap]
 
             # Loop over halos in this snapshot
             for halo in halos:
@@ -105,6 +106,7 @@ def get_forest(z0halo, treepath):
 
             # Add any new halos not found in found halos to the new halos set
             new_halos.update(forest_dict[prog_snap] - found_halos)
+            halos_to_check[prog_snap].update(forest_dict[prog_snap] - found_halos)
 
         # =============== Descendants ===============
 
@@ -113,7 +115,7 @@ def get_forest(z0halo, treepath):
         for desc_snap, snap in zip(snapshots[1:], snapshots[:-1]):
 
             # Assign the halos variable for the next stage of the tree
-            halos = forest_dict[snap]
+            halos = halos_to_check[snap]
 
             # Loop over the progenitor halos
             for halo in halos:
@@ -130,6 +132,7 @@ def get_forest(z0halo, treepath):
 
             # Redefine the new halos set to have any new halos not found in found halos
             new_halos.update(forest_dict[desc_snap] - found_halos)
+            halos_to_check[desc_snap] = forest_dict[desc_snap] - found_halos
 
         # Add the new_halos to the found halos set
         found_halos.update(new_halos)
@@ -415,12 +418,12 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
             soft = 0.001802390 / 0.677 * 1 / (1 + z)
             # prog_soft = 0.001802390 / 0.677 * 1 / (1 + zp)
 
+            print(prog_snap, snap)
+
             for halo in forest[snap]:
 
                 mass = masses[snap][halo]
                 hmr = hmrs[snap][halo]
-
-                print(z)
 
                 masses_plt.extend(mass)
                 hmrs_plt.extend(hmr / soft)
@@ -429,9 +432,12 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
                 if prog_snap != None:
 
                     for prog in progs[snap][halo]:
-                        if masses[prog_snap][prog][0] > 1e8 and mass > 1e8:
-                            hmr_plot_pairs.update({(hmrs[prog_snap][prog][0] / soft, hmr[0] / soft)})
-                            snap_plot_pairs.update({(int(prog_snap.split('_')[0]), int(snap.split('_')[0]))})
+                        try:
+                            if masses[prog_snap][prog][0] > 1e8 and mass > 1e8:
+                                hmr_plot_pairs.update({(hmrs[prog_snap][prog][0] / soft, hmr[0] / soft)})
+                                snap_plot_pairs.update({(int(prog_snap.split('_')[0]), int(snap.split('_')[0]))})
+                        except KeyError:
+                            continue
 
         masses_plt = np.array(masses_plt)
         hmrs_plt = np.array(hmrs_plt)
