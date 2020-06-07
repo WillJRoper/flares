@@ -475,11 +475,11 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
         # cbar.ax.set_ylabel(r'$M_{\mathrm{\star}}/M_\odot$')
 
         fig.savefig('plots/Evolution/Graph_HalfMassRadius_Mass' + str(root).split('.')[0] +
-                    'p' + str(root).split('.')[0] + '.png',
+                    'p' + str(root).split('.')[1] + '.png',
                     bbox_inches='tight')
 
         if count >= lim:
             break
 
 
-main_evolve_graph(reg='00', root_snap='011_z004p770', lim=5)
+main_evolve_graph(reg='00', root_snap='011_z004p770', lim=20)
