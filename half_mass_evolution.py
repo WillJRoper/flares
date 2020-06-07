@@ -436,7 +436,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
                 if prog_snap != None:
 
                     for prog in progs[snap][halo]:
-                        if masses[prog_snap][prog][0] > 1e8 and mass > 1e8:
+                        if masses[prog_snap][float(prog)][0] > 1e8 and mass > 1e8:
                             hmr_plot_pairs.update({(hmrs[prog_snap][prog][0] / soft, hmr[0] / soft)})
                             snap_plot_pairs.update({(int(prog_snap.split('_')[0]), int(snap.split('_')[0]))})
 
