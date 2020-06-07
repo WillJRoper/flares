@@ -38,9 +38,9 @@ def get_forest(z0halo, treepath):
     main_branch = {'011_z004p770': z0halo}
 
     # Create snapshot list in reverse order (present day to past) for the progenitor searching loop
-    snaplist =  ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
-                 '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
-                 '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+    snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
+                '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
+                '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
     snaplist.reverse()
 
     # Initialise the halo's set for tree walking
@@ -58,7 +58,7 @@ def get_forest(z0halo, treepath):
     # Get the main branch
     main = z0halo
     # Loop over snapshots
-    for snap in snaplist:
+    for snap in snaplist[:-1]:
 
         # Open this snapshots root group
         snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
@@ -67,6 +67,8 @@ def get_forest(z0halo, treepath):
         main = main_branch[snap]
 
         snap_tree_data.close()
+
+    main_branch[snaplist[-1]] = []
 
     # =============== Progenitors ===============
 
