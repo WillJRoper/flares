@@ -397,8 +397,8 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
 
 
         forest_snaps = list(forest.keys())
-        forest_progsnaps = [None, ]
-        forest_progsnaps.extend(list(forest.keys())[:-1])
+        forest_progsnaps = list(forest.keys())[1:]
+        forest_progsnaps.append(None)
 
         fig = plt.figure()
         ax = fig.add_subplot(111)
@@ -452,6 +452,8 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
             print(hpair, spair)
             ax.plot(spair, hpair, linestyle='--', color='k')
 
+        print(main_snap, main_hmr)
+        
         ax.plot(main_snap, main_hmr, linestyle='-', color='r')
 
         im = ax.scatter(snaps[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8],
