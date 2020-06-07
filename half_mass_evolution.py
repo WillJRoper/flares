@@ -390,9 +390,6 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
                 mass = masses[snap][halo]
                 hmr = hmrs[snap][halo]
 
-                if mass < 1e8:
-                    continue
-
                 print(z)
 
                 masses_plt.extend(mass)
