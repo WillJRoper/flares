@@ -448,10 +448,11 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
         snaps = np.array(snaps)
         snap_plot_pairs = list(snap_plot_pairs)
         hmr_plot_pairs = list(hmr_plot_pairs)
+        main_snap, main_hmr = np.array(main_snap), np.array(main_hmr) / soft
 
-        for hpair, spair in zip(hmr_plot_pairs, snap_plot_pairs):
-            print(hpair, spair)
-            ax.plot(spair, hpair, linestyle='--', color='k')
+        # for hpair, spair in zip(hmr_plot_pairs, snap_plot_pairs):
+        #     print(hpair, spair)
+        #     ax.plot(spair, hpair, linestyle='--', color='k')
 
         print(main_snap, main_hmr)
 
