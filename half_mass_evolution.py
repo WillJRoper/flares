@@ -99,8 +99,6 @@ def get_forest(z0halo, treepath):
 
                 if halo in found_halos:
                     continue
-                else:
-                    found_halos.update(halo)
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
@@ -128,8 +126,6 @@ def get_forest(z0halo, treepath):
 
                 if halo in found_halos:
                     continue
-                else:
-                    found_halos.update(halo)
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
@@ -456,7 +452,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
             print(hpair, spair)
             ax.plot(spair, hpair, linestyle='--', color='k')
 
-        ax.plot(main_snap, main_hmr, linestyle='_', color='r')
+        ax.plot(main_snap, main_hmr, linestyle='-', color='r')
 
         im = ax.scatter(snaps[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8],
                         s=masses_plt[masses_plt > 1e8] / max(masses_plt) * 30, cmap='plasma')
