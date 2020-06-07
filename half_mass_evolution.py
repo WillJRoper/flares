@@ -58,7 +58,7 @@ def get_forest(z0halo, treepath):
     # Get the main branch
     main = z0halo
     # Loop over snapshots
-    for snap in snaplist[:-1]:
+    for snap, prog_snap in zip(snaplist[:-1], snaplist[1:]):
 
         # Open this snapshots root group
         snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
@@ -66,8 +66,8 @@ def get_forest(z0halo, treepath):
         pconts = snap_tree_data[str(main)]['prog_npart_contribution'][...]
         sinds = np.argsort(pconts)[::-1]
         try:
-            main_branch[snap] = progs[sinds][0]
-            main = main_branch[snap]
+            main_branch[prog_snap] = progs[sinds][0]
+            main = main_branch[prog_snap]
         except IndexError:
             continue
 
