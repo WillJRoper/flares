@@ -415,9 +415,6 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
 
-            # z_str_prog = prog_snap.split('z')[1].split('p')
-            # zp = float(z_str_prog[0] + '.' + z_str_prog[1])
-
             # Define comoving softening length in kpc
             soft = 0.001802390 / 0.677 * 1 / (1 + z)
             # prog_soft = 0.001802390 / 0.677 * 1 / (1 + zp)
@@ -426,8 +423,11 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
 
             for halo in forest[snap]:
 
-                mass = masses[snap][float(halo)]
-                hmr = hmrs[snap][float(halo)]
+                try:
+                    mass = masses[snap][float(halo)]
+                    hmr = hmrs[snap][float(halo)]
+                except KeyError:
+                    continue
 
                 masses_plt.extend(mass)
                 hmrs_plt.extend(hmr / soft)
