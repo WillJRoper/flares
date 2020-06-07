@@ -217,35 +217,35 @@ reg, snap = regions[ind], '010_z005p000'
 # Define path
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-# Get the spheres centre
-centre, radius, mindist = spherical_region(path, snap)
+# # Get the spheres centre
+# centre, radius, mindist = spherical_region(path, snap)
 
 nframes = 180
 
-# Define rotations
-ps = np.linspace(0, 360, nframes)
+# # Define rotations
+# ps = np.linspace(0, 360, nframes)
+#
+# # Set up particle objects
+# dm_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=1)
+# gas_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=0)
 
-# Set up particle objects
-dm_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=1)
-gas_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=0)
+# # Load the current snapshot data
+# hdf = h5py.File(f'spheresdata/spheregird_img_data_{reg}_{snap}.hdf5', 'w')
+#
+# for num, p in enumerate(ps):
+#
+#     print(p)
+#
+#     rgb_gas, extent = get_single_sphere_imgs(gas_scene, cmap_gas, gas_vmin, p, t=0)
+#     rgb_dm, _ = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
+#
+#     rgb = blend(rgb_dm, rgb_gas)
+#
+#     frame = hdf.create_group(str(num))
+#     frame.create_dataset('img', shape=rgb.shape, dtype=float, data=rgb,
+#                             compression='gzip')
+#     frame.attrs['extent'] = extent
+#
+# hdf.close()
 
-# Load the current snapshot data
-hdf = h5py.File(f'spheresdata/spheregird_img_data_{reg}_{snap}.hdf5', 'w')
-
-for num, p in enumerate(ps):
-
-    print(p)
-
-    rgb_gas, extent = get_single_sphere_imgs(gas_scene, cmap_gas, gas_vmin, p, t=0)
-    rgb_dm, _ = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
-
-    rgb = blend(rgb_dm, rgb_gas)
-
-    frame = hdf.create_group(str(num))
-    frame.create_dataset('img', shape=rgb.shape, dtype=float, data=rgb,
-                            compression='gzip')
-    frame.attrs['extent'] = extent
-
-hdf.close()
-
-# spheregrid(snap, nframes)
+spheregrid(snap, nframes)
