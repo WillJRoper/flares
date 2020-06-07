@@ -172,8 +172,6 @@ def get_evolution(forest, main_branch, path, graphpath, snaps):
     main_snap = []
     main_hmr = []
 
-    print(snaps)
-
     for snap in snaps:
 
         # Intialise dictionaries for each snap
@@ -204,10 +202,11 @@ def get_evolution(forest, main_branch, path, graphpath, snaps):
         # Open graph file
         hdf = h5py.File(graphpath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
-        if snap != snaps[-1]:
-
-            main_snap.append(int(snap.split('_')[0]))
+        try:
             main_hmr.append(gal_hmrs[halo_ids == main_branch[snap]][0])
+            main_snap.append(int(snap.split('_')[0]))
+        except IndexError:
+            continue
 
         # Get halo properties
         for halo in forest[snap]:
