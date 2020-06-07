@@ -63,7 +63,7 @@ def get_forest(z0halo, treepath):
         # Open this snapshots root group
         snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
         progs = snap_tree_data[str(main)]['Prog_haloIDs'][...]
-        pconts = snap_tree_data[str(main)]['prog_mass_contribution'][...]
+        pconts = snap_tree_data[str(main)]['prog_npart_contribution'][...]
         sinds = np.argsort(pconts)
 
         main_branch[snap] = progs[sinds][0]
