@@ -415,8 +415,8 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
         print(snap_plot_pairs)
         print(hmr_plot_pairs)
 
-        # for hpair, spair in zip(hmr_plot_pairs, snap_plot_pairs):
-        #     ax.plot(spair, hpair, linestyle='--', color='k')
+        for hpair, spair in zip(hmr_plot_pairs, snap_plot_pairs):
+            ax.plot(spair, hpair, linestyle='--', color='k')
 
         im = ax.scatter(snaps[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8],
                         s=masses_plt[masses_plt > 1e8] / max(masses_plt) * 30, cmap='plasma')
