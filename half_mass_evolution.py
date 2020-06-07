@@ -482,4 +482,4 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
             break
 
 
-main_evolve_graph(reg='00', root_snap='011_z004p770', lim=1)
+main_evolve_graph(reg='00', root_snap='011_z004p770', lim=5)
