@@ -172,6 +172,8 @@ def get_evolution(forest, main_branch, path, graphpath, snaps):
     main_snap = []
     main_hmr = []
 
+    print(snaps)
+
     for snap in snaps:
 
         # Intialise dictionaries for each snap
@@ -205,7 +207,7 @@ def get_evolution(forest, main_branch, path, graphpath, snaps):
         if snap != snaps[-1]:
 
             main_snap.append(int(snap.split('_')[0]))
-            main_hmr.append(gal_hmrs[halo_ids == main_branch[snap]])
+            main_hmr.append(gal_hmrs[halo_ids == main_branch[snap]][0])
 
         # Get halo properties
         for halo in forest[snap]:
@@ -453,7 +455,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
             ax.plot(spair, hpair, linestyle='--', color='k')
 
         print(main_snap, main_hmr)
-        
+
         ax.plot(main_snap, main_hmr, linestyle='-', color='r')
 
         im = ax.scatter(snaps[masses_plt > 1e8], hmrs_plt[masses_plt > 1e8],
