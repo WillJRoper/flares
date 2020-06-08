@@ -366,7 +366,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
     soft = 0.001802390 / 0.677 * 1 / (1 + 4.77)
 
     # Remove particles not associated to a subgroup
-    okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 10**9., gal_dm_ms != 0))
+    okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 10**8., gal_dm_ms != 0))
     gal_hmrs = gal_hmrs[okinds]
     gal_ms = gal_ms[okinds]
     grp_ids = grp_ids[okinds]
