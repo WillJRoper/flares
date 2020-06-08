@@ -213,7 +213,7 @@ def get_evolution(path, snaps):
     return hmrs, masses, ids
 
 
-def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
+def main_evolve_graph(reg, root_snap='011_z004p770'):
 
     snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
                 '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
@@ -285,8 +285,10 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
 
     ax.set_xlabel("$R_{1/2, \star, \mathm{root}} / \epsilon$")
     ax.set_xlabel("$R_{1/2, \star, \mathm{root}} / R_{1/2, \star, 50^{\mathrm{th}}}$")
-    
+
     fig.colorbar(cbar, cax=ax)
 
     fig.savefig("plots/Evolution/hmrevo_50thpcent.png", bbox_inches="tight")
 
+
+main_evolve_graph('00', root_snap='011_z004p770')
