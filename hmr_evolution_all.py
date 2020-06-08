@@ -171,6 +171,78 @@ def get_forest(z0halo, treepath):
     return forest_dict, main_branch, gen0, root
 
 
+def forest_worker(z0halo, treepath):
+
+    # Get the forest with this halo at it's root
+    forest_dict = get_forest(z0halo, treepath)
+
+    print('Halo ' + str(z0halo) + '\'s Forest extracted...')
+
+    return forest_dict
+
+
+def get_evolution(forest, main_branch, path, graphpath, snaps):
+
+    # Set up dictionaries to store data
+    hmrs = {}
+    masses = {}
+    progs = {}
+    main_snap = []
+    main_hmr = []
+
+    for snap in snaps:
+
+        # Intialise dictionaries for each snap
+        hmrs[snap] = {}
+        masses[snap] = {}
+        progs[snap] = {}
+
+    for snap in forest.keys():
+
+        z_str = snap.split('z')[1].split('p')
+        z = float(z_str[0] + '.' + z_str[1])
+
+        # Define comoving softening length in kpc
+        soft = 0.001802390 / 0.677 * 1 / (1 + z)
+
+        # Get halo IDs and halo data
+        subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+        gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                physicalUnits=True, numThreads=8)[:, 4]
+        gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                              noH=False, physicalUnits=False, numThreads=8)[:, 4] * 10 ** 10
+
+        # Remove particles not associated to a subgroup
+        okinds = subgrp_ids != 1073741824
+        gal_hmrs = gal_hmrs[okinds]
+        gal_ms = gal_ms[okinds]
+        grp_ids = grp_ids[okinds]
+        subgrp_ids = subgrp_ids[okinds]
+        halo_ids = np.zeros(grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+            halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+        # Open graph file
+        hdf = h5py.File(graphpath + 'SubMgraph_' + snap + '.hdf5', 'r')
+
+        try:
+            main_hmr.append(gal_hmrs[halo_ids == main_branch[snap]][0] / soft)
+            main_snap.append(int(snap.split('_')[0]))
+        except IndexError:
+            continue
+
+        # Get halo properties
+        for halo in forest[snap]:
+            hmrs[snap][float(halo)] = gal_hmrs[halo_ids == halo]
+            masses[snap][float(halo)] = gal_ms[halo_ids == halo]
+            progs[snap][float(halo)] = hdf[str(halo)]['Prog_haloIDs'][...]
+
+        hdf.close()
+
+    return hmrs, masses, progs, main_snap, main_hmr
+
+
 def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
 
     snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
