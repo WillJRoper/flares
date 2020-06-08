@@ -246,6 +246,7 @@ def get_forest2(z0halo, treepath):
             halos_to_test.update(forest_dict[desc_snap] - tested_halos)
         
         tested_halos.update({halo_tup})
+        halos_to_test = halos_to_test - tested_halos
 
     forest_snaps = list(forest_dict.keys())
 
