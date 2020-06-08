@@ -94,7 +94,10 @@ def get_forest(z0halo, treepath):
             snap_tree_data.close()
 
             # Add any new halos not found in found halos to the new halos set
-            new_halos.update(forest_dict[prog_snap] - found_halos)
+            try:
+                new_halos.update(forest_dict[prog_snap] - found_halos)
+            except KeyError:
+                continue
 
         # =============== Descendants ===============
 
