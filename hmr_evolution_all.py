@@ -12,6 +12,7 @@ import h5py
 import sys
 import multiprocessing
 import pickle
+import time
 import seaborn as sns
 
 
@@ -198,26 +199,22 @@ def get_forest2(z0halo, treepath):
     forest_dict[snaplist[0]] = halos
 
     # Initialise the set of new found halos used to loop until no new halos are found
-    new_halos = halos
+    halos_to_test = halos
 
     # Initialise the set of found halos used to check if the halo has been found or not
-    found_halos = set()
+    tested_halos = set()
 
     # =============== Progenitors ===============
 
     count = 0
 
-    prev_found = -1
-
     # Loop until no new halos are found
-    while len(found_halos) != prev_found:
-
-        prev_found = len(found_halos)
+    while len(halos_to_test) != 0:
 
         print(count)
         count += 1
 
-        halo_tup = new_halos.pop()
+        halo_tup = halos_to_test.pop()
         halo, snap_ind = halo_tup
         snap = snaplist[snap_ind]
         if snap_ind - 1 < 0:
@@ -234,17 +231,21 @@ def get_forest2(z0halo, treepath):
 
         # Assign progenitors and descendents including the snapshot to keep track of the snapshot
         # in addition to the halo ID
-        forest_dict.setdefault(prog_snap, set()).update({(p, int(prog_snap.split('_')[0])) for p in
-                                                         snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
-        forest_dict.setdefault(desc_snap, set()).update({(d, int(desc_snap.split('_')[0])) for d in
-                                                         snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
+        if prog_snap != None:
+            forest_dict.setdefault(prog_snap, set()).update({(p, int(prog_snap.split('_')[0])) for p in
+                                                             snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
+        if desc_snap != None:
+            forest_dict.setdefault(desc_snap, set()).update({(d, int(desc_snap.split('_')[0])) for d in
+                                                             snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
         snap_tree_data.close()
 
         # Add any new halos not found in found halos to the new halos set
-        new_halos.update(forest_dict[prog_snap] - found_halos)
-
-        # Add the new_halos to the found halos set
-        found_halos.update(new_halos)
+        if prog_snap != None:
+            halos_to_test.update(forest_dict[prog_snap] - tested_halos)
+        if desc_snap != None:
+            halos_to_test.update(forest_dict[desc_snap] - tested_halos)
+        
+        tested_halos.update({halo_tup})
 
     forest_snaps = list(forest_dict.keys())
 
@@ -289,7 +290,9 @@ def get_forest2(z0halo, treepath):
 def forest_worker(z0halo, treepath):
 
     # Get the forest with this halo at it's root
+    start = time.time()
     forest_dict = get_forest(z0halo, treepath)
+    print("Completed", time.time() - start)
 
     print('Halo ' + str(z0halo) + '\'s Forest extracted...')
 
@@ -361,7 +364,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
     soft = 0.001802390 / 0.677 * 1 / (1 + 4.77)
 
     # Remove particles not associated to a subgroup
-    okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 10**9.8)
+    okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 10**9.)
     gal_hmrs = gal_hmrs[okinds]
     gal_ms = gal_ms[okinds]
     grp_ids = grp_ids[okinds]
@@ -412,10 +415,10 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
     cbar = ax.hexbin(root_hmrs, median_hmrs, gridsize=100, mincnt=1, xscale='log',
                      yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
-    ax.set_xlabel("$R_{1/2, \star, \mathrm{root}} / \epsilon$")
-    ax.set_xlabel("$R_{1/2, \star, \mathrm{root}} / R_{1/2, \star, 50^{\mathrm{th}}}$")
+    ax.set_xlabel("$R_{1/2, \mathrm{root}} / \epsilon$")
+    ax.set_ylabel("$R_{1/2, \mathrm{root}} / R_{1/2, 50^{\mathrm{th}}}$")
 
-    # fig.colorbar(cbar)
+    fig.colorbar(cbar)
 
     fig.savefig("plots/Evolution/hmrevo_50thpcent.png", bbox_inches="tight")
 
