@@ -159,7 +159,6 @@ def get_forest(z0halo, treepath):
             main_branch[prog_snap] = snap_tree_data[str(main)]['Prog_haloIDs'][0]
             main = main_branch[prog_snap]
         except ValueError:
-            main_branch[prog_snap] = []
             snap_tree_data.close()
             break
         snap_tree_data.close()
