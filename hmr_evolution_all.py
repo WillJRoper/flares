@@ -277,6 +277,9 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
 
         ind += 1
 
+    median_hmrs = median_hmrs[:ind]
+    root_hmrs = root_hmrs[:ind]
+
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
