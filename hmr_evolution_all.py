@@ -61,6 +61,9 @@ def get_forest(z0halo, treepath):
 
     count = 0
 
+    for snap in snaplist:
+        forest_dict[snap] = set()
+
     # Loop until no new halos are found
     while len(new_halos) != 0:
 
@@ -89,15 +92,12 @@ def get_forest(z0halo, treepath):
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
-                forest_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in
-                                                                 snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
+                progs = snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]
+                forest_dict[prog_snap].update({(p, prog_snap) for p in progs})
             snap_tree_data.close()
 
             # Add any new halos not found in found halos to the new halos set
-            try:
-                new_halos.update(forest_dict[prog_snap] - found_halos)
-            except KeyError:
-                continue
+            new_halos.update(forest_dict[prog_snap] - found_halos)
 
         # =============== Descendants ===============
 
@@ -119,8 +119,8 @@ def get_forest(z0halo, treepath):
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
-                forest_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in
-                                                                 snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
+                descs = snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]
+                forest_dict[desc_snap].update({(d, desc_snap) for d in descs})
 
             snap_tree_data.close()
 
