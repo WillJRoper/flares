@@ -231,11 +231,11 @@ def get_forest2(z0halo, treepath):
         # Assign progenitors and descendents including the snapshot to keep track of the snapshot
         # in addition to the halo ID
         if prog_snap != None:
-            forest_dict.setdefault(prog_snap, set()).update({(p, int(prog_snap.split('_')[0])) for p in
-                                                             snap_tree_data[str(halo)]['Prog_haloIDs'][...]})
+            progs = snap_tree_data[str(halo)]['Prog_haloIDs'][...]
+            forest_dict.setdefault(prog_snap, set()).update({(p, int(prog_snap.split('_')[0])) for p in progs})
         if desc_snap != None:
-            forest_dict.setdefault(desc_snap, set()).update({(d, int(desc_snap.split('_')[0])) for d in
-                                                             snap_tree_data[str(halo)]['Desc_haloIDs'][...]})
+            descs = snap_tree_data[str(halo)]['Desc_haloIDs'][...]
+            forest_dict.setdefault(desc_snap, set()).update({(d, int(desc_snap.split('_')[0])) for d in descs})
         snap_tree_data.close()
 
         # Add any new halos not found in found halos to the new halos set
@@ -364,7 +364,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
     soft = 0.001802390 / 0.677 * 1 / (1 + 4.77)
 
     # Remove particles not associated to a subgroup
-    okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 10**9.)
+    okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 10**9.5)
     gal_hmrs = gal_hmrs[okinds]
     gal_ms = gal_ms[okinds]
     grp_ids = grp_ids[okinds]
