@@ -206,13 +206,12 @@ def get_forest2(z0halo, treepath):
 
     # =============== Progenitors ===============
 
-    count = 0
+    # count = 0
 
     # Loop until no new halos are found
     while len(halos_to_test) != 0:
 
-        print(count, len(halos_to_test))
-        count += 1
+        # count += 1
 
         halo_tup = halos_to_test.pop()
         halo, snap_ind = halo_tup
