@@ -166,6 +166,127 @@ def get_forest(z0halo, treepath):
     return forest_dict, main_branch, gen0, root
 
 
+def get_forest2(z0halo, treepath):
+    """ A funciton which traverses a tree including all halos which have interacted with the tree
+    in a 'forest/mangrove'.
+
+    :param tree_data: The tree data dictionary produced by the Merger Graph.
+    :param z0halo: The halo ID of a z=0 halo for which the forest/mangrove plot is desired.
+
+    :return: forest_dict: The dictionary containing the forest. Each key is the snapshot ID and
+             the value is a list of halos in this snapshot of the forest.
+             massgrowth: The mass history of the forest.
+             tree: The dictionary containing the tree. Each key is the snapshot ID and
+             the value is a list of halos in this snapshot of the tree.
+             main_growth: The mass history of the main branch.
+    """
+
+    # Initialise dictionary instances
+    forest_dict = {}
+    mass_dict = {}
+    main_branch = {'011_z004p770': z0halo}
+
+    # Create snapshot list in reverse order (present day to past) for the progenitor searching loop
+    snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
+                '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
+                '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+
+    # Initialise the halo's set for tree walking
+    halos = {(z0halo, 11)}
+
+    # Initialise the forest dictionary with the present day halo as the first entry
+    forest_dict[snaplist[0]] = halos
+
+    # Initialise the set of new found halos used to loop until no new halos are found
+    new_halos = halos
+
+    # Initialise the set of found halos used to check if the halo has been found or not
+    found_halos = set()
+
+    # =============== Progenitors ===============
+
+    count = 0
+
+    prev_found = -1
+
+    # Loop until no new halos are found
+    while len(found_halos) != prev_found:
+
+        print(count)
+        count += 1
+
+        halo_tup = new_halos.pop()
+        halo, snap_ind = halo_tup
+        snap = snaplist[snap_ind]
+        if snap_ind - 1 < 0:
+            prog_snap = None
+        else:
+            prog_snap = snaplist[snap_ind - 1]
+        if snap_ind + 1 >= len(snaplist):
+            desc_snap = None
+        else:
+            desc_snap = snaplist[snap_ind + 1]
+
+        # Overwrite the last set of new_halos
+        new_halos = set()
+
+        # Open this snapshots root group
+        snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+
+        # Assign progenitors and descendents including the snapshot to keep track of the snapshot
+        # in addition to the halo ID
+        forest_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in
+                                                         snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
+        forest_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in
+                                                         snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
+        snap_tree_data.close()
+
+        # Add any new halos not found in found halos to the new halos set
+        new_halos.update(forest_dict[prog_snap] - found_halos)
+
+        # Add the new_halos to the found halos set
+        found_halos.update(new_halos)
+
+    forest_snaps = list(forest_dict.keys())
+
+    for snap in forest_snaps:
+
+        if len(forest_dict[snap]) == 0:
+            del forest_dict[snap]
+            continue
+
+        forest_dict[snap] = np.array([float(halo[0]) for halo in forest_dict[snap]])
+
+        # Open this snapshots root group
+        snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+
+        mass_dict[snap] = np.array([snap_tree_data[str(halo)].attrs['current_halo_nPart']
+                                    for halo in forest_dict[snap]])
+
+        snap_tree_data.close()
+
+    gen0 = forest_dict['011_z004p770']
+    root = gen0[np.argmax(mass_dict['011_z004p770'])]
+
+    # Define the main branch start
+    main = root
+
+    # Loop over snapshots to get main branch
+    for snap, prog_snap in zip(snaplist[:-1], snaplist[1:]):
+
+        # Open this snapshots root group
+        snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+        try:
+            main_branch[prog_snap] = snap_tree_data[str(main)]['Prog_haloIDs'][0]
+            main = main_branch[prog_snap]
+        except ValueError:
+            snap_tree_data.close()
+            break
+        snap_tree_data.close()
+
+    return forest_dict, main_branch, gen0, root
+
+
 def forest_worker(z0halo, treepath):
 
     # Get the forest with this halo at it's root
@@ -292,8 +413,8 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
     cbar = ax.hexbin(root_hmrs, median_hmrs, gridsize=100, mincnt=1, xscale='log',
                      yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
-    ax.set_xlabel("$R_{1/2, \star, \mathm{root}} / \epsilon$")
-    ax.set_xlabel("$R_{1/2, \star, \mathm{root}} / R_{1/2, \star, 50^{\mathrm{th}}}$")
+    ax.set_xlabel("$R_{1/2, \star, \mathrm{root}} / \epsilon$")
+    ax.set_xlabel("$R_{1/2, \star, \mathrm{root}} / R_{1/2, \star, 50^{\mathrm{th}}}$")
 
     fig.colorbar(cbar, cax=ax)
 
