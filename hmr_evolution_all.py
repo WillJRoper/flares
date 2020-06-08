@@ -212,6 +212,8 @@ def get_forest2(z0halo, treepath):
     # Loop until no new halos are found
     while len(found_halos) != prev_found:
 
+        prev_found = len(found_halos)
+
         print(count)
         count += 1
 
@@ -227,17 +229,14 @@ def get_forest2(z0halo, treepath):
         else:
             desc_snap = snaplist[snap_ind + 1]
 
-        # Overwrite the last set of new_halos
-        new_halos = set()
-
         # Open this snapshots root group
         snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
         # Assign progenitors and descendents including the snapshot to keep track of the snapshot
         # in addition to the halo ID
-        forest_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in
+        forest_dict.setdefault(prog_snap, set()).update({(p, int(prog_snap.split('_')[0])) for p in
                                                          snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
-        forest_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in
+        forest_dict.setdefault(desc_snap, set()).update({(d, int(desc_snap.split('_')[0])) for d in
                                                          snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
         snap_tree_data.close()
 
@@ -416,7 +415,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
     ax.set_xlabel("$R_{1/2, \star, \mathrm{root}} / \epsilon$")
     ax.set_xlabel("$R_{1/2, \star, \mathrm{root}} / R_{1/2, \star, 50^{\mathrm{th}}}$")
 
-    fig.colorbar(cbar, cax=ax)
+    # fig.colorbar(cbar)
 
     fig.savefig("plots/Evolution/hmrevo_50thpcent.png", bbox_inches="tight")
 
