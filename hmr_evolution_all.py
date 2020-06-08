@@ -291,7 +291,7 @@ def forest_worker(z0halo, treepath):
 
     # Get the forest with this halo at it's root
     start = time.time()
-    forest_dict = get_forest(z0halo, treepath)
+    forest_dict = get_forest2(z0halo, treepath)
     print("Completed", time.time() - start)
 
     print('Halo ' + str(z0halo) + '\'s Forest extracted...')
