@@ -220,7 +220,7 @@ for num, p in enumerate(ps):
     rgb_dm, extent = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
 
     frame = hdf.create_group(str(num))
-    frame.create_dataset('img', shape=rgb.shape, dtype=float, data=rgb,
+    frame.create_dataset('img', shape=rgb_dm.shape, dtype=float, data=rgb_dm,
                             compression='gzip')
     frame.attrs['extent'] = extent
 
