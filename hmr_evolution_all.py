@@ -357,14 +357,16 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
     grp_ids = E.read_array('SUBFIND', path, root_snap, 'Subhalo/GroupNumber', numThreads=8)
     gal_hmrs = E.read_array('SUBFIND', path, root_snap, 'Subhalo/HalfMassRad', noH=True,
                             physicalUnits=True, numThreads=8)[:, 4]
-    gal_ms = E.read_array('SUBFIND', path, root_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                          noH=True, physicalUnits=True, numThreads=8)[:, 4] * 10 ** 10
+    gal_all_ms = E.read_array('SUBFIND', path, root_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                          noH=True, physicalUnits=True, numThreads=8) * 10 ** 10
+    gal_ms = gal_all_ms[:, 4]
+    gal_dm_ms = gal_all_ms[:, 1]
 
     # Define comoving softening length in kpc
     soft = 0.001802390 / 0.677 * 1 / (1 + 4.77)
 
     # Remove particles not associated to a subgroup
-    okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 10**9.5)
+    okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 10**9., gal_dm_ms != 0))
     gal_hmrs = gal_hmrs[okinds]
     gal_ms = gal_ms[okinds]
     grp_ids = grp_ids[okinds]
@@ -412,7 +414,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    cbar = ax.hexbin(root_hmrs, median_hmrs, gridsize=100, mincnt=1, xscale='log',
+    cbar = ax.hexbin(root_hmrs, median_hmrs, gridsize=50, mincnt=1, xscale='log',
                      yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
 
     ax.set_xlabel("$R_{1/2, \mathrm{root}} / \epsilon$")
