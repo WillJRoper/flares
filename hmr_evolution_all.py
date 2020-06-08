@@ -64,7 +64,6 @@ def get_forest(z0halo, treepath):
     # Loop until no new halos are found
     while len(new_halos) != 0:
 
-        print(count)
         count += 1
 
         # Overwrite the last set of new_halos
@@ -387,7 +386,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        print(len(halo_ids), "halos to build forests for")
+        print(len(halo_ids), "halos to build forests for, in region", reg)
 
         done_halos = set()
 
