@@ -257,6 +257,8 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
 
     for root, hr, m in zip(halo_ids, gal_hmrs, gal_ms):
 
+        print(len(done_halos))
+
         if root in done_halos:
             continue
 
