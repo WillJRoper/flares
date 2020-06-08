@@ -271,7 +271,7 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
     csoft = 0.001802390 / 0.677 * convert_pMpc
 
     # Remove particles not associated to a subgroup
-    okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 10**9.5, gal_hmrs / csoft < 1.2))
+    okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 10**8)
     gal_hmrs = gal_hmrs[okinds]
     gal_ms = gal_ms[okinds]
     grp_ids = grp_ids[okinds]
@@ -406,7 +406,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
     csoft = 0.001802390 / 0.677 * convert_pMpc
 
     # Remove particles not associated to a subgroup
-    okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 10**9.5, gal_hmrs / csoft < 1.2))
+    okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > 10**8)
     gal_hmrs = gal_hmrs[okinds]
     gal_ms = gal_ms[okinds]
     grp_ids = grp_ids[okinds]
