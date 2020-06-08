@@ -268,12 +268,15 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
         root_hmrs[ind] = hr / soft
 
         # Loop over main branch getting hmr over evolution
-        hmrs = []
+        hmrs_mb = []
         for s in main_branch.keys():
-            hmrs.append(hmrs[s][ids == main_branch[s]])
+            print(hmrs[s].shape)
+            print(ids[s].shape)
+            print(main_branch[s])
+            hmrs_mb.append(hmrs[s][ids[s] == main_branch[s]])
 
-        print(hmrs)
-        median_hmrs[ind] = root_hmrs[ind] / np.median(hmrs)
+        print(hmrs_mb)
+        median_hmrs[ind] = root_hmrs[ind] / np.median(hmrs_mb)
 
         ind += 1
 
