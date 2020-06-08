@@ -135,7 +135,7 @@ def get_forest(z0halo, treepath):
     for snap in forest_snaps:
 
         if len(forest_dict[snap]) == 0:
-            del forest_dict[snap]
+            forest_dict[snap] = np.array([])
             continue
 
         forest_dict[snap] = np.array([float(halo[0]) for halo in forest_dict[snap]])
@@ -345,74 +345,89 @@ def get_evolution(path, snaps):
 
 def main_evolve_graph(reg, root_snap='011_z004p770'):
 
+    regions = []
+    for reg in range(0, 40):
+        if reg < 10:
+            regions.append('0' + str(reg))
+        else:
+            regions.append(str(reg))
+
+    median_hmrs_dict = {}
+    root_hmrs_dict = {}
+
     snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
                 '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
                 '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 
-    graphpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/'
+    for reg in regions:
 
-    path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+        graphpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/'
 
-    hmrs, masses, ids = get_evolution(path, snaplist)
+        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-    # Get halo IDs and halo data
-    subgrp_ids = E.read_array('SUBFIND', path, root_snap, 'Subhalo/SubGroupNumber', numThreads=8)
-    grp_ids = E.read_array('SUBFIND', path, root_snap, 'Subhalo/GroupNumber', numThreads=8)
-    gal_hmrs = E.read_array('SUBFIND', path, root_snap, 'Subhalo/HalfMassRad', noH=True,
-                            physicalUnits=True, numThreads=8)[:, 4]
-    gal_all_ms = E.read_array('SUBFIND', path, root_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                          noH=True, physicalUnits=True, numThreads=8) * 10 ** 10
-    gal_ms = gal_all_ms[:, 4]
-    gal_dm_ms = gal_all_ms[:, 1]
+        hmrs, masses, ids = get_evolution(path, snaplist)
 
-    # Define comoving softening length in kpc
-    soft = 0.001802390 / 0.677 * 1 / (1 + 4.77)
+        # Get halo IDs and halo data
+        subgrp_ids = E.read_array('SUBFIND', path, root_snap, 'Subhalo/SubGroupNumber', numThreads=8)
+        grp_ids = E.read_array('SUBFIND', path, root_snap, 'Subhalo/GroupNumber', numThreads=8)
+        gal_hmrs = E.read_array('SUBFIND', path, root_snap, 'Subhalo/HalfMassRad', noH=True,
+                                physicalUnits=True, numThreads=8)[:, 4]
+        gal_all_ms = E.read_array('SUBFIND', path, root_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                              noH=True, physicalUnits=True, numThreads=8) * 10 ** 10
+        gal_ms = gal_all_ms[:, 4]
+        gal_dm_ms = gal_all_ms[:, 1]
 
-    # Remove particles not associated to a subgroup
-    okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 10**8., gal_dm_ms != 0))
-    gal_hmrs = gal_hmrs[okinds]
-    gal_ms = gal_ms[okinds]
-    grp_ids = grp_ids[okinds]
-    subgrp_ids = subgrp_ids[okinds]
-    halo_ids = np.zeros(grp_ids.size, dtype=float)
-    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+        # Define comoving softening length in kpc
+        soft = 0.001802390 / 0.677 * 1 / (1 + 4.77)
 
-    print(len(halo_ids), "halos to build forests for")
+        # Remove particles not associated to a subgroup
+        okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 10**9., gal_dm_ms != 0))
+        gal_hmrs = gal_hmrs[okinds]
+        gal_ms = gal_ms[okinds]
+        grp_ids = grp_ids[okinds]
+        subgrp_ids = subgrp_ids[okinds]
+        halo_ids = np.zeros(grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+            halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-    done_halos = set()
+        print(len(halo_ids), "halos to build forests for")
 
-    median_hmrs = np.zeros(len(halo_ids))
-    root_hmrs = np.zeros(len(halo_ids))
+        done_halos = set()
 
-    ind = 0
+        median_hmrs = np.zeros(len(halo_ids))
+        root_hmrs = np.zeros(len(halo_ids))
 
-    for root, hr, m in zip(halo_ids, gal_hmrs, gal_ms):
+        ind = 0
 
-        print(len(done_halos))
+        for root, hr, m in zip(halo_ids, gal_hmrs, gal_ms):
 
-        if root in done_halos:
-            continue
+            print(len(done_halos))
 
-        # Get the graph
-        forest, main_branch, gen0, root = forest_worker(root, graphpath)
+            if root in done_halos:
+                continue
 
-        done_halos.update(gen0)
+            # Get the graph
+            forest, main_branch, gen0, root = forest_worker(root, graphpath)
 
-        root_hmrs[ind] = hr / soft
+            done_halos.update(gen0)
 
-        # Loop over main branch getting hmr over evolution
-        hmrs_mb = []
-        for s in main_branch.keys():
+            root_hmrs[ind] = hr / soft
 
-            hmrs_mb.append(hmrs[s][ids[s] == main_branch[s]][0])
+            # Loop over main branch getting hmr over evolution
+            hmrs_mb = []
+            for s in main_branch.keys():
 
-        median_hmrs[ind] = root_hmrs[ind] / np.median(hmrs_mb)
+                hmrs_mb.append(hmrs[s][ids[s] == main_branch[s]][0])
 
-        ind += 1
+            median_hmrs[ind] = root_hmrs[ind] / np.median(hmrs_mb)
 
-    median_hmrs = median_hmrs[:ind]
-    root_hmrs = root_hmrs[:ind]
+            ind += 1
+
+        median_hmrs_dict[reg] = median_hmrs[:ind]
+        root_hmrs_dict[reg] = root_hmrs[:ind]
+
+    median_hmrs = np.concatenate(list(median_hmrs_dict.values()))
+    root_hmrs = np.concatenate(list(root_hmrs_dict.values()))
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
