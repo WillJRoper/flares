@@ -233,10 +233,10 @@ def get_forest2(z0halo, treepath):
         # in addition to the halo ID
         if prog_snap != None:
             forest_dict.setdefault(prog_snap, set()).update({(p, int(prog_snap.split('_')[0])) for p in
-                                                             snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
+                                                             snap_tree_data[str(halo)]['Prog_haloIDs'][...]})
         if desc_snap != None:
             forest_dict.setdefault(desc_snap, set()).update({(d, int(desc_snap.split('_')[0])) for d in
-                                                             snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
+                                                             snap_tree_data[str(halo)]['Desc_haloIDs'][...]})
         snap_tree_data.close()
 
         # Add any new halos not found in found halos to the new halos set
