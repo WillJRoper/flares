@@ -61,9 +61,6 @@ def get_forest(z0halo, treepath):
 
     count = 0
 
-    for snap in snaplist:
-        forest_dict[snap] = set()
-
     # Loop until no new halos are found
     while len(new_halos) != 0:
 
@@ -92,12 +89,13 @@ def get_forest(z0halo, treepath):
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
-                progs = snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]
-                forest_dict[prog_snap].update({(p, prog_snap) for p in progs})
+                forest_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in
+                                                                 snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
             snap_tree_data.close()
 
             # Add any new halos not found in found halos to the new halos set
             new_halos.update(forest_dict[prog_snap] - found_halos)
+
 
         # =============== Descendants ===============
 
@@ -119,8 +117,8 @@ def get_forest(z0halo, treepath):
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
-                descs = snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]
-                forest_dict[desc_snap].update({(d, desc_snap) for d in descs})
+                forest_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in
+                                                                 snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
 
             snap_tree_data.close()
 
@@ -135,7 +133,7 @@ def get_forest(z0halo, treepath):
     for snap in forest_snaps:
 
         if len(forest_dict[snap]) == 0:
-            forest_dict[snap] = np.array([])
+            del forest_dict[snap]
             continue
 
         forest_dict[snap] = np.array([float(halo[0]) for halo in forest_dict[snap]])
@@ -344,7 +342,6 @@ def get_evolution(path, snaps):
 
 
 def main_evolve_graph(reg, root_snap='011_z004p770'):
-
     regions = []
     for reg in range(0, 40):
         if reg < 10:
@@ -373,7 +370,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
         gal_hmrs = E.read_array('SUBFIND', path, root_snap, 'Subhalo/HalfMassRad', noH=True,
                                 physicalUnits=True, numThreads=8)[:, 4]
         gal_all_ms = E.read_array('SUBFIND', path, root_snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                              noH=True, physicalUnits=True, numThreads=8) * 10 ** 10
+                                  noH=True, physicalUnits=True, numThreads=8) * 10 ** 10
         gal_ms = gal_all_ms[:, 4]
         gal_dm_ms = gal_all_ms[:, 1]
 
@@ -381,7 +378,7 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
         soft = 0.001802390 / 0.677 * 1 / (1 + 4.77)
 
         # Remove particles not associated to a subgroup
-        okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 10**9., gal_dm_ms != 0))
+        okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_ms > 10 ** 9., gal_dm_ms != 0))
         gal_hmrs = gal_hmrs[okinds]
         gal_ms = gal_ms[okinds]
         grp_ids = grp_ids[okinds]
@@ -416,7 +413,6 @@ def main_evolve_graph(reg, root_snap='011_z004p770'):
             # Loop over main branch getting hmr over evolution
             hmrs_mb = []
             for s in main_branch.keys():
-
                 hmrs_mb.append(hmrs[s][ids[s] == main_branch[s]][0])
 
             median_hmrs[ind] = root_hmrs[ind] / np.median(hmrs_mb)
