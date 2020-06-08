@@ -34,7 +34,8 @@ def get_forest(z0halo, treepath):
     """
 
     # Initialise dictionary instances
-    forest_dict = defaultdict(set)
+    forest_dict = {}
+    mass_dict = {}
     main_branch = {'011_z004p770': z0halo}
 
     # Create snapshot list in reverse order (present day to past) for the progenitor searching loop
@@ -54,27 +55,6 @@ def get_forest(z0halo, treepath):
 
     # Initialise the set of found halos used to check if the halo has been found or not
     found_halos = set()
-
-    # Get the main branch
-    main = z0halo
-    # Loop over snapshots
-    for snap, prog_snap in zip(snaplist[:-1], snaplist[1:]):
-
-        # Open this snapshots root group
-        snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
-        progs = snap_tree_data[str(main)]['Prog_haloIDs'][...]
-        pconts = snap_tree_data[str(main)]['prog_npart_contribution'][...]
-        sinds = np.argsort(pconts)
-        try:
-            main_branch[prog_snap] = progs[sinds][-1]
-            main = main_branch[prog_snap]
-        except IndexError:
-            snap_tree_data.close()
-            break
-
-        snap_tree_data.close()
-
-    main_branch[snaplist[-1]] = []
 
     # =============== Progenitors ===============
 
@@ -103,8 +83,8 @@ def get_forest(z0halo, treepath):
             # Loop over halos in this snapshot
             for halo in halos:
 
-                # if halo in found_halos:
-                #     continue
+                if halo in found_halos:
+                    continue
 
                 # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
                 # in addition to the halo ID
@@ -130,7 +110,8 @@ def get_forest(z0halo, treepath):
             # Loop over the progenitor halos
             for halo in halos:
 
-                # if halo zinue
+                if halo in found_halos:
+                    continue
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
@@ -155,7 +136,39 @@ def get_forest(z0halo, treepath):
 
         forest_dict[snap] = np.array([float(halo[0]) for halo in forest_dict[snap]])
 
-    return forest_dict, main_branch
+        # Open this snapshots root group
+        snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+
+        mass_dict[snap] = np.array([snap_tree_data[str(halo)].attrs['current_halo_nPart']
+                                    for halo in forest_dict[snap]])
+
+        snap_tree_data.close()
+
+    gen0 = forest_dict['011_z004p770']
+    root = gen0[np.argmax(mass_dict['011_z004p770'])]
+
+    # Define the main branch start
+    main = root
+
+    # Loop over snapshots to get main branch
+    for snap, prog_snap in zip(snaplist[:-1], snaplist[1:]):
+
+        # Open this snapshots root group
+        snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+        progs = snap_tree_data[str(main)]['Prog_haloIDs'][...]
+        pconts = snap_tree_data[str(main)]['prog_npart_contribution'][...]
+        sinds = np.argsort(pconts)
+        try:
+            main_branch[prog_snap] = progs[sinds][-1]
+            main = main_branch[prog_snap]
+        except IndexError:
+            snap_tree_data.close()
+            main_branch[snap] = []
+            break
+
+        snap_tree_data.close()
+
+    return forest_dict, main_branch, gen0, root
 
 
 def forest_worker(z0halo, treepath):
@@ -270,12 +283,19 @@ def main_evolve(reg, root_snap='011_z004p770', lim=1):
     # Initialise counter
     count = 0
 
+    done_halos = set()
+
     for root, hr, m in zip(halo_ids, gal_hmrs, gal_ms):
+
+        if root in done_halos:
+            continue
 
         count += 1
 
         # Get the graph
-        forest, main_branch = forest_worker(root, graphpath)
+        forest, main_branch, gen0, root = forest_worker(root, graphpath)
+
+        done_halos.update(gen0)
 
         hmrs, masses, progs, main_snap, main_hmr = get_evolution(forest, main_branch, path, graphpath, snaplist)
 
@@ -398,12 +418,19 @@ def main_evolve_graph(reg, root_snap='011_z004p770', lim=1):
     # Initialise counter
     count = 0
 
+    done_halos = set()
+
     for root, hr, m in zip(halo_ids, gal_hmrs, gal_ms):
+
+        if root in done_halos:
+            continue
 
         count += 1
 
         # Get the graph
-        forest, main_branch = forest_worker(root, graphpath)
+        forest, main_branch, gen0, root = forest_worker(root, graphpath)
+
+        done_halos.update(gen0)
 
         hmrs, masses, progs, main_snap, main_hmr = get_evolution(forest, main_branch, path, graphpath, snaplist)
 
