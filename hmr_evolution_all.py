@@ -155,8 +155,13 @@ def get_forest(z0halo, treepath):
 
         # Open this snapshots root group
         snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
-        main_branch[prog_snap] = snap_tree_data[str(main)]['Prog_haloIDs'][0]
-        main = main_branch[prog_snap]
+        try:
+            main_branch[prog_snap] = snap_tree_data[str(main)]['Prog_haloIDs'][0]
+            main = main_branch[prog_snap]
+        except ValueError:
+            main_branch[prog_snap] = []
+            snap_tree_data.close()
+            break
         snap_tree_data.close()
 
     return forest_dict, main_branch, gen0, root
