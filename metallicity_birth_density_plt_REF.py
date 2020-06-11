@@ -67,10 +67,10 @@ def get_data(masslim=1e8, load=False):
 
     # Define snapshots
     snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
-             '013_z002p478', '017_z001p487', '018_z001p259',
+             '012_z003p017', '013_z002p478', '018_z001p259',
              '019_z001p004', '020_z000p865', '024_z000p366']
     prog_snaps = ['003_z008p988', '007_z005p487', '009_z004p485',
-                  '012_z003p017', '016_z001p737', '017_z001p487',
+                  '011_z003p528', '012_z003p017', '017_z001p487',
                   '018_z001p259', '019_z001p004', '023_z000p503']
 
     if load:
@@ -145,8 +145,9 @@ def get_data(masslim=1e8, load=False):
     return stellar_bd_dict, stellar_met_dict
 
 
+# Define snapshots
 snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
-         '013_z002p478', '017_z001p487', '018_z001p259',
+         '012_z003p017', '013_z002p478', '018_z001p259',
          '019_z001p004', '020_z000p865', '024_z000p366']
 
 stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9.5, load=False)
