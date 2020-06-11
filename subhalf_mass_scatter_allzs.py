@@ -29,9 +29,6 @@ snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
 axlims_x = []
 axlims_y = []
 
-# Define comoving softening length in kpc
-csoft = 0.001802390/0.677*1e3
-
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 
@@ -95,9 +92,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z = float(z_str[0] + '.' + z_str[1])
 
     if z <= 2.8:
-        soft = 0.000474390 / 0.6777
+        soft = 0.000474390 / 0.6777 * 1e3
     else:
-        soft = 0.001802390 / (0.6777 * (1 + z))
+        soft = 0.001802390 / (0.6777 * (1 + z)) * 1e3
 
     xs = np.concatenate(list(xaxis_dict[snap].values()))
     half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
@@ -107,7 +104,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
     xs_plt = xs_plt[xs_plt > 1e8]
     
-    cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
+    cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                      linewidths=0.2, cmap='viridis', alpha=0.7)
     plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='REF', color='r')
 
