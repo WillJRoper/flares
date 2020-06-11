@@ -128,9 +128,9 @@ def get_data(masslim=1e8, load=False):
                 gal_bd = E.read_array('PARTDATA', path, snap, 'PartType4/BirthDensity', noH=True,
                                         physicalUnits=True, numThreads=8)
                 gal_coord = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
-                                         physicalUnits=False, numThreads=8)
+                                         physicalUnits=True, numThreads=8)
                 gal_cop = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
-                                       physicalUnits=False, numThreads=8)
+                                       physicalUnits=True, numThreads=8)
                 gal_aborn = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', numThreads=8)
             except ValueError:
                 continue
@@ -229,16 +229,17 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     else:
         ax.loglog()
     if z > 2.8:
-        ax.axvline(csoft, color='k', linestyle='--')
+        soft = csoft * 1 / (1 + z)
     else:
-        ax.axvline(psoft, color='k', linestyle='--')
+        soft = psoft * 1 / (1 + z)
+    ax.axvline(soft, color='k', linestyle='--')
 
     ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='left', fontsize=8)
 
     # Label axes
     if i == 2:
-        ax.set_xlabel("$R$ / [ckpc]")
+        ax.set_xlabel("$R$ / [pkpc]")
     if j == 0:
         ax.set_ylabel("Stellar Birth Density [$n_H$ cm$^{-3}$]")
 

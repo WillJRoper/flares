@@ -233,7 +233,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         axlims_y.extend(ax.get_ylim())
     else:
         ax.loglog()
-    ax.axvline(csoft, color='k', linestyle='--')
+    soft = csoft * 1 / (1 + z)
+    ax.axvline(soft, color='k', linestyle='--')
 
     ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='left', fontsize=8)
