@@ -79,9 +79,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z = float(z_str[0] + '.' + z_str[1])
 
     if z <= 2.8:
-        soft = 0.000474390 / 0.677 * 1 / (1 + z)
+        soft = 0.000474390 / 0.6777
     else:
-        soft = 0.001802390 / 0.677 * 1 / (1 + z)
+        soft = 0.001802390 / (0.6777 * (1 + z))
 
     xs = xaxis_dict[snap]
     half_mass_rads_plt = half_mass_rads_dict[snap]

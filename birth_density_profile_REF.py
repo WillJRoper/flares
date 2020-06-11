@@ -228,10 +228,12 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         axlims_y.extend(ax.get_ylim())
     else:
         ax.loglog()
-    if z > 2.8:
-        soft = csoft * 1 / (1 + z)
+
+    if z <= 2.8:
+        soft = 0.000474390 / 0.6777
     else:
-        soft = psoft * 1 / (1 + z)
+        soft = 0.001802390 / (0.6777 * (1 + z))
+
     ax.axvline(soft, color='k', linestyle='--')
 
     ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
