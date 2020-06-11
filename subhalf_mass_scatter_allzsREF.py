@@ -128,7 +128,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    if z <= 1:
+    if z <= 2.8:
         soft = 0.000474390 / 0.677 * 1 / (1 + z)
     else:
         soft = 0.001802390 / 0.677 * 1 / (1 + z)

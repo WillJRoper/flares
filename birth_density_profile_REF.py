@@ -228,7 +228,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         axlims_y.extend(ax.get_ylim())
     else:
         ax.loglog()
-    if z > 1:
+    if z > 2.8:
         ax.axvline(csoft, color='k', linestyle='--')
     else:
         ax.axvline(psoft, color='k', linestyle='--')
