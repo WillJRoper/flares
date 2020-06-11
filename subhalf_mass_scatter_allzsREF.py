@@ -180,7 +180,7 @@ ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=F
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
 handles, labels = ax1.get_legend_handles_labels()
-ax1.legend(handles, labels)
+ax1.legend(handles, labels, loc='upper left')
 
 fig.savefig('plots/HalfMassRadius_all_snaps_REF.png',
             bbox_inches='tight')
