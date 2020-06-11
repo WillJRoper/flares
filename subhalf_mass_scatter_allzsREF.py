@@ -19,6 +19,7 @@ snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
          '013_z002p478', '017_z001p487', '018_z001p259',
          '019_z001p004', '020_z000p865', '024_z000p366']
 path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
+path2 = '/cosma7/data/Eagle/ScienceRuns/Planck1/L0050N0752/PE/AGNdT9/data'
 axlims_x = []
 axlims_y = []
 
@@ -26,7 +27,7 @@ axlims_y = []
 # csoft = 0.001802390/0.677*1e3
 
 
-def plot_meidan_stat(xs, ys, ax, bins=None):
+def plot_meidan_stat(xs, ys, ax, lab, bins=None):
 
     if bins == None:
         bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
@@ -42,7 +43,7 @@ def plot_meidan_stat(xs, ys, ax, bins=None):
 
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
-    ax.plot(bin_cents[okinds], y_stat[okinds], color='r', linestyle='-')
+    ax.plot(bin_cents[okinds], y_stat[okinds], color='r', linestyle='-', label=lab)
 
 
 half_mass_rads_dict = {}
@@ -93,8 +94,58 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     # cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
     #                  linewidths=0.2, cmap='viridis')  # uncomment to include softening
     cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                     norm=LogNorm(), linewidths=0.2, cmap='viridis')
-    plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax)
+                     norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
+    plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='REF')
+
+    ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            transform=ax.transAxes, horizontalalignment='right', fontsize=8)
+
+    axlims_x.extend(ax.get_xlim())
+    axlims_y.extend(ax.get_ylim())
+
+    # Label axes
+    if i == 2:
+        ax.set_xlabel(r'$M_{\star}/M_\odot$')
+    if j == 0:
+        # ax.set_ylabel('$R_{1/2}/\epsilon$')  # uncomment to include softening
+        ax.set_ylabel('$R_{1/2}/\epsilon$')
+
+half_mass_rads_dict = {}
+xaxis_dict = {}
+
+for snap in snaps:
+
+    print(snap)
+
+    half_mass_rads_dict[snap] = E.read_array('SUBFIND', path2, snap, 'Subhalo/HalfMassRad', noH=True,
+                                                  numThreads=8)[:, 4]
+    xaxis_dict[snap] = E.read_array('SUBFIND', path2, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                         noH=True, numThreads=8)[:, 4] * 10**10
+
+for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps,
+                            [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
+
+    z_str = snap.split('z')[1].split('p')
+    z = float(z_str[0] + '.' + z_str[1])
+
+    if z <= 1:
+        soft = 0.000474390 / 0.677 * 1 / (1 + z)
+    else:
+        soft = 0.001802390 / 0.677 * 1 / (1 + z)
+
+    xs = xaxis_dict[snap]
+    half_mass_rads_plt = half_mass_rads_dict[snap]
+
+    xs_plt = xs[half_mass_rads_plt > 0]
+    half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
+    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
+    xs_plt = xs_plt[xs_plt > 1e8]
+
+    # cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
+    #                  linewidths=0.2, cmap='viridis')  # uncomment to include softening
+    cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log',
+                     norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.7)
+    plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='AGNdT9')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -127,6 +178,9 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
                 labelright=False, labelbottom=False)
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+
+handles, labels = ax1.get_legend_handles_labels()
+ax1.legend(handles, labels)
 
 fig.savefig('plots/HalfMassRadius_all_snaps_REF.png',
             bbox_inches='tight')
