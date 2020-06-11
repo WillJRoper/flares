@@ -94,7 +94,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     # cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
     #                  linewidths=0.2, cmap='viridis')  # uncomment to include softening
     cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                     norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
+                     norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.5)
     plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='REF', color='r')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),

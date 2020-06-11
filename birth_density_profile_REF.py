@@ -239,7 +239,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     # Label axes
     if i == 2:
-        ax.set_xlabel("$R$ / [pkpc]")
+        ax.set_xlabel("$R$ [pkpc]")
     if j == 0:
         ax.set_ylabel("Stellar Birth Density [$n_H$ cm$^{-3}$]")
 
