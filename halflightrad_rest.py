@@ -206,7 +206,6 @@ for f in fs:
             except FileNotFoundError:
                 continue
 
-
     # Set up plot
     fig = plt.figure(figsize=(18, 10))
     gs = gridspec.GridSpec(3, 6)
