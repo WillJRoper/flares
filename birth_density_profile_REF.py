@@ -182,10 +182,6 @@ snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
          '012_z003p017', '013_z002p478', '018_z001p259',
          '019_z001p004', '020_z000p865', '024_z000p366']
 
-# Define comoving softening length in kpc
-csoft = 0.001802390 / 0.677 * 1e3
-psoft = 0.000474390 / 0.677 * 1e3
-
 stellar_bd_dict, stellar_rad_dict = get_data(masslim=10**9.5, load=False)
 
 axlims_x = []
@@ -230,9 +226,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         ax.loglog()
 
     if z <= 2.8:
-        soft = 0.000474390 / 0.6777
+        soft = 0.000474390 / 0.6777 * 1e3
     else:
-        soft = 0.001802390 / (0.6777 * (1 + z))
+        soft = 0.001802390 / (0.6777 * (1 + z)) * 1e3
 
     ax.axvline(soft, color='k', linestyle='--')
 
