@@ -5,6 +5,7 @@ import matplotlib
 import astropy.units as u
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
+from scipy.stats import binned_statistic
 import eagle_IO.eagle_IO as E
 import seaborn as sns
 import pickle
