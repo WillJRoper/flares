@@ -145,7 +145,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     #                  linewidths=0.2, cmap='viridis')  # uncomment to include softening
     # cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log',
     #                  norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.7)
-    plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='AGNdT9', color='m', ls='--')
+    plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='AGNdT9', color='y', ls='--')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
