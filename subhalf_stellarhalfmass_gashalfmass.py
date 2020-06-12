@@ -5,7 +5,7 @@ import matplotlib
 import astropy.units as u
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
-import eagle_IO as E
+import eagle_IO.eagle_IO as E
 import seaborn as sns
 import pickle
 import itertools
@@ -91,7 +91,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     xs_plt = xs_plt[xs_plt > 0]
     
     cbar = ax.hexbin(half_mass_rads_plt / (csoft / (1 + z)), xs_plt / (csoft / (1 + z)), gridsize=100,
-                     mincnt=1, xscale='log', yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
+                     mincnt=1, xscale='log', yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis', zorder=1)
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -109,6 +109,9 @@ for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
     ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+
+    ax.plot((np.min(axlims_x), np.max(axlims_x)), (np.min(axlims_y), np.max(axlims_y)),
+            linestyle='--', color='k', zorder=0)
 
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
