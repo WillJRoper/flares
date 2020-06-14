@@ -105,7 +105,7 @@ def set_up_single_sphere(reg, snap, soft, centre, part_type):
 
     return scene
 
-def get_single_sphere_imgs(scene, cmap, vmin_correction, p, t):
+def get_single_sphere_imgs(scene, p, t):
 
     # Define the box size
     lbox = (15 / 0.677) * 2
@@ -120,10 +120,7 @@ def get_single_sphere_imgs(scene, cmap, vmin_correction, p, t):
     img = render.get_image()
     extent = render.get_extent()
 
-    # Convert images to rgb arrays
-    rgb = cmap(get_normalised_image(np.log10(img), vmin=np.log10(img[np.where(img != 0.0)].min() + vmin_correction)))
-
-    return rgb, extent
+    return img, extent
 
 
 def blend(rgb_DM, rgb_gas):
@@ -135,7 +132,7 @@ def blend(rgb_DM, rgb_gas):
     return rgb_output
 
 
-def spheregrid(snap, nframes, num):
+def spheregrid(snap, num):
 
     # Define region list
     regions = []
@@ -165,9 +162,15 @@ def spheregrid(snap, nframes, num):
 
         img, extent = hdf[str(num)]['img'][...], hdf[str(num)].attrs['extent']
 
+        # Get colormaps
+        cmap = cmaps.twilight()
+
+        # Convert images to rgb arrays
+        rgb = cmap(get_normalised_image(np.arcsinh(img), vmin=10))
+
         hdf.close()
 
-        ax.imshow(img, extent=extent, origin='lower')
+        ax.imshow(rgb, extent=extent, origin='lower')
         ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                        labeltop=False, labelright=False, labelbottom=False)
 
@@ -190,43 +193,45 @@ for reg in range(0, 40):
 # Get colormaps
 cmap_dm = cmaps.twilight()
 
-# Minimum corrections
-dm_vmin = 7
-
 ind = int(sys.argv[1])
 
-# reg = regions[ind]
 snap = '011_z004p770'
-#
-# # Define path
-# path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
-#
-# # Get the spheres centre
-# centre, radius, mindist = spherical_region(path, snap)
-
 nframes = 180
-#
-# # Define rotations
-# ps = np.linspace(0, 360, nframes)
-#
-# # Set up particle objects
-# dm_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=1)
-#
-# # Load the current snapshot data
-# hdf = h5py.File(f'spheresdata/spheregird_img_data_{reg}_{snap}_dm.hdf5', 'w')
-#
-# for num, p in enumerate(ps):
-#
-#     rgb_dm, extent = get_single_sphere_imgs(dm_scene, cmap_dm, dm_vmin, p, t=0)
-#
-#     frame = hdf.create_group(str(num))
-#     frame.create_dataset('img', shape=rgb_dm.shape, dtype=float, data=rgb_dm,
-#                             compression='gzip')
-#     frame.attrs['extent'] = extent
-#
-# hdf.close()
-#
-spheregrid(snap, nframes, ind)
+
+# =============================================================================
+
+reg = regions[ind]
+
+# Define path
+path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+
+# Get the spheres centre
+centre, radius, mindist = spherical_region(path, snap)
+
+
+# Define rotations
+ps = np.linspace(0, 360, nframes)
+
+# Set up particle objects
+dm_scene = set_up_single_sphere(reg, snap, csoft, centre, part_type=1)
+
+# Load the current snapshot data
+hdf = h5py.File(f'spheresdata/spheregird_img_data_{reg}_{snap}_dm.hdf5', 'w')
+
+for num, p in enumerate(ps):
+
+    rgb_dm, extent = get_single_sphere_imgs(dm_scene, p, t=0)
+
+    frame = hdf.create_group(str(num))
+    frame.create_dataset('img', shape=rgb_dm.shape, dtype=float, data=rgb_dm,
+                            compression='gzip')
+    frame.attrs['extent'] = extent
+
+hdf.close()
+
+# =============================================================================
+
+# spheregrid(snap, ind)
 #
 # for num in range(nframes):
 #     spheregrid(snap, nframes, num)
