@@ -90,13 +90,15 @@ for reg in regions:
         okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms[:, 1] == 0)
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
-        sp_cops = cops[okinds]
+        sp_cops = cops[okinds, :]
         sp_ms = gal_ms[okinds, :]
         sp_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        parent_inds = tree.query(sp_cops, k=1, n_jobs=8)
+        print("There are", len(sp_halo_ids), "spurious halos")
+
+        _, parent_inds = tree.query(sp_cops, k=1, n_jobs=8)
         print(parent_inds)
         parents_ms = gal_ms[parent_inds, :]
         
