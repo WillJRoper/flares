@@ -81,10 +81,10 @@ for reg in range(0, 1):
     else:
         regions.append('00' + str(reg))
 
-# snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
-#          '006_z009p000', '007_z008p000', '008_z007p000',
-#          '009_z006p000', '010_z005p000', '011_z004p770']
-snaps = ['010_z005p000', ]
+snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000',
+         '009_z006p000', '010_z005p000', '011_z004p770']
+
 axlims_x = []
 axlims_y = []
 
@@ -93,14 +93,7 @@ csoft = 0.001802390 / 0.677 * 1e3
 
 p_lim = 1
 
-half_mass_rads_dict = {}
-xaxis_dict = {}
-ms = {}
-for snap in snaps:
-
-    half_mass_rads_dict[snap] = {}
-    xaxis_dict[snap] = {}
-    ms[snap] = {}
+overlaps, voverlaps = [], []
 
 for reg in regions:
 
@@ -254,12 +247,18 @@ for reg in regions:
             sp_vr = rms_rad(sp_vs, sp_vcent)
             prt_vr = rms_rad(prt_vs, prt_vcent)
 
-            overlap[ind], voverlap[ind] = get_phase_sep(prt_cop, sp_cop, prt_vcent, sp_vcent,
-                                                        prt_r, sp_r, prt_vr, sp_vr)
+            overlap, voverlap = get_phase_sep(prt_cop, sp_cop, prt_vcent, sp_vcent,
+                                              prt_r, sp_r, prt_vr, sp_vr)
+            overlaps.extend(overlap)
+            voverlaps.extend(voverlap)
 
+overlap = np.array(overlaps)
+voverlap = np.array(voverlaps)
+print(overlap.size, voverlap.size)
 okinds = np.logical_and(overlap != 0, voverlap != 0)
 overlap = overlap[okinds]
 voverlap = voverlap[okinds]
+print(overlap.size, voverlap.size)
 
 # Set up figure
 fig1 = plt.figure()
@@ -268,11 +267,11 @@ ax2 = fig1.add_subplot(111)
 cbar2 = ax2.hexbin(overlap, voverlap, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
                    yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
 
-sep_cut = p_lim - np.logspace(-6, 3, 1000)
+sep_cut = p_lim - np.logspace(-4, 3, 1000)
 
 # ax2.plot(np.logspace(-6, 3, 1000), sep_cut, color='w', linestyle='-')
-ax2.fill_between(np.logspace(-6, 3, 1000), np.zeros(1000), sep_cut, color='c', alpha=0.2, zorder=2)
-ax2.fill_between(np.logspace(-6, 3, 1000), np.full(1000, 10), sep_cut, color='r', alpha=0.2, zorder=2)
+ax2.fill_between(np.logspace(-4, 3, 1000), np.zeros(1000), sep_cut, color='c', alpha=0.2, zorder=2)
+ax2.fill_between(np.logspace(-4, 3, 1000), np.full(1000, 100), sep_cut, color='r', alpha=0.2, zorder=2)
 
 ax2.set_xlabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (\sigma_{R,1}+\sigma_{R,2})$')
 ax2.set_ylabel(r'$|\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sigma_{v,1}+\sigma_{v,2})$')
