@@ -110,6 +110,13 @@ for reg in regions:
         subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', verbose=False, numThreads=8)
         grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', verbose=False, numThreads=8)
 
+        # Get the spurious halo IDs
+        okinds = np.logical_and(subgrp_ids != 1073741824, gal_app_ms[:, 4] > 0)
+        cops = cops[okinds]
+        grp_ids = grp_ids[okinds]
+        subgrp_ids = subgrp_ids[okinds]
+        gal_app_ms = gal_app_ms[okinds]
+
         # Build a tree from the COPs
         tree = cKDTree(cops)
 
@@ -135,6 +142,8 @@ for reg in regions:
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
         _, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
+        print(sp_grp_ids)
+        print(parent_inds)
         parent_inds = parent_inds[:, 1]
         parents_ms = gal_app_ms[parent_inds, :]
         parent_grp_ids = grp_ids[parent_inds]
