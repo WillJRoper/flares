@@ -74,7 +74,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
 
 
 regions = []
-for reg in range(0, 1):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -247,8 +247,8 @@ print(overlap.size, voverlap.size)
 fig1 = plt.figure()
 ax2 = fig1.add_subplot(111)
 
-ax2.plot(np.full(1000, s_lim), np.logspace(-4, 2.8, 1000), color='k', linestyle='--')
-ax2.plot(np.logspace(-4, 2.8, 1000), np.full(1000, v_lim), color='k', linestyle='-.')
+# ax2.plot(np.full(1000, s_lim), np.logspace(-2, 2.8, 1000), color='k', linestyle='--')
+# ax2.plot(np.logspace(-4, 2, 1000), np.full(1000, v_lim), color='k', linestyle='-.')
 
 cbar2 = ax2.hexbin(overlap, voverlap, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
                    yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
@@ -258,6 +258,9 @@ ax2.set_ylabel(r'$|\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sig
 
 cax2 = fig1.colorbar(cbar2, ax=ax2)
 cax2.ax.set_ylabel(r'$N$')
+
+# ax2.set_xlim(10**-4, 10**2)
+# ax2.set_ylim(10**-2, 10**2.8)
 
 fig1.savefig('plots/spurious_overlap_velvsreal_starsonly.png', bbox_inches='tight')
 
