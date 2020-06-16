@@ -247,8 +247,8 @@ print(overlap.size, voverlap.size)
 fig1 = plt.figure()
 ax2 = fig1.add_subplot(111)
 
-ax2.plot(np.full(1000, np.log10(s_lim)), np.logspace(-4, 2.8, 1000), color='k', linestyle='--')
-ax2.plot(np.logspace(-4, 2.8, 1000), np.full(1000, np.log10(v_lim)), color='k', linestyle='-.')
+ax2.plot(np.full(1000, s_lim), np.logspace(-4, 2.8, 1000), color='k', linestyle='--')
+ax2.plot(np.logspace(-4, 2.8, 1000), np.full(1000, v_lim), color='k', linestyle='-.')
 
 cbar2 = ax2.hexbin(overlap, voverlap, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
                    yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
