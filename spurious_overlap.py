@@ -92,6 +92,7 @@ for reg in regions:
         okinds = np.logical_and(subgrp_ids != 1073741824,
                                 np.logical_and(gal_app_ms[:, 1] == 0,
                                                np.logical_or(gal_app_ms[:, 0] > 0, gal_app_ms[:, 4] > 0)))
+        
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
         sp_cops = cops[okinds, :]
@@ -149,6 +150,15 @@ for reg in regions:
                                  physicalUnits=True, verbose=False, numThreads=8)
 
         subgrp_ids = np.concatenate([subgrp_id0, subgrp_id1, subgrp_id4])
+
+        print("There are", len(subgrp_ids), "particles")
+
+        # Remove particles not associated to a subgroup
+        okinds = subgrp_ids != 1073741824
+        grp_ids = grp_ids[okinds]
+        subgrp_ids = subgrp_ids[okinds]
+        poss = poss[okinds, :]
+        vels = vels[okinds, :]
 
         print("There are", len(subgrp_ids), "particles")
 
