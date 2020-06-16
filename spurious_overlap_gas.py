@@ -117,7 +117,7 @@ for reg in regions:
 
         # Get the spurious halo IDs
         okinds = np.logical_and(subgrp_ids != 1073741824,
-                                np.logical_and(gal_app_ms[:, 1] == 0, gal_app_ms[:, 4] > 0))
+                                np.logical_and(gal_app_ms[:, 1] == 0, gal_app_ms[:, 0] > 0))
 
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
@@ -141,19 +141,19 @@ for reg in regions:
         parent_subgrp_ids = subgrp_ids[parent_inds]
         parent_cops = cops[parent_inds]
 
-        poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
+        poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
 
-        vels = E.read_array('PARTDATA', path, snap, 'PartType4/Velocity', noH=True,
+        vels = E.read_array('PARTDATA', path, snap, 'PartType0/Velocity', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
 
-        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', noH=True,
+        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
 
-        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', noH=True,
+        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
 
-        part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
+        part_ids = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
 
         # A copy of this array is needed for the extraction method
@@ -248,7 +248,7 @@ ax2.set_ylabel(r'$|\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sig
 cax2 = fig1.colorbar(cbar2, ax=ax2)
 cax2.ax.set_ylabel(r'$N$')
 
-fig1.savefig('plots/spurious_overlap_velvsreal_starsonly.png', bbox_inches='tight')
+fig1.savefig('plots/spurious_overlap_velvsreal_gasonly.png', bbox_inches='tight')
 
 plt.close(fig1)
 
