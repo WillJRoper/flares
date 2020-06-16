@@ -87,7 +87,7 @@ for reg in regions:
         tree = cKDTree(cops)
 
         # Get the spurious halo IDs
-        okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms[1] == 0)
+        okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms[:, 1] == 0)
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
         sp_cops = cops[okinds]
