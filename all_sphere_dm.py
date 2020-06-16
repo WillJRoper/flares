@@ -168,7 +168,8 @@ def spheregrid(snap, num):
         cmap = matplotlib.cm.magma
 
         # Convert images to rgb arrays
-        rgb = cmap(get_normalised_image(np.arcsinh(img), vmin=2))
+        rgb = cmap(get_normalised_image(np.arcsinh(img), vmin=4))
+        print(np.arcsinh(img).max())
 
         ax.imshow(rgb, extent=extent, origin='lower')
         ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
