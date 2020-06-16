@@ -142,12 +142,14 @@ for reg in regions:
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
         dd, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
-        print(dd)
+        dists = dd[:, 1]
         parent_inds = parent_inds[:, 1]
         parents_ms = gal_app_ms[parent_inds, :]
         parent_grp_ids = grp_ids[parent_inds]
         parent_subgrp_ids = subgrp_ids[parent_inds]
         parent_cops = cops[parent_inds]
+        
+        print(len(dists), len(dists[dists < 30 / 1000]))
 
         poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
