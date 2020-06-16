@@ -17,7 +17,7 @@ def get_phase_sep(cent1, cent2, vcent1, vcent2, r1, r2, vr1, vr2):
     sep = cent1 - cent2
     d = np.sqrt(sep[0] ** 2 + sep[1] ** 2 + sep[2] ** 2)
     extent = r1 + r2
-    overlap = d / extent
+    overlap = d / 0.03
 
     # Compute the separation, sum of radii and overlap in velocity space
     vsep = vcent1 - vcent2
@@ -74,7 +74,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
 
 
 regions = []
-for reg in range(0, 1):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -128,7 +128,6 @@ for reg in regions:
             sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
         print("Number of spurious with bh", len(sp_halo_ids[sp_app_ms[:, 5] > 0]), "of", len(sp_halo_ids))
-        print("Fraction of spurious with bh", len(sp_halo_ids[sp_app_ms[:, 5] > 0]) / len(sp_halo_ids))
 
         halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
@@ -220,7 +219,7 @@ for reg in regions:
                                                         prt_r, sp_r, prt_vr, sp_vr)
         overlaps.extend(overlap)
         voverlaps.extend(voverlap)
-        
+
 overlap = np.array(overlaps)
 voverlap = np.array(voverlaps)
 print(overlap.size, voverlap.size)
@@ -236,13 +235,13 @@ ax2 = fig1.add_subplot(111)
 cbar2 = ax2.hexbin(overlap, voverlap, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
                    yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
 
-sep_cut = p_lim - np.logspace(-4, 3, 1000)
+# sep_cut = p_lim - np.logspace(-4, 3, 1000)
+#
+# # ax2.plot(np.logspace(-6, 3, 1000), sep_cut, color='w', linestyle='-')
+# ax2.fill_between(np.logspace(-4, 3, 1000), np.zeros(1000), sep_cut, color='c', alpha=0.2, zorder=2)
+# ax2.fill_between(np.logspace(-4, 3, 1000), np.full(1000, 100), sep_cut, color='r', alpha=0.2, zorder=2)
 
-# ax2.plot(np.logspace(-6, 3, 1000), sep_cut, color='w', linestyle='-')
-ax2.fill_between(np.logspace(-4, 3, 1000), np.zeros(1000), sep_cut, color='c', alpha=0.2, zorder=2)
-ax2.fill_between(np.logspace(-4, 3, 1000), np.full(1000, 100), sep_cut, color='r', alpha=0.2, zorder=2)
-
-ax2.set_xlabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (\sigma_{R,1}+\sigma_{R,2})$')
+ax2.set_xlabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (30 [\mathrm{kpc}])$')
 ax2.set_ylabel(r'$|\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sigma_{v,1}+\sigma_{v,2})$')
 
 cax2 = fig1.colorbar(cbar2, ax=ax2)
