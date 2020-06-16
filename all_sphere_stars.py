@@ -170,9 +170,11 @@ def spheregrid(snap, num):
         ax = fig.add_subplot(gs[i, j])
 
         # Get colormaps
-        cmap = matplotlib.cm.magma
+        cmap = matplotlib.cm.Greys_r
 
         scaled_img = np.arcsinh(img)
+
+        print(scaled_img.max())
 
         # Convert images to rgb arrays
         rgb = cmap(get_normalised_image(scaled_img, vmin=5, vmax=16.5))
