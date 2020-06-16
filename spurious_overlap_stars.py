@@ -216,10 +216,10 @@ for reg in regions:
             sp_vr = rms_rad(sp_vs, sp_vcent)
             prt_vr = rms_rad(prt_vs, prt_vcent)
 
-            overlap, voverlap = get_phase_sep(prt_cop, sp_cop, prt_vcent, sp_vcent,
-                                              prt_r, sp_r, prt_vr, sp_vr)
-            overlaps.extend(overlap)
-            voverlaps.extend(voverlap)
+            overlap[ind], voverlap[ind] = get_phase_sep(prt_cop, sp_cop, prt_vcent, sp_vcent,
+                                                        prt_r, sp_r, prt_vr, sp_vr)
+        overlaps.extend(overlap)
+        voverlaps.extend(voverlap)
 
 overlap = np.array(overlaps)
 voverlap = np.array(voverlaps)
