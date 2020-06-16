@@ -93,14 +93,18 @@ for reg in regions:
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
         sp_cops = cops[okinds, :]
-        sp_halo_ids = np.zeros(sp_grp_ids.size, dtype=float)
+        sp_app_ms = gal_app_ms[okinds, :]
+        # sp_halo_ids = np.zeros(sp_grp_ids.size, dtype=float)
+        # for (ind, g), sg in zip(enumerate(sp_grp_ids), sp_subgrp_ids):
+        #     sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+        sp_halo_ids = np.zeros((sp_grp_ids.size, 2), dtype=float)
         for (ind, g), sg in zip(enumerate(sp_grp_ids), sp_subgrp_ids):
-            sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+            sp_halo_ids[ind, 0] = int(g)
+            sp_halo_ids[ind, 1] = int(sg)
 
         print("There are", len(sp_halo_ids), "spurious halos")
 
         _, parent_inds = tree.query(sp_cops, k=1, n_jobs=8)
-        print(parent_inds)
         parents_ms = gal_app_ms[parent_inds, :]
         
         gal_poss0 = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True,
@@ -121,19 +125,41 @@ for reg in regions:
 
         vels = np.concatenate([gal_vels0, gal_vels1, gal_vels4])
 
+        grp_id0 = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', noH=True,
+                                 physicalUnits=True, verbose=False, numThreads=8)
+        grp_id1 = E.read_array('PARTDATA', path, snap, 'PartType1/GroupNumber', noH=True,
+                                 physicalUnits=True, verbose=False, numThreads=8)
+        grp_id4 = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', noH=True,
+                                 physicalUnits=True, verbose=False, numThreads=8)
+
+        grp_ids = np.concatenate([grp_id0, grp_id1, grp_id4])
+        
+        subgrp_id0 = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', noH=True,
+                                 physicalUnits=True, verbose=False, numThreads=8)
+        subgrp_id1 = E.read_array('PARTDATA', path, snap, 'PartType1/SubGroupNumber', noH=True,
+                                 physicalUnits=True, verbose=False, numThreads=8)
+        subgrp_id4 = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', noH=True,
+                                 physicalUnits=True, verbose=False, numThreads=8)
+
+        subgrp_ids = np.concatenate([subgrp_id0, subgrp_id1, subgrp_id4])
+
+        # halo_ids = np.zeros(grp_ids.size, dtype=float)
+        # for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+        #     halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+        halo_ids = np.zeros((grp_ids.size, 2), dtype=float)
+        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+            halo_ids[ind, 0] = int(g)
+            halo_ids[ind, 1] = int(sg)
+
+        ID_tree = cKDTree(halo_ids)
+        part_inds = ID_tree.query_ball_point(sp_halo_ids, r=0.001)
+
+        print(part_inds)
+
         print(vels.shape)
         print(poss.shape)
+        print(halo_ids.shape)
 
-        # Get the IDs for each particle in all types
-        group_part_ids0 = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', verbose=False, numThreads=8)
-        part_ids0 = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', verbose=False, numThreads=8)
-        group_part_ids1 = E.read_array('PARTDATA', path, snap, 'PartType1/ParticleIDs', verbose=False, numThreads=8)
-        part_ids1 = E.read_array('PARTDATA', path, snap, 'PartType1/ParticleIDs', verbose=False, numThreads=8)
-        group_part_ids4 = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', verbose=False, numThreads=8)
-        part_ids4 = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', verbose=False, numThreads=8)
-
-        group_part_ids = np.concatenate([group_part_ids0, group_part_ids1, group_part_ids4])
-        part_ids = np.concatenate([part_ids0, part_ids1, part_ids4])
 
 
 
@@ -147,8 +173,8 @@ for reg in regions:
 # sep_cut = p_lim - np.logspace(-6, 3, 1000)
 #
 # # ax2.plot(np.logspace(-6, 3, 1000), sep_cut, color='w', linestyle='-')
-# ax2.fill_between(np.logspace(-6, 3, 1000), np.zeros(1000), sep_cut, color='r', alpha=0.2, zorder=2)
-# ax2.fill_between(np.logspace(-6, 3, 1000), np.full(1000, 10), sep_cut, color='c', alpha=0.2, zorder=2)
+# ax2.fill_between(np.logspace(-6, 3, 1000), np.zeros(1000), sep_cut, color='c', alpha=0.2, zorder=2)
+# ax2.fill_between(np.logspace(-6, 3, 1000), np.full(1000, 10), sep_cut, color='r', alpha=0.2, zorder=2)
 #
 # ax2.set_xlabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (\sigma_{R,1}+\sigma_{R,2})$')
 # ax2.set_ylabel(r'$|\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sigma_{v,1}+\sigma_{v,2})$')
