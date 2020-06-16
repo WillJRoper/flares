@@ -203,6 +203,7 @@ for reg in regions:
         okinds = subgrp_ids != 1073741824
         grp_ids = grp_ids[okinds]
         subgrp_ids = subgrp_ids[okinds]
+        part_ids = part_ids[okinds]
         group_part_ids = group_part_ids[okinds]
         poss = poss[okinds, :]
         vels = vels[okinds, :]
