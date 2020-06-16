@@ -117,8 +117,7 @@ for reg in regions:
 
         # Get the spurious halo IDs
         okinds = np.logical_and(subgrp_ids != 1073741824,
-                                np.logical_and(gal_app_ms[:, 1] == 0,
-                                               np.logical_or(gal_app_ms[:, 0] > 0, gal_app_ms[:, 4] > 0)))
+                                np.logical_and(gal_app_ms[:, 1] == 0, gal_app_ms[:, 4] > 0))
 
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
@@ -142,50 +141,20 @@ for reg in regions:
         parent_subgrp_ids = subgrp_ids[parent_inds]
         parent_cops = cops[parent_inds]
 
-        gal_poss0 = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
-        gal_poss1 = E.read_array('PARTDATA', path, snap, 'PartType1/Coordinates', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
-        gal_poss4 = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
+        poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
 
-        poss = np.concatenate([gal_poss0, gal_poss1, gal_poss4])
-
-        gal_vels0 = E.read_array('PARTDATA', path, snap, 'PartType0/Velocity', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
-        gal_vels1 = E.read_array('PARTDATA', path, snap, 'PartType1/Velocity', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
-        gal_vels4 = E.read_array('PARTDATA', path, snap, 'PartType4/Velocity', noH=True,
+        vels = E.read_array('PARTDATA', path, snap, 'PartType4/Velocity', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
 
-        vels = np.concatenate([gal_vels0, gal_vels1, gal_vels4])
-
-        grp_id0 = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
-        grp_id1 = E.read_array('PARTDATA', path, snap, 'PartType1/GroupNumber', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
-        grp_id4 = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', noH=True,
+        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
 
-        grp_ids = np.concatenate([grp_id0, grp_id1, grp_id4])
-
-        subgrp_id0 = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
-        subgrp_id1 = E.read_array('PARTDATA', path, snap, 'PartType1/SubGroupNumber', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
-        subgrp_id4 = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', noH=True,
+        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
 
-        subgrp_ids = np.concatenate([subgrp_id0, subgrp_id1, subgrp_id4])
-        
-        part_id0 = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', noH=True,
+        part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
-        part_id1 = E.read_array('PARTDATA', path, snap, 'PartType1/ParticleIDs', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
-        part_id4 = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
-
-        part_ids = np.concatenate([part_id0, part_id1, part_id4])
 
         # A copy of this array is needed for the extraction method
         group_part_ids = np.copy(part_ids)

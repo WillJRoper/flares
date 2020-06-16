@@ -170,7 +170,7 @@ def spheregrid(snap, num):
         scaled_img = np.arcsinh(img)
 
         # Convert images to rgb arrays
-        rgb = cmap(get_normalised_image(scaled_img, vmin=6, vmax=scaled_img.max() - 0.05))
+        rgb = cmap(get_normalised_image(scaled_img, vmin=6, vmax=17.1))
 
         ax.imshow(rgb, extent=extent, origin='lower')
         ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
