@@ -40,7 +40,7 @@ def rms_rad(pos, cent):
 
 
 regions = []
-for reg in range(25, 26):
+for reg in range(0, 1):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -108,10 +108,10 @@ for reg in regions:
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
         _, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
-        print(parent_inds)
         parent_inds = parent_inds[:, 1]
         parents_ms = gal_app_ms[parent_inds, :]
-        parent_IDs = halo_ids[parent_inds]
+        parent_grp_ids = grp_ids[parent_inds]
+        parent_subgrp_ids = subgrp_ids[parent_inds]
         parent_cops = cops[parent_inds]
 
         gal_poss0 = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True,
@@ -152,20 +152,16 @@ for reg in regions:
 
         print("There are", len(subgrp_ids), "particles")
 
-        part_halo_ids = np.zeros(grp_ids.size, dtype=float)
-        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
-
         print(vels.shape)
         print(poss.shape)
-        print(part_halo_ids.shape)
 
         overlap, voverlap = np.zeros(sp_halo_ids.size), np.zeros(sp_halo_ids.size)
 
-        for (ind, sp_id), sp_cop, prt_id, prt_cop in zip(enumerate(sp_halo_ids), sp_cops, parent_IDs, parent_cops):
-            print(ind, sp_id, prt_id)
-            spinds = part_halo_ids == sp_id
-            prtinds = part_halo_ids == prt_id
+        for (ind, sp_g), sp_sg, sp_cop, prt_g, prt_sg, prt_cop in zip(enumerate(sp_grp_ids), sp_subgrp_ids, sp_cops,
+                                                                      parent_grp_ids, parent_subgrp_ids, parent_cops):
+            print(ind, sp_g, sp_sg, prt_g, prt_sg)
+            spinds = np.logical_and(grp_ids == sp_g, subgrp_ids == sp_sg)
+            prtinds = np.logical_and(grp_ids == prt_g, subgrp_ids == prt_sg)
             sp_vs = vels[spinds]
             prt_vs = vels[prtinds]
             sp_ps = poss[spinds]
@@ -201,7 +197,7 @@ ax2.set_ylabel(r'$|\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sig
 cax2 = fig1.colorbar(cbar2, ax=ax2)
 cax2.ax.set_ylabel(r'$N$')
 
-fig1.savefig('spurious_overlap_velvsreal.png', bbox_inches='tight')
+fig1.savefig('plots/spurious_overlap_velvsreal.png', bbox_inches='tight')
 
 plt.close(fig1)
 
