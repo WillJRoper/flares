@@ -88,6 +88,8 @@ for reg in regions:
         # Build a tree from the COPs
         tree = cKDTree(cops)
 
+        print(gal_Ns)
+
         print("There are", len(grp_ids), "halos")
 
         # Get the spurious halo IDs
