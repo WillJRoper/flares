@@ -143,7 +143,7 @@ def spheregrid(snap, num):
             regions.append(str(reg))
 
     ovdens = np.loadtxt("region_overdensity.txt", dtype=float)
-    sinds = np.sort(ovdens)[::-1]
+    sinds = np.argsort(ovdens)[::-1]
     regions = np.array(regions)
     regions = regions[sinds]
 
