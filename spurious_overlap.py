@@ -88,17 +88,16 @@ for reg in regions:
         # Build a tree from the COPs
         tree = cKDTree(cops)
 
-        print(gal_Ns)
+        print(gal_app_ms)
 
         print("There are", len(grp_ids), "halos")
 
         # Get the spurious halo IDs
-        okinds = np.logical_and(subgrp_ids != 1073741824, gal_Ns[:, 1] == 0)
+        okinds = np.logical_and(subgrp_ids != 1073741824, gal_app_ms[:, 1] == 0)
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
         sp_cops = cops[okinds, :]
-        sp_Ns = gal_Ns[okinds, :]
-        sp_halo_ids = np.zeros(grp_ids.size, dtype=float)
+        sp_halo_ids = np.zeros(sp_grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
