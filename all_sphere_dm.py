@@ -158,17 +158,17 @@ def spheregrid(snap, num):
         # Load the current snapshot data
         hdf = h5py.File(f'spheresdata/spheregird_img_data_{reg}_{snap}_dm.hdf5', 'r')
 
-        ax = fig.add_subplot(gs[i, j])
-
         img, extent = hdf[str(num)]['img'][...], hdf[str(num)].attrs['extent']
+
+        hdf.close()
+
+        ax = fig.add_subplot(gs[i, j])
 
         # Get colormaps
         cmap = matplotlib.cm.magma
 
         # Convert images to rgb arrays
-        rgb = cmap(get_normalised_image(np.arcsinh(img), vmin=1))
-
-        hdf.close()
+        rgb = cmap(get_normalised_image(np.arcsinh(img), vmin=2))
 
         ax.imshow(rgb, extent=extent, origin='lower')
         ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
