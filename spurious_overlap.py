@@ -40,7 +40,7 @@ def rms_rad(pos, cent):
 
 
 regions = []
-for reg in range(10, 11):
+for reg in range(25, 26):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -100,15 +100,16 @@ for reg in regions:
         for (ind, g), sg in zip(enumerate(sp_grp_ids), sp_subgrp_ids):
             sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        print("ratio of spurious with bh to without", len(sp_halo_ids[sp_app_ms[:, 5] > 0]) / len(sp_halo_ids))
+        print("Number of spurious with bh", len(sp_halo_ids[sp_app_ms[:, 5] > 0]), "of", len(sp_halo_ids))
+        print("Fraction of spurious with bh", len(sp_halo_ids[sp_app_ms[:, 5] > 0]) / len(sp_halo_ids))
 
         halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        print("There are", len(sp_halo_ids), "spurious halos")
-
-        _, parent_inds = tree.query(sp_cops, k=1, n_jobs=8)
+        _, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
+        print(parent_inds)
+        parent_inds = parent_inds[:, 1]
         parents_ms = gal_app_ms[parent_inds, :]
         parent_IDs = halo_ids[parent_inds]
         parent_cops = cops[parent_inds]
