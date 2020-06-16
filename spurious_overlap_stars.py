@@ -141,7 +141,7 @@ for reg in regions:
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        _, parent_inds = tree.query_ball_point(sp_cops, r=30/1000)
+        parent_inds = tree.query_ball_point(sp_cops, r=30/1000)
         masses = gal_app_ms[parent_inds, 4]
         parent_inds = parent_inds[np.argmax(masses, axis=0)]
         parents_ms = gal_app_ms[parent_inds, :]
