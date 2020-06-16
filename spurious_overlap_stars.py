@@ -93,6 +93,8 @@ csoft = 0.001802390 / 0.677 * 1e3
 
 p_lim = 1
 
+only_app = True
+
 overlaps, voverlaps = [], []
 
 for reg in regions:
@@ -144,11 +146,21 @@ for reg in regions:
         dd, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
         dists = dd[:, 1]
         parent_inds = parent_inds[:, 1]
+
+        if only_app:
+
+            parent_inds = parent_inds[dists < 30 / 1000]
+            sp_cops = sp_cops[dists < 30 / 1000]
+            sp_subgrp_ids = sp_subgrp_ids[dists < 30 / 1000]
+            sp_grp_ids = sp_grp_ids[dists < 30 / 1000]
+            sp_app_ms = sp_app_ms[dists < 30 / 1000]
+            sp_halo_ids = sp_halo_ids[dists < 30 / 1000]
+
         parents_ms = gal_app_ms[parent_inds, :]
         parent_grp_ids = grp_ids[parent_inds]
         parent_subgrp_ids = subgrp_ids[parent_inds]
         parent_cops = cops[parent_inds]
-        
+
         print(len(dists), len(dists[dists < 30 / 1000]))
 
         poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
@@ -260,7 +272,10 @@ ax2.set_ylabel(r'$|\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sig
 cax2 = fig1.colorbar(cbar2, ax=ax2)
 cax2.ax.set_ylabel(r'$N$')
 
-fig1.savefig('plots/spurious_overlap_velvsreal_starsonly.png', bbox_inches='tight')
+if only_app:
+    fig1.savefig('plots/spurious_overlap_velvsreal_starsonly_apponly.png', bbox_inches='tight')
+else:
+    fig1.savefig('plots/spurious_overlap_velvsreal_starsonly.png', bbox_inches='tight')
 
 plt.close(fig1)
 
