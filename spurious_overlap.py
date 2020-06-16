@@ -80,15 +80,11 @@ for reg in regions:
                            verbose=False, numThreads=8)
         gal_app_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
                                   verbose=False, numThreads=8) * 10**10
-        gal_Ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', noH=True, verbose=False,
-                              numThreads=8) * 10**10
         subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', verbose=False, numThreads=8)
         grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', verbose=False, numThreads=8)
 
         # Build a tree from the COPs
         tree = cKDTree(cops)
-
-        print(gal_app_ms)
 
         print("There are", len(grp_ids), "halos")
 
@@ -98,7 +94,7 @@ for reg in regions:
         sp_subgrp_ids = subgrp_ids[okinds]
         sp_cops = cops[okinds, :]
         sp_halo_ids = np.zeros(sp_grp_ids.size, dtype=float)
-        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+        for (ind, g), sg in zip(enumerate(sp_grp_ids), sp_subgrp_ids):
             sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
         print("There are", len(sp_halo_ids), "spurious halos")
