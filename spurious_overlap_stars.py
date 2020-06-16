@@ -142,8 +142,8 @@ for reg in regions:
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
         _, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
-        print(sp_grp_ids)
-        print(parent_inds)
+        print(sp_subgrp_ids)
+        print(parent_subgrp_ids[parent_inds])
         parent_inds = parent_inds[:, 1]
         parents_ms = gal_app_ms[parent_inds, :]
         parent_grp_ids = grp_ids[parent_inds]
