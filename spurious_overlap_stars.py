@@ -141,8 +141,9 @@ for reg in regions:
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        _, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
-        parent_inds = parent_inds[:, 1]
+        _, parent_inds = tree.query_ball_point(sp_cops, r=30/1000)
+        masses = gal_app_ms[parent_inds, 4]
+        parent_inds = parent_inds[np.argmax(masses, axis=0)]
         parents_ms = gal_app_ms[parent_inds, :]
         parent_grp_ids = grp_ids[parent_inds]
         parent_subgrp_ids = subgrp_ids[parent_inds]
@@ -220,8 +221,6 @@ for reg in regions:
             # Compute the overlaps
             sp_vcent = np.mean(sp_vs, axis=0)
             prt_vcent = np.mean(prt_vs, axis=0)
-            sp_cop = np.mean(sp_ps, axis=0)
-            prt_cop = np.mean(prt_ps, axis=0)
             sp_r = rms_rad(sp_ps, sp_cop)
             prt_r = rms_rad(prt_ps, prt_cop)
             sp_vr = rms_rad(sp_vs, sp_vcent)
