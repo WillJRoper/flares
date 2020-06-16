@@ -89,7 +89,9 @@ for reg in regions:
         print("There are", len(grp_ids), "halos")
 
         # Get the spurious halo IDs
-        okinds = np.logical_and(subgrp_ids != 1073741824, gal_app_ms[:, 1] == 0)
+        okinds = np.logical_and(subgrp_ids != 1073741824,
+                                np.logical_and(gal_app_ms[:, 1] == 0,
+                                               np.logical_or(gal_app_ms[:, 0] > 0, gal_app_ms[:, 4] > 0)))
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
         sp_cops = cops[okinds, :]
@@ -97,6 +99,8 @@ for reg in regions:
         sp_halo_ids = np.zeros(sp_grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(sp_grp_ids), sp_subgrp_ids):
             sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+        print("ratio of spurious with bh to without", len(sp_halo_ids[sp_app_ms[5] > 0]) / len(sp_halo_ids))
 
         halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
@@ -158,6 +162,7 @@ for reg in regions:
         overlap, voverlap = np.zeros(sp_halo_ids.size), np.zeros(sp_halo_ids.size)
 
         for (ind, sp_id), sp_cop, prt_id, prt_cop in zip(enumerate(sp_halo_ids), sp_cops, parent_IDs, parent_cops):
+            print(ind, sp_id, prt_id)
             spinds = part_halo_ids == sp_id
             prtinds = part_halo_ids == prt_id
             sp_vs = vels[spinds]
