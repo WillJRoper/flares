@@ -143,7 +143,7 @@ for reg in regions:
 
         _, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
         print(sp_subgrp_ids)
-        print(parent_subgrp_ids[parent_inds])
+        print(subgrp_ids[parent_inds])
         parent_inds = parent_inds[:, 1]
         parents_ms = gal_app_ms[parent_inds, :]
         parent_grp_ids = grp_ids[parent_inds]
