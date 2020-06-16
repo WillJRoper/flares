@@ -112,6 +112,8 @@ for reg in regions:
             grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', verbose=False, numThreads=8)
         except OSError:
             continue
+        except KeyError:
+            continue
 
         # Build a tree from the COPs
         tree = cKDTree(cops)

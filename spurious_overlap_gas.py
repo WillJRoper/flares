@@ -111,6 +111,8 @@ for reg in regions:
             grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', verbose=False, numThreads=8)
         except OSError:
             continue
+        except KeyError:
+            continue
 
         # Get the spurious halo IDs
         okinds = np.logical_and(subgrp_ids != 1073741824, gal_app_ms[:, 0] > 0)
