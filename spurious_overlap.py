@@ -1,3 +1,4 @@
+#!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 import numpy as np
 import eagle_IO.eagle_IO as E
 import matplotlib.pyplot as plt
@@ -49,7 +50,7 @@ for reg in range(0, 1):
 # snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
 #          '006_z009p000', '007_z008p000', '008_z007p000',
 #          '009_z006p000', '010_z005p000', '011_z004p770']
-snaps = ['010_z005p000', :]
+snaps = ['010_z005p000', ]
 axlims_x = []
 axlims_y = []
 
