@@ -78,8 +78,10 @@ for reg in regions:
 
         cops= E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, physicalUnits=True,
                            verbose=False, numThreads=8)
-        gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                              verbose=False, numThreads=8) * 10**10
+        gal_app_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                                  verbose=False, numThreads=8) * 10**10
+        gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/MassType', noH=True, verbose=False,
+                              numThreads=8) * 10**10
         subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', verbose=False, numThreads=8)
         grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', verbose=False, numThreads=8)
 
