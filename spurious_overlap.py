@@ -257,6 +257,10 @@ for reg in regions:
             overlap[ind], voverlap[ind] = get_phase_sep(prt_cop, sp_cop, prt_vcent, sp_vcent,
                                                         prt_r, sp_r, prt_vr, sp_vr)
 
+okinds = np.logical_and(overlap != 0, voverlap != 0)
+overlap = overlap[okinds]
+voverlap = voverlap[okinds]
+
 # Set up figure
 fig1 = plt.figure()
 ax2 = fig1.add_subplot(111)
