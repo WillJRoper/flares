@@ -163,10 +163,10 @@ def spheregrid(snap, num):
         img, extent = hdf[str(num)]['img'][...], hdf[str(num)].attrs['extent']
 
         # Get colormaps
-        cmap = cmaps.twilight()
+        cmap = matplotlib.cm.magma
 
         # Convert images to rgb arrays
-        rgb = cmap(get_normalised_image(np.arcsinh(img), vmin=10))
+        rgb = cmap(get_normalised_image(np.arcsinh(img), vmin=5))
 
         hdf.close()
 

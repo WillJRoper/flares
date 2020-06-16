@@ -92,7 +92,7 @@ for reg in regions:
         okinds = np.logical_and(subgrp_ids != 1073741824,
                                 np.logical_and(gal_app_ms[:, 1] == 0,
                                                np.logical_or(gal_app_ms[:, 0] > 0, gal_app_ms[:, 4] > 0)))
-        
+
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
         sp_cops = cops[okinds, :]
