@@ -157,20 +157,25 @@ for reg in regions:
 
         print(len(dists), len(dists[dists < 30 / 1000]))
 
-        poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
+        try:
+            poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
+                                     physicalUnits=True, verbose=False, numThreads=8)
 
-        vels = E.read_array('PARTDATA', path, snap, 'PartType4/Velocity', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
+            vels = E.read_array('PARTDATA', path, snap, 'PartType4/Velocity', noH=True,
+                                     physicalUnits=True, verbose=False, numThreads=8)
 
-        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
+            grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', noH=True,
+                                     physicalUnits=True, verbose=False, numThreads=8)
 
-        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
+            subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', noH=True,
+                                     physicalUnits=True, verbose=False, numThreads=8)
 
-        part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
-                                 physicalUnits=True, verbose=False, numThreads=8)
+            part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
+                                     physicalUnits=True, verbose=False, numThreads=8)
+        except OSError:
+            continue
+        except KeyError:
+            continue
 
         # A copy of this array is needed for the extraction method
         group_part_ids = np.copy(part_ids)
