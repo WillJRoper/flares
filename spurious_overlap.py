@@ -100,7 +100,7 @@ for reg in regions:
         for (ind, g), sg in zip(enumerate(sp_grp_ids), sp_subgrp_ids):
             sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        print("ratio of spurious with bh to without", len(sp_halo_ids[sp_app_ms[5] > 0]) / len(sp_halo_ids))
+        print("ratio of spurious with bh to without", len(sp_halo_ids[sp_app_ms[:, 5] > 0]) / len(sp_halo_ids))
 
         halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
