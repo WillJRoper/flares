@@ -166,7 +166,7 @@ def spheregrid(snap, num):
         cmap = matplotlib.cm.magma
 
         # Convert images to rgb arrays
-        rgb = cmap(get_normalised_image(np.arcsinh(img), vmin=5))
+        rgb = cmap(get_normalised_image(np.arcsinh(img), vmin=1))
 
         hdf.close()
 
