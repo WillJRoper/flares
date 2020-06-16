@@ -142,6 +142,11 @@ def spheregrid(snap, num):
         else:
             regions.append(str(reg))
 
+    ovdens = np.loadtxt("region_overdensity.txt", dtype=float)
+    sinds = np.sort(ovdens)[::-1]
+    regions = np.array(regions)
+    regions = regions[sinds]
+
     fig = plt.figure(figsize=(8 * 3.95, 5 * 4))
     gs = gridspec.GridSpec(nrows=5, ncols=8)
     gs.update(wspace=0.0, hspace=0.0)
