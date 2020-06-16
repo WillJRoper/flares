@@ -143,6 +143,8 @@ for reg in regions:
 
         subgrp_ids = np.concatenate([subgrp_id0, subgrp_id1, subgrp_id4])
 
+        print("There are", len(subgrp_ids), "particles")
+
         # halo_ids = np.zeros(grp_ids.size, dtype=float)
         # for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         #     halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
@@ -151,8 +153,12 @@ for reg in regions:
             halo_ids[ind, 0] = int(g)
             halo_ids[ind, 1] = int(sg)
 
+        print("got IDs")
+
         ID_tree = cKDTree(halo_ids)
-        part_inds = ID_tree.query_ball_point(sp_halo_ids, r=0.001)
+
+        print("built tree")
+        part_inds = ID_tree.query_ball_point(sp_halo_ids, r=0.0)
 
         print(part_inds)
 
