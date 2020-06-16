@@ -17,7 +17,7 @@ def get_phase_sep(cent1, cent2, vcent1, vcent2, r1, r2, vr1, vr2):
     sep = cent1 - cent2
     d = np.sqrt(sep[0] ** 2 + sep[1] ** 2 + sep[2] ** 2)
     extent = r1 + r2
-    overlap = d / extent
+    overlap = d / 0.03
 
     # Compute the separation, sum of radii and overlap in velocity space
     vsep = vcent1 - vcent2
@@ -91,9 +91,7 @@ axlims_y = []
 # Define comoving softening length in kpc
 csoft = 0.001802390 / 0.677 * 1e3
 
-p_lim = 1
-
-only_app = True
+p_lim = 2
 
 overlaps, voverlaps = [], []
 
@@ -146,16 +144,6 @@ for reg in regions:
         dd, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
         dists = dd[:, 1]
         parent_inds = parent_inds[:, 1]
-
-        if only_app:
-
-            parent_inds = parent_inds[dists < 30 / 1000]
-            sp_cops = sp_cops[dists < 30 / 1000]
-            sp_subgrp_ids = sp_subgrp_ids[dists < 30 / 1000]
-            sp_grp_ids = sp_grp_ids[dists < 30 / 1000]
-            sp_app_ms = sp_app_ms[dists < 30 / 1000]
-            sp_halo_ids = sp_halo_ids[dists < 30 / 1000]
-
         parents_ms = gal_app_ms[parent_inds, :]
         parent_grp_ids = grp_ids[parent_inds]
         parent_subgrp_ids = subgrp_ids[parent_inds]
@@ -266,16 +254,13 @@ sep_cut = p_lim - np.logspace(-4, 3, 1000)
 ax2.fill_between(np.logspace(-4, 3, 1000), np.zeros(1000), sep_cut, color='c', alpha=0.2, zorder=2)
 ax2.fill_between(np.logspace(-4, 3, 1000), np.full(1000, 100), sep_cut, color='r', alpha=0.2, zorder=2)
 
-ax2.set_xlabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (\sigma_{R,1}+\sigma_{R,2})$')
+ax2.set_xlabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (30 \mathrm{pkpc})$')
 ax2.set_ylabel(r'$|\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sigma_{v,1}+\sigma_{v,2})$')
 
 cax2 = fig1.colorbar(cbar2, ax=ax2)
 cax2.ax.set_ylabel(r'$N$')
 
-if only_app:
-    fig1.savefig('plots/spurious_overlap_velvsreal_starsonly_apponly.png', bbox_inches='tight')
-else:
-    fig1.savefig('plots/spurious_overlap_velvsreal_starsonly.png', bbox_inches='tight')
+fig1.savefig('plots/spurious_overlap_velvsreal_starsonly.png', bbox_inches='tight')
 
 plt.close(fig1)
 
