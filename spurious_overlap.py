@@ -80,7 +80,7 @@ for reg in regions:
                            verbose=False, numThreads=8)
         gal_app_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
                                   verbose=False, numThreads=8) * 10**10
-        gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/MassType', noH=True, verbose=False,
+        gal_Ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', noH=True, verbose=False,
                               numThreads=8) * 10**10
         subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', verbose=False, numThreads=8)
         grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', verbose=False, numThreads=8)
@@ -91,11 +91,11 @@ for reg in regions:
         print("There are", len(grp_ids), "halos")
 
         # Get the spurious halo IDs
-        okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms[:, 1] == 0)
+        okinds = np.logical_and(subgrp_ids != 1073741824, gal_Ns[:, 1] == 0)
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
         sp_cops = cops[okinds, :]
-        sp_ms = gal_ms[okinds, :]
+        sp_Ns = gal_Ns[okinds, :]
         sp_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
@@ -104,7 +104,7 @@ for reg in regions:
 
         _, parent_inds = tree.query(sp_cops, k=1, n_jobs=8)
         print(parent_inds)
-        parents_ms = gal_ms[parent_inds, :]
+        parents_ms = gal_app_ms[parent_inds, :]
         
         gal_poss0 = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
@@ -123,6 +123,9 @@ for reg in regions:
                                  physicalUnits=True, verbose=False, numThreads=8)
 
         vels = np.concatenate([gal_vels0, gal_vels1, gal_vels4])
+
+        print(vels.shape)
+        print(poss.shape)
 
         # Get the IDs for each particle in all types
         group_part_ids0 = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', verbose=False, numThreads=8)
