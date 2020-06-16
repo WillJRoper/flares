@@ -92,6 +92,8 @@ axlims_y = []
 csoft = 0.001802390 / 0.677 * 1e3
 
 p_lim = 2
+s_lim = 1
+v_lim = 2
 
 overlaps, voverlaps = [], []
 
@@ -245,14 +247,11 @@ print(overlap.size, voverlap.size)
 fig1 = plt.figure()
 ax2 = fig1.add_subplot(111)
 
+ax2.plot(np.full(1000, np.log10(s_lim)), np.logspace(-4, 2.8, 1000), color='k', linestyle='--')
+ax2.plot(np.logspace(-4, 2.8, 1000), np.full(1000, np.log10(v_lim)), color='k', linestyle='.-')
+
 cbar2 = ax2.hexbin(overlap, voverlap, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
                    yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
-
-sep_cut = p_lim - np.logspace(-4, 3, 1000)
-
-# ax2.plot(np.logspace(-6, 3, 1000), sep_cut, color='w', linestyle='-')
-ax2.fill_between(np.logspace(-4, 3, 1000), np.zeros(1000), sep_cut, color='c', alpha=0.2, zorder=2)
-ax2.fill_between(np.logspace(-4, 3, 1000), np.full(1000, 100), sep_cut, color='r', alpha=0.2, zorder=2)
 
 ax2.set_xlabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (30 \mathrm{pkpc})$')
 ax2.set_ylabel(r'$|\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sigma_{v,1}+\sigma_{v,2})$')
