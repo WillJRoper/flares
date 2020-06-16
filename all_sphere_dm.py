@@ -170,7 +170,8 @@ def spheregrid(snap, num):
         ax = fig.add_subplot(gs[i, j])
 
         # Get colormaps
-        cmap = matplotlib.cm.magma
+        # cmap = matplotlib.cm.magma
+        cmap = cmaps.twilight()
 
         scaled_img = np.arcsinh(img)
 
@@ -180,6 +181,11 @@ def spheregrid(snap, num):
         ax.imshow(rgb, extent=extent, origin='lower')
         ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                        labeltop=False, labelright=False, labelbottom=False)
+
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
 
     fig.savefig('plots/spheres/DM/dm_grid_sphere_snap' + snap + '_angle%05d.png'%num,
                 bbox_inches='tight', facecolor='k')
