@@ -77,14 +77,16 @@ for reg in regions:
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
 
         cops= E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, physicalUnits=True,
-                           numThreads=8)
+                           verbose=False, numThreads=8)
         gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                              numThreads=8) * 10**10
-        subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+                              verbose=False, numThreads=8) * 10**10
+        subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', verbose=False, numThreads=8)
+        grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', verbose=False, numThreads=8)
 
         # Build a tree from the COPs
         tree = cKDTree(cops)
+
+        print("There are", len(grp_ids), "halos")
 
         # Get the spurious halo IDs
         okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms[:, 1] == 0)
@@ -103,36 +105,30 @@ for reg in regions:
         parents_ms = gal_ms[parent_inds, :]
         
         gal_poss0 = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True,
-                                 physicalUnits=True, numThreads=8)
+                                 physicalUnits=True, verbose=False, numThreads=8)
         gal_poss1 = E.read_array('PARTDATA', path, snap, 'PartType1/Coordinates', noH=True,
-                                 physicalUnits=True, numThreads=8)
+                                 physicalUnits=True, verbose=False, numThreads=8)
         gal_poss4 = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
-                                 physicalUnits=True, numThreads=8)
+                                 physicalUnits=True, verbose=False, numThreads=8)
 
         poss = np.concatenate([gal_poss0, gal_poss1, gal_poss4])
 
         gal_vels0 = E.read_array('PARTDATA', path, snap, 'PartType0/Velocity', noH=True,
-                                 physicalUnits=True, numThreads=8)
+                                 physicalUnits=True, verbose=False, numThreads=8)
         gal_vels1 = E.read_array('PARTDATA', path, snap, 'PartType1/Velocity', noH=True,
-                                 physicalUnits=True, numThreads=8)
+                                 physicalUnits=True, verbose=False, numThreads=8)
         gal_vels4 = E.read_array('PARTDATA', path, snap, 'PartType4/Velocity', noH=True,
-                                 physicalUnits=True, numThreads=8)
+                                 physicalUnits=True, verbose=False, numThreads=8)
 
         vels = np.concatenate([gal_vels0, gal_vels1, gal_vels4])
 
         # Get the IDs for each particle in all types
-        group_part_ids0 = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs',
-                                      numThreads=8)
-        part_ids0 = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs',
-                                numThreads=8)
-        group_part_ids1 = E.read_array('PARTDATA', path, snap, 'PartType1/ParticleIDs',
-                                      numThreads=8)
-        part_ids1 = E.read_array('PARTDATA', path, snap, 'PartType1/ParticleIDs',
-                                numThreads=8)
-        group_part_ids4 = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs',
-                                      numThreads=8)
-        part_ids4 = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs',
-                                numThreads=8)
+        group_part_ids0 = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', verbose=False, numThreads=8)
+        part_ids0 = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', verbose=False, numThreads=8)
+        group_part_ids1 = E.read_array('PARTDATA', path, snap, 'PartType1/ParticleIDs', verbose=False, numThreads=8)
+        part_ids1 = E.read_array('PARTDATA', path, snap, 'PartType1/ParticleIDs', verbose=False, numThreads=8)
+        group_part_ids4 = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', verbose=False, numThreads=8)
+        part_ids4 = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', verbose=False, numThreads=8)
 
         group_part_ids = np.concatenate([group_part_ids0, group_part_ids1, group_part_ids4])
         part_ids = np.concatenate([part_ids0, part_ids1, part_ids4])
