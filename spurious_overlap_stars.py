@@ -142,10 +142,6 @@ for reg in regions:
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
         _, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
-        print(sp_subgrp_ids)
-        print(subgrp_ids[parent_inds])
-        print(sp_grp_ids)
-        print(grp_ids[parent_inds])
         parent_inds = parent_inds[:, 1]
         parents_ms = gal_app_ms[parent_inds, :]
         parent_grp_ids = grp_ids[parent_inds]
@@ -167,55 +163,55 @@ for reg in regions:
         part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
                                  physicalUnits=True, verbose=False, numThreads=8)
 
-        # # A copy of this array is needed for the extraction method
-        # group_part_ids = np.copy(part_ids)
-        #
-        # print("There are", len(subgrp_ids), "particles")
-        #
-        # # Remove particles not associated to a subgroup
-        # okinds = subgrp_ids != 1073741824
-        # grp_ids = grp_ids[okinds]
-        # subgrp_ids = subgrp_ids[okinds]
-        # part_ids = part_ids[okinds]
-        # group_part_ids = group_part_ids[okinds]
-        # poss = poss[okinds, :]
-        # vels = vels[okinds, :]
-        #
-        # print("There are", len(subgrp_ids), "particles")
-        #
-        # print(vels.shape)
-        # print(poss.shape)
-        #
-        # # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-        # halo_ids = np.zeros(grp_ids.size, dtype=float)
-        # for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        #     halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
-        #
-        # print("Got halo IDs")
-        #
-        # parts_in_groups, part_groups = get_part_inds(halo_ids, part_ids, group_part_ids, False)
-        #
-        # # Produce a dictionary containing the index of particles in each halo
-        # halo_part_inds = {}
-        # for ind, grp in zip(parts_in_groups, part_groups):
-        #     halo_part_inds.setdefault(grp, set()).update({ind})
-        #
-        # # Now the dictionary is fully populated convert values from sets to arrays for indexing
-        # for key, val in halo_part_inds.items():
-        #     halo_part_inds[key] = np.array(list(val))
-        #
-        # print("Got index dictionary")
+        # A copy of this array is needed for the extraction method
+        group_part_ids = np.copy(part_ids)
+
+        print("There are", len(subgrp_ids), "particles")
+
+        # Remove particles not associated to a subgroup
+        okinds = subgrp_ids != 1073741824
+        grp_ids = grp_ids[okinds]
+        subgrp_ids = subgrp_ids[okinds]
+        part_ids = part_ids[okinds]
+        group_part_ids = group_part_ids[okinds]
+        poss = poss[okinds, :]
+        vels = vels[okinds, :]
+
+        print("There are", len(subgrp_ids), "particles")
+
+        print(vels.shape)
+        print(poss.shape)
+
+        # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
+        halo_ids = np.zeros(grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+            halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+        print("Got halo IDs")
+
+        parts_in_groups, part_groups = get_part_inds(halo_ids, part_ids, group_part_ids, False)
+
+        # Produce a dictionary containing the index of particles in each halo
+        halo_part_inds = {}
+        for ind, grp in zip(parts_in_groups, part_groups):
+            halo_part_inds.setdefault(grp, set()).update({ind})
+
+        # Now the dictionary is fully populated convert values from sets to arrays for indexing
+        for key, val in halo_part_inds.items():
+            halo_part_inds[key] = np.array(list(val))
+
+        print("Got index dictionary")
 
         overlap, voverlap = np.zeros(sp_halo_ids.size), np.zeros(sp_halo_ids.size)
 
         for (ind, sp_g), sp_sg, sp_cop, prt_g, prt_sg, prt_cop in zip(enumerate(sp_grp_ids), sp_subgrp_ids, sp_cops,
                                                                       parent_grp_ids, parent_subgrp_ids, parent_cops):
-            # sp_id = float(str(int(sp_g)) + '.%05d' % int(sp_sg))
-            # prt_id = float(str(int(prt_g)) + '.%05d' % int(prt_sg))
-            # spinds = halo_part_inds[sp_id]
-            # prtinds = halo_part_inds[prt_id]
-            spinds = np.logical_and(subgrp_ids == sp_sg, grp_ids == sp_g)
-            prtinds = np.logical_and(subgrp_ids == prt_sg, grp_ids == prt_g)
+            sp_id = float(str(int(sp_g)) + '.%05d' % int(sp_sg))
+            prt_id = float(str(int(prt_g)) + '.%05d' % int(prt_sg))
+            spinds = halo_part_inds[sp_id]
+            prtinds = halo_part_inds[prt_id]
+            # spinds = np.logical_and(subgrp_ids == sp_sg, grp_ids == sp_g)
+            # prtinds = np.logical_and(subgrp_ids == prt_sg, grp_ids == prt_g)
             sp_vs = vels[spinds]
             prt_vs = vels[prtinds]
             sp_ps = poss[spinds]
@@ -224,6 +220,8 @@ for reg in regions:
             # Compute the overlaps
             sp_vcent = np.mean(sp_vs, axis=0)
             prt_vcent = np.mean(prt_vs, axis=0)
+            sp_cop = np.mean(sp_ps, axis=0)
+            prt_cop = np.mean(prt_vp, axis=0)
             sp_r = rms_rad(sp_ps, sp_cop)
             prt_r = rms_rad(prt_ps, prt_cop)
             sp_vr = rms_rad(sp_vs, sp_vcent)
