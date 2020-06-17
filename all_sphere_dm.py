@@ -172,7 +172,7 @@ def spheregrid(snap, num):
         # Get colormaps
         cmap = cmaps.twilight()
 
-        scaled_img = np.arcsinh(img)
+        scaled_img = np.log10(img)
 
         # Convert images to rgb arrays
         rgb = cmap(get_normalised_image(scaled_img, vmin=3.5, vmax=7))

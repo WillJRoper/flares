@@ -172,7 +172,7 @@ def spheregrid(snap, num):
         # Get colormaps
         cmap = cmaps.mars()
 
-        scaled_img = np.arcsinh(img)
+        scaled_img = np.log10(img)
 
         print(scaled_img.max())
 
