@@ -121,9 +121,6 @@ for reg in regions:
         subgrp_ids = subgrp_ids[okinds]
         gal_app_ms = gal_app_ms[okinds]
 
-        # Build a tree from the COPs
-        tree = cKDTree(cops)
-
         print("There are", len(grp_ids), "halos")
 
         # Get the spurious halo IDs
@@ -140,11 +137,14 @@ for reg in regions:
 
         print("Number of spurious with bh", len(sp_halo_ids[sp_app_ms[:, 5] > 0]), "of", len(sp_halo_ids))
 
+        # Build a tree from the COPs
+        tree = cKDTree(cops[~okinds])
+
         halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        _, parent_inds = tree.query(sp_cops, k=2, n_jobs=8)
+        _, parent_inds = tree.query(sp_cops, k=1, n_jobs=8)
         parent_inds = parent_inds[:, 1]
         parents_ms = gal_app_ms[parent_inds, :]
         parent_grp_ids = grp_ids[parent_inds]
