@@ -114,8 +114,8 @@ for reg in regions:
         except KeyError:
             continue
 
-        # Get the spurious halo IDs
-        okinds = np.logical_and(subgrp_ids != 1073741824, gal_app_ms[:, 0] > 0)
+        # Get halos with resolved galaxies
+        okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_and(gal_app_ms[:, 0] > 0, gal_app_ms[:, 4] > 1e8))
         cops = cops[okinds]
         grp_ids = grp_ids[okinds]
         subgrp_ids = subgrp_ids[okinds]
@@ -124,8 +124,7 @@ for reg in regions:
         print("There are", len(grp_ids), "halos")
 
         # Get the spurious halo IDs
-        okinds = np.logical_and(subgrp_ids != 1073741824,
-                                np.logical_and(gal_app_ms[:, 1] == 0, gal_app_ms[:, 0] > 0))
+        okinds = np.logical_and(subgrp_ids != 1073741824, gal_app_ms[:, 1] == 0)
 
         sp_grp_ids = grp_ids[okinds]
         sp_subgrp_ids = subgrp_ids[okinds]
