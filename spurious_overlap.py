@@ -108,6 +108,8 @@ for reg in regions:
                                verbose=False, numThreads=8)
             gal_app_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
                                       verbose=False, numThreads=8) * 10**10
+            gal_npart = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', noH=True,
+                                      verbose=False, numThreads=8)
             subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', verbose=False, numThreads=8)
             grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', verbose=False, numThreads=8)
         except OSError:
@@ -116,7 +118,7 @@ for reg in regions:
             continue
 
         # Get halos with resolved galaxies
-        okinds = np.logical_and(subgrp_ids != 1073741824, gal_app_ms[:, 4] > 1e8)
+        okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_or(gal_app_ms[:, 4] > 1e8, gal_npart[:, 0] > 50))
         cops = cops[okinds]
         grp_ids = grp_ids[okinds]
         subgrp_ids = subgrp_ids[okinds]
