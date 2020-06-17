@@ -147,7 +147,7 @@ for reg in regions:
         print("Number of spurious with bh", len(sp_halo_ids[sp_app_ms[:, 5] > 0]), "of", len(sp_halo_ids))
 
         # Build a tree from the COPs
-        tree = cKDTree(cops[~okinds])
+        tree = cKDTree(cops)
 
         halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
