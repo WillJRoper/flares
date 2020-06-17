@@ -17,7 +17,7 @@ def get_phase_sep(cent1, cent2, vcent1, vcent2, r1, r2, vr1, vr2):
     sep = cent1 - cent2
     d = np.sqrt(sep[0] ** 2 + sep[1] ** 2 + sep[2] ** 2)
     extent = r1 + r2
-    overlap = d / 0.03
+    overlap = d / extent
 
     # Compute the separation, sum of radii and overlap in velocity space
     vsep = vcent1 - vcent2
@@ -268,7 +268,7 @@ ax2 = fig1.add_subplot(111)
 cbar2 = ax2.hexbin(overlap, voverlap, gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
                    yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
 
-ax2.set_xlabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (30 [\mathrm{pkpc}])$')
+ax2.set_xlabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (\sigma_{R,1}+\sigma_{R,2})$')
 ax2.set_ylabel(r'$|\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sigma_{v,1}+\sigma_{v,2})$')
 
 cax2 = fig1.colorbar(cbar2, ax=ax2)
