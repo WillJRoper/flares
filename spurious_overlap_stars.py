@@ -147,7 +147,7 @@ for reg in regions:
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        _, parent_inds = tree.query(sp_cops, k=1, n_jobs=8)
+        dd, parent_inds = tree.query(sp_cops, k=1, n_jobs=8)
         dists = dd[:, 1]
         parent_inds = parent_inds[:, 1]
         parents_ms = gal_app_ms[parent_inds, :]
