@@ -277,7 +277,7 @@ cax2.ax.set_ylabel(r'$N$')
 # ax2.set_xlim(10**-4, 10**2)
 # ax2.set_ylim(10**-2, 10**2.8)
 
-fig1.savefig('plots/spurious_overlap_velvsreal_starsonly_30kpc.png', bbox_inches='tight')
+fig1.savefig('plots/spurious_overlap_velvsreal_starsonly.png', bbox_inches='tight')
 
 plt.close(fig1)
 
