@@ -138,6 +138,12 @@ for reg in regions:
         for (ind, g), sg in zip(enumerate(sp_grp_ids), sp_subgrp_ids):
             sp_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
+        # Remove spurious halos
+        cops = cops[~okinds, :]
+        grp_ids = grp_ids[~okinds]
+        subgrp_ids = subgrp_ids[~okinds]
+        gal_app_ms = gal_app_ms[~okinds, :]
+
         print("Number of spurious with bh", len(sp_halo_ids[sp_app_ms[:, 5] > 0]), "of", len(sp_halo_ids))
 
         # Build a tree from the COPs
