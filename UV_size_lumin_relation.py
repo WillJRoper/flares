@@ -64,14 +64,17 @@ for ind in range(len(reg_snaps)):
     reg, snap = reg_snaps[ind]
 
     hdfpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg + '/'
+    
+    try:
+        hdf = h5py.File(hdfpath + 'ObsWebbLumins_' + snap + '.hdf5', 'r')
 
-    hdf = h5py.File(hdfpath + 'ObsWebbLumins_' + snap + '.hdf5', 'r')
+        lumins = hdf[f]['Aperture_Luminosity_30kpc'][:, 0]
+        hlrs = hdf[f]['half_lift_rad'][:, 0]
 
-    lumins = hdf[f]['Aperture_Luminosity_30kpc'][:, 0]
-    hlrs = hdf[f]['half_lift_rad'][:, 0]
-
-    hlr_dict[snap].extend(hlrs)
-    lumin_dict[snap].extend(lumins)
+        hlr_dict[snap].extend(hlrs)
+        lumin_dict[snap].extend(lumins)
+    except OSError:
+        continue
 
 # Define comoving softening length in kpc
 csoft = 0.001802390 / 0.6777
