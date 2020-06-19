@@ -97,6 +97,9 @@ v_lim = 2
 
 overlaps, voverlaps = [], []
 
+parent_masses = []
+combo_masses = []
+
 for reg in regions:
 
     for snap in snaps:
@@ -159,6 +162,9 @@ for reg in regions:
         parent_grp_ids = grp_ids[parent_inds]
         parent_subgrp_ids = subgrp_ids[parent_inds]
         parent_cops = cops[parent_inds]
+
+        combo_masses.extend(parents_ms + sp_app_ms)
+        parent_masses.extend(parents_ms)
 
         print(len(dists), len(dists[dists < 30 / 1000]))
 
@@ -251,6 +257,8 @@ for reg in regions:
 
 overlap = np.array(overlaps)
 voverlap = np.array(voverlaps)
+combo_masses = np.array(combo_masses)
+parent_masses = np.array(parent_masses)
 print(overlap.size, voverlap.size)
 okinds = np.logical_and(overlap != 0, voverlap != 0)
 overlap = overlap[okinds]
@@ -280,8 +288,25 @@ fig1.savefig('plots/spurious_overlap_velvsreal_starsonly.png', bbox_inches='tigh
 
 plt.close(fig1)
 
+# Set up figure
+fig1 = plt.figure()
+ax2 = fig1.add_subplot(111)
 
+cbar2 = ax2.hexbin(parent_masses[:, 4], combo_masses[:, 4], gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
+                   yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
+ax2.plot((min(parent_masses) + 1000, max(parent_masses) + 1000), (min(combo_masses) + 1000, max(combo_masses) + 1000),
+         linestyle='--', color='k')
 
+ax2.set_xlabel(r'$M_{\star, \mathrm{parent}}$')
+ax2.set_ylabel(r'$M_{\star, \mathrm{combo}}$')
 
+cax2 = fig1.colorbar(cbar2, ax=ax2)
+cax2.ax.set_ylabel(r'$N$')
 
+ax2.set_xlim(min(parent_masses) + 1000, max(parent_masses) + 1000)
+ax2.set_ylim(min(combo_masses) + 1000, max(combo_masses) + 1000)
+
+fig1.savefig('plots/spurious_combo_masses.png', bbox_inches='tight')
+
+plt.close(fig1)
 

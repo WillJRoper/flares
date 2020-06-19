@@ -108,8 +108,6 @@ for reg in regions:
                                verbose=False, numThreads=8)
             gal_app_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
                                       verbose=False, numThreads=8) * 10**10
-            gal_npart = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', noH=True,
-                                      verbose=False, numThreads=8)
             subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', verbose=False, numThreads=8)
             grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', verbose=False, numThreads=8)
         except OSError:
@@ -118,7 +116,7 @@ for reg in regions:
             continue
 
         # Get halos with resolved galaxies
-        okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_or(gal_app_ms[:, 4] > 1e8, gal_npart[:, 0] > 50))
+        okinds = np.logical_and(subgrp_ids != 1073741824, np.logical_or(gal_app_ms[:, 4] > 1e8, gal_app_ms[:, 0] > 1e8))
         cops = cops[okinds]
         grp_ids = grp_ids[okinds]
         subgrp_ids = subgrp_ids[okinds]
@@ -204,10 +202,11 @@ for reg in regions:
                                      physicalUnits=True, verbose=False, numThreads=8)
             part_id4 = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
                                      physicalUnits=True, verbose=False, numThreads=8)
+
+            part_ids = np.concatenate([part_id0, part_id1, part_id4])
+
         except KeyError:
             continue
-
-        part_ids = np.concatenate([part_id0, part_id1, part_id4])
 
         # A copy of this array is needed for the extraction method
         group_part_ids = np.copy(part_ids)
