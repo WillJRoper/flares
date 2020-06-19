@@ -210,6 +210,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     for (ind, g), sg in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
+    star_halo_ids = np.copy(halo_ids)
+
     try:
         # Load data for luminosities
         all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
@@ -263,7 +265,15 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-    star_halo_ids = np.copy(halo_ids)
+    okinds = np.isin(part_halo_ids, star_halo_ids)
+    part_halo_ids = part_halo_ids[okinds]
+    part_ids = part_ids[okinds]
+    group_part_ids = group_part_ids[okinds]
+    all_poss = all_poss[okinds]
+    gal_sml = gal_sml[okinds]
+    ages = ages[okinds]
+    metallicities = metallicities[okinds]
+    masses = masses[okinds]
 
     print("Got halo IDs")
 
@@ -348,6 +358,15 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
+    okinds = np.isin(part_halo_ids, star_halo_ids)
+    part_halo_ids = part_halo_ids[okinds]
+    part_ids = part_ids[okinds]
+    group_part_ids = group_part_ids[okinds]
+    gas_all_poss = gas_all_poss[okinds]
+    gas_metallicities = gas_metallicities[okinds]
+    gas_masses = gas_masses[okinds]
+    gas_smooth_ls = gas_smooth_ls[okinds]
+
     print("Got halo IDs")
 
     parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids, group_part_ids, False)
@@ -412,9 +431,10 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                     F, i, j, f)
 
                     # Compute half mass radii
-                    hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls.value, i, j)
+                    hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls, i, j)
                     ms[ind2, ind1] = np.sum(gal_ms[id]) / 10**10
                     tot_l[ind2, ind1] = np.sum(ls.value)
+                    print(tot_l)
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
                     continue
