@@ -64,7 +64,9 @@ for ind in range(len(reg_snaps)):
     reg, snap = reg_snaps[ind]
 
     hdfpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg + '/'
-    
+
+    print(reg_snaps[ind])
+
     try:
         hdf = h5py.File(hdfpath + 'ObsWebbLumins_' + snap + '.hdf5', 'r')
 
@@ -105,10 +107,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     hlrs = np.array(hlr_dict[snap])
     lumins = np.array(lumin_dict[snap])
 
-    # xs_plt = xs[half_mass_rads_plt > 0]
-    # half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
-    # half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
-    # xs_plt = xs_plt[xs_plt > 1e8]
+    okinds = np.logical_and(hlrs != 0, lumins != 0)
+    lumins = lumins[okinds]
+    hlrs = hlrs[okinds]
 
     cbar = ax.hexbin(lumins, hlrs / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log',
                      norm=LogNorm(), linewidths=0.2, cmap='viridis')
