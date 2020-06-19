@@ -302,8 +302,8 @@ ax2.set_xlabel(r'$M_{\star, \mathrm{parent}}$')
 ax2.set_ylabel(r'$M_{\star, \mathrm{combo}}$')
 
 cax2 = fig1.colorbar(cbar2, ax=ax2)
-cax2.ax.set_ylabel(r'$$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (\sigma_{R,1}+\sigma_{R,2}) '
-                   r'+ |\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sigma_{v,1}+\sigma_{v,2})$$')
+cax2.ax.set_ylabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (\sigma_{R,1}+\sigma_{R,2}) '
+                   r'+ |\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sigma_{v,1}+\sigma_{v,2})$')
 
 ax2.set_xlim(10**8, 10**12)
 ax2.set_ylim(10**8, 10**12)
