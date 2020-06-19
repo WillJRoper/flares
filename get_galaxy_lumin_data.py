@@ -178,7 +178,7 @@ def calc_light_mass_rad(poss, ls, i, j):
     return hmr
 
 
-def get_main(path, snap, savepath, filters, F, model):
+def get_main(path, snap, savepath, filters, F, model, filename):
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
@@ -385,7 +385,7 @@ def get_main(path, snap, savepath, filters, F, model):
     print('Got gas properties')
 
     # Open the HDF5 file
-    hdf = h5py.File(savepath + 'ObsWebbLumins_' + snap + '.hdf5', 'w')
+    hdf = h5py.File(savepath + filename + snap + '.hdf5', 'w')
     hdf.create_dataset('orientation', data=[(0, 1), (1, 2), (0, 2)])  # Mass contribution
     hdf.create_dataset('galaxy_ids', data=star_halo_ids)  # galaxy ids
 
@@ -464,4 +464,6 @@ reg, snap = reg_snaps[ind]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg_snaps[ind][0] + '/'
 
-get_main(path, snap, savepath, filters, F, model)
+filename = 'ObsWebbLumins_'
+
+get_main(path, snap, savepath, filters, F, model, filename="RestUV")
