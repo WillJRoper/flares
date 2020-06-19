@@ -259,15 +259,15 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     print("There are", len(subgrp_ids), "particles")
 
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-    halo_ids = np.zeros(grp_ids.size, dtype=float)
+    part_halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+        part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
     star_halo_ids = np.copy(halo_ids)
 
     print("Got halo IDs")
 
-    parts_in_groups, part_groups = get_part_inds(halo_ids, part_ids, group_part_ids, False)
+    parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids, group_part_ids, False)
 
     # Produce a dictionary containing the index of particles in each halo
     halo_part_inds = {}
@@ -344,13 +344,13 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     print("There are", len(subgrp_ids), "particles")
 
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-    halo_ids = np.zeros(grp_ids.size, dtype=float)
+    part_halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+        part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
     print("Got halo IDs")
 
-    parts_in_groups, part_groups = get_part_inds(halo_ids, part_ids, group_part_ids, False)
+    parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids, group_part_ids, False)
 
     # Produce a dictionary containing the index of particles in each halo
     halo_part_inds = {}
@@ -383,7 +383,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     # Open the HDF5 file
     hdf = h5py.File(savepath + filename + snap + '.hdf5', 'w')
-    hdf.create_dataset('orientation', data=[(0, 1), (1, 2), (0, 2)])  # Mass contribution
+    hdf.create_dataset('orientation', data=[(0, 1), ])
+    # hdf.create_dataset('orientation', data=[(0, 1), (1, 2), (0, 2)])
     hdf.create_dataset('galaxy_ids', data=star_halo_ids)  # galaxy ids
 
     # Loop over filters
@@ -400,7 +401,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         hls = np.zeros((len(gal_ages), 3))
         ms = np.zeros((len(gal_ages), 3))
         tot_l = np.zeros((len(gal_ages), 3))
-        for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
+        # for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
+        for ind1, (i, j) in enumerate([(0, 1), ]):
             for ind2, id in enumerate(halo_ids):
 
                 # Get the luminosities
