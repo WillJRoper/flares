@@ -158,11 +158,8 @@ def calc_light_mass_rad(poss, ls, i, j):
     sinds = np.argsort(rs)
     rs = rs[sinds]
     ls = ls[sinds]
-    ls = ls[rs < 30/1e3]
-    rs = rs[rs < 30/1e3]
-
-    if len(ls) < 20:
-        return -9999
+    ls = ls[rs < 0.03]
+    rs = rs[rs < 0.03]
 
     # Get the cumalative sum of masses
     l_profile = np.cumsum(ls)
@@ -198,7 +195,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                             physicalUnits=True, numThreads=8)
     all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                            physicalUnits=True, numThreads=8)[:, 4] * 10**10
+                            physicalUnits=True, numThreads=8) * 10**10
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
@@ -206,7 +203,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     subfind_grp_ids = subfind_grp_ids[okinds]
     subfind_subgrp_ids = subfind_subgrp_ids[okinds]
     gal_cops = gal_cops[okinds]
-    all_gal_ms = all_gal_ms[okinds]
+    pre_gal_ms = all_gal_ms[okinds]
 
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
     halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
