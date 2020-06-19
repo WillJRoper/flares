@@ -432,7 +432,6 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls, i, j)
                     ms[ind2, ind1] = np.sum(gal_ms[id]) / 10**10
                     tot_l[ind2, ind1] = np.sum(ls)
-                    print(tot_l)
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
                     continue
