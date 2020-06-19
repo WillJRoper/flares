@@ -61,7 +61,7 @@ for snap in snaps:
 
 for ind in range(len(reg_snaps)):
 
-    reg, snap = reg_snaps[ind][0]
+    reg, snap = reg_snaps[ind]
 
     hdfpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg + '/'
 
