@@ -163,8 +163,8 @@ for reg in regions:
         parent_subgrp_ids = subgrp_ids[parent_inds]
         parent_cops = cops[parent_inds]
 
-        combo_masses.extend(parents_ms + sp_app_ms)
-        parent_masses.extend(parents_ms)
+        combo_masses.extend(parents_ms[:, 4] + sp_app_ms[:, 4])
+        parent_masses.extend(parents_ms[:, 4])
 
         print(len(dists), len(dists[dists < 30 / 1000]))
 
@@ -263,6 +263,8 @@ print(overlap.size, voverlap.size)
 okinds = np.logical_and(overlap != 0, voverlap != 0)
 overlap = overlap[okinds]
 voverlap = voverlap[okinds]
+combo_masses = combo_masses[okinds]
+parent_masses = parent_masses[okinds]
 print(overlap.size, voverlap.size)
 
 # Set up figure
@@ -292,20 +294,19 @@ plt.close(fig1)
 fig1 = plt.figure()
 ax2 = fig1.add_subplot(111)
 
-cbar2 = ax2.hexbin(parent_masses[:, 4], combo_masses[:, 4], gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
-                   yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
-ax2.plot((np.min(parent_masses[:, 4]), np.max(parent_masses[:, 4])),
-         (np.min(combo_masses[:, 4]), np.max(combo_masses[:, 4])),
-         linestyle='--', color='k')
+cbar2 = ax2.scatter(parent_masses, combo_masses, c=overlap+voverlap, marker='.', norm=LogNorm(),
+                    linewidths=0.2, cmap='viridis', zorder=1)
+ax2.plot((10**8, 10**12), (10**8, 10**12), linestyle='--', color='k')
 
 ax2.set_xlabel(r'$M_{\star, \mathrm{parent}}$')
 ax2.set_ylabel(r'$M_{\star, \mathrm{combo}}$')
 
 cax2 = fig1.colorbar(cbar2, ax=ax2)
-cax2.ax.set_ylabel(r'$N$')
+cax2.ax.set_ylabel(r'$$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (\sigma_{R,1}+\sigma_{R,2}) '
+                   r'+ |\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sigma_{v,1}+\sigma_{v,2})$$')
 
-ax2.set_xlim(np.min(parent_masses), np.max(parent_masses))
-ax2.set_ylim(np.min(combo_masses), np.max(combo_masses))
+ax2.set_xlim(10**8, 10**12)
+ax2.set_ylim(10**8, 10**12)
 
 fig1.savefig('plots/spurious_combo_masses.png', bbox_inches='tight')
 
