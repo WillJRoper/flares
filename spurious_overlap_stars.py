@@ -294,7 +294,8 @@ ax2 = fig1.add_subplot(111)
 
 cbar2 = ax2.hexbin(parent_masses[:, 4], combo_masses[:, 4], gridsize=50, mincnt=1, xscale='log', norm=LogNorm(),
                    yscale='log', linewidths=0.2, cmap='viridis', zorder=1)
-ax2.plot((min(parent_masses) + 1000, max(parent_masses) + 1000), (min(combo_masses) + 1000, max(combo_masses) + 1000),
+ax2.plot((np.min(parent_masses[:, 4]) + 1000, np.max(parent_masses[:, 4]) + 1000),
+         (np.min(combo_masses[:, 4]) + 1000, np.max(combo_masses[:, 4]) + 1000),
          linestyle='--', color='k')
 
 ax2.set_xlabel(r'$M_{\star, \mathrm{parent}}$')
@@ -303,8 +304,8 @@ ax2.set_ylabel(r'$M_{\star, \mathrm{combo}}$')
 cax2 = fig1.colorbar(cbar2, ax=ax2)
 cax2.ax.set_ylabel(r'$N$')
 
-ax2.set_xlim(min(parent_masses) + 1000, max(parent_masses) + 1000)
-ax2.set_ylim(min(combo_masses) + 1000, max(combo_masses) + 1000)
+ax2.set_xlim(np.min(parent_masses) + 1000, np.max(parent_masses) + 1000)
+ax2.set_ylim(np.min(combo_masses) + 1000, np.max(combo_masses) + 1000)
 
 fig1.savefig('plots/spurious_combo_masses.png', bbox_inches='tight')
 
