@@ -1,57 +1,83 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 import numpy as np
+import h5py
 import matplotlib.pyplot as plt
-import matplotlib
-import astropy.units as u
+import seaborn as sns
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
-import eagle_IO.eagle_IO as E
-import seaborn as sns
-import pickle
-import itertools
-matplotlib.use('Agg')
 
+
+sns.set_context("paper")
 sns.set_style('whitegrid')
 
 
-regions = []
-for reg in range(32, 33):
+def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 
+    if bins == None:
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+    else:
+        bin = bins
+
+    # Compute binned statistics
+    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median', bins=bin)
+
+    # Compute bincentres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+
+    ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls, label=lab)
+
+
+regions = []
+for reg in range(0, 40):
     if reg < 10:
         regions.append('0' + str(reg))
     else:
         regions.append(str(reg))
 
-snaps = ['001_z014p000', '002_z013p000', '003_z012p000',
-         '004_z011p000', '005_z010p000', '006_z009p000',
-         '007_z008p000', '008_z007p000', '009_z006p000']
-axlims_x = []
-axlims_y = []
+snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 
-# Define comoving softening length in kpc
-csoft = 0.000901195/0.677*1e3
+# Define filter
+f = 'FAKE.TH.FUV'
 
-half_mass_rads_dict = {}
-xaxis_dict = {}
-for snap in snaps:
-
-    half_mass_rads_dict[snap] = {}
-    xaxis_dict[snap] = {}
-
+reg_snaps = []
 for reg in regions:
 
     for snap in snaps:
 
-        print(reg, snap)
+        reg_snaps.append((reg, snap))
 
-        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-HD/G-EAGLE' + str(reg) + '_hires_AGNdT9/data/'
-        try:
-            half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                          numThreads=8)[:, 1] * 1e3
-            xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                                 noH=True, numThreads=8)[:, 4] * 10**10
-        except OSError:
-            continue
+# Initialise dictionaries
+hlr_dict = {}
+lumin_dict = {}
+
+for snap in snaps:
+
+    hlr_dict[snap] = []
+    lumin_dict[snap] = []
+
+for ind in range(len(reg_snaps)):
+
+    reg, snap = reg_snaps[ind][0]
+
+    hdfpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg + '/'
+
+    hdf = h5py.File(hdfpath + 'ObsWebbLumins_' + snap + '.hdf5', 'r')
+
+    lumins = hdf[f]['Aperture_Luminosity_30kpc'][:, 0]
+    hlrs = hdf[f]['half_lift_rad'][:, 0]
+
+    hlr_dict[snap].extend(hlrs)
+    lumin_dict[snap].extend(lumins)
+
+# Define comoving softening length in kpc
+csoft = 0.001802390 / 0.6777
+
+axlims_x = []
+axlims_y = []
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
@@ -73,16 +99,17 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    xs = np.concatenate(list(xaxis_dict[snap].values()))
-    half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
-    
-    xs_plt = xs[half_mass_rads_plt > 0]
-    half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
-    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
-    xs_plt = xs_plt[xs_plt > 1e8]
-    
-    cbar = ax.hexbin(xs_plt, half_mass_rads_plt / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
-                     linewidths=0.2, cmap='viridis')
+    hlrs = np.array(hlr_dict[snap])
+    lumins = np.array(lumin_dict[snap])
+
+    # xs_plt = xs[half_mass_rads_plt > 0]
+    # half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
+    # half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
+    # xs_plt = xs_plt[xs_plt > 1e8]
+
+    cbar = ax.hexbin(lumins, hlrs / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log',
+                     norm=LogNorm(), linewidths=0.2, cmap='viridis')
+    plot_meidan_stat(lumins, hlrs / (csoft / (1 + z)), ax, lab='REF', color='r')
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -92,12 +119,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     # Label axes
     if i == 2:
-        ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
+        ax.set_xlabel(r'$L_{FUV}/$ [nJy]')
     if j == 0:
-        ax.set_ylabel('$R_{1/2,\mathrm{DM}}/\epsilon$')
+        ax.set_ylabel('$R_{1/2}/\epsilon$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
-
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
     ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
 
@@ -115,7 +141,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/HalfMassRadiusDM_allStellar_snaps_hires.png',
-            bbox_inches='tight')
+fig.savefig('plots/HalfLightRadiusFUV.png', bbox_inches='tight')
 
 plt.close(fig)
+
