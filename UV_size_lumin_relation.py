@@ -73,6 +73,9 @@ for ind in range(len(reg_snaps)):
         lumins = hdf[f]['Aperture_Luminosity_30kpc'][:, 0]
         hlrs = hdf[f]['half_lift_rad'][:, 0]
 
+        print(lumins.shape)
+        print(hlrs.shape)
+
         hlr_dict[snap].extend(hlrs)
         lumin_dict[snap].extend(lumins)
     except OSError:
