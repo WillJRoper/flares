@@ -106,8 +106,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     hlrs = np.array(hlr_dict[snap])
     lumins = np.array(lumin_dict[snap])
-    
-    print(hlrs.shape)
+
+    print(hlrs)
+    print(lumins)
 
     okinds = np.logical_and(hlrs != 0, lumins != 0)
     lumins = lumins[okinds]
