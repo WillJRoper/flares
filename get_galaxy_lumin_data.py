@@ -402,8 +402,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     # Open the HDF5 file
     hdf = h5py.File(savepath + filename + snap + '.hdf5', 'w')
-    hdf.create_dataset('orientation', data=[(0, 1), ])
-    # hdf.create_dataset('orientation', data=[(0, 1), (1, 2), (0, 2)])
+    hdf.create_dataset('orientation', data=[(0, 1), (1, 2), (0, 2)])
     hdf.create_dataset('galaxy_ids', data=star_halo_ids)  # galaxy ids
 
     # Loop over filters
@@ -420,8 +419,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         hls = np.zeros((len(gal_ages), 3))
         ms = np.zeros((len(gal_ages), 3))
         tot_l = np.zeros((len(gal_ages), 3))
-        # for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
-        for ind1, (i, j) in enumerate([(0, 1), ]):
+        for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
             for ind2, id in enumerate(halo_ids):
 
                 # Get the luminosities
