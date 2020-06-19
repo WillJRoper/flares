@@ -305,8 +305,11 @@ cax2 = fig1.colorbar(cbar2, ax=ax2)
 cax2.ax.set_ylabel(r'$|\langle\mathbf{r}\rangle_1-\langle\mathbf{r}\rangle_2| / (\sigma_{R,1}+\sigma_{R,2}) '
                    r'+ |\langle\mathbf{v}\rangle_1-\langle\mathbf{v}\rangle_2|/ (\sigma_{v,1}+\sigma_{v,2})$')
 
-ax2.set_xlim(10**8, 10**12)
-ax2.set_ylim(10**8, 10**12)
+ax2.set_xlim(10**8, 10**11.5)
+ax2.set_ylim(10**8, 10**11.5)
+
+ax2.set_xscale('log')
+ax2.set_yscale('log')
 
 fig1.savefig('plots/spurious_combo_masses.png', bbox_inches='tight')
 
