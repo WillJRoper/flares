@@ -45,7 +45,8 @@ for reg in regions:
 
         print(reg, snap)
 
-        path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
+        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+
         try:
             grpids = E.read_array('SNAP', path, snap, 'PartType4/GroupNumber', numThreads=8)
             sub_grpids = E.read_array('SNAP', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
@@ -105,8 +106,8 @@ ax2.semilogy(zs, plt_m_notingrp / totm_dict, label="Not in a Group", color='#300
 ax2.semilogy(zs, plt_m_notinsubgrp / totm_dict, label="Not in a Subgroup", linestyle='--', color='#ff990b')
 ax3.semilogy(zs, plt_n_notingrp, label="Not in a Group", color='#300bff')
 ax3.semilogy(zs, plt_n_notinsubgrp, label="Not in a Subgroup", linestyle='--', color='#ff990b')
-ax4.semilogy(zs, plt_m_notingrp, label="Not in a Group", color='#300bff')
-ax4.semilogy(zs, plt_m_notinsubgrp, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+ax4.semilogy(zs, plt_m_notingrp * 10**10, label="Not in a Group", color='#300bff')
+ax4.semilogy(zs, plt_m_notinsubgrp * 10**10, label="Not in a Subgroup", linestyle='--', color='#ff990b')
 
 ax4.set_xlabel("$z$")
 ax1.set_ylabel("$N_{out}/N_{tot}$")
