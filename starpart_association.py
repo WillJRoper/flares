@@ -12,7 +12,7 @@ sns.set_style('whitegrid')
 
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 2):
 
     if reg < 10:
         regions.append('0' + str(reg))
