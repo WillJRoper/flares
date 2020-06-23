@@ -15,9 +15,9 @@ regions = []
 for reg in range(0, 40):
 
     if reg < 10:
-        regions.append('000' + str(reg))
+        regions.append('0' + str(reg))
     else:
-        regions.append('00' + str(reg))
+        regions.append(str(reg))
 
 snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
@@ -52,8 +52,10 @@ for reg in regions:
             sub_grpids = E.read_array('SNAP', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
             mass = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8)
         except OSError:
+            print("OsError")
             continue
         except ValueError:
+            print("ValueError")
             continue
 
         totn_dict[snap] += grpids.size
