@@ -11,7 +11,7 @@ matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
 
-load = False
+load = True
 regions = []
 for reg in range(0, 40):
 
@@ -128,7 +128,7 @@ plt_totn = np.array(plt_totn)
 plt_totm = np.array(plt_totm)
 
 # Set up plot
-fig = plt.figure(figsize=(6, 3.3))
+fig = plt.figure(figsize=(6, 6))
 gs = gridspec.GridSpec(ncols=3, nrows=4)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, :])
@@ -186,7 +186,7 @@ plt_totn = np.array(plt_totn)[sinds]
 plt_totm = np.array(plt_totm)[sinds]
 
 # Set up plot
-fig = plt.figure(figsize=(6, 3.3))
+fig = plt.figure(figsize=(6, 6))
 gs = gridspec.GridSpec(ncols=3, nrows=4)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, :])
