@@ -5,12 +5,13 @@ import matplotlib
 import matplotlib.gridspec as gridspec
 import eagle_IO.eagle_IO as E
 import seaborn as sns
+import pickle
 matplotlib.use('Agg')
 
 
 sns.set_style('whitegrid')
 
-
+load = True
 regions = []
 for reg in range(0, 40):
 
@@ -58,7 +59,7 @@ for reg in regions:
             grpids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
             sub_grpids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
             mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8)
-            totmass = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8)
+            totmass = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) / 0.6777
         except OSError:
             print("OsError")
             continue
@@ -83,6 +84,12 @@ for reg in regions:
         n_in_subgrpids_dict[reg] += sub_grpids[insubgrpinds].size
         m_in_grpids_dict[reg] += np.sum(mass[ingrpinds])
         m_in_subgrpids_dict[reg] += np.sum(mass[insubgrpinds])
+
+with open('associationdicts.pck', 'wb') as pfile1:
+    pickle.dump({"n_in_grpids_dict": n_in_grpids_dict, "n_in_subgrpids_dict": n_in_subgrpids_dict,
+                 "m_in_grpids_dict": m_in_grpids_dict, "m_in_subgrpids_dict": m_in_subgrpids_dict,
+                 "totn_dict": totn_dict, "totm_dict": totm_dict}, pfile1)
+
 
 zs = []
 plt_n_notingrp = []
@@ -110,7 +117,7 @@ plt_totn = np.array(plt_totn)
 plt_totm = np.array(plt_totm)
 
 # Set up plot
-fig = plt.figure()
+fig = plt.figure(figsize=(6, 3.3))
 gs = gridspec.GridSpec(ncols=3, nrows=4)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, :])
@@ -118,10 +125,10 @@ ax2 = fig.add_subplot(gs[1, :])
 ax3 = fig.add_subplot(gs[2, :])
 ax4 = fig.add_subplot(gs[3, :])
 
-ax1.semilogy(zs, plt_n_notingrp / plt_totn, label="Not in a Group", color='#300bff')
-ax1.semilogy(zs, plt_n_notinsubgrp / plt_totn, label="Not in a Subgroup", linestyle='--', color='#ff990b')
-ax2.semilogy(zs, plt_m_notingrp / plt_totm, label="Not in a Group", color='#300bff')
-ax2.semilogy(zs, plt_m_notinsubgrp / plt_totm, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+ax1.plot(zs, plt_n_notingrp / plt_totn, label="Not in a Group", color='#300bff')
+ax1.plot(zs, plt_n_notinsubgrp / plt_totn, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+ax2.plot(zs, plt_m_notingrp / plt_totm, label="Not in a Group", color='#300bff')
+ax2.plot(zs, plt_m_notinsubgrp / plt_totm, label="Not in a Subgroup", linestyle='--', color='#ff990b')
 ax3.semilogy(zs, plt_n_notingrp, label="Not in a Group", color='#300bff')
 ax3.semilogy(zs, plt_n_notinsubgrp, label="Not in a Subgroup", linestyle='--', color='#ff990b')
 ax4.semilogy(zs, plt_m_notingrp * 10**10, label="Not in a Group", color='#300bff')
@@ -131,7 +138,7 @@ ax4.set_xlabel("$z$")
 ax1.set_ylabel("$N_{out}/N_{tot}$")
 ax2.set_ylabel("$M_{out}/M_{tot}$")
 ax3.set_ylabel("$N_{out}$")
-ax4.set_ylabel("$M_{out}/M_{\odot} / h$")
+ax4.set_ylabel("$M_{out}/M_{\odot}$")
 
 handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
@@ -158,15 +165,17 @@ for reg in regions:
     plt_totn.append(totn_dict[reg])
     plt_totm.append(totm_dict[reg])
 
-plt_n_notingrp = np.array(plt_n_notingrp)
-plt_n_notinsubgrp = np.array(plt_n_notinsubgrp)
-plt_m_notingrp = np.array(plt_m_notingrp)
-plt_m_notinsubgrp = np.array(plt_m_notinsubgrp)
-plt_totn = np.array(plt_totn)
-plt_totm = np.array(plt_totm)
+sinds = np.argsort(ov_dens)
+ov_dens = np.array(ov_dens)[sinds]
+plt_n_notingrp = np.array(plt_n_notingrp)[sinds]
+plt_n_notinsubgrp = np.array(plt_n_notinsubgrp)[sinds]
+plt_m_notingrp = np.array(plt_m_notingrp)[sinds]
+plt_m_notinsubgrp = np.array(plt_m_notinsubgrp)[sinds]
+plt_totn = np.array(plt_totn)[sinds]
+plt_totm = np.array(plt_totm)[sinds]
 
 # Set up plot
-fig = plt.figure()
+fig = plt.figure(figsize=(6, 3.3))
 gs = gridspec.GridSpec(ncols=3, nrows=4)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, :])
@@ -174,10 +183,10 @@ ax2 = fig.add_subplot(gs[1, :])
 ax3 = fig.add_subplot(gs[2, :])
 ax4 = fig.add_subplot(gs[3, :])
 
-ax1.semilogy(ov_dens, plt_n_notingrp / plt_totn, label="Not in a Group", color='#300bff')
-ax1.semilogy(ov_dens, plt_n_notinsubgrp / plt_totn, label="Not in a Subgroup", linestyle='--', color='#ff990b')
-ax2.semilogy(ov_dens, plt_m_notingrp / plt_totm, label="Not in a Group", color='#300bff')
-ax2.semilogy(ov_dens, plt_m_notinsubgrp / plt_totm, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+ax1.plot(ov_dens, plt_n_notingrp / plt_totn, label="Not in a Group", color='#300bff')
+ax1.plot(ov_dens, plt_n_notinsubgrp / plt_totn, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+ax2.plot(ov_dens, plt_m_notingrp / plt_totm, label="Not in a Group", color='#300bff')
+ax2.plot(ov_dens, plt_m_notinsubgrp / plt_totm, label="Not in a Subgroup", linestyle='--', color='#ff990b')
 ax3.semilogy(ov_dens, plt_n_notingrp, label="Not in a Group", color='#300bff')
 ax3.semilogy(ov_dens, plt_n_notinsubgrp, label="Not in a Subgroup", linestyle='--', color='#ff990b')
 ax4.semilogy(ov_dens, plt_m_notingrp * 10**10, label="Not in a Group", color='#300bff')
@@ -187,7 +196,7 @@ ax4.set_xlabel("$\Delta$")
 ax1.set_ylabel("$N_{out}/N_{tot}$")
 ax2.set_ylabel("$M_{out}/M_{tot}$")
 ax3.set_ylabel("$N_{out}$")
-ax4.set_ylabel("$M_{out}/M_{\odot} / h$")
+ax4.set_ylabel("$M_{out}/M_{\odot}$")
 
 handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
