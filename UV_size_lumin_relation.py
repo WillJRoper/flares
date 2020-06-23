@@ -117,7 +117,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     print(hlrs)
     print(lumins)
 
-    okinds = np.logical_and(hlrs != 0, lumins > 10**25)
+    okinds = np.logical_and(hlrs > 10**-1, lumins > 10**25)
     lumins = lumins[okinds]
     hlrs = hlrs[okinds]
     try:
@@ -141,7 +141,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
-    ax.set_ylim(10**-1, np.max(axlims_y))
+    ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
     for spine in ax.spines.values():
         spine.set_edgecolor('k')
 
