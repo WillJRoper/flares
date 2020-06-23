@@ -38,7 +38,7 @@ def get_data(load=False):
             
             # Get halo IDs and halo data
             try:
-                gas_den = E.read_array('PARTDATA', path, snap, 'PartType0/BirthDensity', noH=True,
+                gas_den = E.read_array('PARTDATA', path, snap, 'PartType0/Density', noH=True,
                                         physicalUnits=True, numThreads=8)
                 gas_met = E.read_array('PARTDATA', path, snap, 'PartType0/Metallicity', noH=True,
                                        physicalUnits=True, numThreads=8)
@@ -188,4 +188,4 @@ ax9.text(0.975, 0.025, "\n".join([f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" f
 ax3.text(0.975, 0.975, "Contour lines \n linearly spaced", color="k", transform=ax3.transAxes, ha="right", va="top",
          fontsize=fontsize)
 
-fig.savefig('plots/gas_density_metallicity_redshift_REF.png', bbox_inches='tight')
+fig.savefig('plots/gas_density_metallicity_redshift_AGNdT9.png', bbox_inches='tight')

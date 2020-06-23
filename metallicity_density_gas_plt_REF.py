@@ -38,7 +38,7 @@ def get_data(load=False):
             
             # Get halo IDs and halo data
             try:
-                gas_den = E.read_array('PARTDATA', path, snap, 'PartType0/BirthDensity', noH=True,
+                gas_den = E.read_array('PARTDATA', path, snap, 'PartType0/Density', noH=True,
                                         physicalUnits=True, numThreads=8)
                 gas_met = E.read_array('PARTDATA', path, snap, 'PartType0/Metallicity', noH=True,
                                        physicalUnits=True, numThreads=8)
