@@ -188,11 +188,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     okinds = np.logical_and(hlrs / (csoft / (1 + z)) > 10**-1, lumins > 10**25)
     lumins = lumins[okinds]
-    hlrs = hlrs[okinds]
+    hlrs = hlrs[okinds] * 1000
     try:
-        cbar = ax.hexbin(lumins, hlrs * 1e3, gridsize=100, mincnt=1, xscale='log', yscale='log',
+        cbar = ax.hexbin(lumins, hlrs, gridsize=100, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='viridis')
-        plot_meidan_stat(lumins, hlrs * 1e3, ax, lab='REF', color='r')
+        plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
     except ValueError:
         continue
 
