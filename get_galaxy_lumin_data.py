@@ -134,7 +134,7 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
     gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
 
     # Calculate optical depth of ISM and birth cloud
-    tauVs_ISM = (10 ** 5.2) * gal_met_surfden
+    tauVs_ISM = (10 ** 0.0063) * gal_met_surfden
     tauVs_BC = 2.0 * (gal_mets / 0.01)
 
     # Extract the flux in nanoJansky
