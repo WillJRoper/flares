@@ -114,7 +114,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     print(hlrs)
     print(lumins)
 
-    okinds = np.logical_and(hlrs != 0, lumins > 10**10)
+    okinds = np.logical_and(hlrs != 0, lumins > 10**25)
     lumins = lumins[okinds]
     hlrs = hlrs[okinds]
     try:
