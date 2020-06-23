@@ -438,9 +438,9 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
         # Write out the results for this filter
         filt = hdf.create_group(f)  # create halo group
-        filt.create_dataset('half_lift_rad', data=hls, dtype=int)  # Half light radius [Mpc]
-        filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=int)  # Aperture mass [Msun * 10*10]
-        filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=int)  # Aperture Luminosity [nJy]
+        filt.create_dataset('half_lift_rad', data=hls, dtype=float)  # Half light radius [Mpc]
+        filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=float)  # Aperture mass [Msun * 10*10]
+        filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=float)  # Aperture Luminosity [nJy]
 
     hdf.close()
 
