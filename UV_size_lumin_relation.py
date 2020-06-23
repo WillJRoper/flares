@@ -249,12 +249,11 @@ for snap in snaps:
     lumins = lumins[okinds]
     hlrs = hlrs[okinds] * 1000
 
-    popt, pcov = curve_fit(linfit, lumins, hlrs, p0=[1, 10])
-    fitxs = np.linspace(10**28, 10**30, 1000)
-
     fig = plt.figure()
     ax = fig.add_subplot(111)
     try:
+        popt, pcov = curve_fit(linfit, lumins, hlrs, p0=[1, 10])
+        fitxs = np.linspace(10 ** 28, 10 ** 30, 1000)
         cbar = ax.hexbin(lumins, hlrs, gridsize=50, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='viridis')
         ax.plot(fitxs, linfit(fitxs, popt[0], popt[1]), linestyle='--', color='k')
