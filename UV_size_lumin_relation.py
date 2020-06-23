@@ -72,8 +72,10 @@ for ind in range(len(reg_snaps)):
     try:
         hdf = h5py.File(hdfpath + "RestUV" + snap + '.hdf5', 'r')
 
-        lumins = hdf[f]['Aperture_Luminosity_30kpc'][:, 0]
-        hlrs = hdf[f]['half_lift_rad'][:, 0]
+        ms = hdf[f]['Aperture_Mass_30kpc'][:, 0]
+        okinds = ms * 10**10 > 1e8
+        lumins = hdf[f]['Aperture_Luminosity_30kpc'][okinds, 0]
+        hlrs = hdf[f]['half_lift_rad'][okinds, 0]
 
         print(lumins.shape)
         print(hlrs.shape)
