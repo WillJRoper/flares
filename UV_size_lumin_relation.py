@@ -68,7 +68,7 @@ for ind in range(len(reg_snaps)):
     print(reg_snaps[ind])
 
     try:
-        hdf = h5py.File(hdfpath + 'ObsWebbLumins_' + snap + '.hdf5', 'r')
+        hdf = h5py.File(hdfpath + "RestUV" + snap + '.hdf5', 'r')
 
         lumins = hdf[f]['Aperture_Luminosity_30kpc'][:, 0]
         hlrs = hdf[f]['half_lift_rad'][:, 0]
