@@ -6,10 +6,15 @@ import seaborn as sns
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
 from scipy.stats import binned_statistic
+from scipy.optimize import curve_fit
 
 
 sns.set_context("paper")
 sns.set_style('whitegrid')
+
+
+def linfit(x, m, c):
+    return m * x + c
 
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
@@ -186,13 +191,13 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     hlrs = np.array(hlr_dict[snap])
     lumins = np.array(lumin_dict[snap])
 
-    okinds = np.logical_and(hlrs / (csoft / (1 + z)) > 10**-1, lumins > 10**25)
+    okinds = np.logical_and(hlrs / (csoft / (1 + z)) > 10**-1, lumins > 10**28)
     lumins = lumins[okinds]
     hlrs = hlrs[okinds] * 1000
     try:
-        cbar = ax.hexbin(lumins, hlrs, gridsize=100, mincnt=1, xscale='log', yscale='log',
+        cbar = ax.hexbin(lumins, hlrs, gridsize=50, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='viridis')
-        plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
+        # plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
     except ValueError:
         continue
 
@@ -231,4 +236,40 @@ ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=F
 fig.savefig('plots/HalfLightRadiusFUV.png', bbox_inches='tight')
 
 plt.close(fig)
+
+for snap in snaps:
+
+    z_str = snap.split('z')[1].split('p')
+    z = float(z_str[0] + '.' + z_str[1])
+
+    hlrs = np.array(hlr_dict[snap])
+    lumins = np.array(lumin_dict[snap])
+
+    okinds = np.logical_and(hlrs / (csoft / (1 + z)) > 10**-1, lumins > 10**28)
+    lumins = lumins[okinds]
+    hlrs = hlrs[okinds] * 1000
+
+    popt, pcov = curve_fit(linfit, lumins, hlrs, p0=[1, 10])
+    fitxs = np.linspace(10**28, 10**30, 1000)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    try:
+        cbar = ax.hexbin(lumins, hlrs, gridsize=50, mincnt=1, xscale='log', yscale='log',
+                         norm=LogNorm(), linewidths=0.2, cmap='viridis')
+        ax.plot(fitxs, linfit(fitxs, popt[0], popt[1]), linestyle='--', color='k')
+        # plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
+    except ValueError:
+        continue
+
+    ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            transform=ax.transAxes, horizontalalignment='right', fontsize=8)
+
+    # Label axes
+    ax.set_xlabel(r'$L_{FUV}/$ [erg $/$ s $/$ Hz]')
+    ax.set_ylabel('$R_{1/2}/ [pkpc]$')
+
+    fig.savefig('plots/HalfLightRadiusFUV_' + str(z) + '.png', bbox_inches='tight')
+
+    plt.close(fig)
 
