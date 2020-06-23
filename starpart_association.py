@@ -12,7 +12,7 @@ sns.set_style('whitegrid')
 
 
 regions = []
-for reg in range(0, 2):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -136,7 +136,7 @@ ax4.set_ylabel("$M_{out}$")
 handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
 
-fig.savefig("star_particle_association.png", bbox_inches='tight')
+fig.savefig("plots/star_particle_association.png", bbox_inches='tight')
 
 plt.close(fig)
 
@@ -192,5 +192,5 @@ ax4.set_ylabel("$M_{out}$")
 handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
 
-fig.savefig("star_particle_association_environ.png", bbox_inches='tight')
+fig.savefig("plots/star_particle_association_environ.png", bbox_inches='tight')
 
