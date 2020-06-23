@@ -125,7 +125,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     except ValueError:
         continue
 
-    ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+    ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
     axlims_x.extend(ax.get_xlim())
@@ -140,6 +140,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
     ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+    for spine in ax.spines.values():
+        spine.set_edgecolor('k')
 
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)

@@ -164,6 +164,8 @@ for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
     ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+    for spine in ax.spines.values():
+        spine.set_edgecolor('k')
 
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
