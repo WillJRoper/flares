@@ -141,7 +141,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
     ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
-    ax.set_ylim(10**-1.1, 10**2.1)
+    ax.set_ylim(10**-1.1, 10**2.2)
     for spine in ax.spines.values():
         spine.set_edgecolor('k')
 
