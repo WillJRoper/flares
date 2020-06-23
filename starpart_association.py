@@ -57,8 +57,8 @@ for reg in regions:
         try:
             grpids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
             sub_grpids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
-            mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, numThreads=8)
-            totmass = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8)
+            mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8)
+            totmass = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8)
         except OSError:
             print("OsError")
             continue
@@ -131,7 +131,7 @@ ax4.set_xlabel("$z$")
 ax1.set_ylabel("$N_{out}/N_{tot}$")
 ax2.set_ylabel("$M_{out}/M_{tot}$")
 ax3.set_ylabel("$N_{out}$")
-ax4.set_ylabel("$M_{out}$")
+ax4.set_ylabel("$M_{out}/M_{\odot} / h$")
 
 handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
@@ -187,7 +187,7 @@ ax4.set_xlabel("$\Delta$")
 ax1.set_ylabel("$N_{out}/N_{tot}$")
 ax2.set_ylabel("$M_{out}/M_{tot}$")
 ax3.set_ylabel("$N_{out}$")
-ax4.set_ylabel("$M_{out}$")
+ax4.set_ylabel("$M_{out}/M_{\odot} / h$")
 
 handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
