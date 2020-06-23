@@ -11,7 +11,7 @@ matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
 
-load = True
+load = False
 regions = []
 for reg in range(0, 40):
 
@@ -22,74 +22,85 @@ for reg in range(0, 40):
 
 snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
-axlims_x = []
-axlims_y = []
 
-n_in_grpids_dict = {}
-n_in_subgrpids_dict = {}
-totn_dict = {}
-totm_dict = {}
-m_in_grpids_dict = {}
-m_in_subgrpids_dict = {}
-for snap in snaps:
+if not load:
+    axlims_x = []
+    axlims_y = []
 
-    n_in_grpids_dict[snap] = 0
-    n_in_subgrpids_dict[snap] = 0
-    m_in_grpids_dict[snap] = 0
-    m_in_subgrpids_dict[snap] = 0
-    totn_dict[snap] = 0
-    totm_dict[snap] = 0
-
-for reg in regions:
-    
-    n_in_grpids_dict[reg] = 0
-    n_in_subgrpids_dict[reg] = 0
-    m_in_grpids_dict[reg] = 0
-    m_in_subgrpids_dict[reg] = 0
-    totn_dict[reg] = 0
-    totm_dict[reg] = 0
-
+    n_in_grpids_dict = {}
+    n_in_subgrpids_dict = {}
+    totn_dict = {}
+    totm_dict = {}
+    m_in_grpids_dict = {}
+    m_in_subgrpids_dict = {}
     for snap in snaps:
 
-        print(reg, snap)
+        n_in_grpids_dict[snap] = 0
+        n_in_subgrpids_dict[snap] = 0
+        m_in_grpids_dict[snap] = 0
+        m_in_subgrpids_dict[snap] = 0
+        totn_dict[snap] = 0
+        totm_dict[snap] = 0
 
-        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+    for reg in regions:
 
-        try:
-            grpids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
-            sub_grpids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
-            mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8)
-            totmass = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) / 0.6777
-        except OSError:
-            print("OsError")
-            continue
-        except ValueError:
-            print("ValueError")
-            continue
+        n_in_grpids_dict[reg] = 0
+        n_in_subgrpids_dict[reg] = 0
+        m_in_grpids_dict[reg] = 0
+        m_in_subgrpids_dict[reg] = 0
+        totn_dict[reg] = 0
+        totm_dict[reg] = 0
 
-        totn_dict[snap] += totmass.size
-        totm_dict[snap] += np.sum(totmass)
-        
-        totn_dict[reg] += totmass.size
-        totm_dict[reg] += np.sum(totmass)
+        for snap in snaps:
 
-        ingrpinds = grpids != 2**30
-        insubgrpinds = sub_grpids != 2**30
-        n_in_grpids_dict[snap] += grpids[ingrpinds].size
-        n_in_subgrpids_dict[snap] += sub_grpids[insubgrpinds].size
-        m_in_grpids_dict[snap] += np.sum(mass[ingrpinds])
-        m_in_subgrpids_dict[snap] += np.sum(mass[insubgrpinds])
+            print(reg, snap)
 
-        n_in_grpids_dict[reg] += grpids[ingrpinds].size
-        n_in_subgrpids_dict[reg] += sub_grpids[insubgrpinds].size
-        m_in_grpids_dict[reg] += np.sum(mass[ingrpinds])
-        m_in_subgrpids_dict[reg] += np.sum(mass[insubgrpinds])
+            path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-with open('associationdicts.pck', 'wb') as pfile1:
-    pickle.dump({"n_in_grpids_dict": n_in_grpids_dict, "n_in_subgrpids_dict": n_in_subgrpids_dict,
-                 "m_in_grpids_dict": m_in_grpids_dict, "m_in_subgrpids_dict": m_in_subgrpids_dict,
-                 "totn_dict": totn_dict, "totm_dict": totm_dict}, pfile1)
+            try:
+                grpids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
+                sub_grpids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+                mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8)
+                totmass = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) / 0.6777
+            except OSError:
+                print("OsError")
+                continue
+            except ValueError:
+                print("ValueError")
+                continue
 
+            totn_dict[snap] += totmass.size
+            totm_dict[snap] += np.sum(totmass)
+
+            totn_dict[reg] += totmass.size
+            totm_dict[reg] += np.sum(totmass)
+
+            ingrpinds = grpids != 2**30
+            insubgrpinds = sub_grpids != 2**30
+            n_in_grpids_dict[snap] += grpids[ingrpinds].size
+            n_in_subgrpids_dict[snap] += sub_grpids[insubgrpinds].size
+            m_in_grpids_dict[snap] += np.sum(mass[ingrpinds])
+            m_in_subgrpids_dict[snap] += np.sum(mass[insubgrpinds])
+
+            n_in_grpids_dict[reg] += grpids[ingrpinds].size
+            n_in_subgrpids_dict[reg] += sub_grpids[insubgrpinds].size
+            m_in_grpids_dict[reg] += np.sum(mass[ingrpinds])
+            m_in_subgrpids_dict[reg] += np.sum(mass[insubgrpinds])
+
+    with open('associationdicts.pck', 'wb') as pfile1:
+        pickle.dump({"n_in_grpids_dict": n_in_grpids_dict, "n_in_subgrpids_dict": n_in_subgrpids_dict,
+                     "m_in_grpids_dict": m_in_grpids_dict, "m_in_subgrpids_dict": m_in_subgrpids_dict,
+                     "totn_dict": totn_dict, "totm_dict": totm_dict}, pfile1)
+
+else:
+    with open('associationdicts.pck', 'rb') as pfile1:
+        save_dict = pickle.load(pfile1)
+    n_in_grpids_dict = save_dict["n_in_grpids_dict"]
+    n_in_subgrpids_dict = save_dict["n_in_subgrpids_dict"]
+    totn_dict = save_dict["totn_dict"]
+    totm_dict = save_dict["totm_dict"]
+    m_in_grpids_dict = save_dict["m_in_grpids_dict"]
+    m_in_subgrpids_dict = save_dict["m_in_subgrpids_dict"]
 
 zs = []
 plt_n_notingrp = []
