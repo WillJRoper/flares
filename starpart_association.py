@@ -19,7 +19,8 @@ for reg in range(0, 40):
     else:
         regions.append(str(reg))
 
-snaps = ['008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 axlims_x = []
 axlims_y = []
 
@@ -46,9 +47,16 @@ for reg in regions:
 
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-        grpids = E.read_array('SNAP', path, snap, 'PartType4/GroupNumber', numThreads=8)
-        sub_grpids = E.read_array('SNAP', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
-        mass = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8)
+        try:
+            grpids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
+            sub_grpids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+            mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, numThreads=8)
+        except OSError:
+            print("OsError")
+            continue
+        except ValueError:
+            print("ValueError")
+            continue
 
         totn_dict[snap] += grpids.size
         totm_dict[snap] += np.sum(mass)
