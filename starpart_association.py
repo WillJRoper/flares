@@ -40,6 +40,13 @@ for snap in snaps:
     totm_dict[snap] = 0
 
 for reg in regions:
+    
+    n_in_grpids_dict[reg] = 0
+    n_in_subgrpids_dict[reg] = 0
+    m_in_grpids_dict[reg] = 0
+    m_in_subgrpids_dict[reg] = 0
+    totn_dict[reg] = 0
+    totm_dict[reg] = 0
 
     for snap in snaps:
 
@@ -61,6 +68,9 @@ for reg in regions:
 
         totn_dict[snap] += totmass.size
         totm_dict[snap] += np.sum(totmass)
+        
+        totn_dict[reg] += totmass.size
+        totm_dict[reg] += np.sum(totmass)
 
         ingrpinds = grpids != 2**30
         insubgrpinds = sub_grpids != 2**30
@@ -68,6 +78,11 @@ for reg in regions:
         n_in_subgrpids_dict[snap] += sub_grpids[insubgrpinds].size
         m_in_grpids_dict[snap] += np.sum(mass[ingrpinds])
         m_in_subgrpids_dict[snap] += np.sum(mass[insubgrpinds])
+
+        n_in_grpids_dict[reg] += grpids[ingrpinds].size
+        n_in_subgrpids_dict[reg] += sub_grpids[insubgrpinds].size
+        m_in_grpids_dict[reg] += np.sum(mass[ingrpinds])
+        m_in_subgrpids_dict[reg] += np.sum(mass[insubgrpinds])
 
 zs = []
 plt_n_notingrp = []
@@ -103,10 +118,10 @@ ax2 = fig.add_subplot(gs[1, :])
 ax3 = fig.add_subplot(gs[2, :])
 ax4 = fig.add_subplot(gs[3, :])
 
-ax1.semilogy(zs, plt_n_notingrp / totn_dict, label="Not in a Group", color='#300bff')
-ax1.semilogy(zs, plt_n_notinsubgrp / totn_dict, label="Not in a Subgroup", linestyle='--', color='#ff990b')
-ax2.semilogy(zs, plt_m_notingrp / totm_dict, label="Not in a Group", color='#300bff')
-ax2.semilogy(zs, plt_m_notinsubgrp / totm_dict, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+ax1.semilogy(zs, plt_n_notingrp / plt_totn, label="Not in a Group", color='#300bff')
+ax1.semilogy(zs, plt_n_notinsubgrp / plt_totn, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+ax2.semilogy(zs, plt_m_notingrp / plt_totm, label="Not in a Group", color='#300bff')
+ax2.semilogy(zs, plt_m_notinsubgrp / plt_totm, label="Not in a Subgroup", linestyle='--', color='#ff990b')
 ax3.semilogy(zs, plt_n_notingrp, label="Not in a Group", color='#300bff')
 ax3.semilogy(zs, plt_n_notinsubgrp, label="Not in a Subgroup", linestyle='--', color='#ff990b')
 ax4.semilogy(zs, plt_m_notingrp * 10**10, label="Not in a Group", color='#300bff')
@@ -122,4 +137,60 @@ handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
 
 fig.savefig("star_particle_association.png", bbox_inches='tight')
+
+plt.close(fig)
+
+regs_ovdens = np.loadtxt("region_overdensity.txt", dtype=float)
+
+ov_dens = []
+plt_n_notingrp = []
+plt_n_notinsubgrp = []
+plt_m_notingrp = []
+plt_m_notinsubgrp = []
+plt_totn = []
+plt_totm = []
+for reg in regions:
+    ov_dens.append(regs_ovdens[int(reg)])
+    plt_n_notingrp.append(totn_dict[reg] - n_in_grpids_dict[reg])
+    plt_n_notinsubgrp.append(totn_dict[reg] - n_in_subgrpids_dict[reg])
+    plt_m_notingrp.append(totm_dict[reg] - m_in_grpids_dict[reg])
+    plt_m_notinsubgrp.append(totm_dict[reg] - m_in_subgrpids_dict[reg])
+    plt_totn.append(totn_dict[reg])
+    plt_totm.append(totm_dict[reg])
+
+plt_n_notingrp = np.array(plt_n_notingrp)
+plt_n_notinsubgrp = np.array(plt_n_notinsubgrp)
+plt_m_notingrp = np.array(plt_m_notingrp)
+plt_m_notinsubgrp = np.array(plt_m_notinsubgrp)
+plt_totn = np.array(plt_totn)
+plt_totm = np.array(plt_totm)
+
+# Set up plot
+fig = plt.figure()
+gs = gridspec.GridSpec(ncols=3, nrows=4)
+gs.update(wspace=0.0, hspace=0.0)
+ax1 = fig.add_subplot(gs[0, :])
+ax2 = fig.add_subplot(gs[1, :])
+ax3 = fig.add_subplot(gs[2, :])
+ax4 = fig.add_subplot(gs[3, :])
+
+ax1.semilogy(ov_dens, plt_n_notingrp / plt_totn, label="Not in a Group", color='#300bff')
+ax1.semilogy(ov_dens, plt_n_notinsubgrp / plt_totn, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+ax2.semilogy(ov_dens, plt_m_notingrp / plt_totm, label="Not in a Group", color='#300bff')
+ax2.semilogy(ov_dens, plt_m_notinsubgrp / plt_totm, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+ax3.semilogy(ov_dens, plt_n_notingrp, label="Not in a Group", color='#300bff')
+ax3.semilogy(ov_dens, plt_n_notinsubgrp, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+ax4.semilogy(ov_dens, plt_m_notingrp * 10**10, label="Not in a Group", color='#300bff')
+ax4.semilogy(ov_dens, plt_m_notinsubgrp * 10**10, label="Not in a Subgroup", linestyle='--', color='#ff990b')
+
+ax4.set_xlabel("$\Delta$")
+ax1.set_ylabel("$N_{out}/N_{tot}$")
+ax2.set_ylabel("$M_{out}/M_{tot}$")
+ax3.set_ylabel("$N_{out}$")
+ax4.set_ylabel("$M_{out}$")
+
+handles, labels = ax1.get_legend_handles_labels()
+ax1.legend(handles, labels, loc='best')
+
+fig.savefig("star_particle_association_environ.png", bbox_inches='tight')
 
