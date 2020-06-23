@@ -47,16 +47,9 @@ for reg in regions:
 
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-        try:
-            grpids = E.read_array('SNAP', path, snap, 'PartType4/GroupNumber', numThreads=8)
-            sub_grpids = E.read_array('SNAP', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
-            mass = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8)
-        except OSError:
-            print("OsError")
-            continue
-        except ValueError:
-            print("ValueError")
-            continue
+        grpids = E.read_array('SNAP', path, snap, 'PartType4/GroupNumber', numThreads=8)
+        sub_grpids = E.read_array('SNAP', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+        mass = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8)
 
         totn_dict[snap] += grpids.size
         totm_dict[snap] += np.sum(mass)
