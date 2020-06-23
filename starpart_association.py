@@ -51,6 +51,7 @@ for reg in regions:
             grpids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
             sub_grpids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
             mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, numThreads=8)
+            totmass = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True, numThreads=8)
         except OSError:
             print("OsError")
             continue
@@ -58,11 +59,11 @@ for reg in regions:
             print("ValueError")
             continue
 
-        totn_dict[snap] += grpids.size
-        totm_dict[snap] += np.sum(mass)
+        totn_dict[snap] += totmass.size
+        totm_dict[snap] += np.sum(totmass)
 
         ingrpinds = grpids != 2**30
-        insubgrpinds = sub_grpids != 2 ** 30
+        insubgrpinds = sub_grpids != 2**30
         n_in_grpids_dict[snap] += grpids[ingrpinds].size
         n_in_subgrpids_dict[snap] += sub_grpids[insubgrpinds].size
         m_in_grpids_dict[snap] += np.sum(mass[ingrpinds])
