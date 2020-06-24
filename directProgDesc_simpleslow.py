@@ -513,14 +513,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     # gas_results_tup = partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type=0)
     # results_gas, internal_to_sim_haloID_desc_gas, internal_to_sim_haloID_prog_gas, gas_ids = gas_results_tup
 
-    size = len(results_dm.keys())
-
-    # Initialise the progress
-    progress = -1
-
     # Set up arrays to store host results
-    nhalo = np.max(halo_ids + 1)
-    index_haloids = np.arange(halo_ids + 1, dtype=int)
+    nhalo = len(results_dm.keys())
+    index_haloids = np.arange(nhalo, dtype=int)
+    sim_haloids = np.full(nhalo, -2, dtype=int)
     halo_nparts = np.full(nhalo, -2, dtype=int)
     nprogs = np.full(nhalo, -2, dtype=int)
     ndescs = np.full(nhalo, -2, dtype=int)
@@ -534,7 +530,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     prog_nparts = []
     desc_nparts = []
 
-    for num, haloID in enumerate(results_dm.keys()):
+    for num, simhaloID in enumerate(results_dm.keys()):
+
+        sim_haloids[num] = simhaloID
+
+        haloID = num
 
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
          ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[haloID]
@@ -562,12 +562,16 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             progs.extend(sim_prog_haloids)
             prog_mass_conts.extend(prog_mass_contribution)
             prog_nparts.extend(prog_npart)
+        else:
+            prog_start_index[haloID] = np.nan
 
         if ndesc > 0:
             desc_start_index[haloID] = len(descs)
             descs.extend(sim_desc_haloids)
             desc_mass_conts.extend(desc_mass_contribution)
             desc_nparts.extend(desc_npart)
+        else:
+            desc_start_index[haloID] = np.nan
 
         # # Αssign dark matter haloids for comparison to other particle types
         # dm_sim_desc_haloids = np.copy(sim_desc_haloids)
@@ -583,7 +587,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     # Create file to store this snapshots graph results
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'w')
 
-    hdf.create_dataset('halo_IDs', shape=index_haloids.shape, dtype=int, data=index_haloids, compression='gzip')
+    hdf.create_dataset('mega_halo_IDs', shape=index_haloids.shape, dtype=int, data=index_haloids, compression='gzip')
+    hdf.create_dataset('sim_halo_IDs', shape=sim_haloids.shape, dtype=float, data=sim_haloids, compression='gzip')
     hdf.create_dataset('nProgs', shape=nprogs.shape, dtype=int, data=nprogs, compression='gzip')
     hdf.create_dataset('nDescs', shape=ndescs.shape, dtype=int, data=ndescs, compression='gzip')
     hdf.create_dataset('nparts', shape=halo_nparts.shape, dtype=int, data=halo_nparts, compression='gzip')
