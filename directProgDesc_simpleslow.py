@@ -233,10 +233,10 @@ def getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
 def get_current_part_ind_dict(path, snap, part_type, part_ids):
     
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    group_part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
+    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                   numThreads=8)
-    grp_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-    subgrp_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
 
     # Convert to group.subgroup ID format
     halo_ids = np.zeros(grp_ids.size, dtype=float)
@@ -267,10 +267,10 @@ def get_current_part_ind_dict(path, snap, part_type, part_ids):
 def get_progdesc_part_ind_dict(path, snap, part_type, part_ids):
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    group_part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
+    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
                                   numThreads=8)
-    grp_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-    subgrp_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
 
     # Convert to group.subgroup ID format
     halo_ids = np.zeros(grp_ids.size, dtype=float)
@@ -317,42 +317,36 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     :return: None
     """
 
-    if part_type != 1:
+    # Extract particle IDs
+    snap_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
 
-        # Extract particle IDs
-        snap_part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-
-        if prog_snap != None:
-            progsnap_part_ids = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                             numThreads=8)
-        else:
-            progsnap_part_ids = []
-        
-        if desc_snap != None:
-            descsnap_part_ids = E.read_array('SNAP', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                             numThreads=8)
-        else:
-            descsnap_part_ids = []
-
-        # Combine the particle id arrays and only take unique values
-        part_ids = np.unique(np.concatenate([snap_part_ids, progsnap_part_ids, descsnap_part_ids]))
-
+    if prog_snap != None:
+        progsnap_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                         numThreads=8)
     else:
+        progsnap_part_ids = []
 
-        part_ids = E.read_array('SNAP', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+    if desc_snap != None:
+        descsnap_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
+                                         numThreads=8)
+    else:
+        descsnap_part_ids = []
+
+    # Combine the particle id arrays and only take unique values
+    part_ids = np.unique(np.concatenate([snap_part_ids, progsnap_part_ids, descsnap_part_ids]))
 
     part_ids = np.sort(part_ids)
 
     # if prog_snap != None:
     #
-    #     progpart_masses = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/Mass',
+    #     progpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass',
     #                                       numThreads=8) / 0.6777
     # else:
     #     progpart_masses = np.array([])
     #
     # if desc_snap != None:
     #
-    #     descpart_masses = E.read_array('SNAP', path, prog_snap, 'PartType' + str(part_type) + '/Mass',
+    #     descpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass',
     #                                       numThreads=8) / 0.6777
     # else:
     #     descpart_masses = np.array([])
