@@ -450,9 +450,10 @@ model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
                             path_to_SPS_grid = FLARE.FLARE_dir + '/data/SPS/nebular/3.0/') # DEFINE SED GRID -
 model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
-# filters = FLARE.filters.NIRCam
-# filters.extend(['FAKE.TH.'+f for f in ['FUV','NUV','V']])
-filters = ['FAKE.TH.FUV', ]
+filters = FLARE.filters.NIRCam
+filename = 'ObsWebbLumins_'
+# filters = ['FAKE.TH.'+f for f in ['FUV','NUV','V']]
+# filename = "RestUV"
 F = FLARE.filters.add_filters(filters, new_lam = model.lam)
 print(filters)
 
@@ -480,6 +481,4 @@ reg, snap = reg_snaps[ind]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg_snaps[ind][0] + '/'
 
-filename = 'ObsWebbLumins_'
-
-get_main(path, snap, savepath, filters, F, model, filename="RestUV")
+get_main(path, snap, savepath, filters, F, model, filename=filename)
