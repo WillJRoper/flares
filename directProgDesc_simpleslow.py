@@ -537,7 +537,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         haloID = num
 
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
-         ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[haloID]
+         ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[simhaloID]
         
         assert len(prog_haloids) == nprog == len(prog_npart) == len(prog_mass_contribution), \
             "Returned arrays of differing length"
@@ -596,6 +596,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                        compression='gzip')
     hdf.create_dataset('desc_start_index', shape=desc_start_index.shape, dtype=int, data=desc_start_index,
                        compression='gzip')
+
     hdf.create_dataset('Prog_haloIDs', shape=progs.shape, dtype=int, data=progs, compression='gzip')
     hdf.create_dataset('Desc_haloIDs', shape=descs.shape, dtype=int, data=descs, compression='gzip')
     hdf.create_dataset('Prog_Mass_Contribution', shape=prog_mass_conts.shape, dtype=int, data=prog_mass_conts,
@@ -604,7 +605,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                        compression='gzip')
     hdf.create_dataset('Prog_nPart', shape=prog_nparts.shape, dtype=int, data=prog_nparts, compression='gzip')
     hdf.create_dataset('Desc_nPart', shape=desc_nparts.shape, dtype=int, data=desc_nparts, compression='gzip')
-    hdf.create_dataset('real_flag', shape=reals.shape, dtype=bool, data=reals, compression='gzip')
 
     hdf.close()
 
