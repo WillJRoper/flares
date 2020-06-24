@@ -158,8 +158,7 @@ def get_parttype_ind_dict(path, snap, part_type):
     part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                  numThreads=8)
+    group_part_ids = np.copy(part_ids)
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
     subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
 
