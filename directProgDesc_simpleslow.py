@@ -299,7 +299,7 @@ def get_progdesc_part_ind_dict(path, snap, part_type, part_ids):
     parts_in_groups = result.data[np.logical_not(result.mask)]
 
     snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
-    for ind, prog, m in zip(parts_in_groups, part_groups):
+    for ind, halo in zip(parts_in_groups, part_groups):
         snap_haloIDs[ind] = internal_halo_ids[halo]
 
     return snap_haloIDs, sim_halo_ids
