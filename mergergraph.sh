@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH --ntasks 1 # The number of cores you need...
-#SBATCH --array=1-480
+#SBATCH --array=1-480%30
 #SBATCH --cpus-per-task=8
 #SBATCH -J MEGA-FLARES #Give it something meaningful.
 #SBATCH -o logs/output_Halo.%J.out
@@ -19,7 +19,7 @@ module purge
 #load the modules used to build your program.
 module load pythonconda3/4.5.4
 
-source activate DMLJ-env
+source activate flares-env
 
 i=$(($SLURM_ARRAY_TASK_ID - 1))
 
