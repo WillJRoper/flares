@@ -367,7 +367,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     # Set up arrays to store host results
     nhalo = len(results_dm.keys())
     index_haloids = np.arange(nhalo, dtype=int)
-    sim_haloids = np.full(nhalo, -2, dtype=int)
+    sim_haloids = np.full(nhalo, -2, dtype=float)
     halo_nparts = np.full(nhalo, -2, dtype=int)
     nprogs = np.full(nhalo, -2, dtype=int)
     ndescs = np.full(nhalo, -2, dtype=int)
