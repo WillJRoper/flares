@@ -547,9 +547,17 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         for ind, desc in enumerate(desc_haloids):
             sim_desc_haloids[ind] = internal_to_sim_haloID_desc_dm[desc]
 
-        # nprog = 0
-        # okinds = sim_desc_haloids >= 0
-        # sim_desc_haloids
+        okinds = sim_prog_haloids >= 0
+        sim_prog_haloids = sim_prog_haloids[okinds]
+        prog_npart = prog_npart[okinds]
+        prog_mass_contribution = prog_mass_contribution[okinds]
+        nprog = sim_prog_haloids.size
+        
+        okinds = sim_desc_haloids >= 0
+        sim_desc_haloids = sim_desc_haloids[okinds]
+        desc_npart = desc_npart[okinds]
+        desc_mass_contribution = desc_mass_contribution[okinds]
+        ndesc = sim_desc_haloids.size
 
         # Write out the data produced
         nprogs[haloID] = nprog  # number of progenitors
@@ -571,10 +579,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             desc_nparts.extend(desc_npart)
         else:
             desc_start_index[haloID] = 2**30
-
-        # # Αssign dark matter haloids for comparison to other particle types
-        # dm_sim_desc_haloids = np.copy(sim_desc_haloids)
-        # dm_sim_prog_haloids = np.copy(sim_prog_haloids)
 
     progs = np.array(progs)
     descs = np.array(descs)
