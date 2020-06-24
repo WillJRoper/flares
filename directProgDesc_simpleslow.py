@@ -518,7 +518,21 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     # Initialise the progress
     progress = -1
 
-    hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'w')
+    # Set up arrays to store host results
+    nhalo = np.max(halo_ids + 1)
+    index_haloids = np.arange(halo_ids + 1, dtype=int)
+    halo_nparts = np.full(nhalo, -2, dtype=int)
+    nprogs = np.full(nhalo, -2, dtype=int)
+    ndescs = np.full(nhalo, -2, dtype=int)
+    prog_start_index = np.full(nhalo, -2, dtype=int)
+    desc_start_index = np.full(nhalo, -2, dtype=int)
+
+    progs = []
+    descs = []
+    prog_mass_conts = []
+    desc_mass_conts = []
+    prog_nparts = []
+    desc_nparts = []
 
     for num, haloID in enumerate(results_dm.keys()):
 
@@ -538,25 +552,56 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         for ind, desc in enumerate(desc_haloids):
             sim_desc_haloids[ind] = internal_to_sim_haloID_desc_dm[desc]
 
+        # Write out the data produced
+        nprogs[haloID] = nprog  # number of progenitors
+        ndescs[haloID] = ndesc  # number of descendants
+        halo_nparts[int(haloID)] = current_halo_pids.size  # mass of the halo
+
+        if nprog > 0:
+            prog_start_index[haloID] = len(progs)
+            progs.extend(sim_prog_haloids)
+            prog_mass_conts.extend(prog_mass_contribution)
+            prog_nparts.extend(prog_npart)
+
+        if ndesc > 0:
+            desc_start_index[haloID] = len(descs)
+            descs.extend(sim_desc_haloids)
+            desc_mass_conts.extend(desc_mass_contribution)
+            desc_nparts.extend(desc_npart)
+
         # # Αssign dark matter haloids for comparison to other particle types
         # dm_sim_desc_haloids = np.copy(sim_desc_haloids)
         # dm_sim_prog_haloids = np.copy(sim_prog_haloids)
 
-        # Get the particle IDs
-        pids = part_ids[current_halo_pids]
+    progs = np.array(progs)
+    descs = np.array(descs)
+    prog_mass_conts = np.array(prog_mass_conts)
+    desc_mass_conts = np.array(desc_mass_conts)
+    prog_nparts = np.array(prog_nparts)
+    desc_nparts = np.array(desc_nparts)
 
-        # Write out the data produced
-        halo = hdf.create_group(str(haloID))  # create halo group
-        halo.attrs['nProg'] = nprog  # number of progenitors
-        halo.attrs['nDesc'] = ndesc  # number of descendants
-        halo.attrs['current_halo_nPart'] = current_halo_pids.size  # mass of the halo
-        halo.create_dataset('current_halo_part_ids', data=pids, dtype=int)  # particle ids in this halo
-        halo.create_dataset('prog_npart_contribution', data=prog_mass_contribution, dtype=int)  # Mass contribution
-        halo.create_dataset('desc_npart_contribution', data=desc_mass_contribution, dtype=int)  # Mass contribution
-        halo.create_dataset('Prog_nPart', data=prog_npart, dtype=int)  # number of particles in each progenitor
-        halo.create_dataset('Desc_nPart', data=desc_npart, dtype=int)  # number of particles in each descendant
-        halo.create_dataset('Prog_haloIDs', data=sim_prog_haloids, dtype=float)  # progenitor IDs
-        halo.create_dataset('Desc_haloIDs', data=sim_desc_haloids, dtype=float)  # descendant IDs
+    # Create file to store this snapshots graph results
+    hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'w')
+
+    hdf.create_dataset('halo_IDs', shape=index_haloids.shape, dtype=int, data=index_haloids, compression='gzip')
+    hdf.create_dataset('nProgs', shape=nprogs.shape, dtype=int, data=nprogs, compression='gzip')
+    hdf.create_dataset('nDescs', shape=ndescs.shape, dtype=int, data=ndescs, compression='gzip')
+    hdf.create_dataset('nparts', shape=halo_nparts.shape, dtype=int, data=halo_nparts, compression='gzip')
+    hdf.create_dataset('prog_start_index', shape=prog_start_index.shape, dtype=int, data=prog_start_index,
+                       compression='gzip')
+    hdf.create_dataset('desc_start_index', shape=desc_start_index.shape, dtype=int, data=desc_start_index,
+                       compression='gzip')
+    hdf.create_dataset('Prog_haloIDs', shape=progs.shape, dtype=int, data=progs, compression='gzip')
+    hdf.create_dataset('Desc_haloIDs', shape=descs.shape, dtype=int, data=descs, compression='gzip')
+    hdf.create_dataset('Prog_Mass_Contribution', shape=prog_mass_conts.shape, dtype=int, data=prog_mass_conts,
+                       compression='gzip')
+    hdf.create_dataset('Desc_Mass_Contribution', shape=desc_mass_conts.shape, dtype=int, data=desc_mass_conts,
+                       compression='gzip')
+    hdf.create_dataset('Prog_nPart', shape=prog_nparts.shape, dtype=int, data=prog_nparts, compression='gzip')
+    hdf.create_dataset('Desc_nPart', shape=desc_nparts.shape, dtype=int, data=desc_nparts, compression='gzip')
+    hdf.create_dataset('real_flag', shape=reals.shape, dtype=bool, data=reals, compression='gzip')
+
+    hdf.close()
 
         # # Write out star data
         # if haloID in results_stars:
@@ -730,8 +775,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         #     halo.create_dataset('Desc_bh_mass', data=np.array([]),
         #                         dtype=int)  # number of particles in each descendant
 
-
-    hdf.close()
 
 regions = []
 for reg in range(0, 40):
