@@ -538,11 +538,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
         (nprog, prog_haloids, prog_npart, prog_mass_contribution,
          ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[simhaloID]
-        
-        assert len(prog_haloids) == nprog == len(prog_npart) == len(prog_mass_contribution), \
-            "Returned arrays of differing length"
-        assert len(desc_haloids) == ndesc == len(desc_npart) == len(desc_mass_contribution), \
-            "Returned arrays of differing length"
 
         sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
         for ind, prog in enumerate(prog_haloids):
@@ -551,6 +546,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         sim_desc_haloids = np.zeros(len(desc_haloids), dtype=float)
         for ind, desc in enumerate(desc_haloids):
             sim_desc_haloids[ind] = internal_to_sim_haloID_desc_dm[desc]
+
+        # nprog = 0
+        # okinds = sim_desc_haloids >= 0
+        # sim_desc_haloids
 
         # Write out the data produced
         nprogs[haloID] = nprog  # number of progenitors
@@ -608,8 +607,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
     hdf.close()
 
-    print(np.unique(nprogs, return_counts=True))
-    print(np.unique(ndescs, return_counts=True))
+    print(np.unique(nprogs[sim_haloids >= 0], return_counts=True))
+    print(np.unique(ndescs[sim_haloids >= 0], return_counts=True))
 
     # # Write out star data
     # if haloID in results_stars:
