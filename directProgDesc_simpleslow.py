@@ -548,7 +548,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 desc_star_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
 
         # Create file to store this snapshots graph results
-        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
 
         hdf.create_dataset('Prog_Stellar_Mass_Contribution', shape=prog_star_mass_conts.shape, dtype=float,
                            data=prog_star_mass_conts, compression='gzip')
@@ -640,7 +640,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 desc_gas_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
 
         # Create file to store this snapshots graph results
-        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
 
         hdf.create_dataset('Prog_Gas_Mass_Contribution', shape=prog_gas_mass_conts.shape, dtype=float,
                            data=prog_gas_mass_conts, compression='gzip')
@@ -732,7 +732,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                 desc_bh_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
 
         # Create file to store this snapshots graph results
-        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
 
         hdf.create_dataset('Prog_BH_Mass_Contribution', shape=prog_bh_mass_conts.shape, dtype=float,
                            data=prog_bh_mass_conts, compression='gzip')
