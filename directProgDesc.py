@@ -198,7 +198,7 @@ def get_progdesc_part_ind_dict(path, snap, part_type, part_ids):
     part_groups = halo_ids[np.logical_not(result.mask)]
     parts_in_groups = result.data[np.logical_not(result.mask)]
 
-    snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
+    snap_haloIDs = np.full(len(part_ids), -2, dtype=float)
     for ind, halo in zip(parts_in_groups, part_groups):
         snap_haloIDs[ind] = halo
 
