@@ -5,10 +5,11 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from matplotlib.collections import LineCollection
 import h5py
-import os
-import gc
-import sys
+import seaborn as sns
 matplotlib.use('Agg')
+
+
+sns.set_style('whitegrid')
 
 
 def multiline(xs, ys, c, ax=None, **kwargs):
@@ -101,7 +102,7 @@ def main():
     progbins, progcounts = np.unique(nprogs, return_counts=True)
     descbins, desccounts = np.unique(ndescs, return_counts=True)
 
-    fig = plt.figure()
+    fig = plt.figure(figsize=(12, 6))
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
 
@@ -141,7 +142,7 @@ def main():
         nprogs_environ.setdefault(bin_ind, []).extend(nprogs_dict[reg])
         ndescs_environ.setdefault(bin_ind, []).extend(ndescs_dict[reg])
 
-    fig = plt.figure()
+    fig = plt.figure(figsize=(12, 6))
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
 
@@ -155,13 +156,16 @@ def main():
         progbins, progcounts = np.unique(nprogs_environ[bin_ind + 1], return_counts=True)
         descbins, desccounts = np.unique(ndescs_environ[bin_ind + 1], return_counts=True)
 
+        # ax1.bar(progbins, progcounts, width=1, alpha=0.9, color='b', ec='b')
+        # ax2.bar(descbins, desccounts, width=1, alpha=0.9, color='b', ec='b')
+
         plt_prog_xs.extend(progbins)
         plt_prog_ys.extend(progcounts)
         plt_desc_xs.extend(descbins)
         plt_desc_ys.extend(desccounts)
 
-    lc = multiline(plt_prog_xs, plt_prog_ys, bin_cents, cmap='plasma', lw=2, ax=ax1)
-    lc = multiline(plt_desc_xs, plt_desc_ys, bin_cents, cmap='plasma', lw=2, ax=ax2)
+    lc = multiline(plt_prog_xs, plt_prog_ys, bin_cents, cmap='plasma', ax=ax1)
+    lc = multiline(plt_desc_xs, plt_desc_ys, bin_cents, cmap='plasma', ax=ax2)
 
     axcb = fig.colorbar(lc)
     axcb.set_label('$\Delta$')
