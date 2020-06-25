@@ -297,17 +297,26 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
         desc_masses = np.array([])
         desc_part_ids = np.array([])
 
+    try:
+        prog_part_inds = get_parttype_ind_dict(path, prog_snap, part_type=part_type, part_ids=snap_part_ids)
+    except ValueError:
+        prog_part_inds = {}
+    try:
+        desc_part_inds = get_parttype_ind_dict(path, desc_snap, part_type=part_type, part_ids=snap_part_ids)
+    except ValueError:
+        desc_part_inds = {}
+
     # Loop over halo data getting the stellar contribution
     for nprog, ndesc, prog_start, desc_start, halo in zip(nprogs, ndescs, prog_start_index, desc_start_index,
                                                           sim_haloids):
 
         # Get this halos indices
         try:
-            current_inds = np.array(list(part_inds[halo]))
+            current_inds = list(part_inds[halo])
         except KeyError:
-            current_inds = np.array([])
+            current_inds = []
 
-        if nprog > 0 and prog_part_ids.size > 0 and current_inds.size > 0:
+        if nprog > 0 and prog_part_ids.size > 0 and len(current_inds) > 0:
 
             # Get the progenitor halo ids
             this_progs = progs[prog_start: prog_start + nprog]
@@ -318,8 +327,10 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
             # Loop over progenitors
             for ind, prog in enumerate(this_progs):
 
+                prog_inds = list(prog_part_inds[prog])
+
                 # Get only the indices in this and the progenitor
-                shared_parts = np.isin(prog_part_ids, snap_part_ids[current_inds])
+                shared_parts = set(prog_part_ids[prog_inds]).intersection(set(snap_part_ids[current_inds]))
 
                 if True in shared_parts:
                     this_prog_cont[ind] = np.sum(prog_masses[shared_parts])
@@ -541,4 +552,4 @@ if __name__ == '__main__':
     mainDirectProgDesc(snap=reg_snaps[ind][2], prog_snap=reg_snaps[ind][1], desc_snap=reg_snaps[ind][3],
                        path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
                        savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_'
-                                + reg_snaps[ind][0] + '/', part_types=(1))
+                                + reg_snaps[ind][0] + '/', part_types=(1, ))
