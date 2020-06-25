@@ -31,11 +31,11 @@ insane_ind = nprogs == nprog
 halo_ind = hdf['MEGA_halo_IDs'][insane_ind][0]
 insane_ID = hdf['SUBFIND_halo_IDs'][halo_ind]
 print(insane_ID)
-prog_start_ind = hdf['prog_start_index'][halo_ind]
-desc_start_ind = hdf['desc_start_index'][halo_ind]
+prog_start_ind = hdf['Prog_Start_Index'][halo_ind]
+desc_start_ind = hdf['Desc_Start_Index'][halo_ind]
 ndesc = hdf['nDescs'][halo_ind]
-progs = hdf['Prog_haloIDs'][prog_start_ind: prog_start_ind + nprog]
-descs = hdf['Desc_haloIDs'][desc_start_ind: desc_start_ind + ndesc]
+progs = hdf['prog_haloids'][prog_start_ind: prog_start_ind + nprog]
+descs = hdf['desc_haloids'][desc_start_ind: desc_start_ind + ndesc]
 
 hdf.close()
 
