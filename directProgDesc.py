@@ -295,14 +295,32 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         (nprog, prog_haloids, prog_mass_contribution,
          ndesc, desc_haloids, desc_mass_contribution, current_halo_pids) = results_dm[simhaloID]
 
-        okinds = prog_haloids >= 0
-        sim_prog_haloids = prog_haloids[okinds]
-        prog_mass_contribution = prog_mass_contribution[okinds]
+        sim_prog_haloids = []
+        prog_mass_cont = []
+        for p, pcont in zip(prog_haloids, prog_mass_contribution):
+            if str(p).split('.')[1] == 2**30:
+                continue
+            elif p < 0:
+                continue
+            sim_prog_haloids.append(p)
+            prog_mass_cont.append(pcont)
+
+        sim_prog_haloids = np.array(sim_prog_haloids)
+        prog_mass_contribution = np.array(prog_mass_cont)
         nprog = sim_prog_haloids.size
         
-        okinds = desc_haloids >= 0
-        sim_desc_haloids = desc_haloids[okinds]
-        desc_mass_contribution = desc_mass_contribution[okinds]
+        sim_desc_haloids = []
+        desc_mass_cont = []
+        for p, pcont in zip(desc_haloids, desc_mass_contribution):
+            if str(p).split('.')[1] == 2**30:
+                continue
+            elif p < 0:
+                continue
+            sim_desc_haloids.append(p)
+            desc_mass_cont.append(pcont)
+
+        sim_desc_haloids = np.array(sim_desc_haloids)
+        desc_mass_contribution = np.array(desc_mass_cont)
         ndesc = sim_desc_haloids.size
 
         # Write out the data produced
