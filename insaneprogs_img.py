@@ -19,7 +19,7 @@ desc_snap = '010_z005p000'
 part_type = 1
 
 # Define comoving softening length in kpc
-csoft = 0.001802390 / 0.6777
+csoft = 0.001802390 / 0.6777 / 4
 
 hdf = h5py.File('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_06/SubMgraph_009_z006p000.hdf5', 'r')
 
