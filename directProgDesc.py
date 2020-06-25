@@ -329,7 +329,10 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
             # Loop over progenitors
             for ind, prog in enumerate(this_progs):
 
-                prog_inds = list(prog_part_inds[prog])
+                try:
+                    prog_inds = list(prog_part_inds[prog])
+                except KeyError:
+                    continue
                 this_prog_masses = prog_masses[prog_inds]
                 this_prog_pids = prog_part_ids[prog_inds]
 
@@ -352,7 +355,10 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
             # Loop over descenitors
             for ind, desc in enumerate(this_descs):
 
-                desc_inds = list(desc_part_inds[desc])
+                try:
+                    desc_inds = list(desc_part_inds[desc])
+                except KeyError:
+                    continue
                 this_desc_masses = desc_masses[desc_inds]
                 this_desc_pids = desc_part_ids[desc_inds]
 
