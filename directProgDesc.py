@@ -134,10 +134,7 @@ def get_current_part_ind_dict(path, snap, part_type, part_ids):
     return halo_id_part_inds
 
 
-def get_parttype_ind_dict(path, snap, part_type):
-
-    # Get the particle IDs
-    part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+def get_parttype_ind_dict(path, snap, part_type, part_ids):
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
     group_part_ids = np.copy(part_ids)
@@ -376,10 +373,20 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
     if 4 in part_types:
 
+        # Get the particle IDs
+        try:
+            snap_part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
+        except ValueError:
+            snap_part_ids = np.array([])
+
         prog_star_mass_conts = np.zeros(progs.size)
         desc_star_mass_conts = np.zeros(descs.size)
 
         # Get particle indices for progenitors and descendents
+        try:
+            part_inds = get_parttype_ind_dict(path, prog_snap, part_type=4)
+        except ValueError:
+            part_inds = {}
         try:
             prog_star_part_inds_dict = get_parttype_ind_dict(path, prog_snap, part_type=4)
         except ValueError:
@@ -392,12 +399,16 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         # Get particle mass data
         try:
             prog_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType4/Mass', numThreads=8) / 0.6777
+            prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType4/ParticleIDs', numThreads=8)
         except ValueError:
             prog_masses = np.array([])
+            prog_part_ids = np.array([])
         try:
             desc_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType4/Mass', numThreads=8) / 0.6777
+            desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType4/ParticleIDs', numThreads=8)
         except ValueError:
             desc_masses = np.array([])
+            desc_part_ids = np.array([])
 
         # Loop over halo data getting the stellar contribution
         for nprog, ndesc, prog_start, desc_start, halo in zip(nprogs, ndescs, prog_start_index, desc_start_index,

@@ -35,7 +35,7 @@ prog_start_ind = hdf['prog_start_index'][halo_ind]
 desc_start_ind = hdf['desc_start_index'][halo_ind]
 ndesc = hdf['nDescs'][halo_ind]
 progs = hdf['Prog_haloIDs'][prog_start_ind: prog_start_ind + nprog]
-descs = hdf['Desc_haloIDs'][desc_start_ind: desc_start_ind + nprog]
+descs = hdf['Desc_haloIDs'][desc_start_ind: desc_start_ind + ndesc]
 
 hdf.close()
 
