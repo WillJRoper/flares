@@ -9,8 +9,7 @@ import sys
 matplotlib.use('Agg')
 
 
-def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
-             prog_counts, desc_counts, part_type):
+def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
     """
 
     :param current_halo_pids:
@@ -47,22 +46,16 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
         # Find the number of progenitor halos from the size of the unique array
         nprog = uniprog_haloids.size
 
-        # Assign the corresponding number of particles in each progenitor for sorting and storing
-        # This can be done simply by using the ID of the progenitor since again np.unique returns
-        # sorted results.
-        prog_npart = prog_counts[uniprog_haloids]
 
         # Sort the halo IDs and number of particles in each progenitor halo by their contribution to the
         # current halo (number of particles from the current halo in the progenitor or descendant)
         sorting_inds = uniprog_counts.argsort()[::-1]
-        prog_npart = prog_npart[sorting_inds]
         prog_haloids = uniprog_haloids[sorting_inds]
         prog_mass_contribution = uniprog_counts[sorting_inds]
 
     # If there is no progenitor store Null values
     else:
         nprog = -1
-        prog_npart = np.array([], copy=False, dtype=int)
         prog_haloids = np.array([], copy=False, dtype=int)
         prog_mass_contribution = np.array([], copy=False, dtype=int)
 
@@ -85,35 +78,26 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
             unidesc_haloids = unidesc_haloids[1:]
             unidesc_counts = unidesc_counts[1:]
 
-        if part_type == 1:
-            unidesc_haloids = unidesc_haloids[np.where(unidesc_counts >= 10)]
-            unidesc_counts = unidesc_counts[np.where(unidesc_counts >= 10)]
+        unidesc_haloids = unidesc_haloids[np.where(unidesc_counts >= 10)]
+        unidesc_counts = unidesc_counts[np.where(unidesc_counts >= 10)]
 
         # Find the number of descendant halos from the size of the unique array
         ndesc = unidesc_haloids.size
 
-        # Assign the corresponding number of particles in each descendant for storing.
-        # Could be extracted later from halo data but make analysis faster to save it here.
-        # This can be done simply by using the ID of the descendant since again np.unique returns
-        # sorted results.
-        desc_npart = desc_counts[unidesc_haloids]
-
         # Sort the halo IDs and number of particles in each progenitor halo by their contribution to the
         # current halo (number of particles from the current halo in the progenitor or descendant)
         sorting_inds = unidesc_counts.argsort()[::-1]
-        desc_npart = desc_npart[sorting_inds]
         desc_haloids = unidesc_haloids[sorting_inds]
         desc_mass_contribution = unidesc_counts[sorting_inds]
 
     # If there is no descendant snapshot store Null values
     else:
         ndesc = -1
-        desc_npart = np.array([], copy=False, dtype=int)
         desc_haloids = np.array([], copy=False, dtype=int)
         desc_mass_contribution = np.array([], copy=False, dtype=int)
 
-    return (nprog, prog_haloids, prog_npart, prog_mass_contribution,
-            ndesc, desc_haloids, desc_npart, desc_mass_contribution,
+    return (nprog, prog_haloids, prog_mass_contribution,
+            ndesc, desc_haloids, desc_mass_contribution,
             current_halo_pids)
 
 
@@ -200,13 +184,6 @@ def get_progdesc_part_ind_dict(path, snap, part_type, part_ids):
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-    uni_haloids = np.unique(halo_ids)
-    sim_halo_ids = np.zeros(uni_haloids.size)
-    internal_halo_ids = {}
-    for num, halo in enumerate(uni_haloids):
-        sim_halo_ids[num] = halo
-        internal_halo_ids[halo] = num
-
     unsort_part_ids = np.copy(part_ids)
     sinds = np.argsort(part_ids)
     part_ids = part_ids[sinds]
@@ -223,9 +200,9 @@ def get_progdesc_part_ind_dict(path, snap, part_type, part_ids):
 
     snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
     for ind, halo in zip(parts_in_groups, part_groups):
-        snap_haloIDs[ind] = internal_halo_ids[halo]
+        snap_haloIDs[ind] = halo
 
-    return snap_haloIDs, sim_halo_ids
+    return snap_haloIDs
 
 
 def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
@@ -260,20 +237,6 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
     part_ids = np.sort(part_ids)
 
-    # if prog_snap != None:
-    #
-    #     progpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass',
-    #                                       numThreads=8) / 0.6777
-    # else:
-    #     progpart_masses = np.array([])
-    #
-    # if desc_snap != None:
-    #
-    #     descpart_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/Mass',
-    #                                       numThreads=8) / 0.6777
-    # else:
-    #     descpart_masses = np.array([])
-
     # =============== Current Snapshot ===============
 
     halo_id_part_inds = get_current_part_ind_dict(path, snap, part_type, part_ids)
@@ -283,40 +246,20 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     # Only look for descendant data if there is a descendant snapshot
     if prog_snap != None:
 
-        prog_snap_haloIDs, prog_sim_halo_ids = get_progdesc_part_ind_dict(path, prog_snap, part_type, part_ids)
-            
-        # Get all the unique halo IDs in this snapshot and the number of times they appear
-        prog_unique, prog_counts = np.unique(prog_snap_haloIDs, return_counts=True)
-
-        # Remove single particle halos (ID=-2), since np.unique returns a sorted array this can be
-        # done by removing the first value
-        prog_unique = prog_unique[1:]
-        prog_counts = prog_counts[1:]
+        prog_snap_haloIDs = get_progdesc_part_ind_dict(path, prog_snap, part_type, part_ids)
 
     else:  # Assign an empty array if the snapshot is less than the earliest (000)
         prog_snap_haloIDs = np.array([], copy=False)
-        prog_sim_halo_ids = np.array([], copy=False)
-        prog_counts = np.array([], copy=False)
 
     # =============== Descendant Snapshot ===============
 
     # Only look for descendant data if there is a descendant snapshot
     if desc_snap != None:
 
-        desc_snap_haloIDs, desc_sim_halo_ids = get_progdesc_part_ind_dict(path, desc_snap, part_type, part_ids)
-
-        # Get all the unique halo IDs in this snapshot and the number of times they appear
-        desc_unique, desc_counts = np.unique(desc_snap_haloIDs, return_counts=True)
-
-        # Remove single particle halos (ID=-2), since np.unique returns a sorted array this can be
-        # done by removing the first value
-        desc_unique = desc_unique[1:]
-        desc_counts = desc_counts[1:]
+        desc_snap_haloIDs = get_progdesc_part_ind_dict(path, desc_snap, part_type, part_ids)
 
     else:  # Assign an empty array if the snapshot is less than the earliest (000)
         desc_snap_haloIDs = np.array([], copy=False)
-        desc_sim_halo_ids = np.array([], copy=False)
-        desc_counts = np.array([], copy=False)
 
     # =============== Find all Direct Progenitors And Descendant Of Halos In This Snapshot ===============
 
@@ -332,19 +275,18 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         # =============== Run The Direct Progenitor and Descendant Finder ===============
 
         # Run the progenitor/descendant finder
-        results[haloID] = dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
-                          prog_counts, desc_counts, part_type)
-            
+        results[haloID] = dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs)
+
     print('Processed', len(results.keys()), 'dark matter halos in snapshot', snap)
 
-    return results, desc_sim_halo_ids, prog_sim_halo_ids, part_ids, halo_id_part_inds
+    return results, part_ids, halo_id_part_inds
 
 
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/', part_types=(0, 1, 4, 5)):
 
     # Get the graph links based on the dark matter
     dm_results_tup = partDirectProgDesc(snap, prog_snap,desc_snap, path, part_type=1)
-    results_dm, internal_to_sim_haloID_desc_dm, internal_to_sim_haloID_prog_dm, part_ids, part_inds = dm_results_tup
+    results_dm, part_ids, part_inds = dm_results_tup
 
     # Set up arrays to store host results
     nhalo = len(results_dm.keys())
@@ -369,26 +311,16 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
         haloID = num
 
-        (nprog, prog_haloids, prog_npart, prog_mass_contribution,
-         ndesc, desc_haloids, desc_npart, desc_mass_contribution, current_halo_pids) = results_dm[simhaloID]
+        (nprog, prog_haloids, prog_mass_contribution,
+         ndesc, desc_haloids, desc_mass_contribution, current_halo_pids) = results_dm[simhaloID]
 
-        sim_prog_haloids = np.zeros(len(prog_haloids), dtype=float)
-        for ind, prog in enumerate(prog_haloids):
-            sim_prog_haloids[ind] = internal_to_sim_haloID_prog_dm[prog]
-
-        sim_desc_haloids = np.zeros(len(desc_haloids), dtype=float)
-        for ind, desc in enumerate(desc_haloids):
-            sim_desc_haloids[ind] = internal_to_sim_haloID_desc_dm[desc]
-
-        okinds = sim_prog_haloids >= 0
-        sim_prog_haloids = sim_prog_haloids[okinds]
-        prog_npart = prog_npart[okinds]
+        okinds = prog_haloids >= 0
+        sim_prog_haloids = prog_haloids[okinds]
         prog_mass_contribution = prog_mass_contribution[okinds]
         nprog = sim_prog_haloids.size
         
-        okinds = sim_desc_haloids >= 0
-        sim_desc_haloids = sim_desc_haloids[okinds]
-        desc_npart = desc_npart[okinds]
+        okinds = desc_haloids >= 0
+        sim_desc_haloids = desc_haloids[okinds]
         desc_mass_contribution = desc_mass_contribution[okinds]
         ndesc = sim_desc_haloids.size
 

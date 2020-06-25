@@ -153,7 +153,7 @@ def main():
     plt_desc_xs = []
     plt_desc_ys = []
 
-    for bin_ind, ovden, col in zip(enumerate(bin_cents), colors):
+    for (bin_ind, ovden), col in zip(enumerate(bin_cents), colors):
 
         progbins, progcounts = np.unique(nprogs_environ[bin_ind + 1], return_counts=True)
         descbins, desccounts = np.unique(ndescs_environ[bin_ind + 1], return_counts=True)
