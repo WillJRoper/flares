@@ -128,3 +128,6 @@ def main():
     #
     # # Save the plot as a png
     # fig.savefig('plots/ProgDescHist.png', bbox_inches='tight')
+
+
+main()
