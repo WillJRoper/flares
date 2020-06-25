@@ -305,7 +305,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
         try:
             current_inds = np.array(list(part_inds[halo]))
         except KeyError:
-            current_inds = {}
+            current_inds = np.array([])
 
         if nprog > 0 and prog_part_ids.size > 0 and current_inds.size > 0:
 
