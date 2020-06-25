@@ -43,7 +43,7 @@ def spherical_region(sim, snap):
 
 sns.set_style('whitegrid')
 
-load = True
+load = False
 regions = []
 for reg in range(0, 40):
 
