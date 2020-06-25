@@ -125,13 +125,13 @@ if not load:
 
             ingrpinds = grpids != 2**30
             insubgrpinds = sub_grpids != 2**30
-            n_in_grpids_dict[snap] += grpids[ingrpinds].size
-            n_in_subgrpids_dict[snap] += sub_grpids[insubgrpinds].size
+            n_in_grpids_dict[snap] += len(grpids[ingrpinds])
+            n_in_subgrpids_dict[snap] += len(sub_grpids[insubgrpinds])
             m_in_grpids_dict[snap] += np.sum(mass[ingrpinds])
             m_in_subgrpids_dict[snap] += np.sum(mass[insubgrpinds])
 
-            n_in_grpids_dict[reg] += grpids[ingrpinds].size
-            n_in_subgrpids_dict[reg] += sub_grpids[insubgrpinds].size
+            n_in_grpids_dict[reg] += len(grpids[ingrpinds])
+            n_in_subgrpids_dict[reg] += len(sub_grpids[insubgrpinds])
             m_in_grpids_dict[reg] += np.sum(mass[ingrpinds])
             m_in_subgrpids_dict[reg] += np.sum(mass[insubgrpinds])
 
@@ -202,7 +202,7 @@ ax4.set_ylabel("$M_{out}/M_{\odot}$")
 handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
 
-fig.savefig("plots/star_particle_association.png", bbox_inches='tight')
+fig.savefig("plots/star_particle_associationlen.png", bbox_inches='tight')
 
 plt.close(fig)
 
@@ -260,5 +260,5 @@ ax4.set_ylabel("$M_{out}/M_{\odot}$")
 handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
 
-fig.savefig("plots/star_particle_association_environ.png", bbox_inches='tight')
+fig.savefig("plots/star_particle_association_environlen.png", bbox_inches='tight')
 
