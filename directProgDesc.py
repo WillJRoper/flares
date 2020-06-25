@@ -315,6 +315,8 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
             current_inds = list(part_inds[halo])
         except KeyError:
             current_inds = []
+            
+        current_pids = set(snap_part_ids[current_inds])
 
         if nprog > 0 and prog_part_ids.size > 0 and len(current_inds) > 0:
 
@@ -328,16 +330,18 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
             for ind, prog in enumerate(this_progs):
 
                 prog_inds = list(prog_part_inds[prog])
+                this_prog_masses = prog_masses[prog_inds]
+                this_prog_pids = prog_part_ids[prog_inds]
 
                 # Get only the indices in this and the progenitor
-                shared_parts = set(prog_part_ids[prog_inds]).intersection(set(snap_part_ids[current_inds]))
+                shared_parts = set(this_prog_pids).intersection(current_pids)
 
-                if True in shared_parts:
-                    this_prog_cont[ind] = np.sum(prog_masses[shared_parts])
+                for pid in shared_parts:
+                    this_prog_cont[ind] += this_prog_masses[this_prog_pids == pid]
 
             prog_mass_conts[prog_start: prog_start + nprog] = this_prog_cont
 
-        if ndesc > 0 and desc_part_ids.size > 0 and current_inds.size > 0:
+        if ndesc > 0 and desc_part_ids.size > 0 and len(current_inds) > 0:
 
             # Get the descendent halo ids
             this_descs = descs[desc_start: desc_start + ndesc]
@@ -345,14 +349,18 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
             # Initialise an array to store the contribution
             this_desc_cont = np.zeros(this_descs.size)
 
-            # Loop over descendants
+            # Loop over descenitors
             for ind, desc in enumerate(this_descs):
 
-                # Get only the indices in this and the descenitor
-                shared_parts = np.isin(desc_part_ids, snap_part_ids[current_inds])
+                desc_inds = list(desc_part_inds[desc])
+                this_desc_masses = desc_masses[desc_inds]
+                this_desc_pids = desc_part_ids[desc_inds]
 
-                if True in shared_parts:
-                    this_desc_cont[ind] = np.sum(desc_masses[shared_parts])
+                # Get only the indices in this and the descenitor
+                shared_parts = set(this_desc_pids).intersection(current_pids)
+
+                for pid in shared_parts:
+                    this_desc_cont[ind] += this_desc_masses[this_desc_pids == pid]
 
             desc_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
 
@@ -552,4 +560,4 @@ if __name__ == '__main__':
     mainDirectProgDesc(snap=reg_snaps[ind][2], prog_snap=reg_snaps[ind][1], desc_snap=reg_snaps[ind][3],
                        path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
                        savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_'
-                                + reg_snaps[ind][0] + '/', part_types=(1, ))
+                                + reg_snaps[ind][0] + '/')
