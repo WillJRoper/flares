@@ -112,6 +112,8 @@ def main():
     # Set y-axis scaling to logarithmic
     ax1.set_yscale('log')
     ax2.set_yscale('log')
+    ax1.set_xscale('log')
+    ax2.set_xscale('log')
 
     # Ensure tick labels are integers
     ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -175,6 +177,9 @@ def main():
     # Set y-axis scaling to logarithmic
     ax1.set_yscale('log')
     ax2.set_yscale('log')
+    ax1.set_xscale('log')
+    ax2.set_xscale('log')
+
 
     # Ensure tick labels are integers
     ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
