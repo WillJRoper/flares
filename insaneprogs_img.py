@@ -165,3 +165,43 @@ ax2.set_title("Current")
 ax3.set_title("Descendant")
 
 fig.savefig("plots/Insanityprobe.png", bbox_inches='tight')
+
+plt.close(fig)
+
+x, y, z = snap_pos[:, 0], snap_pos[:, 1], snap_pos[:, 2]
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(snap_pos[:, 0], snap_pos[:, 1], snap_pos[:, 2], c='r', marker='.')
+
+h, yedges, zedges = np.histogram2d(y, z, bins=50)
+h = h.transpose()
+normalized_map = plt.cm.Greys_r(h/h.max())
+
+yy, zz = np.meshgrid(yedges, zedges)
+xpos = np.min(x) - 0.2 # Plane of histogram
+xflat = np.full_like(yy, xpos) 
+
+p = ax.plot_surface(xflat, yy, zz, facecolors=normalized_map, rstride=1, cstride=1, shade=False)
+
+h, xedges, zedges = np.histogram2d(x, z, bins=50)
+h = h.transpose()
+normalized_map = plt.cm.Grexs_r(h/h.max())
+
+xx, zz = np.meshgrid(xedges, zedges)
+ypos = np.min(y) - 0.2 # Plane of histogram
+yflat = np.full_like(xx, ypos)
+
+p = ax.plot_surface(xx, yflat, zz, facecolors=normalized_map, rstride=1, cstride=1, shade=False)
+
+h, xedges, yedges = np.histogram2d(x, y, bins=50)
+h = h.transpose()
+normaliyed_map = plt.cm.Grexs_r(h/h.max())
+
+xx, yy = np.meshgrid(xedges, yedges)
+zpos = np.min(z) - 0.2 # Plane of histogram
+zflat = np.full_like(xx, zpos)
+
+p = ax.plot_surface(xx, yy, zflat, facecolors=normaliyed_map, rstride=1, cstride=1, shade=False)
+
+fig.savefig("plots/projectiontest.png", bbox_inches='tight')
