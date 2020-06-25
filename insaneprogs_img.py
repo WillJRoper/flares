@@ -103,23 +103,21 @@ desc_cops = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/CentreOfPotential'
 snap_pos = snap_poss[halo_ids == insane_ID, :] - cop
 prog_pos = []
 desc_pos = []
-prog_cop = []
-desc_cop = []
-for prog in progs:
+prog_cop = np.zeros((len(descs), 3))
+desc_cop = np.zeros((len(descs), 3))
+for ind, prog in enumerate(progs):
     print("prog", prog)
     prog_pos.extend(prog_poss[prog_ids == prog, :] - cop)
-    prog_cop.append(prog_cops[subfind_prog_ids == prog, :] - cop)
-for desc in descs:
+    prog_cop[ind] = prog_cops[subfind_prog_ids == prog, :] - cop
+for ind, desc in enumerate(descs):
     print("desc", desc)
     desc_pos.extend(desc_poss[desc_ids == desc, :] - cop)
-    desc_cop.append(desc_cops[subfind_desc_ids == desc, :] - cop)
+    desc_cop[ind] = desc_cops[subfind_desc_ids == desc, :] - cop
 width = 2
 
 prog_pos = np.array(prog_pos)
 desc_pos = np.array(desc_pos)
-prog_cop = np.array(prog_cop)
-desc_cop = np.array(desc_cop)
-
+print(desc_cop.shape)
 print(prog_pos.shape, snap_pos.shape, desc_pos.shape)
 prog_len = prog_pos.shape[0]
 snap_len = snap_pos.shape[0]
