@@ -34,8 +34,11 @@ for reg in regions:
         group_star_ms.extend(E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10)
 
 star_ms = np.array(star_ms)
-H, bins = np.histogram(star_ms / 0.6777, np.logspace(np.log10(np.min(star_ms))-0.1, np.log10(np.max(star_ms))+0.1, 100))
-H2, bins2 = np.histogram(star_ms / 0.6777, np.logspace(np.log10(np.min(star_ms))-0.1, np.log10(np.max(star_ms))+0.1, 100))
+group_star_ms = np.array(group_star_ms)
+H, bins = np.histogram(star_ms / 0.6777, np.logspace(np.log10(np.min(star_ms))-0.1,
+                                                     np.log10(np.max(star_ms))+0.1, 100))
+H2, bins2 = np.histogram(group_star_ms / 0.6777, np.logspace(np.log10(np.min(star_ms))-0.1,
+                                                             np.log10(np.max(star_ms))+0.1, 100))
 
 bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
 
