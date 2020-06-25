@@ -28,8 +28,8 @@ nprogs = hdf['nProgs'][...]
 # Get insane halo
 nprog = 331
 insane_ind = nprogs == nprog
-halo_ind = hdf['MEGA_halo_IDs'][insane_ind]
-print(insane_ind, halo_ind)
+halo_ind = hdf['MEGA_halo_IDs'][insane_ind][0]
+print(np.where(insane_ind), halo_ind)
 insane_ID = hdf['SUBFIND_halo_IDs'][halo_ind]
 prog_start_ind = hdf['prog_start_index'][halo_ind]
 desc_start_ind = hdf['desc_start_index'][halo_ind]
