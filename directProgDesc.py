@@ -302,8 +302,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     descs = []
     prog_mass_conts = []
     desc_mass_conts = []
-    prog_nparts = []
-    desc_nparts = []
 
     for num, simhaloID in enumerate(results_dm.keys()):
 
@@ -333,7 +331,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             prog_start_index[haloID] = len(progs)
             progs.extend(sim_prog_haloids)
             prog_mass_conts.extend(prog_mass_contribution)
-            prog_nparts.extend(prog_npart)
         else:
             prog_start_index[haloID] = 2**30
 
@@ -341,7 +338,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             desc_start_index[haloID] = len(descs)
             descs.extend(sim_desc_haloids)
             desc_mass_conts.extend(desc_mass_contribution)
-            desc_nparts.extend(desc_npart)
         else:
             desc_start_index[haloID] = 2**30
 
@@ -349,8 +345,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     descs = np.array(descs)
     prog_mass_conts = np.array(prog_mass_conts)
     desc_mass_conts = np.array(desc_mass_conts)
-    prog_nparts = np.array(prog_nparts)
-    desc_nparts = np.array(desc_nparts)
 
     # Create file to store this snapshots graph results
     hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'w')
@@ -371,8 +365,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                        compression='gzip')
     hdf.create_dataset('Desc_DM_Mass_Contribution', shape=desc_mass_conts.shape, dtype=int, data=desc_mass_conts,
                        compression='gzip')
-    hdf.create_dataset('Prog_nPart', shape=prog_nparts.shape, dtype=int, data=prog_nparts, compression='gzip')
-    hdf.create_dataset('Desc_nPart', shape=desc_nparts.shape, dtype=int, data=desc_nparts, compression='gzip')
 
     hdf.close()
 
