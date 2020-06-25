@@ -24,8 +24,7 @@ def spherical_region(sim, snap):
     Inspired from David Turner's suggestion
     """
 
-    dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
-                           noH=True, physicalUnits=False, numThreads=4)  # dm particle coordinates
+    dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',numThreads=4) / 0.6777 # dm particle coordinates
 
     hull = ConvexHull(dm_cood)
 
@@ -94,7 +93,7 @@ if not load:
                 sub_grpids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
                 mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8)
                 totmass = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) / 0.6777
-                coords = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True, numThreads=8)
+                coords = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8) / 0.6777
 
                 # Get the spheres centre
                 centre, radius, mindist = spherical_region(path, snap)
@@ -103,7 +102,7 @@ if not load:
 
                 totmass = totmass[rs < 14 / 0.677]
 
-                coords = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True, numThreads=8)
+                coords = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', numThreads=8) / 0.6777
                 rs = np.linalg.norm(coords - centre, axis=1)
 
                 grpids = grpids[rs < 14 / 0.677]
@@ -202,7 +201,7 @@ ax4.set_ylabel("$M_{out}/M_{\odot}$")
 handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
 
-fig.savefig("plots/star_particle_associationlen.png", bbox_inches='tight')
+fig.savefig("plots/star_particle_association.png", bbox_inches='tight')
 
 plt.close(fig)
 
@@ -260,5 +259,5 @@ ax4.set_ylabel("$M_{out}/M_{\odot}$")
 handles, labels = ax1.get_legend_handles_labels()
 ax1.legend(handles, labels, loc='best')
 
-fig.savefig("plots/star_particle_association_environlen.png", bbox_inches='tight')
+fig.savefig("plots/star_particle_association_environ.png", bbox_inches='tight')
 
