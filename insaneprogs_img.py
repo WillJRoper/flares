@@ -90,7 +90,7 @@ for desc in descs:
     print("desc", desc)
     desc_pos.extend(desc_poss[desc_ids == desc, :] - cop)
 
-width = 0.5
+width = 1
 
 prog_pos = np.array(prog_pos)
 desc_pos = np.array(desc_pos)
@@ -114,6 +114,13 @@ ax2.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width 
 H, _, _ = np.histogram2d(desc_pos[:, 0], desc_pos[:, 1], bins=bins)
 
 ax3.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
+
+ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+               labeltop=False, labelright=False, labelbottom=False)
+ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+               labeltop=False, labelright=False, labelbottom=False)
+ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+               labeltop=False, labelright=False, labelbottom=False)
 
 ax1.set_title("Progenitor")
 ax2.set_title("Current")
