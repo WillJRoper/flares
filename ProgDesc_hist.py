@@ -59,8 +59,8 @@ def main():
         nprogs_dict.setdefault(reg, []).extend(nprog)
         ndescs_dict.setdefault(reg, []).extend(ndesc)
 
-    progbins, progcounts = np.unique(nprogs)
-    descbins, desccounts = np.unique(ndescs)
+    progbins, progcounts = np.unique(nprogs, return_counts=True)
+    descbins, desccounts = np.unique(ndescs, return_counts=True)
 
     fig = plt.figure()
     ax1 = fig.add_subplot(121)
@@ -102,8 +102,8 @@ def main():
     #
     # for reg in regions:
     #
-    #     progbins, progcounts = np.unique(nprogs)
-    #     descbins, desccounts = np.unique(ndescs)
+    #     progbins, progcounts = np.unique(nprogs, return_counts=True)
+    #     descbins, desccounts = np.unique(ndescs, return_counts=True)
     #
     #     ax1.bar(progbins, progcounts, width=1, alpha=0.9, color='b', ec='b')
     #     ax2.bar(descbins, desccounts, width=1, alpha=0.9, color='b', ec='b')
