@@ -29,7 +29,7 @@ for reg in regions:
 
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-        star_ms.extend(E.read_array('SNAP', path, snap, 'PartType4/Mass'))
+        star_ms.extend(E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8))
 
 star_ms = np.array(star_ms)
 H, bins = np.histogram(star_ms / 0.6777, np.logspace(5, 12, 200))
