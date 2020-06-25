@@ -261,6 +261,93 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     return results, part_ids, halo_id_part_inds
 
 
+def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, ndescs,
+                           prog_start_index, desc_start_index, sim_haloids, progs, descs):
+
+    # Get the particle IDs
+    try:
+        snap_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+    except ValueError:
+        snap_part_ids = np.array([])
+
+    prog_mass_conts = np.zeros(progs.size)
+    desc_mass_conts = np.zeros(descs.size)
+
+    # Get particle indices for progenitors and descendents
+    try:
+        part_inds = get_parttype_ind_dict(path, prog_snap, part_type=part_type, part_ids=snap_part_ids)
+    except ValueError:
+        part_inds = {}
+
+    # Get particle mass data
+    try:
+        prog_masses = E.read_array('PARTDATA', path, prog_snap,
+                                   'PartType' + str(part_type) + '/ParticleIDs', numThreads=8) / 0.6777
+        prog_part_ids = E.read_array('PARTDATA', path, prog_snap,
+                                     'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+    except ValueError:
+        prog_masses = np.array([])
+        prog_part_ids = np.array([])
+    try:
+        desc_masses = E.read_array('PARTDATA', path, desc_snap,
+                                   'PartType' + str(part_type) + '/ParticleIDs', numThreads=8) / 0.6777
+        desc_part_ids = E.read_array('PARTDATA', path, desc_snap,
+                                     'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+    except ValueError:
+        desc_masses = np.array([])
+        desc_part_ids = np.array([])
+
+    # Loop over halo data getting the stellar contribution
+    for nprog, ndesc, prog_start, desc_start, halo in zip(nprogs, ndescs, prog_start_index, desc_start_index,
+                                                          sim_haloids):
+
+        # Get this halos indices
+        try:
+            current_inds = np.array(list(part_inds[halo]))
+        except KeyError:
+            current_inds = {}
+
+        if nprog > 0 and prog_part_ids.size > 0 and current_inds.size > 0:
+
+            # Get the progenitor halo ids
+            this_progs = progs[prog_start: prog_start + nprog]
+
+            # Initialise an array to store the contribution
+            this_prog_cont = np.zeros(this_progs.size)
+
+            # Loop over progenitors
+            for ind, prog in enumerate(this_progs):
+
+                # Get only the indices in this and the progenitor
+                shared_parts = np.isin(prog_part_ids, snap_part_ids[current_inds])
+
+                if True in shared_parts:
+                    this_prog_cont[ind] = np.sum(prog_masses[shared_parts])
+
+            prog_mass_conts[prog_start: prog_start + nprog] = this_prog_cont
+
+        if ndesc > 0 and desc_part_ids.size > 0 and current_inds.size > 0:
+
+            # Get the descendent halo ids
+            this_descs = descs[desc_start: desc_start + ndesc]
+
+            # Initialise an array to store the contribution
+            this_desc_cont = np.zeros(this_descs.size)
+
+            # Loop over descendants
+            for ind, desc in enumerate(this_descs):
+
+                # Get only the indices in this and the descenitor
+                shared_parts = np.isin(desc_part_ids, snap_part_ids[current_inds])
+
+                if True in shared_parts:
+                    this_desc_cont[ind] = np.sum(desc_masses[shared_parts])
+
+            desc_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
+
+    return prog_mass_conts, desc_mass_conts
+
+
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/', part_types=(0, 1, 4, 5)):
 
     # Get the graph links based on the dark matter
@@ -373,99 +460,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
     if 4 in part_types:
 
-        # Get the particle IDs
-        try:
-            snap_part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
-        except ValueError:
-            snap_part_ids = np.array([])
-
-        prog_star_mass_conts = np.zeros(progs.size)
-        desc_star_mass_conts = np.zeros(descs.size)
-
-        # Get particle indices for progenitors and descendents
-        try:
-            part_inds = get_parttype_ind_dict(path, prog_snap, part_type=4)
-        except ValueError:
-            part_inds = {}
-        try:
-            prog_star_part_inds_dict = get_parttype_ind_dict(path, prog_snap, part_type=4)
-        except ValueError:
-            prog_star_part_inds_dict = {}
-        try:
-            desc_star_part_inds_dict = get_parttype_ind_dict(path, desc_snap, part_type=4)
-        except ValueError:
-            desc_star_part_inds_dict = {}
-
-        # Get particle mass data
-        try:
-            prog_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType4/Mass', numThreads=8) / 0.6777
-            prog_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType4/ParticleIDs', numThreads=8)
-        except ValueError:
-            prog_masses = np.array([])
-            prog_part_ids = np.array([])
-        try:
-            desc_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType4/Mass', numThreads=8) / 0.6777
-            desc_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType4/ParticleIDs', numThreads=8)
-        except ValueError:
-            desc_masses = np.array([])
-            desc_part_ids = np.array([])
-
-        # Loop over halo data getting the stellar contribution
-        for nprog, ndesc, prog_start, desc_start, halo in zip(nprogs, ndescs, prog_start_index, desc_start_index,
-                                                              sim_haloids):
-
-            # Get this halos indices
-            current_inds = part_inds[halo]
-
-            if nprog > 0 and len(prog_star_part_inds_dict) > 0:
-
-                # Get the progenitor halo ids
-                this_progs = progs[prog_start: prog_start + nprog]
-
-                # Initialise an array to store the contribution
-                this_prog_cont = np.zeros(this_progs.size)
-
-                # Loop over progenitors
-                for ind, prog in enumerate(this_progs):
-
-                    # Get this progenitors indices
-                    try:
-                        prog_inds = prog_star_part_inds_dict[prog]
-                    except KeyError:
-                        prog_inds = set()
-
-                    # Get only the indices in this and the progenitor
-                    shared_parts = prog_inds.intersection(current_inds)
-
-                    if len(shared_parts) != 0:
-                        this_prog_cont[ind] = np.sum(prog_masses[list(shared_parts)])
-
-                prog_star_mass_conts[prog_start: prog_start + nprog] = this_prog_cont
-
-            if ndesc > 0 and len(desc_star_part_inds_dict) > 0:
-
-                # Get the descendent halo ids
-                this_descs = descs[desc_start: desc_start + ndesc]
-
-                # Initialise an array to store the contribution
-                this_desc_cont = np.zeros(this_descs.size)
-
-                # Loop over descendants
-                for ind, desc in enumerate(this_descs):
-
-                    # Get this descendants indices
-                    try:
-                        desc_inds = desc_star_part_inds_dict[desc]
-                    except KeyError:
-                        desc_inds = set()
-
-                    # Get only the indices in this and the descenitor
-                    shared_parts = desc_inds.intersection(current_inds)
-
-                    if len(shared_parts) != 0:
-                        this_desc_cont[ind] = np.sum(desc_masses[list(shared_parts)])
-
-                desc_star_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
+        prog_star_mass_conts, desc_star_mass_conts = part_type_contribution(path, snap, prog_snap, desc_snap, 4, nprogs,
+                                                                            ndescs, prog_start_index, desc_start_index,
+                                                                            sim_haloids, progs, descs)
 
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
@@ -477,179 +474,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
         hdf.close()
 
-    if 0 in part_types:
-
-        prog_gas_mass_conts = np.zeros(progs.size)
-        desc_gas_mass_conts = np.zeros(descs.size)
-
-        # Get particle indices for progenitors and descendents
-        try:
-            prog_gas_part_inds_dict = get_parttype_ind_dict(path, prog_snap, part_type=0)
-        except ValueError:
-            prog_gas_part_inds_dict = {}
-        try:
-            desc_gas_part_inds_dict = get_parttype_ind_dict(path, desc_snap, part_type=0)
-        except ValueError:
-            desc_gas_part_inds_dict = {}
-
-        # Get particle mass data
-        try:
-            prog_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType0/Mass', numThreads=8) / 0.6777
-        except ValueError:
-            prog_masses = np.array([])
-        try:
-            desc_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType0/Mass', numThreads=8) / 0.6777
-        except ValueError:
-            desc_masses = np.array([])
-
-        # Loop over halo data getting the stellar contribution
-        for nprog, ndesc, prog_start, desc_start, halo in zip(nprogs, ndescs, prog_start_index, desc_start_index,
-                                                              sim_haloids):
-
-            # Get this halos indices
-            current_inds = part_inds[halo]
-
-            if nprog > 0 and len(prog_gas_part_inds_dict) > 0:
-
-                # Get the progenitor halo ids
-                this_progs = progs[prog_start: prog_start + nprog]
-
-                # Initialise an array to store the contribution
-                this_prog_cont = np.zeros(this_progs.size)
-
-                # Loop over progenitors
-                for ind, prog in enumerate(this_progs):
-
-                    # Get this progenitors indices
-                    try:
-                        prog_inds = prog_gas_part_inds_dict[prog]
-                    except KeyError:
-                        prog_inds = set()
-
-                    # Get only the indices in this and the progenitor
-                    shared_parts = prog_inds.intersection(current_inds)
-
-                    if len(shared_parts) != 0:
-                        this_prog_cont[ind] = np.sum(prog_masses[list(shared_parts)])
-
-                prog_gas_mass_conts[prog_start: prog_start + nprog] = this_prog_cont
-
-            if ndesc > 0 and len(desc_gas_part_inds_dict) > 0:
-
-                # Get the descendent halo ids
-                this_descs = descs[desc_start: desc_start + ndesc]
-
-                # Initialise an array to store the contribution
-                this_desc_cont = np.zeros(this_descs.size)
-
-                # Loop over descendants
-                for ind, desc in enumerate(this_descs):
-
-                    # Get this descendants indices
-                    try:
-                        desc_inds = desc_gas_part_inds_dict[desc]
-                    except KeyError:
-                        desc_inds = set()
-
-                    # Get only the indices in this and the descenitor
-                    shared_parts = desc_inds.intersection(current_inds)
-
-                    if len(shared_parts) != 0:
-                        this_desc_cont[ind] = np.sum(desc_masses[list(shared_parts)])
-
-                desc_gas_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
-
-        # Create file to store this snapshots graph results
-        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
-
-        hdf.create_dataset('Prog_Gas_Mass_Contribution', shape=prog_gas_mass_conts.shape, dtype=float,
-                           data=prog_gas_mass_conts, compression='gzip')
-        hdf.create_dataset('Desc_Gas_Mass_Contribution', shape=desc_gas_mass_conts.shape, dtype=float,
-                           data=desc_gas_mass_conts, compression='gzip')
-
-        hdf.close()
-
     if 5 in part_types:
 
-        prog_bh_mass_conts = np.zeros(progs.size)
-        desc_bh_mass_conts = np.zeros(descs.size)
-            
-        # Get particle indices for progenitors and descendents
-        try:
-            prog_bh_part_inds_dict = get_parttype_ind_dict(path, prog_snap, part_type=5)
-        except ValueError:
-            prog_bh_part_inds_dict = {}
-        try:
-            desc_bh_part_inds_dict = get_parttype_ind_dict(path, desc_snap, part_type=5)
-        except ValueError:
-            desc_bh_part_inds_dict = {}
-
-        # Get particle mass data
-        try:
-            prog_masses = E.read_array('PARTDATA', path, prog_snap, 'PartType5/Mass', numThreads=8) / 0.6777
-        except ValueError:
-            prog_masses = np.array([])
-        try:
-            desc_masses = E.read_array('PARTDATA', path, desc_snap, 'PartType5/Mass', numThreads=8) / 0.6777
-        except ValueError:
-            desc_masses = np.array([])
-
-        # Loop over halo data getting the stellar contribution
-        for nprog, ndesc, prog_start, desc_start, halo in zip(nprogs, ndescs, prog_start_index, desc_start_index,
-                                                              sim_haloids):
-
-            # Get this halos indices
-            current_inds = part_inds[halo]
-
-            if nprog > 0 and len(prog_bh_part_inds_dict) > 0:
-
-                # Get the progenitor halo ids
-                this_progs = progs[prog_start: prog_start + nprog]
-    
-                # Initialise an array to store the contribution
-                this_prog_cont = np.zeros(this_progs.size)
-    
-                # Loop over progenitors
-                for ind, prog in enumerate(this_progs):
-    
-                    # Get this progenitors indices
-                    try:
-                        prog_inds = prog_bh_part_inds_dict[prog]
-                    except KeyError:
-                        prog_inds = set()
-    
-                    # Get only the indices in this and the progenitor
-                    shared_parts = prog_inds.intersection(current_inds)
-    
-                    if len(shared_parts) != 0:
-                        this_prog_cont[ind] = np.sum(prog_masses[list(shared_parts)])
-
-                prog_bh_mass_conts[prog_start: prog_start + nprog] = this_prog_cont
-                        
-            if ndesc > 0 and len(desc_bh_part_inds_dict) > 0:
-                    
-                # Get the descendent halo ids
-                this_descs = descs[desc_start: desc_start + ndesc]
-    
-                # Initialise an array to store the contribution
-                this_desc_cont = np.zeros(this_descs.size)
-    
-                # Loop over descendants
-                for ind, desc in enumerate(this_descs):
-    
-                    # Get this descendants indices
-                    try:
-                        desc_inds = desc_bh_part_inds_dict[desc]
-                    except KeyError:
-                        desc_inds = set()
-    
-                    # Get only the indices in this and the descenitor
-                    shared_parts = desc_inds.intersection(current_inds)
-    
-                    if len(shared_parts) != 0:
-                        this_desc_cont[ind] = np.sum(desc_masses[list(shared_parts)])
-
-                desc_bh_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
+        prog_bh_mass_conts, desc_bh_mass_conts = part_type_contribution(path, snap, prog_snap, desc_snap, 5, nprogs,
+                                                                        ndescs, prog_start_index, desc_start_index,
+                                                                        sim_haloids, progs, descs)
 
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
@@ -658,6 +487,21 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                            data=prog_bh_mass_conts, compression='gzip')
         hdf.create_dataset('Desc_BH_Mass_Contribution', shape=desc_bh_mass_conts.shape, dtype=float,
                            data=desc_bh_mass_conts, compression='gzip')
+
+        hdf.close()
+
+    if 0 in part_types:
+        prog_gas_mass_conts, desc_gas_mass_conts = part_type_contribution(path, snap, prog_snap, desc_snap, 0, nprogs,
+                                                                          ndescs, prog_start_index, desc_start_index,
+                                                                          sim_haloids, progs, descs)
+
+        # Create file to store this snapshots graph results
+        hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
+
+        hdf.create_dataset('Prog_Gas_Mass_Contribution', shape=prog_gas_mass_conts.shape, dtype=float,
+                           data=prog_gas_mass_conts, compression='gzip')
+        hdf.create_dataset('Desc_Gas_Mass_Contribution', shape=desc_gas_mass_conts.shape, dtype=float,
+                           data=desc_gas_mass_conts, compression='gzip')
 
         hdf.close()
 
