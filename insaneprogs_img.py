@@ -30,6 +30,7 @@ nprog = 224
 insane_ind = nprogs == nprog
 halo_ind = hdf['MEGA_halo_IDs'][insane_ind][0]
 insane_ID = hdf['SUBFIND_halo_IDs'][halo_ind]
+print(insane_ID)
 prog_start_ind = hdf['prog_start_index'][halo_ind]
 desc_start_ind = hdf['desc_start_index'][halo_ind]
 ndesc = hdf['nDescs'][halo_ind]
@@ -90,12 +91,15 @@ for desc in descs:
     print("desc", desc)
     desc_pos.extend(desc_poss[desc_ids == desc, :] - cop)
 
-width = 1
+width = 2
 
 prog_pos = np.array(prog_pos)
 desc_pos = np.array(desc_pos)
 
-print(prog_pos.shape, desc_pos.shape)
+print(prog_pos.shape, snap_pos.shape, desc_pos.shape)
+prog_len = prog_pos.shape[0]
+snap_len = snap_pos.shape[0]
+desc_len = desc_pos.shape[0]
 
 bins = np.linspace(-width / 2, width / 2, int(width / csoft))
 print(len(bins), "pixels in", width, "Mpc")
@@ -107,19 +111,19 @@ ax3 = fig.add_subplot(133)
 
 H, _, _ = np.histogram2d(prog_pos[:, 0], prog_pos[:, 1], bins=bins)
 
-print("prog", np.sum(H))
+print("prog", np.sum(H), np.sum(H) / prog_len)
 
 ax1.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
 
 H, _, _ = np.histogram2d(snap_pos[:, 0], snap_pos[:, 1], bins=bins)
 
-print("current", np.sum(H))
+print("current", np.sum(H), np.sum(H) / snap_len)
 
 ax2.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
 
 H, _, _ = np.histogram2d(desc_pos[:, 0], desc_pos[:, 1], bins=bins)
 
-print("desc", np.sum(H))
+print("desc", np.sum(H), np.sum(H) / desc_len)
 
 ax3.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
 
