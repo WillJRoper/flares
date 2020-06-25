@@ -55,7 +55,7 @@ for (ind, g), sg in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
     subfind_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
     
 cop = cops[subfind_halo_ids == insane_ID, :]
-
+print(cop)
 # Extract the halo IDs (group names/keys) contained within this snapshot
 grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
 subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
