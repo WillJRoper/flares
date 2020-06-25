@@ -80,21 +80,29 @@ subgrp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_typ
 desc_ids = np.zeros(grp_ids.size, dtype=float)
 for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
     desc_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+prog_cops = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/CentreOfPotential', numThreads=8)
+desc_cops = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/CentreOfPotential', numThreads=8)
     
 snap_pos = snap_poss[halo_ids == insane_ID, :] - cop
 prog_pos = []
 desc_pos = []
+prog_cop = []
+desc_cop = []
 for prog in progs:
     print("prog", prog)
     prog_pos.extend(prog_poss[prog_ids == prog, :] - cop)
+    prog_cop.append(prog_cops[prog_ids == prog, :] - cop)
 for desc in descs:
     print("desc", desc)
     desc_pos.extend(desc_poss[desc_ids == desc, :] - cop)
-
+    desc_cop.append(desc_cops[desc_ids == desc, :] - cop)
 width = 2
 
 prog_pos = np.array(prog_pos)
 desc_pos = np.array(desc_pos)
+prog_cop = np.array(prog_cop)
+desc_cop = np.array(desc_cop)
 
 print(prog_pos.shape, snap_pos.shape, desc_pos.shape)
 prog_len = prog_pos.shape[0]
@@ -114,18 +122,21 @@ H, _, _ = np.histogram2d(prog_pos[:, 0], prog_pos[:, 1], bins=bins)
 print("prog", np.sum(H), np.sum(H) / prog_len)
 
 ax1.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
+ax1.scatter(prog_cop[:, 0], prog_cop[:, 1], marker='+', markersize=5, color='r')
 
 H, _, _ = np.histogram2d(snap_pos[:, 0], snap_pos[:, 1], bins=bins)
 
 print("current", np.sum(H), np.sum(H) / snap_len)
 
 ax2.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
+ax2.scatter(cop[0], cop[1], marker='+', markersize=5, color='r')
 
 H, _, _ = np.histogram2d(desc_pos[:, 0], desc_pos[:, 1], bins=bins)
 
 print("desc", np.sum(H), np.sum(H) / desc_len)
 
 ax3.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
+ax3.scatter(desc_cop[:, 0], desc_cop[:, 1], marker='+', markersize=5, color='r')
 
 ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                labeltop=False, labelright=False, labelbottom=False)
