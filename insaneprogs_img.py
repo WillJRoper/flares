@@ -34,8 +34,8 @@ print(insane_ID)
 prog_start_ind = hdf['Prog_Start_Index'][halo_ind]
 desc_start_ind = hdf['Desc_Start_Index'][halo_ind]
 ndesc = hdf['nDescs'][halo_ind]
-progs = hdf['prog_haloids'][prog_start_ind: prog_start_ind + nprog]
-descs = hdf['desc_haloids'][desc_start_ind: desc_start_ind + ndesc]
+progs = hdf['prog_halo_ids'][prog_start_ind: prog_start_ind + nprog]
+descs = hdf['desc_halo_ids'][desc_start_ind: desc_start_ind + ndesc]
 
 hdf.close()
 
