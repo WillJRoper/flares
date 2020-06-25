@@ -342,11 +342,11 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     hdf.create_dataset('desc_start_index', shape=desc_start_index.shape, dtype=int, data=desc_start_index,
                        compression='gzip')
 
-    hdf.create_dataset('Prog_haloIDs', shape=progs.shape, dtype=int, data=progs, compression='gzip')
-    hdf.create_dataset('Desc_haloIDs', shape=descs.shape, dtype=int, data=descs, compression='gzip')
-    hdf.create_dataset('Prog_DM_Mass_Contribution', shape=prog_mass_conts.shape, dtype=int, data=prog_mass_conts,
+    hdf.create_dataset('Prog_haloIDs', shape=progs.shape, dtype=float, data=progs, compression='gzip')
+    hdf.create_dataset('Desc_haloIDs', shape=descs.shape, dtype=float, data=descs, compression='gzip')
+    hdf.create_dataset('Prog_DM_Mass_Contribution', shape=prog_mass_conts.shape, dtype=float, data=prog_mass_conts,
                        compression='gzip')
-    hdf.create_dataset('Desc_DM_Mass_Contribution', shape=desc_mass_conts.shape, dtype=int, data=desc_mass_conts,
+    hdf.create_dataset('Desc_DM_Mass_Contribution', shape=desc_mass_conts.shape, dtype=float, data=desc_mass_conts,
                        compression='gzip')
 
     hdf.close()

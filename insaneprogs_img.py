@@ -87,7 +87,7 @@ desc_pos = []
 for prog in progs:
     print("prog", prog)
     prog_pos.extend(prog_poss[prog_ids == prog, :] - cop)
-for prog in progs:
+for desc in descs:
     print("desc", desc)
     desc_pos.extend(desc_poss[desc_ids == desc, :] - cop)
 
