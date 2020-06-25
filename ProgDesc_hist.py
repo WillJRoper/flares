@@ -145,7 +145,6 @@ def main():
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
 
-    colors = matplotlib.cm.plasma(np.linspace(0, 1, 6))
     plt_prog_xs = []
     plt_prog_ys = []
     plt_desc_xs = []
@@ -153,8 +152,8 @@ def main():
 
     for bin_ind, ovden in enumerate(bin_cents):
 
-        progbins, progcounts = np.unique(nprogs_environ[bin_ind], return_counts=True)
-        descbins, desccounts = np.unique(ndescs_environ[bin_ind], return_counts=True)
+        progbins, progcounts = np.unique(nprogs_environ[bin_ind + 1], return_counts=True)
+        descbins, desccounts = np.unique(ndescs_environ[bin_ind + 1], return_counts=True)
 
         plt_prog_xs.extend(progbins)
         plt_prog_ys.extend(progcounts)
