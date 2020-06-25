@@ -221,7 +221,7 @@ def get_progdesc_part_ind_dict(path, snap, part_type, part_ids):
     part_groups = halo_ids[np.logical_not(result.mask)]
     parts_in_groups = result.data[np.logical_not(result.mask)]
 
-    snap_haloIDs = np.full(len(part_ids), -2, dtype=float)
+    snap_haloIDs = np.full(len(part_ids), -2, dtype=int)
     for ind, halo in zip(parts_in_groups, part_groups):
         snap_haloIDs[ind] = internal_halo_ids[halo]
 
@@ -320,11 +320,6 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
     # =============== Find all Direct Progenitors And Descendant Of Halos In This Snapshot ===============
 
-    # Initialise the progress
-    progress = -1
-
-    # Assign the number of halos for progress reporting
-    size = len(halo_id_part_inds.keys())
     results = {}
 
     # Loop through all the halos in this snapshot
@@ -337,13 +332,8 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
         # =============== Run The Direct Progenitor and Descendant Finder ===============
 
         # Run the progenitor/descendant finder
-        if part_type == 1:
-            results[haloID] = dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
-                              prog_counts, desc_counts, part_type)
-        # else:
-        #     results[haloID] = getLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
-        #                                progpart_masses, descpart_masses, prog_gal_ms, prog_sub_ids,
-        #                                desc_gal_ms, desc_sub_ids)
+        results[haloID] = dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs,
+                          prog_counts, desc_counts, part_type)
             
     print('Processed', len(results.keys()), 'dark matter halos in snapshot', snap)
 
