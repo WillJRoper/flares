@@ -541,4 +541,4 @@ if __name__ == '__main__':
     mainDirectProgDesc(snap=reg_snaps[ind][2], prog_snap=reg_snaps[ind][1], desc_snap=reg_snaps[ind][3],
                        path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
                        savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_'
-                                + reg_snaps[ind][0] + '/')
+                                + reg_snaps[ind][0] + '/', part_types=(1))
