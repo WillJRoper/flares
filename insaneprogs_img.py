@@ -73,8 +73,8 @@ prog_ids = np.zeros(grp_ids.size, dtype=float)
 for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
     prog_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-grp_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+grp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/GroupNumber', numThreads=8)
+subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/SubGroupNumber', numThreads=8)
 
 # Convert to group.subgroup ID format
 subfind_prog_ids = np.zeros(grp_ids.size, dtype=float)
@@ -89,8 +89,8 @@ desc_ids = np.zeros(grp_ids.size, dtype=float)
 for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
     desc_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-grp_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+grp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/GroupNumber', numThreads=8)
+subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/SubGroupNumber', numThreads=8)
 
 # Convert to group.subgroup ID format
 subfind_desc_ids = np.zeros(grp_ids.size, dtype=float)
