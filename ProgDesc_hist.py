@@ -51,7 +51,7 @@ def main():
 
         print(reg, snap)
 
-        graphpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + 'SubMgraph_'
+        graphpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/SubMgraph_'
 
         nprog, ndesc = get_ns(graphpath, snap)
         nprogs.extend(nprog)
