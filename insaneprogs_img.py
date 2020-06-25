@@ -143,7 +143,7 @@ H, _, _ = np.histogram2d(snap_pos[:, 0], snap_pos[:, 1], bins=bins)
 print("current", np.sum(H), np.sum(H) / snap_len)
 
 ax2.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
-ax2.scatter(cop[0], cop[1], marker='+', color='r')
+ax2.scatter(cop[0][0], cop[0][1], marker='+', color='r')
 
 H, _, _ = np.histogram2d(desc_pos[:, 0], desc_pos[:, 1], bins=bins)
 
