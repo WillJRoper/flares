@@ -82,10 +82,19 @@ for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
     desc_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
     
 snap_pos = snap_poss[halo_ids == insane_ID, :] - cop
-prog_pos = prog_poss[prog_ids == insane_ID, :] - cop
-desc_pos = desc_poss[desc_ids == insane_ID, :] - cop
+prog_pos = []
+desc_pos = []
+for prog in progs:
+    print("prog", prog)
+    prog_pos.extend(prog_poss[prog_ids == prog, :] - cop)
+for prog in progs:
+    print("desc", desc)
+    desc_pos.extend(desc_poss[desc_ids == desc, :] - cop)
 
-width = 0.3
+width = 0.5
+
+prog_pos = np.array(prog_pos)
+desc_pos = np.array(desc_pos)
 
 bins = np.linspace(-width / 2, width / 2, int(width / csoft))
 print(len(bins), "pixels in", width, "Mpc")
@@ -111,4 +120,4 @@ ax1.set_title("Progenitor")
 ax2.set_title("Current")
 ax3.set_title("Descendant")
 
-fig.savefig("Insanityprobe.png", bbox_inches='tight')
+fig.savefig("plots/Insanityprobe.png", bbox_inches='tight')
