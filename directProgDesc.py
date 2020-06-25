@@ -298,11 +298,11 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
         desc_part_ids = np.array([])
 
     try:
-        prog_part_inds = get_parttype_ind_dict(path, prog_snap, part_type=part_type, part_ids=snap_part_ids)
+        prog_part_inds = get_parttype_ind_dict(path, prog_snap, part_type=part_type, part_ids=prog_part_ids)
     except ValueError:
         prog_part_inds = {}
     try:
-        desc_part_inds = get_parttype_ind_dict(path, desc_snap, part_type=part_type, part_ids=snap_part_ids)
+        desc_part_inds = get_parttype_ind_dict(path, desc_snap, part_type=part_type, part_ids=desc_part_ids)
     except ValueError:
         desc_part_inds = {}
 
