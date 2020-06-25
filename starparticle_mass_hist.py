@@ -32,14 +32,14 @@ for reg in regions:
         star_ms.extend(E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8))
 
 star_ms = np.array(star_ms)
-H, bins = np.histogram(star_ms / 0.6777, np.logspace(5, 12, 200))
+H, bins = np.histogram(star_ms / 0.6777, np.logspace(np.log10(np.min(star_ms))-0.1, np.log10(np.max(star_ms))+0.1, 100))
 
 bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-ax.bar(bin_cents, H)
+ax.plot(bin_cents, H)
 ax.set_ylabel('$N$')
 ax.set_xlabel('$M_{*}/M_{\odot}$')
 
