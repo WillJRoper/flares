@@ -1,5 +1,6 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import h5py
@@ -47,6 +48,8 @@ def main():
     ndescs_dict = {}
 
     for reg, snap in reg_snaps:
+
+        print(reg, snap)
 
         graphpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + 'SubMgraph_'
 
