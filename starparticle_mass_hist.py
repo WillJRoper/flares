@@ -29,7 +29,7 @@ for reg in regions:
 
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-        star_ms.extend(E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8))
+        star_ms.extend(E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) * 10**10)
 
 star_ms = np.array(star_ms)
 H, bins = np.histogram(star_ms / 0.6777, np.logspace(np.log10(np.min(star_ms))-0.1, np.log10(np.max(star_ms))+0.1, 100))
@@ -42,5 +42,8 @@ ax = fig.add_subplot(111)
 ax.plot(bin_cents, H)
 ax.set_ylabel('$N$')
 ax.set_xlabel('$M_{*}/M_{\odot}$')
+
+ax.set_yscale("log")
+ax.set_xscale("log")
 
 fig.savefig('plots/star_particle_mass_hist.png')

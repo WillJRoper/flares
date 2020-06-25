@@ -29,10 +29,10 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
         # Find the halo IDs of the current halo's particles in the progenitor snapshot by indexing the
         # progenitor snapshot's particle halo IDs array with the halo's particle IDs, this can be done
         # since the particle halo IDs array is sorted by particle ID.
-        prog_haloids = prog_snap_haloIDs[current_halo_pids]
+        pre_prog_haloids = prog_snap_haloIDs[current_halo_pids]
 
         # Find the unique halo IDs and the number of times each appears
-        uniprog_haloids, uniprog_counts = np.unique(prog_haloids, return_counts=True)
+        uniprog_haloids, uniprog_counts = np.unique(pre_prog_haloids, return_counts=True)
 
         # Remove single particle halos (ID=-2), since np.unique returns a sorted array this can be
         # done by removing the first value.
@@ -45,7 +45,6 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
 
         # Find the number of progenitor halos from the size of the unique array
         nprog = uniprog_haloids.size
-
 
         # Sort the halo IDs and number of particles in each progenitor halo by their contribution to the
         # current halo (number of particles from the current halo in the progenitor or descendant)
@@ -67,10 +66,10 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
         # Find the halo IDs of the current halo's particles in the descendant snapshot by indexing the
         # descendant snapshot's particle halo IDs array with the halo's particle IDs, this can be done
         # since the particle halo IDs array is sorted by particle ID.
-        desc_haloids = desc_snap_haloIDs[current_halo_pids]
+        pre_desc_haloids = desc_snap_haloIDs[current_halo_pids]
 
         # Find the unique halo IDs and the number of times each appears
-        unidesc_haloids, unidesc_counts = np.unique(desc_haloids, return_counts=True)
+        unidesc_haloids, unidesc_counts = np.unique(pre_desc_haloids, return_counts=True)
 
         # Remove single particle halos (ID=-2) for the counts, since np.unique returns a sorted array this can be
         # done by removing the first value.
