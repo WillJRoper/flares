@@ -298,6 +298,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         sim_prog_haloids = []
         prog_mass_cont = []
         for p, pcont in zip(prog_haloids, prog_mass_contribution):
+            print(p)
             if str(p).split('.')[1] == 2**30:
                 continue
             elif p < 0:
@@ -311,13 +312,14 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         
         sim_desc_haloids = []
         desc_mass_cont = []
-        for p, pcont in zip(desc_haloids, desc_mass_contribution):
+        for d, dcont in zip(desc_haloids, desc_mass_contribution):
+            print(d)
             if str(p).split('.')[1] == 2**30:
                 continue
             elif p < 0:
                 continue
-            sim_desc_haloids.append(p)
-            desc_mass_cont.append(pcont)
+            sim_desc_haloids.append(d)
+            desc_mass_cont.append(dcont)
 
         sim_desc_haloids = np.array(sim_desc_haloids)
         desc_mass_contribution = np.array(desc_mass_cont)
