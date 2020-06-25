@@ -275,7 +275,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
 
     # Get particle indices for progenitors and descendents
     try:
-        part_inds = get_parttype_ind_dict(path, prog_snap, part_type=part_type, part_ids=snap_part_ids)
+        part_inds = get_parttype_ind_dict(path, snap, part_type=part_type, part_ids=snap_part_ids)
     except ValueError:
         part_inds = {}
 
