@@ -10,7 +10,7 @@ import seaborn as sns
 matplotlib.use('Agg')
 
 
-sns.set_style('whitegrid')
+sns.set_style('white')
 
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_06/data'
 snap = '009_z006p000'
@@ -106,15 +106,15 @@ ax3 = fig.add_subplot(133)
 
 H, _, _ = np.histogram2d(prog_pos[:, 0], prog_pos[:, 1], bins=bins)
 
-ax1.imshow(H, cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
+ax1.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
 
 H, _, _ = np.histogram2d(snap_pos[:, 0], snap_pos[:, 1], bins=bins)
 
-ax2.imshow(H, cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
+ax2.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
 
 H, _, _ = np.histogram2d(desc_pos[:, 0], desc_pos[:, 1], bins=bins)
 
-ax3.imshow(H, cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
+ax3.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
 
 ax1.set_title("Progenitor")
 ax2.set_title("Current")
