@@ -37,6 +37,8 @@ ndesc = hdf['nDescs'][halo_ind]
 progs = hdf['Prog_haloIDs'][prog_start_ind: prog_start_ind + nprog]
 descs = hdf['Desc_haloIDs'][desc_start_ind: desc_start_ind + nprog]
 
+hdf.close()
+
 # Load data for luminosities
 snap_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', numThreads=8)
 desc_poss = E.read_array('PARTDATA', path, desc_snap, 'PartType0/Coordinates', numThreads=8)
