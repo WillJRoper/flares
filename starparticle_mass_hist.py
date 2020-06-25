@@ -13,7 +13,7 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 regions = []
-for reg in range(0, 2):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -57,6 +57,7 @@ ax2.set_xlabel('$M_{*}/M_{\odot}$')
 
 ax1.set_yscale("log")
 ax1.set_xscale("log")
+ax2.set_yscale("log")
 ax2.set_xscale("log")
 
 handles, labels = ax1.get_legend_handles_labels()
