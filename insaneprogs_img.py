@@ -40,9 +40,9 @@ descs = hdf['Desc_haloIDs'][desc_start_ind: desc_start_ind + nprog]
 hdf.close()
 
 # Load data for luminosities
-snap_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', numThreads=8)
-desc_poss = E.read_array('PARTDATA', path, desc_snap, 'PartType0/Coordinates', numThreads=8)
-prog_poss = E.read_array('PARTDATA', path, prog_snap, 'PartType0/Coordinates', numThreads=8)
+snap_poss = E.read_array('PARTDATA', path, snap, 'PartType1/Coordinates', numThreads=8)
+desc_poss = E.read_array('PARTDATA', path, desc_snap, 'PartType1/Coordinates', numThreads=8)
+prog_poss = E.read_array('PARTDATA', path, prog_snap, 'PartType1/Coordinates', numThreads=8)
 
 # Get this halos COP
 subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
