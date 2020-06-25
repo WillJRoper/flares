@@ -218,24 +218,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
     """
 
     # Extract particle IDs
-    snap_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-
-    if prog_snap != None:
-        progsnap_part_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                         numThreads=8)
-    else:
-        progsnap_part_ids = []
-
-    if desc_snap != None:
-        descsnap_part_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                         numThreads=8)
-    else:
-        descsnap_part_ids = []
-
-    # Combine the particle id arrays and only take unique values
-    part_ids = np.unique(np.concatenate([snap_part_ids, progsnap_part_ids, descsnap_part_ids]))
-
-    part_ids = np.sort(part_ids)
+    part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
 
     # =============== Current Snapshot ===============
 
