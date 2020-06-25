@@ -12,7 +12,7 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 2):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -35,10 +35,8 @@ for reg in regions:
 
 star_ms = np.array(star_ms)
 group_star_ms = np.array(group_star_ms)
-H, bins = np.histogram(star_ms / 0.6777, np.logspace(np.log10(np.min(star_ms))-0.1,
-                                                     np.log10(np.max(star_ms))+0.1, 100))
-H2, bins2 = np.histogram(group_star_ms / 0.6777, np.logspace(np.log10(np.min(star_ms))-0.1,
-                                                             np.log10(np.max(star_ms))+0.1, 100))
+H, bins = np.histogram(star_ms / 0.6777, np.logspace(5.5, 10, 100))
+H2, bins2 = np.histogram(group_star_ms / 0.6777, np.logspace(5.5, 10, 100))
 
 bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
 
@@ -46,7 +44,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 ax.plot(bin_cents, H, label='SNAP')
-ax.plot(bin_cents, H2, label='PARTDATA')
+ax.plot(bin_cents, H2, label='PARTDATA', linestyle='--')
 ax.set_ylabel('$N$')
 ax.set_xlabel('$M_{*}/M_{\odot}$')
 
