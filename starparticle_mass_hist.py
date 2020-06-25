@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib.colors import LogNorm
+import matplotlib.gridspec as gridspec
 import eagle_IO.eagle_IO as E
 import seaborn as sns
 import pickle
@@ -35,23 +36,30 @@ for reg in regions:
 
 star_ms = np.array(star_ms)
 group_star_ms = np.array(group_star_ms)
+print(group_star_ms.size / star_ms.size)
 H, bins = np.histogram(star_ms / 0.6777, np.logspace(5.5, 10, 100))
 H2, bins2 = np.histogram(group_star_ms / 0.6777, np.logspace(5.5, 10, 100))
 
 bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
 
 fig = plt.figure()
-ax = fig.add_subplot(111)
+gs = gridspec.GridSpec(nrows=2, ncols=1)
+gs.update(wspace=0.0, hspace=0.0)
+ax1 = fig.add_subplot(gs[0])
+ax2 = fig.add_subplot(gs[1])
 
-ax.plot(bin_cents, H, label='SNAP')
-ax.plot(bin_cents, H2, label='PARTDATA', linestyle='--')
-ax.set_ylabel('$N$')
-ax.set_xlabel('$M_{*}/M_{\odot}$')
+ax1.plot(bin_cents, H, label='SNAP')
+ax1.plot(bin_cents, H2, label='PARTDATA', linestyle='--')
+ax2.plot(bin_cents, H-H2, label='PARTDATA', linestyle='--')
+ax1.set_ylabel('$N$')
+ax2.set_ylabel('$N_{\mathrm{SNAP}-N_\mathrm{PARTDATA}}$')
+ax2.set_xlabel('$M_{*}/M_{\odot}$')
 
-ax.set_yscale("log")
-ax.set_xscale("log")
+ax1.set_yscale("log")
+ax1.set_xscale("log")
+ax2.set_xscale("log")
 
-handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels, loc='best')
+handles, labels = ax1.get_legend_handles_labels()
+ax1.legend(handles, labels, loc='best')
 
 fig.savefig('plots/star_particle_mass_hist.png')
