@@ -480,8 +480,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
     hdf.close()
 
-    print(np.unique(nprogs[sim_haloids >= 0], return_counts=True))
-    print(np.unique(ndescs[sim_haloids >= 0], return_counts=True))
+    print("Progs", np.unique(nprogs[sim_haloids >= 0], return_counts=True))
+    print("Descs", np.unique(ndescs[sim_haloids >= 0], return_counts=True))
 
     if 4 in part_types:
 
