@@ -91,7 +91,7 @@ if not load:
             try:
                 grpids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
                 sub_grpids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
-                mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8)
+                mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8) / 0.6777
                 totmass = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) / 0.6777
                 coords = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8) / 0.6777
 
