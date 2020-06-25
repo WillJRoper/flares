@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib
 from eagle_IO import eagle_IO as E
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D 
 from matplotlib.ticker import MaxNLocator
 from matplotlib.collections import LineCollection
 import h5py
