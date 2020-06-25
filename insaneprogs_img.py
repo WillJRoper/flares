@@ -114,7 +114,7 @@ for ind, desc in enumerate(descs):
     desc_pos.extend(desc_poss[desc_ids == desc, :] - cop)
     desc_cop[ind] = desc_cops[subfind_desc_ids == desc, :] - cop[0]
 
-width = 1.5
+width = 2.5
 
 prog_pos = np.array(prog_pos)
 desc_pos = np.array(desc_pos)

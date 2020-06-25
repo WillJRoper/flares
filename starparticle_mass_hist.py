@@ -41,7 +41,7 @@ H, bins = np.histogram(star_ms / 0.6777, np.logspace(5.5, 10, 100))
 H2, bins2 = np.histogram(group_star_ms / 0.6777, np.logspace(5.5, 10, 100))
 
 bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
-
+print((np.sum(star_ms) - np.sum(group_star_ms)) / np.sum(star_ms))
 fig = plt.figure()
 gs = gridspec.GridSpec(nrows=2, ncols=1)
 gs.update(wspace=0.0, hspace=0.0)
