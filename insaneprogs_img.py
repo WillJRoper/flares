@@ -72,6 +72,14 @@ subgrp_ids = E.read_array('PARTDATA', path, prog_snap, 'PartType' + str(part_typ
 prog_ids = np.zeros(grp_ids.size, dtype=float)
 for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
     prog_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+grp_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+subgrp_ids = E.read_array('SUBFIND', path, prog_snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+
+# Convert to group.subgroup ID format
+subfind_prog_ids = np.zeros(grp_ids.size, dtype=float)
+for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+    subfind_prog_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
     
 grp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
 subgrp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
@@ -80,6 +88,14 @@ subgrp_ids = E.read_array('PARTDATA', path, desc_snap, 'PartType' + str(part_typ
 desc_ids = np.zeros(grp_ids.size, dtype=float)
 for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
     desc_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+grp_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
+subgrp_ids = E.read_array('SUBFIND', path, desc_snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+
+# Convert to group.subgroup ID format
+subfind_desc_ids = np.zeros(grp_ids.size, dtype=float)
+for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+    subfind_desc_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
 prog_cops = E.read_array('SUBFIND', path, prog_snap, 'Subhalo/CentreOfPotential', numThreads=8)
 desc_cops = E.read_array('SUBFIND', path, desc_snap, 'Subhalo/CentreOfPotential', numThreads=8)
@@ -92,11 +108,11 @@ desc_cop = []
 for prog in progs:
     print("prog", prog)
     prog_pos.extend(prog_poss[prog_ids == prog, :] - cop)
-    prog_cop.append(prog_cops[prog_ids == prog, :] - cop)
+    prog_cop.append(prog_cops[subfind_prog_ids == prog, :] - cop)
 for desc in descs:
     print("desc", desc)
     desc_pos.extend(desc_poss[desc_ids == desc, :] - cop)
-    desc_cop.append(desc_cops[desc_ids == desc, :] - cop)
+    desc_cop.append(desc_cops[subfind_desc_ids == desc, :] - cop)
 width = 2
 
 prog_pos = np.array(prog_pos)
