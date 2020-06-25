@@ -4,9 +4,41 @@ import matplotlib.pyplot as plt
 import matplotlib
 import matplotlib.gridspec as gridspec
 import eagle_IO.eagle_IO as E
+from scipy.optimize import curve_fit
+from scipy.spatial import ConvexHull
 import seaborn as sns
 import pickle
 matplotlib.use('Agg')
+
+
+def _sphere(coords, a, b, c, r):
+
+    # Equation of a sphere
+    x, y, z = coords[:, 0], coords[:, 1], coords[:, 2]
+
+    return (x - a) ** 2 + (y - b) ** 2 + (z - c) ** 2 - r ** 2
+
+
+def spherical_region(sim, snap):
+    """
+    Inspired from David Turner's suggestion
+    """
+
+    dm_cood = E.read_array('PARTDATA', sim, snap, '/PartType1/Coordinates',
+                           noH=True, physicalUnits=False, numThreads=4)  # dm particle coordinates
+
+    hull = ConvexHull(dm_cood)
+
+    cen = [np.median(dm_cood[:, 0]), np.median(dm_cood[:, 1]), np.median(dm_cood[:,2])]
+    pedge = dm_cood[hull.vertices]  #edge particles
+    y_obs = np.zeros(len(pedge))
+    p0 = np.append(cen, 15 / 0.677)
+
+    popt, pcov = curve_fit(_sphere, pedge, y_obs, p0, method='lm', sigma=np.ones(len(pedge)) * 0.001)
+    dist = np.sqrt(np.sum((pedge-popt[:3])**2, axis=1))
+    centre, radius, mindist = popt[:3], popt[3], np.min(dist)
+
+    return centre, radius, mindist
 
 
 sns.set_style('whitegrid')
@@ -62,6 +94,22 @@ if not load:
                 sub_grpids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
                 mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8)
                 totmass = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) / 0.6777
+                coords = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True, numThreads=8)
+
+                # Get the spheres centre
+                centre, radius, mindist = spherical_region(path, snap)
+
+                rs = np.linalg.norm(coords - centre, axis=1)
+
+                totmass = totmass[rs < 14 / 0.677]
+
+                coords = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True, numThreads=8)
+                rs = np.linalg.norm(coords - centre, axis=1)
+
+                grpids = grpids[rs < 14 / 0.677]
+                sub_grpids = sub_grpids[rs < 14 / 0.677]
+                mass = mass[rs < 14 / 0.677]
+
             except OSError:
                 print("OsError")
                 continue

@@ -308,7 +308,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         prog_mass_contribution = np.array(prog_mass_cont)
         nprog = sim_prog_haloids.size
 
-        print("sizes", sim_prog_haloids.size, np.unique(sim_prog_haloids).size)
+        if sim_prog_haloids.size != np.unique(sim_prog_haloids).size:
+            print("sizes", sim_prog_haloids.size, np.unique(sim_prog_haloids).size)
         
         sim_desc_haloids = []
         desc_mass_cont = []
