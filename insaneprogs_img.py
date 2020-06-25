@@ -95,6 +95,8 @@ width = 1
 prog_pos = np.array(prog_pos)
 desc_pos = np.array(desc_pos)
 
+print(prog_pos.shape, desc_pos.shape)
+
 bins = np.linspace(-width / 2, width / 2, int(width / csoft))
 print(len(bins), "pixels in", width, "Mpc")
 
@@ -105,13 +107,19 @@ ax3 = fig.add_subplot(133)
 
 H, _, _ = np.histogram2d(prog_pos[:, 0], prog_pos[:, 1], bins=bins)
 
+print("prog", np.sum(H))
+
 ax1.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
 
 H, _, _ = np.histogram2d(snap_pos[:, 0], snap_pos[:, 1], bins=bins)
 
+print("current", np.sum(H))
+
 ax2.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
 
 H, _, _ = np.histogram2d(desc_pos[:, 0], desc_pos[:, 1], bins=bins)
+
+print("desc", np.sum(H))
 
 ax3.imshow(np.arcsinh(H), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2])
 
