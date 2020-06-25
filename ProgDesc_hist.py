@@ -57,11 +57,9 @@ def get_ns(graphpath, snap):
     nprog = hdf['nProgs'][...]
     ndesc = hdf['nDescs'][...]
 
-    halo_ids = hdf['SUBFIND_halo_IDs'][...]
-
     hdf.close()
 
-    return nprog[halo_ids >= 0], ndesc[halo_ids >= 0]
+    return nprog, ndesc
 
 
 def main():

@@ -465,17 +465,17 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     hdf.create_dataset('SUBFIND_halo_IDs', shape=sim_haloids.shape, dtype=float, data=sim_haloids, compression='gzip')
     hdf.create_dataset('nProgs', shape=nprogs.shape, dtype=int, data=nprogs, compression='gzip')
     hdf.create_dataset('nDescs', shape=ndescs.shape, dtype=int, data=ndescs, compression='gzip')
-    hdf.create_dataset('nparts', shape=halo_nparts.shape, dtype=int, data=halo_nparts, compression='gzip')
-    hdf.create_dataset('prog_start_index', shape=prog_start_index.shape, dtype=int, data=prog_start_index,
+    hdf.create_dataset('nParts', shape=halo_nparts.shape, dtype=int, data=halo_nparts, compression='gzip')
+    hdf.create_dataset('Prog_Start_Index', shape=prog_start_index.shape, dtype=int, data=prog_start_index,
                        compression='gzip')
-    hdf.create_dataset('desc_start_index', shape=desc_start_index.shape, dtype=int, data=desc_start_index,
+    hdf.create_dataset('Desc_Start_Index', shape=desc_start_index.shape, dtype=int, data=desc_start_index,
                        compression='gzip')
 
-    hdf.create_dataset('Prog_haloIDs', shape=progs.shape, dtype=float, data=progs, compression='gzip')
-    hdf.create_dataset('Desc_haloIDs', shape=descs.shape, dtype=float, data=descs, compression='gzip')
-    hdf.create_dataset('Prog_DM_Mass_Contribution', shape=prog_mass_conts.shape, dtype=float, data=prog_mass_conts,
+    hdf.create_dataset('prog_halo_ids', shape=progs.shape, dtype=float, data=progs, compression='gzip')
+    hdf.create_dataset('desc_halo_ids', shape=descs.shape, dtype=float, data=descs, compression='gzip')
+    hdf.create_dataset('prog_dm_npart_contribution', shape=prog_mass_conts.shape, dtype=float, data=prog_mass_conts,
                        compression='gzip')
-    hdf.create_dataset('Desc_DM_Mass_Contribution', shape=desc_mass_conts.shape, dtype=float, data=desc_mass_conts,
+    hdf.create_dataset('desc_dm_npart_contribution', shape=desc_mass_conts.shape, dtype=float, data=desc_mass_conts,
                        compression='gzip')
 
     hdf.close()
@@ -492,9 +492,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
 
-        hdf.create_dataset('Prog_Stellar_Mass_Contribution', shape=prog_star_mass_conts.shape, dtype=float,
+        hdf.create_dataset('prog_stellar_mass_contribution', shape=prog_star_mass_conts.shape, dtype=float,
                            data=prog_star_mass_conts, compression='gzip')
-        hdf.create_dataset('Desc_Stellar_Mass_Contribution', shape=desc_star_mass_conts.shape, dtype=float,
+        hdf.create_dataset('desc_stellar_mass_contribution', shape=desc_star_mass_conts.shape, dtype=float,
                            data=desc_star_mass_conts, compression='gzip')
 
         hdf.close()
@@ -508,9 +508,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
 
-        hdf.create_dataset('Prog_BH_Mass_Contribution', shape=prog_bh_mass_conts.shape, dtype=float,
+        hdf.create_dataset('prog_bh_mass_contribution', shape=prog_bh_mass_conts.shape, dtype=float,
                            data=prog_bh_mass_conts, compression='gzip')
-        hdf.create_dataset('Desc_BH_Mass_Contribution', shape=desc_bh_mass_conts.shape, dtype=float,
+        hdf.create_dataset('desc_bh_mass_contribution', shape=desc_bh_mass_conts.shape, dtype=float,
                            data=desc_bh_mass_conts, compression='gzip')
 
         hdf.close()
@@ -523,9 +523,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
 
-        hdf.create_dataset('Prog_Gas_Mass_Contribution', shape=prog_gas_mass_conts.shape, dtype=float,
+        hdf.create_dataset('prog_gas_mass_contribution', shape=prog_gas_mass_conts.shape, dtype=float,
                            data=prog_gas_mass_conts, compression='gzip')
-        hdf.create_dataset('Desc_Gas_Mass_Contribution', shape=desc_gas_mass_conts.shape, dtype=float,
+        hdf.create_dataset('desc_gas_mass_contribution', shape=desc_gas_mass_conts.shape, dtype=float,
                            data=desc_gas_mass_conts, compression='gzip')
 
         hdf.close()
