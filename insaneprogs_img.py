@@ -137,21 +137,21 @@ H, _, _ = np.histogram2d(prog_pos[:, 0], prog_pos[:, 1], bins=bins)
 print("prog", np.sum(H), np.sum(H) / prog_len)
 
 ax1.imshow(np.arcsinh(H.T), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2], origin='lower')
-ax1.scatter(prog_cop[:, 0], prog_cop[:, 1], marker='+', color='r', s=5)
+ax1.scatter(prog_cop[:, 0], prog_cop[:, 1], marker='.', color='r', s=5, alpha=0.6)
 
 H, _, _ = np.histogram2d(snap_pos[:, 0], snap_pos[:, 1], bins=bins)
 
 print("current", np.sum(H), np.sum(H) / snap_len)
 
 ax2.imshow(np.arcsinh(H.T), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2], origin='lower')
-ax2.scatter(0, 0, marker='+', color='r', s=5)
+ax2.scatter(0, 0, marker='.', color='r', s=5, alpha=0.6)
 
 H, _, _ = np.histogram2d(desc_pos[:, 0], desc_pos[:, 1], bins=bins)
 
 print("desc", np.sum(H), np.sum(H) / desc_len)
 
 ax3.imshow(np.arcsinh(H.T), cmap='Greys_r', extent=[-width / 2, width / 2, -width / 2, width / 2], origin='lower')
-ax3.scatter(desc_cop[:, 0], desc_cop[:, 1], marker='+', color='r', s=5)
+ax3.scatter(desc_cop[:, 0], desc_cop[:, 1], marker='.', color='r', s=5, alpha=0.6)
 
 ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                labeltop=False, labelright=False, labelbottom=False)
