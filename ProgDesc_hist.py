@@ -66,9 +66,11 @@ def get_ns(graphpath, snap):
 
     hdf.close()
 
-    for np, nd, pstart, dstart in zip(ndesc, nprog, prog_start_index, desc_start_index):
-        nprogs.append(len(prog_conts[prog_conts > 0]))
-        ndescs.append(len(desc_conts[desc_conts > 0]))
+    for npg, nd, pstart, dstart in zip(ndesc, nprog, prog_start_index, desc_start_index):
+        pconts = prog_conts[pstart: pstart + npg]
+        dconts = desc_conts[dstart: dstart + nd]
+        nprogs.append(len(pconts[pconts > 0]))
+        ndescs.append(len(dconts[dconts > 0]))
 
     return np.array(nprogs), np.array(ndescs)
 
