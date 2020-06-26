@@ -44,7 +44,7 @@ def multiline(xs, ys, c, ax=None, **kwargs):
     lc.set_array(np.asarray(c))
 
     # add lines to axes and rescale
-    #    Note: adding a collection doesn't autoscalee xlim/ylim
+    #    Note: adding a collection doesn't autoscale xlim/ylim
     ax.add_collection(lc)
     ax.autoscale()
     return lc
@@ -58,8 +58,8 @@ def get_ns(graphpath, snap):
     ndesc = hdf['nDescs'][...]
     prog_start_index = hdf['Prog_Start_Index'][...]
     desc_start_index = hdf['Desc_Start_Index'][...]
-    prog_conts = hdf['prog_stellar_mass_contribution'][...] * 10**10
-    desc_conts = hdf['desc_stellar_mass_contribution'][...] * 10**10
+    prog_conts = hdf['prog_stellar_mass_contribution'][...]
+    desc_conts = hdf['desc_stellar_mass_contribution'][...]
     nprogs = []
     ndescs = []
 

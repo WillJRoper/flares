@@ -44,7 +44,7 @@ def multiline(xs, ys, c, ax=None, **kwargs):
     lc.set_array(np.asarray(c))
 
     # add lines to axes and rescale
-    #    Note: adding a collection doesn't autoscalee xlim/ylim
+    #    Note: adding a collection doesn't autoscale xlim/ylim
     ax.add_collection(lc)
     ax.autoscale()
     return lc
@@ -54,8 +54,8 @@ def get_ns(graphpath, snap):
 
     hdf = h5py.File(graphpath + snap + '.hdf5', 'r')
 
-    prog_conts = hdf['prog_stellar_mass_contribution'][...] * 10**10
-    desc_conts = hdf['desc_stellar_mass_contribution'][...] * 10**10
+    prog_conts = hdf['prog_stellar_mass_contribution'][...]
+    desc_conts = hdf['desc_stellar_mass_contribution'][...]
 
     hdf.close()
 
@@ -114,8 +114,8 @@ def main():
     # Set y-axis scaling to logarithmic
     ax1.set_yscale('log')
     ax2.set_yscale('log')
-    ax1.set_xscale('log')
-    ax2.set_xscale('log')
+    # ax1.set_xscale('log')
+    # ax2.set_xscale('log')
 
     # Ensure tick labels are integers
     ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -132,72 +132,72 @@ def main():
 
     plt.close(fig)
 
-    regs_ovdens = np.loadtxt("region_overdensity.txt", dtype=float)
-    bin_edges = np.linspace(regs_ovdens.min(), regs_ovdens.max(), 6)
-    reg_bins = np.digitize(regs_ovdens, bins=bin_edges)
-    bin_wid = bin_edges[1] - bin_edges[0]
-    bin_cents = bin_edges[1:] - bin_wid / 2
-    print(reg_bins)
-    nprogs_environ = {}
-    ndescs_environ = {}
-
-    for reg, bin_ind in zip(regions, reg_bins):
-
-        nprogs_environ.setdefault(bin_ind, []).extend(nprogs_dict[reg])
-        ndescs_environ.setdefault(bin_ind, []).extend(ndescs_dict[reg])
-
-    fig = plt.figure(figsize=(12, 6))
-    ax1 = fig.add_subplot(121)
-    ax2 = fig.add_subplot(122)
-
-    colors = matplotlib.cm.plasma(np.linspace(0, 1, 6))
-
-    plt_prog_xs = []
-    plt_prog_ys = []
-    plt_desc_xs = []
-    plt_desc_ys = []
-
-    for (bin_ind, ovden), col in zip(enumerate(bin_cents), colors):
-
-        progbins, progcounts = np.unique(nprogs_environ[bin_ind + 1], return_counts=True)
-        descbins, desccounts = np.unique(ndescs_environ[bin_ind + 1], return_counts=True)
-
-        ax1.plot(progbins, progcounts, color=col)
-        ax2.plot(descbins, desccounts, color=col)
-
-        plt_prog_xs.extend(progbins)
-        plt_prog_ys.extend(progcounts)
-        plt_desc_xs.extend(descbins)
-        plt_desc_ys.extend(desccounts)
-
-    lc = multiline(plt_prog_xs, plt_prog_ys, bin_cents, cmap='plasma', ax=ax1)
-    lc = multiline(plt_desc_xs, plt_desc_ys, bin_cents, cmap='plasma', ax=ax2)
-
-    axcb = fig.colorbar(lc)
-    axcb.set_label('$\Delta$')
-
-    # Set y-axis scaling to logarithmic
-    ax1.set_yscale('log')
-    ax2.set_yscale('log')
-    ax1.set_xscale('log')
-    ax2.set_xscale('log')
-
-    # Ensure tick labels are integers
-    ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
-    ax2.xaxis.set_major_locator(MaxNLocator(integer=True))
-
-    # Label axes
-    ax1.set_xlabel(r'$M_{\star, \mathrm{prog}, \mathrm{cont}} / M_\odot$')
-    ax1.set_ylabel(r'$N$')
-    ax2.set_xlabel(r'$M_{\star, \mathrm{desc}, \mathrm{cont}} / M_\odot$')
-    ax2.set_ylabel(r'$N$')
-
-    # Draw legend
-    handles, labels = ax1.get_legend_handles_labels()
-    ax1.legend(handles, labels)
-
-    # Save the plot as a png
-    fig.savefig('plots/ProgDescCont_environ.png', bbox_inches='tight')
+    # regs_ovdens = np.loadtxt("region_overdensity.txt", dtype=float)
+    # bin_edges = np.linspace(regs_ovdens.min(), regs_ovdens.max(), 6)
+    # reg_bins = np.digitize(regs_ovdens, bins=bin_edges)
+    # bin_wid = bin_edges[1] - bin_edges[0]
+    # bin_cents = bin_edges[1:] - bin_wid / 2
+    # print(reg_bins)
+    # nprogs_environ = {}
+    # ndescs_environ = {}
+    #
+    # for reg, bin_ind in zip(regions, reg_bins):
+    #
+    #     nprogs_environ.setdefault(bin_ind, []).extend(nprogs_dict[reg])
+    #     ndescs_environ.setdefault(bin_ind, []).extend(ndescs_dict[reg])
+    #
+    # fig = plt.figure(figsize=(12, 6))
+    # ax1 = fig.add_subplot(121)
+    # ax2 = fig.add_subplot(122)
+    #
+    # colors = matplotlib.cm.plasma(np.linspace(0, 1, 6))
+    #
+    # plt_prog_xs = []
+    # plt_prog_ys = []
+    # plt_desc_xs = []
+    # plt_desc_ys = []
+    #
+    # for (bin_ind, ovden), col in zip(enumerate(bin_cents), colors):
+    #
+    #     progbins, progcounts = np.unique(nprogs_environ[bin_ind + 1], return_counts=True)
+    #     descbins, desccounts = np.unique(ndescs_environ[bin_ind + 1], return_counts=True)
+    #
+    #     ax1.plot(progbins, progcounts, color=col)
+    #     ax2.plot(descbins, desccounts, color=col)
+    #
+    #     plt_prog_xs.extend(progbins)
+    #     plt_prog_ys.extend(progcounts)
+    #     plt_desc_xs.extend(descbins)
+    #     plt_desc_ys.extend(desccounts)
+    #
+    # lc = multiline(plt_prog_xs, plt_prog_ys, bin_cents, cmap='plasma', ax=ax1)
+    # lc = multiline(plt_desc_xs, plt_desc_ys, bin_cents, cmap='plasma', ax=ax2)
+    #
+    # axcb = fig.colorbar(lc)
+    # axcb.set_label('$\Delta$')
+    #
+    # # Set y-axis scaling to logarithmic
+    # ax1.set_yscale('log')
+    # ax2.set_yscale('log')
+    # # ax1.set_xscale('log')
+    # # ax2.set_xscale('log')
+    #
+    # # Ensure tick labels are integers
+    # ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
+    # ax2.xaxis.set_major_locator(MaxNLocator(integer=True))
+    #
+    # # Label axes
+    # ax1.set_xlabel(r'$M_{\star, \mathrm{prog}, \mathrm{cont}} / M_\odot$')
+    # ax1.set_ylabel(r'$N$')
+    # ax2.set_xlabel(r'$M_{\star, \mathrm{desc}, \mathrm{cont}} / M_\odot$')
+    # ax2.set_ylabel(r'$N$')
+    #
+    # # Draw legend
+    # handles, labels = ax1.get_legend_handles_labels()
+    # ax1.legend(handles, labels)
+    #
+    # # Save the plot as a png
+    # fig.savefig('plots/ProgDescCont_environ.png', bbox_inches='tight')
 
 
 main()

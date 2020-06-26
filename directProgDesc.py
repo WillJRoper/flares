@@ -280,8 +280,8 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
     except ValueError:
         snap_part_ids = np.array([])
 
-    prog_mass_conts = np.zeros(progs.size)
-    desc_mass_conts = np.zeros(descs.size)
+    prog_mass_conts = np.zeros(progs.size, dtype=float)
+    desc_mass_conts = np.zeros(descs.size, dtype=float)
 
     # Get particle indices for progenitors and descendents
     try:
