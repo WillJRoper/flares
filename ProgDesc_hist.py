@@ -68,8 +68,8 @@ def get_ns(graphpath, snap):
     for npg, nd, pstart, dstart in zip(ndesc, nprog, prog_start_index, desc_start_index):
         pconts = prog_conts[pstart: pstart + npg]
         dconts = desc_conts[dstart: dstart + nd]
-        nprogs.append(len(pconts[pconts > 0]))
-        ndescs.append(len(dconts[dconts > 0]))
+        nprogs.append(len(pconts[pconts > 1e7]))
+        ndescs.append(len(dconts[dconts > 1e7]))
 
     return np.array(nprogs), np.array(ndescs)
 
