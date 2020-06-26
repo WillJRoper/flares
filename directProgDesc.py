@@ -282,8 +282,8 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
 
     prog_mass_conts = np.zeros(progs.size, dtype=float)
     desc_mass_conts = np.zeros(descs.size, dtype=float)
-    prog_masses = np.zeros(progs.size, dtype=float)
-    desc_masses = np.zeros(descs.size, dtype=float)
+    prog_masses_final = np.zeros(progs.size, dtype=float)
+    desc_masses_final = np.zeros(descs.size, dtype=float)
 
     # Get particle indices for progenitors and descendents
     try:
@@ -358,7 +358,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
                     this_prog_cont[ind] += this_prog_masses[this_prog_pids == pid]
 
             prog_mass_conts[prog_start: prog_start + nprog] = this_prog_cont
-            prog_masses[prog_start: prog_start + nprog] = this_prog_mass
+            prog_masses_final[prog_start: prog_start + nprog] = this_prog_mass
 
         if ndesc > 0 and desc_part_ids.size > 0 and len(current_inds) > 0:
 
@@ -388,9 +388,9 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
                     this_desc_cont[ind] += this_desc_masses[this_desc_pids == pid]
 
             desc_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
-            desc_masses[desc_start: desc_start + ndesc] = this_desc_mass
+            desc_masses_final[desc_start: desc_start + ndesc] = this_desc_mass
 
-    return prog_mass_conts, desc_mass_conts, prog_masses, desc_masses
+    return prog_mass_conts, desc_mass_conts, prog_masses_final, desc_masses_final
 
 
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/', part_types=(0, 1, 4, 5)):
