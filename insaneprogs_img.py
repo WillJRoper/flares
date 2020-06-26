@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.ticker import MaxNLocator
 from matplotlib.collections import LineCollection
+from matplotlib.colors import LogNorm
 import h5py
 import seaborn as sns
 matplotlib.use('Agg')
@@ -180,20 +181,20 @@ h = h.transpose()
 normalized_map = plt.cm.Greys_r(h/h.max())
 
 yy, zz = np.meshgrid(yedges, zedges)
-xpos = np.max(x) # Plane of histogram
+xpos = np.min(x) # Plane of histogram
 xflat = np.full_like(yy, xpos) 
 
-p = ax.plot_surface(xflat, yy, zz, facecolors=normalized_map, rstride=1, cstride=1, shade=False)
+p = ax.plot_surface(xflat, yy, zz, facecolors=normalized_map, rstride=1, cstride=1, shade=False, norm=LogNorm)
 
 h, xedges, zedges = np.histogram2d(x, z, bins=50)
 h = h.transpose()
 normalized_map = plt.cm.Greys_r(h/h.max())
 
 xx, zz = np.meshgrid(xedges, zedges)
-ypos = np.min(y) # Plane of histogram
+ypos = np.max(y) # Plane of histogram
 yflat = np.full_like(xx, ypos)
 
-p = ax.plot_surface(xx, yflat, zz, facecolors=normalized_map, rstride=1, cstride=1, shade=False)
+p = ax.plot_surface(xx, yflat, zz, facecolors=normalized_map, rstride=1, cstride=1, shade=False, norm=LogNorm)
 
 h, xedges, yedges = np.histogram2d(x, y, bins=50)
 h = h.transpose()
@@ -203,6 +204,6 @@ xx, yy = np.meshgrid(xedges, yedges)
 zpos = np.min(z) # Plane of histogram
 zflat = np.full_like(xx, zpos)
 
-p = ax.plot_surface(xx, yy, zflat, facecolors=normaliyed_map, rstride=1, cstride=1, shade=False)
+p = ax.plot_surface(xx, yy, zflat, facecolors=normaliyed_map, rstride=1, cstride=1, shade=False, norm=LogNorm)
 
 fig.savefig("plots/projectiontest.png", bbox_inches='tight')
