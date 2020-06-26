@@ -345,10 +345,10 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
                     continue
                 this_prog_masses = prog_masses[prog_inds]
                 this_prog_pids = prog_part_ids[prog_inds]
-
+                print(this_prog_masses)
                 # Get only the indices in this and the progenitor
                 shared_parts = set(this_prog_pids).intersection(current_pids)
-
+                print("This many star particles in common", len(shared_parts))
                 for pid in shared_parts:
                     this_prog_cont[ind] += this_prog_masses[this_prog_pids == pid]
 
