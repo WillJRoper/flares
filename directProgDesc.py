@@ -292,7 +292,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
     # Get particle mass data
     try:
         prog_masses = E.read_array('PARTDATA', path, prog_snap,
-                                   'PartType' + str(part_type) + '/ParticleIDs', numThreads=8) / 0.6777
+                                   'PartType' + str(part_type) + '/Mass', numThreads=8) / 0.6777
         prog_part_ids = E.read_array('PARTDATA', path, prog_snap,
                                      'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
     except ValueError:
@@ -300,7 +300,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
         prog_part_ids = np.array([])
     try:
         desc_masses = E.read_array('PARTDATA', path, desc_snap,
-                                   'PartType' + str(part_type) + '/ParticleIDs', numThreads=8) / 0.6777
+                                   'PartType' + str(part_type) + '/Mass', numThreads=8) / 0.6777
         desc_part_ids = E.read_array('PARTDATA', path, desc_snap,
                                      'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
     except ValueError:
