@@ -180,7 +180,7 @@ h = h.transpose()
 normalized_map = plt.cm.Greys_r(h/h.max())
 
 yy, zz = np.meshgrid(yedges, zedges)
-xpos = np.min(x) - 0.2 # Plane of histogram
+xpos = np.max(x) # Plane of histogram
 xflat = np.full_like(yy, xpos) 
 
 p = ax.plot_surface(xflat, yy, zz, facecolors=normalized_map, rstride=1, cstride=1, shade=False)
@@ -190,7 +190,7 @@ h = h.transpose()
 normalized_map = plt.cm.Greys_r(h/h.max())
 
 xx, zz = np.meshgrid(xedges, zedges)
-ypos = np.min(y) - 0.2 # Plane of histogram
+ypos = np.min(y) # Plane of histogram
 yflat = np.full_like(xx, ypos)
 
 p = ax.plot_surface(xx, yflat, zz, facecolors=normalized_map, rstride=1, cstride=1, shade=False)
@@ -200,7 +200,7 @@ h = h.transpose()
 normaliyed_map = plt.cm.Greys_r(h/h.max())
 
 xx, yy = np.meshgrid(xedges, yedges)
-zpos = np.min(z) - 0.2 # Plane of histogram
+zpos = np.min(z) # Plane of histogram
 zflat = np.full_like(xx, zpos)
 
 p = ax.plot_surface(xx, yy, zflat, facecolors=normaliyed_map, rstride=1, cstride=1, shade=False)
