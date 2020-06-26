@@ -40,8 +40,8 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
             uniprog_haloids = uniprog_haloids[1:]
             uniprog_counts = uniprog_counts[1:]
 
-        uniprog_haloids = uniprog_haloids[np.where(uniprog_counts >= 10)]
-        uniprog_counts = uniprog_counts[np.where(uniprog_counts >= 10)]
+        uniprog_haloids = uniprog_haloids[np.where(uniprog_counts >= 20)]
+        uniprog_counts = uniprog_counts[np.where(uniprog_counts >= 20)]
 
         # Find the number of progenitor halos from the size of the unique array
         nprog = uniprog_haloids.size
@@ -77,8 +77,8 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
             unidesc_haloids = unidesc_haloids[1:]
             unidesc_counts = unidesc_counts[1:]
 
-        unidesc_haloids = unidesc_haloids[np.where(unidesc_counts >= 10)]
-        unidesc_counts = unidesc_counts[np.where(unidesc_counts >= 10)]
+        unidesc_haloids = unidesc_haloids[np.where(unidesc_counts >= 20)]
+        unidesc_counts = unidesc_counts[np.where(unidesc_counts >= 20)]
 
         # Find the number of descendant halos from the size of the unique array
         ndesc = unidesc_haloids.size
