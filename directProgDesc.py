@@ -40,8 +40,8 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
             uniprog_haloids = uniprog_haloids[1:]
             uniprog_counts = uniprog_counts[1:]
 
-        uniprog_haloids = uniprog_haloids[np.where(uniprog_counts >= 20)]
-        uniprog_counts = uniprog_counts[np.where(uniprog_counts >= 20)]
+        uniprog_haloids = uniprog_haloids[np.where(uniprog_counts >= 10)]
+        uniprog_counts = uniprog_counts[np.where(uniprog_counts >= 10)]
 
         # Find the number of progenitor halos from the size of the unique array
         nprog = uniprog_haloids.size
@@ -77,8 +77,8 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
             unidesc_haloids = unidesc_haloids[1:]
             unidesc_counts = unidesc_counts[1:]
 
-        unidesc_haloids = unidesc_haloids[np.where(unidesc_counts >= 20)]
-        unidesc_counts = unidesc_counts[np.where(unidesc_counts >= 20)]
+        unidesc_haloids = unidesc_haloids[np.where(unidesc_counts >= 10)]
+        unidesc_counts = unidesc_counts[np.where(unidesc_counts >= 10)]
 
         # Find the number of descendant halos from the size of the unique array
         ndesc = unidesc_haloids.size
@@ -194,9 +194,16 @@ def get_progdesc_part_ind_dict(path, snap, part_type, part_ids):
     part_groups = halo_ids[np.logical_not(result.mask)]
     parts_in_groups = result.data[np.logical_not(result.mask)]
 
+    halo_id_part_inds = {}
+    for ind, grp in zip(parts_in_groups, part_groups):
+        halo_id_part_inds.setdefault(grp, set()).update({ind})
+
     snap_haloIDs = np.full(len(part_ids), -2, dtype=float)
-    for ind, halo in zip(parts_in_groups, part_groups):
-        snap_haloIDs[ind] = halo
+    for key in halo_id_part_inds:
+        pinds = halo_id_part_inds[key]
+        if len(pinds) < 20:
+            continue
+        snap_haloIDs[pinds] = key
 
     return snap_haloIDs
 
@@ -246,6 +253,9 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
     # Loop through all the halos in this snapshot
     for num, haloID in enumerate(halo_id_part_inds.keys()):
+
+        if len(halo_id_part_inds[haloID]) < 20:
+            continue
 
         # =============== Current Halo ===============
 
