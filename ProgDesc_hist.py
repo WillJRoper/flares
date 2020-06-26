@@ -56,8 +56,8 @@ def get_ns(graphpath, snap):
 
     nprog = hdf['nProgs'][...]
     ndesc = hdf['nDescs'][...]
-    prog_start_index = hdf['prog_start_index'][...]
-    desc_start_index = hdf['desc_start_index'][...]
+    prog_start_index = hdf['Prog_Start_Index'][...]
+    desc_start_index = hdf['Desc_Start_Index'][...]
     prog_conts = hdf['prog_stellar_mass_contribution'][...]
     desc_conts = hdf['desc_stellar_mass_contribution'][...]
     nprogs = []
