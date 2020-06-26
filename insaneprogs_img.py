@@ -187,7 +187,7 @@ p = ax.plot_surface(xflat, yy, zz, facecolors=normalized_map, rstride=1, cstride
 
 h, xedges, zedges = np.histogram2d(x, z, bins=50)
 h = h.transpose()
-normalized_map = plt.cm.Grexs_r(h/h.max())
+normalized_map = plt.cm.Greys_r(h/h.max())
 
 xx, zz = np.meshgrid(xedges, zedges)
 ypos = np.min(y) - 0.2 # Plane of histogram
@@ -197,7 +197,7 @@ p = ax.plot_surface(xx, yflat, zz, facecolors=normalized_map, rstride=1, cstride
 
 h, xedges, yedges = np.histogram2d(x, y, bins=50)
 h = h.transpose()
-normaliyed_map = plt.cm.Grexs_r(h/h.max())
+normaliyed_map = plt.cm.Greys_r(h/h.max())
 
 xx, yy = np.meshgrid(xedges, yedges)
 zpos = np.min(z) - 0.2 # Plane of histogram
