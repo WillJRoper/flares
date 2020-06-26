@@ -200,7 +200,7 @@ def get_progdesc_part_ind_dict(path, snap, part_type, part_ids):
 
     snap_haloIDs = np.full(len(part_ids), -2, dtype=float)
     for key in halo_id_part_inds:
-        pinds = halo_id_part_inds[key]
+        pinds = list(halo_id_part_inds[key])
         if len(pinds) < 20:
             continue
         snap_haloIDs[pinds] = key
