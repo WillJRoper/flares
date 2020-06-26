@@ -54,8 +54,8 @@ def get_ns(graphpath, snap):
 
     hdf = h5py.File(graphpath + snap + '.hdf5', 'r')
 
-    prog_conts = hdf['prog_stellar_mass_contribution'][...]
-    desc_conts = hdf['desc_stellar_mass_contribution'][...]
+    prog_conts = hdf['prog_stellar_mass_contribution'][...] * 10**10
+    desc_conts = hdf['desc_stellar_mass_contribution'][...] * 10**10
 
     hdf.close()
 
