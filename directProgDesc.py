@@ -282,6 +282,8 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
 
     prog_mass_conts = np.zeros(progs.size, dtype=float)
     desc_mass_conts = np.zeros(descs.size, dtype=float)
+    prog_masses = np.zeros(progs.size, dtype=float)
+    desc_masses = np.zeros(descs.size, dtype=float)
 
     # Get particle indices for progenitors and descendents
     try:
@@ -335,6 +337,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
 
             # Initialise an array to store the contribution
             this_prog_cont = np.zeros(this_progs.size)
+            this_prog_mass = np.zeros(this_progs.size)
 
             # Loop over progenitors
             for ind, prog in enumerate(this_progs):
@@ -345,14 +348,17 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
                     continue
                 this_prog_masses = prog_masses[prog_inds]
                 this_prog_pids = prog_part_ids[prog_inds]
-                print(this_prog_masses)
+
+                this_prog_mass[ind] = np.sum(this_prog_masses)
+
                 # Get only the indices in this and the progenitor
                 shared_parts = set(this_prog_pids).intersection(current_pids)
-                print("This many star particles in common", len(shared_parts))
+
                 for pid in shared_parts:
                     this_prog_cont[ind] += this_prog_masses[this_prog_pids == pid]
 
             prog_mass_conts[prog_start: prog_start + nprog] = this_prog_cont
+            prog_masses[prog_start: prog_start + nprog] = this_prog_mass
 
         if ndesc > 0 and desc_part_ids.size > 0 and len(current_inds) > 0:
 
@@ -361,6 +367,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
 
             # Initialise an array to store the contribution
             this_desc_cont = np.zeros(this_descs.size)
+            this_desc_mass = np.zeros(this_descs.size)
 
             # Loop over descenitors
             for ind, desc in enumerate(this_descs):
@@ -372,6 +379,8 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
                 this_desc_masses = desc_masses[desc_inds]
                 this_desc_pids = desc_part_ids[desc_inds]
 
+                this_desc_mass[ind] = np.sum(this_desc_masses)
+
                 # Get only the indices in this and the descenitor
                 shared_parts = set(this_desc_pids).intersection(current_pids)
 
@@ -379,8 +388,9 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
                     this_desc_cont[ind] += this_desc_masses[this_desc_pids == pid]
 
             desc_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
+            desc_masses[desc_start: desc_start + ndesc] = this_desc_mass
 
-    return prog_mass_conts, desc_mass_conts
+    return prog_mass_conts, desc_mass_conts, prog_masses, desc_masses
 
 
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/', part_types=(0, 1, 4, 5)):
@@ -495,9 +505,9 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
     if 4 in part_types:
 
-        prog_star_mass_conts, desc_star_mass_conts = part_type_contribution(path, snap, prog_snap, desc_snap, 4, nprogs,
-                                                                            ndescs, prog_start_index, desc_start_index,
-                                                                            sim_haloids, progs, descs)
+        star_result_tup = part_type_contribution(path, snap, prog_snap, desc_snap, 4, nprogs, ndescs, prog_start_index, 
+                                                 desc_start_index, sim_haloids, progs, descs)
+        prog_star_mass_conts, desc_star_mass_conts, prog_star_masses, desc_star_masses = star_result_tup
 
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
@@ -506,14 +516,18 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                            data=prog_star_mass_conts, compression='gzip')
         hdf.create_dataset('desc_stellar_mass_contribution', shape=desc_star_mass_conts.shape, dtype=float,
                            data=desc_star_mass_conts, compression='gzip')
+        hdf.create_dataset('prog_stellar_masses', shape=prog_star_masses.shape, dtype=float,
+                           data=prog_star_masses, compression='gzip')
+        hdf.create_dataset('desc_stellar_masses', shape=desc_star_masses.shape, dtype=float,
+                           data=desc_star_masses, compression='gzip')
 
         hdf.close()
 
     if 5 in part_types:
 
-        prog_bh_mass_conts, desc_bh_mass_conts = part_type_contribution(path, snap, prog_snap, desc_snap, 5, nprogs,
-                                                                        ndescs, prog_start_index, desc_start_index,
-                                                                        sim_haloids, progs, descs)
+        bh_result_tup = part_type_contribution(path, snap, prog_snap, desc_snap, 5, nprogs, ndescs, prog_start_index, 
+                                                 desc_start_index, sim_haloids, progs, descs)
+        prog_bh_mass_conts, desc_bh_mass_conts, prog_bh_masses, desc_bh_masses = bh_result_tup
 
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
@@ -522,13 +536,18 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                            data=prog_bh_mass_conts, compression='gzip')
         hdf.create_dataset('desc_bh_mass_contribution', shape=desc_bh_mass_conts.shape, dtype=float,
                            data=desc_bh_mass_conts, compression='gzip')
+        hdf.create_dataset('prog_bh_masses', shape=prog_bh_masses.shape, dtype=float,
+                           data=prog_bh_masses, compression='gzip')
+        hdf.create_dataset('desc_bh_masses', shape=desc_bh_masses.shape, dtype=float,
+                           data=desc_bh_masses, compression='gzip')
 
         hdf.close()
 
     if 0 in part_types:
-        prog_gas_mass_conts, desc_gas_mass_conts = part_type_contribution(path, snap, prog_snap, desc_snap, 0, nprogs,
-                                                                          ndescs, prog_start_index, desc_start_index,
-                                                                          sim_haloids, progs, descs)
+        
+        gas_result_tup = part_type_contribution(path, snap, prog_snap, desc_snap, 0, nprogs, ndescs, prog_start_index, 
+                                                 desc_start_index, sim_haloids, progs, descs)
+        prog_gas_mass_conts, desc_gas_mass_conts, prog_gas_masses, desc_gas_masses = gas_result_tup
 
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
@@ -537,6 +556,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                            data=prog_gas_mass_conts, compression='gzip')
         hdf.create_dataset('desc_gas_mass_contribution', shape=desc_gas_mass_conts.shape, dtype=float,
                            data=desc_gas_mass_conts, compression='gzip')
+        hdf.create_dataset('prog_gas_masses', shape=prog_gas_masses.shape, dtype=float,
+                           data=prog_gas_masses, compression='gzip')
+        hdf.create_dataset('desc_gas_masses', shape=desc_gas_masses.shape, dtype=float,
+                           data=desc_gas_masses, compression='gzip')
 
         hdf.close()
 
