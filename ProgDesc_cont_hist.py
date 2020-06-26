@@ -54,24 +54,12 @@ def get_ns(graphpath, snap):
 
     hdf = h5py.File(graphpath + snap + '.hdf5', 'r')
 
-    nprog = hdf['nProgs'][...]
-    ndesc = hdf['nDescs'][...]
-    prog_start_index = hdf['Prog_Start_Index'][...]
-    desc_start_index = hdf['Desc_Start_Index'][...]
     prog_conts = hdf['prog_stellar_mass_contribution'][...]
     desc_conts = hdf['desc_stellar_mass_contribution'][...]
-    nprogs = []
-    ndescs = []
 
     hdf.close()
 
-    for npg, nd, pstart, dstart in zip(ndesc, nprog, prog_start_index, desc_start_index):
-        pconts = prog_conts[pstart: pstart + npg]
-        dconts = desc_conts[dstart: dstart + nd]
-        nprogs.append(len(pconts[pconts > 1e7]))
-        ndescs.append(len(dconts[dconts > 1e7]))
-
-    return np.array(nprogs), np.array(ndescs)
+    return prog_conts, desc_conts
 
 
 def main():
@@ -107,8 +95,14 @@ def main():
         nprogs_dict.setdefault(reg, []).extend(nprog)
         ndescs_dict.setdefault(reg, []).extend(ndesc)
 
-    progbins, progcounts = np.unique(nprogs, return_counts=True)
-    descbins, desccounts = np.unique(ndescs, return_counts=True)
+    progcounts, progbins = np.histogram(nprogs, bins=100)
+    desccounts, descbins = np.histogram(ndescs, bins=100)
+    
+    prog_bind_wid = progbins[1] - progbins[0]
+    progbins = progbins[1:] - prog_bind_wid / 2
+    
+    desc_bind_wid = descbins[1] - descbins[0]
+    descbins = descbins[1:] - desc_bind_wid / 2
 
     fig = plt.figure(figsize=(12, 6))
     ax1 = fig.add_subplot(121)
@@ -120,15 +114,17 @@ def main():
     # Set y-axis scaling to logarithmic
     ax1.set_yscale('log')
     ax2.set_yscale('log')
+    ax1.set_xscale('log')
+    ax2.set_xscale('log')
 
     # Ensure tick labels are integers
     ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax2.xaxis.set_major_locator(MaxNLocator(integer=True))
 
     # Label axes
-    ax1.set_xlabel(r'$N_{dProg}$')
+    ax1.set_xlabel(r'$M_{\star, \mathrm{prog}, \mathrm{cont}} / M_\odot$')
     ax1.set_ylabel(r'$N$')
-    ax2.set_xlabel(r'$N_{dDesc}$')
+    ax2.set_xlabel(r'$M_{\star, \mathrm{desc}, \mathrm{cont}} / M_\odot$')
     ax2.set_ylabel(r'$N$')
 
     # Save the plot as a png
@@ -183,15 +179,17 @@ def main():
     # Set y-axis scaling to logarithmic
     ax1.set_yscale('log')
     ax2.set_yscale('log')
+    ax1.set_xscale('log')
+    ax2.set_xscale('log')
 
     # Ensure tick labels are integers
     ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax2.xaxis.set_major_locator(MaxNLocator(integer=True))
 
     # Label axes
-    ax1.set_xlabel(r'$N_{dProg}$')
+    ax1.set_xlabel(r'$M_{\star, \mathrm{prog}, \mathrm{cont}} / M_\odot$')
     ax1.set_ylabel(r'$N$')
-    ax2.set_xlabel(r'$N_{dDesc}$')
+    ax2.set_xlabel(r'$M_{\star, \mathrm{desc}, \mathrm{cont}} / M_\odot$')
     ax2.set_ylabel(r'$N$')
 
     # Draw legend
