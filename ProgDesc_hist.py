@@ -56,16 +56,27 @@ def get_ns(graphpath, snap):
 
     nprog = hdf['nProgs'][...]
     ndesc = hdf['nDescs'][...]
+    prog_start_index = hdf['prog_start_index'][...]
+    desc_start_index = hdf['desc_start_index'][...]
+    prog_conts = hdf['prog_stellar_mass_contribution'][...]
+    desc_conts = hdf['desc_stellar_mass_contribution'][...]
+    nprogs = []
+    ndescs = []
+    print("Minimum npart", np.min(hdf['nParts'][...]))
 
     hdf.close()
 
-    return nprog, ndesc
+    for np, nd, pstart, dstart in zip(ndesc, nprog, prog_start_index, desc_start_index):
+        nprogs.append(len(prog_conts[prog_conts > 0]))
+        ndescs.append(len(desc_conts[desc_conts > 0]))
+
+    return np.array(nprogs), np.array(ndescs)
 
 
 def main():
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 2):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -173,6 +184,8 @@ def main():
     # Set y-axis scaling to logarithmic
     ax1.set_yscale('log')
     ax2.set_yscale('log')
+    ax1.set_xscale('log')
+    ax2.set_xscale('log')
 
     # Ensure tick labels are integers
     ax1.xaxis.set_major_locator(MaxNLocator(integer=True))

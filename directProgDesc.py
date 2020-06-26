@@ -567,3 +567,22 @@ if __name__ == '__main__':
                        path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
                        savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_'
                                 + reg_snaps[ind][0] + '/')
+
+
+def get_link_data(all_linked_halos, start_ind, nlinked_halos):
+    """ A helper function for extracting a halo's linked halos
+        (i.e. progenitors and descendants)
+
+    :param all_linked_halos: Array containing all progenitors and descendants.
+    :type all_linked_halos: float[N_linked halos]
+    :param start_ind: The start index for this halos progenitors or descendents
+                      elements in all_linked_halos
+    :type start_ind: int
+    :param nlinked_halos: The number of progenitors or descendents (linked halos)
+                          the halo in question has
+    :type nlinked_halos: int
+    :return:
+    """
+
+    return all_linked_halos[start_ind: start_ind + nlinked_halos]
+
