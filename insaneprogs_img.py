@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib
 from eagle_IO import eagle_IO as E
 import matplotlib.pyplot as plt
+from scipy.stats import gaussian_kde
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.ticker import MaxNLocator
 from matplotlib.collections import LineCollection
@@ -172,9 +173,16 @@ plt.close(fig)
 
 x, y, z = snap_pos[:, 0], snap_pos[:, 1], snap_pos[:, 2]
 
+# Calculate the point density
+xyz = np.vstack([x,y, z])
+cs = gaussian_kde(xyz)(xyz)
+
+sinds = np.argsort(cs)
+x, y, z = x[sinds], y[sinds], z[sinds]
+
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.scatter(snap_pos[:, 0], snap_pos[:, 1], snap_pos[:, 2], c='r', marker='.')
+ax.scatter(snap_pos[:, 0], snap_pos[:, 1], snap_pos[:, 2], c=cs, marker='.', cmap='Greys_r', alpha=0.6)
 
 h, yedges, zedges = np.histogram2d(y, z, bins=50)
 h = h.transpose()
