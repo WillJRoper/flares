@@ -62,7 +62,6 @@ def get_ns(graphpath, snap):
     desc_conts = hdf['desc_stellar_mass_contribution'][...]
     nprogs = []
     ndescs = []
-    print("Minimum npart", np.min(hdf['nParts'][...]))
 
     hdf.close()
 
@@ -78,7 +77,7 @@ def get_ns(graphpath, snap):
 def main():
 
     regions = []
-    for reg in range(0, 2):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -99,8 +98,6 @@ def main():
     ndescs_dict = {}
 
     for reg, snap in reg_snaps:
-
-        print(reg, snap)
 
         graphpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/SubMgraph_'
 
