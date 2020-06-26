@@ -52,7 +52,7 @@ ax1.plot(bin_cents, H, label='SNAP')
 ax1.plot(bin_cents, H2, label='PARTDATA', linestyle='--')
 ax2.plot(bin_cents, H-H2, label='PARTDATA', linestyle='--')
 ax1.set_ylabel('$N$')
-ax2.set_ylabel('$N_{\mathrm{SNAP}-N_\mathrm{PARTDATA}}$')
+ax2.set_ylabel('$N_{\mathrm{SNAP}}-N_{\mathrm{PARTDATA}}$')
 ax2.set_xlabel('$M_{*}/M_{\odot}$')
 
 ax1.set_yscale("log")
