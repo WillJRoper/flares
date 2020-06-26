@@ -128,7 +128,7 @@ def main():
     ax2.set_ylabel(r'$N$')
 
     # Save the plot as a png
-    fig.savefig('plots/ProgDescHist.png', bbox_inches='tight')
+    fig.savefig('plots/ProgDescCont.png', bbox_inches='tight')
 
     plt.close(fig)
 
@@ -197,7 +197,7 @@ def main():
     ax1.legend(handles, labels)
 
     # Save the plot as a png
-    fig.savefig('plots/ProgDescHist_environ.png', bbox_inches='tight')
+    fig.savefig('plots/ProgDescCont_environ.png', bbox_inches='tight')
 
 
 main()
