@@ -54,8 +54,8 @@ def get_ns(graphpath, snap):
 
     hdf = h5py.File(graphpath + snap + '.hdf5', 'r')
 
-    prog_conts = hdf['prog_stellar_mass_contribution'][...]
-    desc_conts = hdf['desc_stellar_mass_contribution'][...]
+    prog_conts = hdf['prog_stellar_mass_contribution'][...] * 10**10
+    desc_conts = hdf['desc_stellar_mass_contribution'][...] * 10**10
 
     hdf.close()
 
@@ -108,8 +108,8 @@ def main():
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
 
-    ax1.bar(progbins, progcounts, width=1, alpha=0.9, color='b', ec='b')
-    ax2.bar(descbins, desccounts, width=1, alpha=0.9, color='b', ec='b')
+    ax1.bar(progbins, progcounts, width=prog_bind_wid, alpha=0.9, color='b', ec='b')
+    ax2.bar(descbins, desccounts, width=desc_bind_wid, alpha=0.9, color='b', ec='b')
 
     # Set y-axis scaling to logarithmic
     ax1.set_yscale('log')
