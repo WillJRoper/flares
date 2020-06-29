@@ -95,7 +95,7 @@ def main(snap):
     ax1.set_ylabel(r'$dN/dM$')
     ax2.set_xlabel(r'$M_{\star}/M_\odot$')
     ax2.set_ylabel(r'$N_\mathrm{inst} - N_\mathrm{30 Myr}$')
-    
+
     # Get and draw legend
     handles, labels = ax1.get_legend_handles_labels()
     ax1.legend(handles, labels)

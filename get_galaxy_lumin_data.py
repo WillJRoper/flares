@@ -50,75 +50,6 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
     return parts_in_groups, part_groups
 
 
-def get_subgroup_part_inds(sim, snapshot, part_type, all_parts=False, sorted=False):
-    ''' A function to efficiently produce a dictionary of particle indexes from EAGLE particle data arrays
-        for SUBFIND subgroups.
-
-    :param sim:        Path to the snapshot file [str]
-    :param snapshot:   Snapshot identifier [str]
-    :param part_type:  The integer representing the particle type
-                       (0, 1, 4, 5: gas, dark matter, stars, black hole) [int]
-    :param all_parts:  Flag for whether to use all particles (SNAP group)
-                       or only particles in halos (PARTDATA group)  [bool]
-    :param sorted:     Flag for whether to produce indices in a sorted particle ID array
-                       or unsorted (order they are stored in) [bool]
-    :return:
-    '''
-
-    # Get the particle IDs for this particle type using eagle_IO
-    if all_parts:
-
-        # Get all particles in the simulation
-        part_ids = E.read_array('SNAP', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
-                                numThreads=8)
-
-        # Get only those particles in a halo
-        group_part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
-                                      numThreads=8)
-
-    else:
-
-        # Get only those particles in a halo
-        part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
-                                numThreads=8)
-
-        # A copy of this array is needed for the extraction method
-        group_part_ids = np.copy(part_ids)
-
-    # Extract the group ID and subgroup ID each particle is contained within
-    grp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/GroupNumber',
-                           numThreads=8)
-    subgrp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/SubGroupNumber',
-                              numThreads=8)
-
-    # Remove particles not associated to a subgroup (subgroupnumber == 2**30 == 1073741824)
-    okinds = subgrp_ids != 1073741824
-    group_part_ids = group_part_ids[okinds]
-    grp_ids = grp_ids[okinds]
-    subgrp_ids = subgrp_ids[okinds]
-
-    # Ensure no subgroup ID exceeds 99999
-    assert subgrp_ids.max() < 99999, "Found too many subgroups, need to increase subgroup format string above %05d"
-
-    # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-    halo_ids = np.zeros(grp_ids.size, dtype=float)
-    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
-
-    parts_in_groups, part_groups = get_part_inds(halo_ids, part_ids, group_part_ids, sorted)
-
-    # Produce a dictionary containing the index of particles in each halo
-    halo_part_inds = {}
-    for ind, grp in zip(parts_in_groups, part_groups):
-        halo_part_inds.setdefault(grp, set()).update({ind})
-
-    # Now the dictionary is fully populated convert values from sets to arrays for indexing
-    for key, val in halo_part_inds.items():
-        halo_part_inds[key] = np.array(list(val))
-
-    return halo_part_inds
-
-
 def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
                lkernel, kbins, conv, model, F, i, j, f):
 
@@ -285,6 +216,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     # Now the dictionary is fully populated convert values from sets to arrays for indexing
     for key, val in halo_part_inds.items():
         halo_part_inds[key] = np.array(list(val))
+
+    print(halo_part_inds)
 
     # Get the position of each of these galaxies
     gal_ages = {}
