@@ -294,7 +294,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
 
     # Get particle mass data
     try:
-        masses = E.read_array('PARTDATA', path, prog_snap,
+        masses = E.read_array('PARTDATA', path, snap,
                               'PartType' + str(part_type) + '/Mass', numThreads=8) / 0.6777
     except ValueError:
         masses = np.array([])
