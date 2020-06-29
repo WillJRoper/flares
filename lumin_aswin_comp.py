@@ -40,7 +40,9 @@ def main():
 
     for reg, snap in reg_snaps:
 
-        my_path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+        print(reg, snap)
+
+        my_path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg + '/RestUV' + snap + '.hdf5'
 
         my_hdf = h5py.File(my_path, 'r')
 
