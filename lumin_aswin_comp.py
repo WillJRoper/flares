@@ -53,7 +53,7 @@ def main():
         except OSError:
             print("No File")
         except KeyError:
-            print("No File")
+            print("Key Error")
 
     a_hdf.close()
 
