@@ -95,7 +95,7 @@ def main():
         nprogs_dict.setdefault(reg, []).extend(nprog)
         ndescs_dict.setdefault(reg, []).extend(ndesc)
 
-    bins = np.logspace(7, 12, 100)
+    bins = np.logspace(5, 11.5, 100)
 
     progcounts, progbins = np.histogram(nprogs, bins=bins)
     desccounts, descbins = np.histogram(ndescs, bins=bins)
@@ -110,8 +110,8 @@ def main():
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
 
-    ax1.bar(progbins, progcounts, width=prog_bind_wid, alpha=0.9, color='b', ec='b')
-    ax2.bar(descbins, desccounts, width=desc_bind_wid, alpha=0.9, color='b', ec='b')
+    ax1.plot(progbins, progcounts)
+    ax2.plot(descbins, desccounts)
 
     # Set y-axis scaling to logarithmic
     ax1.set_yscale('log')
