@@ -95,7 +95,7 @@ def main():
         nprogs_dict.setdefault(reg, []).extend(nprog)
         ndescs_dict.setdefault(reg, []).extend(ndesc)
 
-    bins = np.logspace(6.5, 11.5, 200)
+    bins = np.logspace(7, 11.5, 150)
 
     progcounts, progbins = np.histogram(nprogs, bins=bins)
     desccounts, descbins = np.histogram(ndescs, bins=bins)
