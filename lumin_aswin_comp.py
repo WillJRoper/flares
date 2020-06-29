@@ -73,7 +73,7 @@ def main():
 
     ax.loglog(bin_cents, H, label='Aswin', linestyle='--')
 
-    ax.set_xlabel("$L_{FUV} / (\mathrm{erg} \mathrm{s}^{-1} \mathrm{Hz}^{-1})$")
+    ax.set_xlabel("$L_{FUV} / (\mathrm{erg} \mathrm{ s}^{-1} \mathrm{ Hz}^{-1})$")
     ax.set_ylabel("$N$")
 
     handles, labels = ax.get_legend_handles_labels()
