@@ -123,8 +123,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
-    ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
-    ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+    ax.set_xlim(10**8, 10**11.2)
+    ax.set_ylim(10**-1.2, 10**2.1)
 
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
