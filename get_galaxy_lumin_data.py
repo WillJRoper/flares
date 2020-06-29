@@ -103,7 +103,7 @@ def calc_light_mass_rad(poss, ls, i, j):
     hmr_ind = np.argmin(np.abs(l_profile - half_l))
     hmr = rs[hmr_ind]
 
-    return hmr
+    return hmr, tot_l
 
 
 def get_main(path, snap, savepath, filters, F, model, filename):
@@ -362,9 +362,14 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                     F, i, j, f)
 
                     # Compute half mass radii
-                    hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls, i, j)
+                    try:
+                        hls[ind2, ind1], tot_l[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls, i, j)
+                    except ValueError:
+                        print("Galaxy", id, "had no stars within 30 kpc of COP")
+                        continue
+
+                    # Compute total mass
                     ms[ind2, ind1] = np.sum(gal_ms[id]) / 10**10
-                    tot_l[ind2, ind1] = np.sum(ls)
 
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
@@ -373,7 +378,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         # Write out the results for this filter
         filt = hdf.create_group(f)  # create halo group
         filt.create_dataset('half_light_rad', data=hls, dtype=float)  # Half light radius [Mpc]
-        filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=float)  # Aperture mass [Msun * 10*10]
+        filt.create_dataset('Total_Mass', data=ms, dtype=float)  # Aperture mass [Msun * 10*10]
         filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=float)  # Aperture Luminosity [nJy]
 
     hdf.close()

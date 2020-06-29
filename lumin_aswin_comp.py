@@ -44,12 +44,12 @@ def main():
         my_path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg + '/RestUV' + snap + '.hdf5'
 
         try:
+            aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS_2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
+
             my_hdf = h5py.File(my_path, 'r')
             mine.extend(my_hdf['FAKE.TH.FUV']['Aperture_Luminosity_30kpc'][...])
 
             my_hdf.close()
-
-            aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS_2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
         except OSError:
             print("No File")
         except KeyError:

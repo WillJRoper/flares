@@ -60,10 +60,17 @@ def get_ns(graphpath, snap):
     desc_start_index = hdf['Desc_Start_Index'][...]
     prog_conts = hdf['prog_stellar_masses'][...] * 10**10
     desc_conts = hdf['desc_stellar_masses'][...] * 10**10
+    star_masses = hdf['Stellar_Masses'][...] * 10 ** 10
     nprogs = []
     ndescs = []
 
     hdf.close()
+
+    okinds = star_masses > 1e8
+    nprog = nprog[okinds]
+    ndesc = ndesc[okinds]
+    prog_start_index = prog_start_index[okinds]
+    desc_start_index = desc_start_index[okinds]
 
     for npg, nd, pstart, dstart in zip(ndesc, nprog, prog_start_index, desc_start_index):
         pconts = prog_conts[pstart: pstart + npg]
