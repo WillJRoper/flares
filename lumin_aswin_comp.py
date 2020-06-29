@@ -44,7 +44,11 @@ def main():
 
         my_path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg + '/RestUV' + snap + '.hdf5'
 
-        my_hdf = h5py.File(my_path, 'r')
+        try:
+            my_hdf = h5py.File(my_path, 'r')
+        except OSError:
+            print("No File")
+            continue
 
         mine.extend(my_hdf['FAKE.TH.FUV']['Aperture_Luminosity_30kpc'][...])
 
