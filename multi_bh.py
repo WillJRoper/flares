@@ -61,6 +61,10 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
     for ind, grp in zip(parts_in_groups, part_groups):
         halo_part_inds.setdefault(grp, set()).update({ind})
 
+    # Now the dictionary is fully populated convert values from sets to arrays for indexing
+    for key, val in halo_part_inds.items():
+        halo_part_inds[key] = np.array(list(val))
+
     return halo_part_inds
 
 
