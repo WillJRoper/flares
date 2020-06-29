@@ -119,10 +119,6 @@ def main():
     ax1.set_xscale('log')
     ax2.set_xscale('log')
 
-    # Ensure tick labels are integers
-    ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
-    ax2.xaxis.set_major_locator(MaxNLocator(integer=True))
-
     # Label axes
     ax1.set_xlabel(r'$M_{\star, \mathrm{prog}, \mathrm{cont}} / M_\odot$')
     ax1.set_ylabel(r'$N$')
