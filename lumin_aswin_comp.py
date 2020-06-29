@@ -49,9 +49,7 @@ def main():
 
             my_hdf.close()
 
-            print(f'{reg}/{snap}/Galaxy/BPASS2.2.1/Chabrier300/Luminosity/DustModelI/FUV')
-
-            aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
+            aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS_2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
         except OSError:
             print("No File")
 
