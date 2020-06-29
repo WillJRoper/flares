@@ -129,7 +129,11 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
 
     # Remove particles not in a subgroup
-    okinds = np.logical_and(subfind_subgrp_ids != 1073741824, (all_gal_ns[:, 4] + all_gal_ns[:, 0]) > 100)
+    okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
+                            np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) > 100,
+                                           np.logical_and(all_gal_ns[:, 4] != 0, all_gal_ns[:, 0] != 0)
+                                           )
+                            )
     subfind_grp_ids = subfind_grp_ids[okinds]
     subfind_subgrp_ids = subfind_subgrp_ids[okinds]
     gal_cops = gal_cops[okinds]
@@ -175,17 +179,17 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     print("There are", len(subgrp_ids), "particles")
 
-    # # Remove particles not associated to a subgroup
-    # okinds = subgrp_ids != 1073741824
-    # grp_ids = grp_ids[okinds]
-    # subgrp_ids = subgrp_ids[okinds]
-    # part_ids = part_ids[okinds]
-    # group_part_ids = group_part_ids[okinds]
-    # all_poss = all_poss[okinds]
-    # gal_sml = gal_sml[okinds]
-    # ages = ages[okinds]
-    # metallicities = metallicities[okinds]
-    # masses = masses[okinds]
+    # Remove particles not associated to a subgroup
+    okinds = subgrp_ids != 1073741824
+    grp_ids = grp_ids[okinds]
+    subgrp_ids = subgrp_ids[okinds]
+    part_ids = part_ids[okinds]
+    group_part_ids = group_part_ids[okinds]
+    all_poss = all_poss[okinds]
+    gal_sml = gal_sml[okinds]
+    ages = ages[okinds]
+    metallicities = metallicities[okinds]
+    masses = masses[okinds]
 
     print("There are", len(subgrp_ids), "particles")
 
