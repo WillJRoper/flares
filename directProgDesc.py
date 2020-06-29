@@ -284,7 +284,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
     desc_mass_conts = np.zeros(descs.size, dtype=float)
     prog_masses_final = np.zeros(progs.size, dtype=float)
     desc_masses_final = np.zeros(descs.size, dtype=float)
-    halo_mass = np.zeros(descs.size, dtype=float)
+    halo_mass = np.zeros(mega_haloids.size, dtype=float)
 
     # Get particle indices for progenitors and descendents
     try:
@@ -294,10 +294,10 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
 
     # Get particle mass data
     try:
-        masses = E.read_array('PARTDATA', path, snap,
+        snap_masses = E.read_array('PARTDATA', path, snap,
                               'PartType' + str(part_type) + '/Mass', numThreads=8) / 0.6777
     except ValueError:
-        masses = np.array([])
+        snap_masses = np.array([])
     try:
         prog_masses = E.read_array('PARTDATA', path, prog_snap,
                                    'PartType' + str(part_type) + '/Mass', numThreads=8) / 0.6777
@@ -334,7 +334,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
         except KeyError:
             current_inds = []
 
-        halo_mass[ind] = np.sum(masses[current_inds])
+        halo_mass[ind] = np.sum(snap_masses[current_inds])
             
         current_pids = set(snap_part_ids[current_inds])
 
@@ -398,7 +398,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
             desc_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
             desc_masses_final[desc_start: desc_start + ndesc] = this_desc_mass
 
-    return prog_mass_conts, desc_mass_conts, prog_masses_final, desc_masses_final, masses
+    return prog_mass_conts, desc_mass_conts, prog_masses_final, desc_masses_final, snap_masses
 
 
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/', part_types=(0, 1, 4, 5)):
