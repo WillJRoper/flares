@@ -123,8 +123,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
-    ax.set_xlim(10**8, 10**11.2)
-    ax.set_ylim(10**-1.2, 10**2.1)
+    ax.set_xlim(10**8, 10**11.25)
+    ax.set_ylim(10**-1.2, 10**2.2)
+
+    for spine in ax.spines.values():
+        spine.set_edgecolor('k')
 
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
