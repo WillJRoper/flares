@@ -323,7 +323,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                      physicalUnits=True, numThreads=8)
     gas_smooth_ls = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True,
                                  numThreads=8)
-    gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True,
+    gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/InitialMass', noH=True, physicalUnits=True,
                               numThreads=8) * 10**10
 
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', noH=True,
@@ -450,10 +450,10 @@ model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
                             path_to_SPS_grid = FLARE.FLARE_dir + '/data/SPS/nebular/3.0/') # DEFINE SED GRID -
 model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
-filters = FLARE.filters.NIRCam
-filename = 'ObsWebbLumins_'
-# filters = ['FAKE.TH.'+f for f in ['FUV','NUV','V']]
-# filename = "RestUV"
+# filters = FLARE.filters.NIRCam
+# filename = 'ObsWebbLumins_'
+filters = ['FAKE.TH.'+f for f in ['FUV','NUV','V']]
+filename = "RestUV"
 F = FLARE.filters.add_filters(filters, new_lam = model.lam)
 print(filters)
 
