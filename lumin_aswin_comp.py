@@ -55,7 +55,7 @@ def main():
 
     a_hdf.close()
 
-    bins = np.logspace(26, 32, 100)
+    bins = np.logspace(26, 30, 100)
     bin_wid = bins[1] - bins[0]
     bin_cents = bins[1:] - bin_wid / 2
 
@@ -65,16 +65,16 @@ def main():
 
     H, _ = np.histogram(mine, bins=bins)
 
-    ax.plot(bin_cents, H, label='Will')
+    ax.loglog(bin_cents, H, label='Will')
 
     H, _ = np.histogram(aswins, bins=bins)
 
-    ax.plot(bin_cents, H, label='Aswin', linestyle='--')
+    ax.loglog(bin_cents, H, label='Aswin', linestyle='--')
 
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(handles, labels, loc='best')
 
-    fig.savefig("mine_aswin_comp.png")
+    fig.savefig("plots/mine_aswin_comp.png")
 
 
 main()
