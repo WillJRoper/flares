@@ -45,14 +45,13 @@ def main():
 
         try:
             my_hdf = h5py.File(my_path, 'r')
+            mine.extend(my_hdf['FAKE.TH.FUV']['Aperture_Luminosity_30kpc'][...])
+
+            my_hdf.close()
+
+            aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
         except OSError:
             print("No File")
-
-        mine.extend(my_hdf['FAKE.TH.FUV']['Aperture_Luminosity_30kpc'][...])
-
-        my_hdf.close()
-
-        aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
 
     a_hdf.close()
 
