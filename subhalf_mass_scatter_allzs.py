@@ -16,7 +16,7 @@ sns.set_style('whitegrid')
 
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 1):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -53,8 +53,8 @@ half_mass_rads_dict = {}
 xaxis_dict = {}
 for snap in snaps:
 
-    half_mass_rads_dict[snap] = {}
-    xaxis_dict[snap] = {}
+    half_mass_rads_dict[snap] = []
+    xaxis_dict[snap] = []
 
 for reg in regions:
 
@@ -62,12 +62,13 @@ for reg in regions:
 
         print(reg, snap)
 
-        path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
+        # path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
+        path = '/cosma7/data/dp004/FLARES/FLARES-1/FLARES_00_instantFB/data/'
         try:
-            half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                          numThreads=8)[:, 4] * 1e3
-            xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                                 noH=True, numThreads=8)[:, 4] * 10**10
+            half_mass_rads_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                                          numThreads=8)[:, 4] * 1e3)
+            xaxis_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                                 noH=True, numThreads=8)[:, 4] * 10**10)
         except OSError:
             continue
 
@@ -96,8 +97,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     else:
         soft = 0.001802390 / (0.6777 * (1 + z)) * 1e3
 
-    xs = np.concatenate(list(xaxis_dict[snap].values()))
-    half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
+    xs = xaxis_dict[snap]
+    half_mass_rads_plt = half_mass_rads_dict[snap]
     
     xs_plt = xs[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
@@ -139,7 +140,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/HalfMassRadius_all_snaps.png',
+fig.savefig('plots/HalfMassRadius_all_snaps_instaFB.png',
             bbox_inches='tight')
 
 plt.close(fig)
