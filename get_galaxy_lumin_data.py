@@ -221,8 +221,6 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     for key, val in halo_part_inds.items():
         halo_part_inds[key] = np.array(list(val))
 
-    print(set(halo_part_inds.keys()))
-
     # Get the position of each of these galaxies
     gal_ages = {}
     gal_mets = {}
@@ -367,13 +365,14 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     hls[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls, i, j)
                     ms[ind2, ind1] = np.sum(gal_ms[id]) / 10**10
                     tot_l[ind2, ind1] = np.sum(ls)
+
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
                     continue
 
         # Write out the results for this filter
         filt = hdf.create_group(f)  # create halo group
-        filt.create_dataset('half_lift_rad', data=hls, dtype=float)  # Half light radius [Mpc]
+        filt.create_dataset('half_light_rad', data=hls, dtype=float)  # Half light radius [Mpc]
         filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=float)  # Aperture mass [Msun * 10*10]
         filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=float)  # Aperture Luminosity [nJy]
 
