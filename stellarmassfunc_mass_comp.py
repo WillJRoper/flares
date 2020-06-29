@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial import cKDTree
 import matplotlib
 import numba as nb
-import eagle_IO as E
+import eagle_IO.eagle_IO as E
 import seaborn as sns
 from flares import flares
 matplotlib.use('Agg')
@@ -38,89 +38,58 @@ def get_m(masses, gal_cops, tree):
 
 def get_mass_data(path, snap, tag, reg, group="SUBFIND_GROUP", noH=True):
 
-    path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_00' + reg + '/data/'
-    try:
-        all_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', noH=True,
-                                physicalUnits=True, numThreads=8)
-        masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', noH=True,
-                              physicalUnits=True, numThreads=8) * 10**10
-        gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
-                                physicalUnits=True, numThreads=8)
-        gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/Stars/Mass', noH=True,
-                                physicalUnits=True, numThreads=8) * 10**10
+    gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                          numThreads=8) * 10**10 / 0.6777
 
-        print(len(gal_cops), 'before cut')
-        gal_cops = gal_cops[gal_ms > 0]
-        M_dat = gal_ms[gal_ms > 0]
-        print(len(gal_cops), 'after cut')
-
-        tree = cKDTree(all_poss, leafsize=16, compact_nodes=False, balanced_tree=False)
-
-        M_30 = get_m(masses, gal_cops, tree)
-
-    except OSError:
-        M_30 = np.full(100, 0.0)
-        M_dat = np.full(100, 0.0)
-    except ValueError:
-        M_30 = np.full(100, 0.0)
-        M_dat = np.full(100, 0.0)
-
-    return M_dat, M_30
+    return gal_ms
 
 
-# Extarct M_subfinds
+# Extarct M_insts
 tag = "Subhalo/Stars/Mass"
 snap = '010_z005p000'
 group = "SUBFIND"
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 1):
 
     if reg < 10:
         regions.append('0' + str(reg))
     else:
         regions.append(str(reg))
 
-M_subfind_dict = {}
-M_30kpc_dict = {}
+M_inst = []
+M_std = []
 for reg in regions:
 
-    M_subfind, M_30kpc = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/', snap,
-                          tag, reg, group=group, noH=True)
+    M_std.extend(get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/', snap,
+                                 tag, reg, group=group, noH=True))
+    M_inst.extend(get_mass_data('/cosma7/data/dp004/FLARES/FLARES-1/FLARES_00_instantFB/data/', snap,
+                                 tag, reg, group=group, noH=True))
 
-    print('Nhalos', M_subfind.shape, M_30kpc.shape)
-
-    M_subfind_dict[reg] = M_subfind
-    M_30kpc_dict[reg] = M_30kpc
-
-    # print('Minimums:', M_subfind.min(), M_30kpc.min())
-    # print('Maximums:', M_subfind.max(), M_30kpc.max())
-    # print('Sums:', np.sum(M_subfind), np.sum(M_30kpc), np.sum(M_subfind) / np.sum(M_30kpc) * 100)
-
-M_subfind = np.concatenate(list(M_subfind_dict.values()))
-M_30kpc = np.concatenate(list(M_30kpc_dict.values()))
-M_subfind = M_subfind[np.where(M_subfind != 0.0)]
-M_30kpc = M_30kpc[np.where(M_30kpc != 0.0)]
-print('Nhalos', len(M_subfind), len(M_30kpc))
+M_inst = np.array(M_inst)
+M_std = np.array(M_std)
+M_inst = M_inst[np.where(M_inst != 0.0)]
+M_std = M_std[np.where(M_std != 0.0)]
+print('Nhalos', len(M_inst), len(M_std))
 # Set up plot
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-bins = np.logspace(np.log10(np.min((M_subfind.min(), M_30kpc.min()))),
-                   np.log10(np.max((M_subfind.max(), M_30kpc.max()))),
+bins = np.logspace(np.log10(np.min((M_inst.min(), M_std.min()))),
+                   np.log10(np.max((M_inst.max(), M_std.max()))),
                    40)
 
 interval = bins[1:] - bins[:-1]
 
 # Histogram the DMLJ halo masses
-H, bins = np.histogram(M_subfind, bins=bins)
-H_hr, _ = np.histogram(M_30kpc, bins=bins)
+H, bins = np.histogram(M_inst, bins=bins)
+H_hr, _ = np.histogram(M_std, bins=bins)
 
 # Compute bin centres
 bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
 
 # Plot each histogram
-ax.loglog(bin_cents, H/interval, label='SUBFIND')
-ax.loglog(bin_cents, H_hr/interval, linestyle='--', label='All particles in 30 pkpc')
+ax.loglog(bin_cents, H/interval, label='Instantaneous')
+ax.loglog(bin_cents, H_hr/interval, linestyle='--', label='30 Myr Delay')
 
 # Label axes
 ax.set_xlabel(r'$M_{\star}/M_\odot$')
