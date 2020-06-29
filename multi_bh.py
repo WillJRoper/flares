@@ -89,6 +89,8 @@ second_bh = []
 
 for reg, snap in reg_snaps:
 
+    print(reg, snap)
+
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
     try:
         part_inds = get_part_ids(path, snap, part_type=5, all_parts=False)
@@ -102,7 +104,6 @@ for reg, snap in reg_snaps:
         if len(inds) < 2:
             continue
         ms = np.sort(masses[inds])
-        print(ms)
         first_bh.append(ms[-1])
         second_bh.append(ms[-2])
 
