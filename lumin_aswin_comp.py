@@ -57,7 +57,7 @@ def main():
 
     print("lengths", len(mine), len(aswins))
 
-    bins = np.logspace(26, 32, 200)
+    bins = np.logspace(26, 31, 200)
     bin_wid = bins[1] - bins[0]
     bin_cents = bins[1:] - bin_wid / 2
 
