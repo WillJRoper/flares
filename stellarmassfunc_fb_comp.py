@@ -67,7 +67,7 @@ def main(snap):
     M_std = M_std[np.where(M_std != 0.0)]
     print('Nhalos', len(M_inst), len(M_std))
     fig = plt.figure()
-    gs = gridspec.GridSpec(nrows=2, ncols=1, height_ratios=(8, 2))
+    gs = gridspec.GridSpec(nrows=2, ncols=1, height_ratios=(8, 3))
     gs.update(wspace=0.0, hspace=0.0)
     ax1 = fig.add_subplot(gs[0])
     ax2 = fig.add_subplot(gs[1])
@@ -89,7 +89,7 @@ def main(snap):
     ax1.loglog(bin_cents, H/interval, label='Instantaneous')
     ax1.loglog(bin_cents, H_hr/interval, linestyle='--', label='30 Myr Delay')
 
-    ax2.loglog(bin_cents, H - H_hr)
+    ax2.semilogx(bin_cents, H - H_hr)
 
     # Label axes
     ax1.set_ylabel(r'$dN/dM$')
