@@ -16,15 +16,11 @@ sns.set_style('whitegrid')
 def get_part_ids(sim, snapshot, part_type, all_parts=False):
 
     # Get the particle IDs
-    if all_parts:
-        part_ids = E.read_array('SNAP', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    else:
-        part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
-                                numThreads=8)
+    part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
+                            numThreads=8)
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    group_part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
-                                  numThreads=8)
+    group_part_ids = np.copy(part_ids)
     grp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/GroupNumber',
                            numThreads=8)
     subgrp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/SubGroupNumber',
