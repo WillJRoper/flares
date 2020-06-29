@@ -58,8 +58,8 @@ def get_ns(graphpath, snap):
     ndesc = hdf['nDescs'][...]
     prog_start_index = hdf['Prog_Start_Index'][...]
     desc_start_index = hdf['Desc_Start_Index'][...]
-    prog_conts = hdf['prog_stellar_mass_contribution'][...] * 10**10
-    desc_conts = hdf['desc_stellar_mass_contribution'][...] * 10**10
+    prog_conts = hdf['prog_stellar_masses'][...] * 10**10
+    desc_conts = hdf['desc_stellar_masses'][...] * 10**10
     nprogs = []
     ndescs = []
 
@@ -68,8 +68,8 @@ def get_ns(graphpath, snap):
     for npg, nd, pstart, dstart in zip(ndesc, nprog, prog_start_index, desc_start_index):
         pconts = prog_conts[pstart: pstart + npg]
         dconts = desc_conts[dstart: dstart + nd]
-        nprogs.append(len(pconts[pconts > 1e7]))
-        ndescs.append(len(dconts[dconts > 1e7]))
+        nprogs.append(len(pconts[pconts > 1e8]))
+        ndescs.append(len(dconts[dconts > 1e8]))
 
     return np.array(nprogs), np.array(ndescs)
 
