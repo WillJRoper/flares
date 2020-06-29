@@ -22,8 +22,7 @@ def main():
         else:
             regions.append(str(reg))
 
-    snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
-             '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000']
+    snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000']
 
     reg_snaps = []
     for reg in reversed(regions):
@@ -48,7 +47,6 @@ def main():
             my_hdf = h5py.File(my_path, 'r')
         except OSError:
             print("No File")
-            continue
 
         mine.extend(my_hdf['FAKE.TH.FUV']['Aperture_Luminosity_30kpc'][...])
 
