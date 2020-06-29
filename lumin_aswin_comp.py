@@ -52,6 +52,8 @@ def main():
             aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS_2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
         except OSError:
             print("No File")
+        except KeyError:
+            print("No File")
 
     a_hdf.close()
 
