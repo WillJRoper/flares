@@ -194,16 +194,14 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                             physicalUnits=True, numThreads=8)
-    all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
-                            physicalUnits=True, numThreads=8) * 10**10
+    all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)
+
 
     # Remove particles not in a subgroup
-    okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
-                            np.logical_and(all_gal_ms[:, 4] > 1e8, all_gal_ms[:, 0] > 0))
+    okinds = np.logical_and(subfind_subgrp_ids != 1073741824, (all_gal_ns[:, 4] + all_gal_ns[:, 0]) > 100)
     subfind_grp_ids = subfind_grp_ids[okinds]
     subfind_subgrp_ids = subfind_subgrp_ids[okinds]
     gal_cops = gal_cops[okinds]
-    pre_gal_ms = all_gal_ms[okinds]
 
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
     halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
