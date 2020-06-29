@@ -86,8 +86,10 @@ second_bh = []
 for reg, snap in reg_snaps:
 
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
-
-    part_inds = get_part_ids(path, snap, part_type=5, all_parts=False)
+    try:
+        part_inds = get_part_ids(path, snap, part_type=5, all_parts=False)
+    except ValueError:
+        continue
 
     masses = E.read_array('PARTDATA', path, snap, 'PartType5/Mass', numThreads=8) / 0.6777 * 10**10
 
