@@ -97,8 +97,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     else:
         soft = 0.001802390 / (0.6777 * (1 + z)) * 1e3
 
-    xs = xaxis_dict[snap]
-    half_mass_rads_plt = half_mass_rads_dict[snap]
+    xs = np.array(xaxis_dict[snap])
+    half_mass_rads_plt = np.array(half_mass_rads_dict[snap])
     
     xs_plt = xs[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
@@ -140,6 +140,8 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
+# fig.savefig('plots/HalfMassRadius_all_snaps.png',
+#             bbox_inches='tight')
 fig.savefig('plots/HalfMassRadius_all_snaps_instaFB.png',
             bbox_inches='tight')
 
