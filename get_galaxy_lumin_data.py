@@ -175,17 +175,17 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     print("There are", len(subgrp_ids), "particles")
 
-    # Remove particles not associated to a subgroup
-    okinds = subgrp_ids != 1073741824
-    grp_ids = grp_ids[okinds]
-    subgrp_ids = subgrp_ids[okinds]
-    part_ids = part_ids[okinds]
-    group_part_ids = group_part_ids[okinds]
-    all_poss = all_poss[okinds]
-    gal_sml = gal_sml[okinds]
-    ages = ages[okinds]
-    metallicities = metallicities[okinds]
-    masses = masses[okinds]
+    # # Remove particles not associated to a subgroup
+    # okinds = subgrp_ids != 1073741824
+    # grp_ids = grp_ids[okinds]
+    # subgrp_ids = subgrp_ids[okinds]
+    # part_ids = part_ids[okinds]
+    # group_part_ids = group_part_ids[okinds]
+    # all_poss = all_poss[okinds]
+    # gal_sml = gal_sml[okinds]
+    # ages = ages[okinds]
+    # metallicities = metallicities[okinds]
+    # masses = masses[okinds]
 
     print("There are", len(subgrp_ids), "particles")
 
@@ -217,7 +217,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     for key, val in halo_part_inds.items():
         halo_part_inds[key] = np.array(list(val))
 
-    print(halo_part_inds)
+    print(set(halo_part_inds.keys()))
 
     # Get the position of each of these galaxies
     gal_ages = {}
