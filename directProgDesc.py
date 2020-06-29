@@ -272,7 +272,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path, part_type):
 
 
 def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, ndescs,
-                           prog_start_index, desc_start_index, sim_haloids, progs, descs):
+                           prog_start_index, desc_start_index, sim_haloids, progs, descs, mega_haloids):
 
     # Get the particle IDs
     try:
@@ -284,6 +284,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
     desc_mass_conts = np.zeros(descs.size, dtype=float)
     prog_masses_final = np.zeros(progs.size, dtype=float)
     desc_masses_final = np.zeros(descs.size, dtype=float)
+    halo_mass = np.zeros(descs.size, dtype=float)
 
     # Get particle indices for progenitors and descendents
     try:
@@ -292,6 +293,11 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
         part_inds = {}
 
     # Get particle mass data
+    try:
+        masses = E.read_array('PARTDATA', path, prog_snap,
+                              'PartType' + str(part_type) + '/Mass', numThreads=8) / 0.6777
+    except ValueError:
+        masses = np.array([])
     try:
         prog_masses = E.read_array('PARTDATA', path, prog_snap,
                                    'PartType' + str(part_type) + '/Mass', numThreads=8) / 0.6777
@@ -319,14 +325,16 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
         desc_part_inds = {}
 
     # Loop over halo data getting the stellar contribution
-    for nprog, ndesc, prog_start, desc_start, halo in zip(nprogs, ndescs, prog_start_index, desc_start_index,
-                                                          sim_haloids):
+    for nprog, ndesc, prog_start, desc_start, halo, ind in zip(nprogs, ndescs, prog_start_index, desc_start_index,
+                                                               sim_haloids, mega_haloids):
 
         # Get this halos indices
         try:
             current_inds = list(part_inds[halo])
         except KeyError:
             current_inds = []
+
+        halo_mass[ind] = np.sum(masses[current_inds])
             
         current_pids = set(snap_part_ids[current_inds])
 
@@ -390,7 +398,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
             desc_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
             desc_masses_final[desc_start: desc_start + ndesc] = this_desc_mass
 
-    return prog_mass_conts, desc_mass_conts, prog_masses_final, desc_masses_final
+    return prog_mass_conts, desc_mass_conts, prog_masses_final, desc_masses_final, masses
 
 
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/', part_types=(0, 1, 4, 5)):
@@ -506,8 +514,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     if 4 in part_types:
 
         star_result_tup = part_type_contribution(path, snap, prog_snap, desc_snap, 4, nprogs, ndescs, prog_start_index, 
-                                                 desc_start_index, sim_haloids, progs, descs)
-        prog_star_mass_conts, desc_star_mass_conts, prog_star_masses, desc_star_masses = star_result_tup
+                                                 desc_start_index, sim_haloids, progs, descs, index_haloids)
+        prog_star_mass_conts, desc_star_mass_conts, prog_star_masses, desc_star_masses, masses = star_result_tup
 
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
@@ -520,14 +528,16 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                            data=prog_star_masses, compression='gzip')
         hdf.create_dataset('desc_stellar_masses', shape=desc_star_masses.shape, dtype=float,
                            data=desc_star_masses, compression='gzip')
+        hdf.create_dataset('Stellar_Masses', shape=masses.shape, dtype=float,
+                           data=masses, compression='gzip')
 
         hdf.close()
 
     if 5 in part_types:
 
         bh_result_tup = part_type_contribution(path, snap, prog_snap, desc_snap, 5, nprogs, ndescs, prog_start_index, 
-                                                 desc_start_index, sim_haloids, progs, descs)
-        prog_bh_mass_conts, desc_bh_mass_conts, prog_bh_masses, desc_bh_masses = bh_result_tup
+                                                 desc_start_index, sim_haloids, progs, descs, index_haloids)
+        prog_bh_mass_conts, desc_bh_mass_conts, prog_bh_masses, desc_bh_masses, masses = bh_result_tup
 
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
@@ -540,14 +550,16 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                            data=prog_bh_masses, compression='gzip')
         hdf.create_dataset('desc_bh_masses', shape=desc_bh_masses.shape, dtype=float,
                            data=desc_bh_masses, compression='gzip')
+        hdf.create_dataset('BH_Masses', shape=masses.shape, dtype=float,
+                           data=masses, compression='gzip')
 
         hdf.close()
 
     if 0 in part_types:
         
         gas_result_tup = part_type_contribution(path, snap, prog_snap, desc_snap, 0, nprogs, ndescs, prog_start_index, 
-                                                 desc_start_index, sim_haloids, progs, descs)
-        prog_gas_mass_conts, desc_gas_mass_conts, prog_gas_masses, desc_gas_masses = gas_result_tup
+                                                 desc_start_index, sim_haloids, progs, descs, index_haloids)
+        prog_gas_mass_conts, desc_gas_mass_conts, prog_gas_masses, desc_gas_masses, masses = gas_result_tup
 
         # Create file to store this snapshots graph results
         hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'r+')
@@ -560,6 +572,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                            data=prog_gas_masses, compression='gzip')
         hdf.create_dataset('desc_gas_masses', shape=desc_gas_masses.shape, dtype=float,
                            data=desc_gas_masses, compression='gzip')
+        hdf.create_dataset('Gas_Masses', shape=masses.shape, dtype=float,
+                           data=masses, compression='gzip')
 
         hdf.close()
 

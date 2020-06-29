@@ -111,6 +111,7 @@ ax = fig.add_subplot(111)
 
 cbar = ax.hexbin(first_bh, second_bh, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                  linewidths=0.2, cmap='viridis')
+ax.plot((np.min(second_bh), np.max(first_bh)), (np.min(second_bh), np.max(first_bh)), linestyle='--', color='k')
 
 ax.set_xlabel('$M_{1}$')
 ax.set_ylabel('$M_{2}$')
