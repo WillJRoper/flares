@@ -95,8 +95,10 @@ def main():
         nprogs_dict.setdefault(reg, []).extend(nprog)
         ndescs_dict.setdefault(reg, []).extend(ndesc)
 
-    progcounts, progbins = np.histogram(nprogs, bins=100)
-    desccounts, descbins = np.histogram(ndescs, bins=100)
+    bins = np.logspace(7, 12, 100)
+
+    progcounts, progbins = np.histogram(nprogs, bins=bins)
+    desccounts, descbins = np.histogram(ndescs, bins=bins)
     
     prog_bind_wid = progbins[1] - progbins[0]
     progbins = progbins[1:] - prog_bind_wid / 2
@@ -114,8 +116,8 @@ def main():
     # Set y-axis scaling to logarithmic
     ax1.set_yscale('log')
     ax2.set_yscale('log')
-    # ax1.set_xscale('log')
-    # ax2.set_xscale('log')
+    ax1.set_xscale('log')
+    ax2.set_xscale('log')
 
     # Ensure tick labels are integers
     ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
