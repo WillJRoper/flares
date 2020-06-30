@@ -169,9 +169,12 @@ def main():
     plt_desc_ys = []
 
     for (bin_ind, ovden), col in zip(enumerate(bin_cents), colors):
+        
+        progbins = np.linspace(0, nprogs_environ[bin_ind + 1].max(), nprogs_environ[bin_ind + 1].max() + 1)
+        descbins = np.linspace(0, ndescs_environ[bin_ind + 1].max(), ndescs_environ[bin_ind + 1].max() + 1)
 
-        progbins, progcounts = np.unique(nprogs_environ[bin_ind + 1], return_counts=True)
-        descbins, desccounts = np.unique(ndescs_environ[bin_ind + 1], return_counts=True)
+        progcounts, progbins = np.histogram(nprogs_environ[bin_ind + 1], bins=progbins)
+        desccounts, desccounts = np.histogram(ndescs_environ[bin_ind + 1], bins=descbins)
 
         ax1.plot(progbins, progcounts, color=col)
         ax2.plot(descbins, desccounts, color=col)
