@@ -122,7 +122,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     header = kinp['header']
     kbins = header.item()['bins']
 
-    conv = (u.solMass / u.pc ** 2).value
+    conv = (u.solMass / u.pc ** 2).value()
 
     # Load all necessary arrays
     subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
