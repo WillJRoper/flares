@@ -151,7 +151,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     try:
         # Load data for luminosities
-        all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates',
+        all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
                                 physicalUnits=True, numThreads=8)
         gal_sml = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothingLength', noH=True,
                                physicalUnits=True, numThreads=8)
@@ -254,7 +254,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     print('Got galaxy properties')
     
     # Get gas particle information
-    gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', physicalUnits=True,
+    gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True,
                                 numThreads=8)
     gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothedMetallicity', noH=True,
                                      physicalUnits=True, numThreads=8)
