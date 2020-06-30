@@ -129,12 +129,12 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                             physicalUnits=True, numThreads=8)
-    all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)
+    all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', numThreads=8)
 
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
-                            np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) > 100,
+                            np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) > 1e8,
                                            np.logical_and(all_gal_ns[:, 4] != 0, all_gal_ns[:, 0] != 0)
                                            )
                             )
