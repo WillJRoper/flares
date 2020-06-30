@@ -76,6 +76,8 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
         L = (models.generate_Fnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
                                        tauVs_BC, F, f, fesc=0, log10t_BC=7))
 
+    print(L)
+
     return L
 
 
