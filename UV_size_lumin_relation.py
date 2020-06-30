@@ -127,7 +127,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     print(lumins.max())
 
-    okinds = np.logical_and(hlrs / (csoft / (1 + z)) > 10**-1, lumins > 10**25)
+    okinds = np.logical_and(hlrs / (csoft / (1 + z)) > 10**-1, np.logical_and(lumins > 10**25, lumins < 10**50))
     lumins = lumins[okinds]
     hlrs = hlrs[okinds]
     try:
