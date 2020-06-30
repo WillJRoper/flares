@@ -144,7 +144,7 @@ def main():
     plt.close(fig)
 
     regs_ovdens = np.loadtxt("region_overdensity.txt", dtype=float)
-    bin_edges = np.linspace(regs_ovdens.min(), regs_ovdens.max(), 8)
+    bin_edges = np.linspace(regs_ovdens.min(), regs_ovdens.max(), 6)
     reg_bins = np.digitize(regs_ovdens, bins=bin_edges)
     bin_wid = bin_edges[1] - bin_edges[0]
     bin_cents = bin_edges[1:] - bin_wid / 2
@@ -157,11 +157,11 @@ def main():
         nprogs_environ.setdefault(bin_ind, []).extend(nprogs_dict[reg])
         ndescs_environ.setdefault(bin_ind, []).extend(ndescs_dict[reg])
 
-    fig = plt.figure(figsize=(12, 6))
+    fig = plt.figure(figsize=(18, 6))
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
 
-    colors = matplotlib.cm.plasma(np.linspace(0, 1, 8))
+    colors = matplotlib.cm.plasma(np.linspace(0, 1, 6))
 
     plt_prog_xs = []
     plt_prog_ys = []
