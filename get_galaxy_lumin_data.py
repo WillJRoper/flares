@@ -324,6 +324,14 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     all_gas_poss = {}
     for id in star_halo_ids:
         mask = halo_part_inds[id]
+        if len(gal_ages[id]) + len(gas_all_poss[mask, 0]) < 100:
+            del all_gal_poss[id]
+            del gal_ages[id]
+            del gal_mets[id]
+            del gal_ms[id]
+            del gal_smls[id]
+            del means[id]
+            continue
         all_gas_poss[id] = gas_all_poss[mask, :]
         gas_mets[id] = gas_metallicities[mask]
         gas_ms[id] = gas_masses[mask]
@@ -353,11 +361,11 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         print("Extracting data for filter:", f)
 
         # Create images for these galaxies
-        hls = np.zeros((len(gal_ages), 3))
-        ms = np.zeros((len(gal_ages), 3))
-        tot_l = np.zeros((len(gal_ages), 3))
+        hls = np.zeros((len(star_halo_ids), 3))
+        ms = np.zeros((len(star_halo_ids), 3))
+        tot_l = np.zeros((len(star_halo_ids), 3))
         for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
-            for ind2, id in enumerate(halo_ids):
+            for ind2, id in enumerate(star_halo_ids):
 
                 # Get the luminosities
                 try:
