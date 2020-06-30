@@ -388,7 +388,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
 
 # Define SED model
-model = models.define_model('BPASSv2.2.1.binary/ModSalpeter_300',
+model = models.define_model('BPASSv2.2.1.binary/Chabrier_300',
                             path_to_SPS_grid=FLARE.FLARE_dir + '/data/SPS/nebular/3.0/') # DEFINE SED GRID -
 model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
