@@ -134,7 +134,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
-                            np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) > 100,
+                            np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) >= 100,
                                            np.logical_and(all_gal_ns[:, 4] != 0, all_gal_ns[:, 0] != 0)
                                            )
                             )

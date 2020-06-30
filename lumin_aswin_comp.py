@@ -108,8 +108,8 @@ def main():
     maxs = np.max([max(mine), max(aswins)])
     ax.plot((mins, maxs), (mins, maxs), linestyle='--', color='k')
 
-    ax.set_xlabel("$L_{\mathrm{will}, FUV} / $(erg s$^{-1}$ Hz$^{-1}$)")
-    ax.set_ylabel("$L_{\mathrm{will}, FUV} / $(erg s$^{-1}$ Hz$^{-1}$)")
+    ax.set_xlabel("$L_{\mathrm{will }, FUV} / $(erg s$^{-1}$ Hz$^{-1}$)")
+    ax.set_ylabel("$L_{\mathrm{aswins }, FUV} / $(erg s$^{-1}$ Hz$^{-1}$)")
 
     ax.set_yscale('log')
     ax.set_xscale('log')
