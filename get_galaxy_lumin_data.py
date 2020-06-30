@@ -70,11 +70,11 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
 
     # Extract the flux in erg s^-1 Hz^-1
     if f.split(".")[0] == 'FAKE':
-        L = (model.generate_Lnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
-                                      tauVs_BC, F, f, fesc=0, log10t_BC=7))
+        L = (models.generate_Lnu(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
+                                       tauVs_BC, F, fesc=0, log10t_BC=7))
     else:
-        L = (model.generate_Fnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
-                                      tauVs_BC, F, f, fesc=0, log10t_BC=7))
+        L = (models.generate_Fnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
+                                       tauVs_BC, F, f, fesc=0, log10t_BC=7))
 
     return L
 
