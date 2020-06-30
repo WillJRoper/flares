@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 from matplotlib.ticker import MaxNLocator
 from matplotlib.collections import LineCollection
 import h5py
@@ -106,7 +107,7 @@ def main():
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    im = ax.scatter(mine, aswins, c=masses, cmap='plasma', s=6)
+    im = ax.scatter(mine, aswins, c=masses, cmap='plasma', s=6, norm=LogNorm)
     mins = np.min([min(mine), min(aswins)])
     maxs = np.max([max(mine), max(aswins)])
     ax.plot((mins, maxs), (mins, maxs), linestyle='--', color='k')
@@ -117,7 +118,8 @@ def main():
     ax.set_yscale('log')
     ax.set_xscale('log')
 
-    fig.colorbar(im)
+    cbar = fig.colorbar(im)
+    cbar.yaxis.set_ylabel("$M_{\star}/M_{\odot}$")
 
     fig.savefig("plots/mine_aswin_scatter_comp.png")
 
