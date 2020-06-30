@@ -80,7 +80,7 @@ for ind in range(len(reg_snaps)):
         ms = hdf[f]['Total_Mass'][:, 0]
         okinds = ms * 10**10 > 1e8
         lumins = hdf[f]['Aperture_Luminosity_30kpc'][okinds, 0]
-        hlrs = hdf[f]['half_lift_rad'][okinds, 0]
+        hlrs = hdf[f]['half_light_rad'][okinds, 0]
 
         print(lumins.shape)
         print(hlrs.shape)
