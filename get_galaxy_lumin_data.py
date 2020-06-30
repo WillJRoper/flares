@@ -92,7 +92,7 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
 def calc_rad(poss):
 
     # Get galaxy particle indices
-    rs = np.sqrt(poss[:, i]**2 + poss[:, j]**2 + poss[:, k]**2)
+    rs = np.sqrt(poss[:, 0]**2 + poss[:, 1]**2 + poss[:, 2]**2)
 
     return rs
 
