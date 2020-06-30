@@ -133,9 +133,9 @@ def main():
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    im = ax.scatter(masses, a_masses)
-    mins = np.min([min(mine), min(aswins)])
-    maxs = np.max([max(mine), max(aswins)])
+    im = ax.scatter(masses, a_masses, s=6)
+    mins = np.min([min(masses), min(a_masses)])
+    maxs = np.max([max(masses), max(a_masses)])
     ax.plot((mins, maxs), (mins, maxs), linestyle='--', color='k')
 
     ax.set_xlabel("$M_{\mathrm{will }, 30\mathrm{ pkpc}}/M_{\odot}$")
