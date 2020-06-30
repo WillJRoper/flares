@@ -77,10 +77,13 @@ for ind in range(len(reg_snaps)):
     try:
         hdf = h5py.File(hdfpath + "RestUV" + snap + '.hdf5', 'r')
 
-        ms = hdf[f]['Total_Mass'][:, 0]
-        okinds = ms * 10**10 > 1e8
-        lumins = hdf[f]['Aperture_Luminosity_30kpc'][okinds, 0]
-        hlrs = hdf[f]['half_light_rad'][okinds, 0]
+        try:
+            ms = hdf[f]['Total_Mass'][:, 0]
+            okinds = ms * 10**10 > 1e8
+            lumins = hdf[f]['Aperture_Luminosity_30kpc'][okinds, 0]
+            hlrs = hdf[f]['half_light_rad'][okinds, 0]
+        except UnboundLocalError:
+            continue
 
         print(lumins.shape)
         print(hlrs.shape)
