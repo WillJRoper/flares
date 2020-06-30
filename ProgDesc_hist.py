@@ -177,7 +177,7 @@ def main():
         descbin_cents = np.arange(0, max(ndescs_environ[bin_ind + 1]) + 1, 1)
 
         progcounts, progbins = np.histogram(nprogs_environ[bin_ind + 1], bins=progbins)
-        desccounts, desccounts = np.histogram(ndescs_environ[bin_ind + 1], bins=descbins)
+        desccounts, descbins = np.histogram(ndescs_environ[bin_ind + 1], bins=descbins)
 
         ax1.plot(progbin_cents, progcounts, color=col)
         ax2.plot(descbin_cents, desccounts, color=col)
