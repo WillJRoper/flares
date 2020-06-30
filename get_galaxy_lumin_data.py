@@ -336,7 +336,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     for f in filters:
 
         if f.split(".")[0] == 'FAKE':
-            model.create_Lnu_grid(F)
+            model.create_Lnu_grid(F)  # create new L grid for each filter. In units of erg/s/Hz
         else:
             model.create_Fnu_grid(F, z, cosmo)
 
@@ -388,8 +388,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
 
 # Define SED model
-model = models.define_model('BPASSv2.2.1.binary/Chabrier_300',
-                            path_to_SPS_grid=FLARE.FLARE_dir + '/data/SPS/nebular/3.0/') # DEFINE SED GRID -
+model = models.define_model('BPASSv2.2.1.binary/Chabrier_300') # DEFINE SED GRID -
 model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
 # filters = FLARE.filters.NIRCam
