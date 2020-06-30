@@ -159,7 +159,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                               physicalUnits=True, numThreads=8)
         metallicities = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothedMetallicity', noH=True,
                                      physicalUnits=True, numThreads=8)
-        masses = E.read_array('PARTDATA', path, snap, 'PartType4/InitialMass', noH=True, physicalUnits=True,
+        masses = E.read_array('PARTDATA', path, snap, 'PartType4/InitialMass', physicalUnits=True,
                               numThreads=8) * 10 ** 10
 
         # Calculate ages
@@ -260,7 +260,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                      physicalUnits=True, numThreads=8)
     gas_smooth_ls = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True,
                                  numThreads=8)
-    gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True,
+    gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', physicalUnits=True,
                               numThreads=8) * 10**10
 
     grp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', noH=True,
@@ -365,8 +365,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     centd_gas_pos = all_gas_poss[id] - means[id]
                     star_rs = calc_rad(centd_star_pos, i, j)
                     gas_rs = calc_rad(centd_gas_pos, i, j)
-                    okinds_star = star_rs < 0.03
-                    okinds_gas = gas_rs < 0.03
+                    okinds_star = star_rs <= 0.03
+                    okinds_gas = gas_rs <= 0.03
                     centd_star_pos = centd_star_pos[okinds_star]
                     centd_gas_pos = centd_gas_pos[okinds_gas]
                     ls = get_lumins(centd_star_pos, gal_ms[id][okinds_star], gal_ages[id][okinds_star],
