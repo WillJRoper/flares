@@ -35,6 +35,7 @@ def main():
     mine = []
     aswins = []
     masses = []
+    a_masses = []
 
     aswins_path = '/cosma7/data/dp004/dc-payy1/my_files/flares_pipeline/data/flares.hdf5'
 
@@ -64,12 +65,12 @@ def main():
             okinds = np.isin(myids, halo_ids)
             mine.extend(my_lumins[okinds])
             masses.extend(mass[okinds])
-            print(mass[okinds])
             okinds = np.isin(halo_ids, myids)
             aswins.extend(aswins_lumins[okinds])
+            masses.extend(mass[okinds])
 
             amass = a_hdf[f'{reg}/{snap}/Galaxy/Mstar_30'][...]
-            print(amass[okinds])
+            a_masses.extend(amass[okinds])
 
             my_hdf.close()
         except OSError:
@@ -126,5 +127,24 @@ def main():
     cbar.set_label("$M_{\star}/M_{\odot}$")
 
     fig.savefig("plots/mine_aswin_scatter_comp.png")
+
+    plt.close(fig)
+
+    # Set up figure
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    im = ax.scatter(masses, a_masses)
+    mins = np.min([min(mine), min(aswins)])
+    maxs = np.max([max(mine), max(aswins)])
+    ax.plot((mins, maxs), (mins, maxs), linestyle='--', color='k')
+
+    ax.set_xlabel("$M_{\mathrm{will }, 30\mathrm{ pkpc}}/M_{\odot}$")
+    ax.set_ylabel("$M_{\mathrm{aswins }, 30\mathrm{ pkpc}}/M_{\odot}$")
+
+    ax.set_yscale('log')
+    ax.set_xscale('log')
+
+    fig.savefig("plots/mine_aswin_scatter_masscomp.png")
 
 main()
