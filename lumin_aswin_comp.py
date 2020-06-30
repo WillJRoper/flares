@@ -33,6 +33,7 @@ def main():
 
     mine = []
     aswins = []
+    masses = []
 
     aswins_path = '/cosma7/data/dp004/dc-payy1/my_files/flares_pipeline/data/flares.hdf5'
 
@@ -58,8 +59,10 @@ def main():
             my_hdf = h5py.File(my_path, 'r')
             myids = my_hdf['galaxy_ids'][...]
             my_lumins = my_hdf['FAKE.TH.FUV/Aperture_Luminosity_30kpc'][:, 0]
+            mass = my_hdf['FAKE.TH.FUV/Aperture_Mass_30kpc'][:, 0]
             okinds = np.isin(myids, halo_ids)
             mine.extend(my_lumins[okinds])
+            masses.extend(mass[okinds])
             okinds = np.isin(halo_ids, myids)
             aswins.extend(aswins_lumins[okinds])
 
@@ -103,7 +106,7 @@ def main():
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    ax.scatter(mine, aswins)
+    im = ax.scatter(mine, aswins, c=masses, cmap='plasma', s=6)
     mins = np.min([min(mine), min(aswins)])
     maxs = np.max([max(mine), max(aswins)])
     ax.plot((mins, maxs), (mins, maxs), linestyle='--', color='k')
@@ -113,6 +116,8 @@ def main():
 
     ax.set_yscale('log')
     ax.set_xscale('log')
+
+    fig.colorbar(im)
 
     fig.savefig("plots/mine_aswin_scatter_comp.png")
 
