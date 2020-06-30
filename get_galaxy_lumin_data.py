@@ -79,11 +79,20 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
     return L
 
 
+# @nb.njit(nogil=True, parallel=True)
+# def calc_rad(poss, i, j):
+#
+#     # Get galaxy particle indices
+#     rs = np.sqrt(poss[:, i]**2 + poss[:, j]**2)
+#
+#     return rs
+
+
 @nb.njit(nogil=True, parallel=True)
-def calc_rad(poss, i, j):
+def calc_rad(poss):
 
     # Get galaxy particle indices
-    rs = np.sqrt(poss[:, i]**2 + poss[:, j]**2)
+    rs = np.sqrt(poss[:, i]**2 + poss[:, j]**2 + poss[:, k]**2)
 
     return rs
 
@@ -363,8 +372,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                 try:
                     centd_star_pos = all_gal_poss[id] - means[id]
                     centd_gas_pos = all_gas_poss[id] - means[id]
-                    star_rs = calc_rad(centd_star_pos, i, j)
-                    gas_rs = calc_rad(centd_gas_pos, i, j)
+                    star_rs = calc_rad(centd_star_pos)
+                    gas_rs = calc_rad(centd_gas_pos)
                     okinds_star = star_rs <= 0.03
                     okinds_gas = gas_rs <= 0.03
                     centd_star_pos = centd_star_pos[okinds_star]
