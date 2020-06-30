@@ -140,7 +140,6 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                             physicalUnits=True, numThreads=8)
     all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)
 
-
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
                             np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) >= 100,
@@ -194,34 +193,23 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     print("There are", len(subgrp_ids), "particles")
 
-    # # Remove particles not associated to a subgroup
-    # okinds = subgrp_ids != 1073741824
-    # grp_ids = grp_ids[okinds]
-    # subgrp_ids = subgrp_ids[okinds]
-    # part_ids = part_ids[okinds]
-    # group_part_ids = group_part_ids[okinds]
-    # all_poss = all_poss[okinds]
-    # gal_sml = gal_sml[okinds]
-    # ages = ages[okinds]
-    # metallicities = metallicities[okinds]
-    # masses = masses[okinds]
-
-    print("There are", len(subgrp_ids), "particles")
-
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
     part_halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-    # okinds = np.isin(part_halo_ids, star_halo_ids)
-    # part_halo_ids = part_halo_ids[okinds]
-    # part_ids = part_ids[okinds]
-    # group_part_ids = group_part_ids[okinds]
-    # all_poss = all_poss[okinds]
-    # gal_sml = gal_sml[okinds]
-    # ages = ages[okinds]
-    # metallicities = metallicities[okinds]
-    # masses = masses[okinds]
+    okinds = np.isin(part_halo_ids, star_halo_ids)
+    part_halo_ids = part_halo_ids[okinds]
+    part_ids = part_ids[okinds]
+    group_part_ids = group_part_ids[okinds]
+    all_poss = all_poss[okinds]
+    gal_sml = gal_sml[okinds]
+    ages = ages[okinds]
+    metallicities = metallicities[okinds]
+    masses = masses[okinds]
+    app_masses = app_masses[okinds]
+
+    print("There are", len(part_halo_ids), "particles")
 
     print("Got halo IDs")
 
@@ -290,32 +278,21 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     print("There are", len(subgrp_ids), "particles")
 
-    # # Remove particles not associated to a subgroup
-    # okinds = subgrp_ids != 1073741824
-    # grp_ids = grp_ids[okinds]
-    # subgrp_ids = subgrp_ids[okinds]
-    # part_ids = part_ids[okinds]
-    # group_part_ids = group_part_ids[okinds]
-    # gas_all_poss = gas_all_poss[okinds]
-    # gas_metallicities = gas_metallicities[okinds]
-    # gas_masses = gas_masses[okinds]
-    # gas_smooth_ls = gas_smooth_ls[okinds]
-
-    print("There are", len(subgrp_ids), "particles")
-
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
     part_halo_ids = np.zeros(grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
         part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-    # okinds = np.isin(part_halo_ids, star_halo_ids)
-    # part_halo_ids = part_halo_ids[okinds]
-    # part_ids = part_ids[okinds]
-    # group_part_ids = group_part_ids[okinds]
-    # gas_all_poss = gas_all_poss[okinds]
-    # gas_metallicities = gas_metallicities[okinds]
-    # gas_masses = gas_masses[okinds]
-    # gas_smooth_ls = gas_smooth_ls[okinds]
+    okinds = np.isin(part_halo_ids, star_halo_ids)
+    part_halo_ids = part_halo_ids[okinds]
+    part_ids = part_ids[okinds]
+    group_part_ids = group_part_ids[okinds]
+    gas_all_poss = gas_all_poss[okinds]
+    gas_metallicities = gas_metallicities[okinds]
+    gas_masses = gas_masses[okinds]
+    gas_smooth_ls = gas_smooth_ls[okinds]
+
+    print("There are", len(part_halo_ids), "particles")
 
     print("Got halo IDs")
 
