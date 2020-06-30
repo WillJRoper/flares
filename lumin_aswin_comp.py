@@ -67,7 +67,6 @@ def main():
             masses.extend(mass[okinds])
             okinds = np.isin(halo_ids, myids)
             aswins.extend(aswins_lumins[okinds])
-            masses.extend(mass[okinds])
 
             amass = a_hdf[f'{reg}/{snap}/Galaxy/Mstar_30'][...]
             a_masses.extend(amass[okinds])
