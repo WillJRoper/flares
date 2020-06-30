@@ -50,7 +50,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
     return parts_in_groups, part_groups
 
 
-def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
+def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
                lkernel, kbins, conv, model, F, i, j, f):
 
     # Define dimensions array
@@ -70,10 +70,10 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
 
     # Extract the flux in erg s^-1 Hz^-1
     if f.split(".")[0] == 'FAKE':
-        L = (models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
+        L = (models.generate_Lnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
                                        tauVs_BC, F, f, fesc=0, log10t_BC=7))
     else:
-        L = (models.generate_Fnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
+        L = (models.generate_Fnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
                                        tauVs_BC, F, f, fesc=0, log10t_BC=7))
 
     return L
@@ -170,6 +170,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                      physicalUnits=True, numThreads=8)
         masses = E.read_array('PARTDATA', path, snap, 'PartType4/InitialMass', noH=True, physicalUnits=True,
                               numThreads=8) * 10 ** 10
+        app_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True,
+                              numThreads=8) * 10 ** 10
 
         # Calculate ages
         ages = calc_ages(z, a_born)
@@ -237,22 +239,24 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     # Get the position of each of these galaxies
     gal_ages = {}
     gal_mets = {}
-    gal_ms = {}
+    gal_ini_ms = {}
+    gal_app_ms = {}
     gal_smls = {}
     all_gal_poss = {}
     means = {}
-    for id, cop in zip(halo_ids, gal_cops):
+    for id, cop in zip(star_halo_ids, gal_cops):
         mask = halo_part_inds[id]
         all_gal_poss[id] = all_poss[mask, :]
         gal_ages[id] = ages[mask]
         gal_mets[id] = metallicities[mask]
-        gal_ms[id] = masses[mask]
+        gal_ini_ms[id] = masses[mask]
+        gal_app_ms[id] = app_masses[mask]
         gal_smls[id] = gal_sml[mask]
         means[id] = cop
 
     print('There are', len(gal_ages.keys()), 'galaxies')
 
-    del ages, all_poss, metallicities, masses, gal_sml, a_born
+    del ages, all_poss, metallicities, masses, gal_sml, a_born, halo_ids
 
     gc.collect()
 
@@ -378,7 +382,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     okinds_gas = gas_rs <= 0.03
                     centd_star_pos = centd_star_pos[okinds_star]
                     centd_gas_pos = centd_gas_pos[okinds_gas]
-                    ls = get_lumins(centd_star_pos, gal_ms[id][okinds_star], gal_ages[id][okinds_star],
+                    ls = get_lumins(centd_star_pos, gal_ini_ms[id][okinds_star], gal_ages[id][okinds_star],
                                     gal_mets[id][okinds_star], gas_mets[id][okinds_gas], centd_gas_pos,
                                     gas_ms[id][okinds_gas], gas_smls[id][okinds_gas], lkernel, kbins,
                                     conv, model, F, i, j, f)
@@ -391,7 +395,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                         continue
 
                     # Compute total mass
-                    ms[ind2, ind1] = np.sum(gal_ms[id][okinds_star]) / 10**10
+                    ms[ind2, ind1] = np.sum(gal_app_ms[id][okinds_star]) / 10**10
 
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
