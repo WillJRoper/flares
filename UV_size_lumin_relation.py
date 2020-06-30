@@ -121,12 +121,15 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     hlrs = np.array(hlr_dict[snap])
     lumins = np.array(lumin_dict[snap])
+    okinds = np.logical_and(~np.isnan(hlrs), ~np.isnan(lumins))
+    hlrs = hlrs[okinds]
+    lumins = lumins[okinds]
 
     okinds = np.logical_and(hlrs / (csoft / (1 + z)) > 10**-1, lumins > 10**25)
     lumins = lumins[okinds]
     hlrs = hlrs[okinds]
     try:
-        cbar = ax.hexbin(lumins, hlrs / (csoft / (1 + z)), gridsize=100, mincnt=1, 
+        cbar = ax.hexbin(lumins, hlrs / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='viridis')
         plot_meidan_stat(lumins, hlrs / (csoft / (1 + z)), ax, lab='REF', color='r')
     except ValueError:
