@@ -95,5 +95,17 @@ def main():
 
     fig.savefig("plots/mine_aswin_comp.png")
 
+    plt.close(fig)
+
+    # Set up figure
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.scatter(mine, aswins)
+
+    ax.set_xlabel("$L_{\mathrm{will}, FUV} / $(erg s$^{-1}$ Hz$^{-1}$)")
+    ax.set_ylabel("$L_{\mathrm{will}, FUV} / $(erg s$^{-1}$ Hz$^{-1}$)")
+
+    fig.savefig("plots/mine_aswin_scatter_comp.png")
 
 main()
