@@ -134,10 +134,9 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
-                            np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) > 100,
-                                           np.logical_and(all_gal_ns[:, 4] != 0, all_gal_ns[:, 0] != 0)
-                                           )
+                            np.logical_and(all_gal_ns[:, 4] != 0, all_gal_ns[:, 0] != 0)
                             )
+
     subfind_grp_ids = subfind_grp_ids[okinds]
     subfind_subgrp_ids = subfind_subgrp_ids[okinds]
     gal_cops = gal_cops[okinds]
@@ -324,7 +323,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     all_gas_poss = {}
     for id in star_halo_ids:
         mask = halo_part_inds[id]
-        if len(gal_ages[id]) + len(gas_all_poss[mask, 0]) < 100:
+        if (len(gal_ages[id]) + len(gas_all_poss[mask, 0])) < 100:
             del all_gal_poss[id]
             del gal_ages[id]
             del gal_mets[id]
