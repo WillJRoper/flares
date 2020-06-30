@@ -45,11 +45,21 @@ def main():
         my_path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg + '/RestUV' + snap + '.hdf5'
 
         try:
-            print(list(a_hdf[f'{reg}/{snap}/Galaxy'].keys()))
+            grpid = a_hdf[f'{reg}/{snap}/Galaxy/GroupNumber'][...]
+            subgrpid = a_hdf[f'{reg}/{snap}/Galaxy/SubGroupNumber'][...]
+
+            # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
+            halo_ids = np.zeros(grpid.size, dtype=float)
+            for (ind, g), sg in zip(enumerate(grpid), subgrpid):
+                halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
             aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS_2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
 
             my_hdf = h5py.File(my_path, 'r')
-            mine.extend(my_hdf['FAKE.TH.FUV/Aperture_Luminosity_30kpc'][:, 0])
+            myids = my_hdf['galaxy_ids'][...]
+            my_lumins = my_hdf['FAKE.TH.FUV/Aperture_Luminosity_30kpc'][:, 0]
+            okinds = np.isin(myids, halo_ids)
+            mine.extend(my_lumins[okinds])
 
             my_hdf.close()
         except OSError:

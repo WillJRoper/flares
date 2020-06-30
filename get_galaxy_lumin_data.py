@@ -134,7 +134,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
-                            np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) >= 100,
+                            np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) > 100,
                                            np.logical_and(all_gal_ns[:, 4] != 0, all_gal_ns[:, 0] != 0)
                                            )
                             )
@@ -324,21 +324,6 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     all_gas_poss = {}
     for id in star_halo_ids:
         mask = halo_part_inds[id]
-        centd_star_pos = all_gal_poss[id] - means[id]
-        centd_gas_pos = gas_all_poss[mask, :] - means[id]
-        star_rs01 = calc_rad(centd_star_pos, 0, 1)
-        gas_rs01 = calc_rad(centd_gas_pos, 0, 1)
-        okinds_star = star_rs01 <= 0.03
-        okinds_gas = gas_rs01 <= 0.03
-        if (len(gal_ages[id][okinds_star]) + len(gas_all_poss[mask, 0][okinds_gas])) < 100:
-            print(len(gal_ages[id][okinds_star]) + len(gas_all_poss[mask, 0][okinds_gas]))
-            del all_gal_poss[id]
-            del gal_ages[id]
-            del gal_mets[id]
-            del gal_ms[id]
-            del gal_smls[id]
-            del means[id]
-            continue
         all_gas_poss[id] = gas_all_poss[mask, :]
         gas_mets[id] = gas_metallicities[mask]
         gas_ms[id] = gas_masses[mask]
@@ -368,11 +353,11 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         print("Extracting data for filter:", f)
 
         # Create images for these galaxies
-        hls = np.zeros((len(gal_ages), 3))
-        ms = np.zeros((len(gal_ages), 3))
-        tot_l = np.zeros((len(gal_ages), 3))
-        for ind1, (i, j) in enumerate([(0, 1)]):
-            for ind2, id in enumerate(gal_ages.keys()):
+        hls = np.zeros((len(star_halo_ids), 3))
+        ms = np.zeros((len(star_halo_ids), 3))
+        tot_l = np.zeros((len(star_halo_ids), 3))
+        for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
+            for ind2, id in enumerate(star_halo_ids):
 
                 # Get the luminosities
                 try:
