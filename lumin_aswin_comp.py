@@ -17,14 +17,13 @@ sns.set_style('whitegrid')
 def main():
 
     regions = []
-    for reg in range(33, 34):
+    for reg in range(20, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
             regions.append(str(reg))
 
-    # snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000']
-    snaps = ['005_z010p000', ]
+    snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000']
 
     reg_snaps = []
     for reg in reversed(regions):
