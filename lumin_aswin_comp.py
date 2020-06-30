@@ -48,7 +48,7 @@ def main():
             aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS_2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
 
             my_hdf = h5py.File(my_path, 'r')
-            mine.extend(my_hdf['FAKE.TH.FUV']['Aperture_Luminosity_30kpc'][...])
+            mine.extend(my_hdf['FAKE.TH.FUV']['Aperture_Luminosity_30kpc'][:, 0])
 
             my_hdf.close()
         except OSError:
