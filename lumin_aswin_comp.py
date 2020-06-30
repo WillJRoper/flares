@@ -16,7 +16,7 @@ sns.set_style('whitegrid')
 def main():
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(33, 34):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
