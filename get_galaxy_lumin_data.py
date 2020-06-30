@@ -70,11 +70,11 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
 
     # Extract the flux in erg s^-1 Hz^-1
     if f.split(".")[0] == 'FAKE':
-        L = (models.generate_Lnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
-                                       tauVs_BC, F, f, fesc=0, log10t_BC=7))
+        L = (model.generate_Lnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
+                                      tauVs_BC, F, f, fesc=0, log10t_BC=7))
     else:
-        L = (models.generate_Fnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
-                                       tauVs_BC, F, f, fesc=0, log10t_BC=7))
+        L = (model.generate_Fnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
+                                      tauVs_BC, F, f, fesc=0, log10t_BC=7))
 
     return L
 
@@ -388,7 +388,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
 
 # Define SED model
-model = models.define_model('BPASSv2.2.1.binary/Chabrier_300') # DEFINE SED GRID -
+model = models.define_model('BPASSv2.2.1.binary/Chabrier_300')  # define SED grid
 model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
 # filters = FLARE.filters.NIRCam
