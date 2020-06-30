@@ -45,6 +45,7 @@ def main():
         my_path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg + '/RestUV' + snap + '.hdf5'
 
         try:
+            print(list(a_hdf[f'{reg}/{snap}/Galaxy'].keys()))
             aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS_2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
 
             my_hdf = h5py.File(my_path, 'r')
