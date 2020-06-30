@@ -60,7 +60,7 @@ def main():
             my_hdf = h5py.File(my_path, 'r')
             myids = my_hdf['galaxy_ids'][...]
             my_lumins = my_hdf['FAKE.TH.FUV/Aperture_Luminosity_30kpc'][:, 0]
-            mass = my_hdf['FAKE.TH.FUV/Aperture_Mass_30kpc'][:, 0]
+            mass = my_hdf['FAKE.TH.FUV/Aperture_Mass_30kpc'][:, 0] * 10**10
             okinds = np.isin(myids, halo_ids)
             mine.extend(my_lumins[okinds])
             masses.extend(mass[okinds])
@@ -119,7 +119,7 @@ def main():
     ax.set_xscale('log')
 
     cbar = fig.colorbar(im)
-    cbar.yaxis.set_ylabel("$M_{\star}/M_{\odot}$")
+    cbar.set_label("$M_{\star}/M_{\odot}$")
 
     fig.savefig("plots/mine_aswin_scatter_comp.png")
 
