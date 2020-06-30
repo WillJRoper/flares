@@ -161,7 +161,7 @@ def main():
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
 
-    colors = matplotlib.cm.plasma(np.linspace(0, 1, 6))
+    colors = matplotlib.cm.plasma(np.linspace(0, 1, 8))
 
     plt_prog_xs = []
     plt_prog_ys = []
@@ -173,11 +173,14 @@ def main():
         progbins = np.linspace(0, max(nprogs_environ[bin_ind + 1]), max(nprogs_environ[bin_ind + 1]) + 1)
         descbins = np.linspace(0, max(ndescs_environ[bin_ind + 1]), max(ndescs_environ[bin_ind + 1]) + 1)
 
+        progbin_cents = np.arange(0, max(nprogs_environ[bin_ind + 1]) + 1, 1)
+        descbin_cents = np.arange(0, max(ndescs_environ[bin_ind + 1]) + 1, 1)
+
         progcounts, progbins = np.histogram(nprogs_environ[bin_ind + 1], bins=progbins)
         desccounts, desccounts = np.histogram(ndescs_environ[bin_ind + 1], bins=descbins)
 
-        ax1.plot(progbins, progcounts, color=col)
-        ax2.plot(descbins, desccounts, color=col)
+        ax1.plot(progbin_cents, progcounts, color=col)
+        ax2.plot(descbin_cents, desccounts, color=col)
 
         plt_prog_xs.extend(progbins)
         plt_prog_ys.extend(progcounts)
