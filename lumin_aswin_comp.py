@@ -104,9 +104,15 @@ def main():
     ax = fig.add_subplot(111)
 
     ax.scatter(mine, aswins)
+    mins = np.min([min(mine), min(aswins)])
+    maxs = np.max([max(mine), max(aswins)])
+    ax.plot((mins, maxs), (mins, maxs), linestyle='--', color='k')
 
     ax.set_xlabel("$L_{\mathrm{will}, FUV} / $(erg s$^{-1}$ Hz$^{-1}$)")
     ax.set_ylabel("$L_{\mathrm{will}, FUV} / $(erg s$^{-1}$ Hz$^{-1}$)")
+
+    ax.set_yscale('log')
+    ax.set_xscale('log')
 
     fig.savefig("plots/mine_aswin_scatter_comp.png")
 
