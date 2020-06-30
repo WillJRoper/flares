@@ -331,6 +331,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         okinds_star = star_rs01 <= 0.03
         okinds_gas = gas_rs01 <= 0.03
         if (len(gal_ages[id][okinds_star]) + len(gas_all_poss[mask, 0][okinds_gas])) < 100:
+            print(len(gal_ages[id][okinds_star]) + len(gas_all_poss[mask, 0][okinds_gas]))
             del all_gal_poss[id]
             del gal_ages[id]
             del gal_mets[id]
