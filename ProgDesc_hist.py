@@ -170,8 +170,8 @@ def main():
 
     for (bin_ind, ovden), col in zip(enumerate(bin_cents), colors):
         
-        progbins = np.linspace(0, nprogs_environ[bin_ind + 1].max(), nprogs_environ[bin_ind + 1].max() + 1)
-        descbins = np.linspace(0, ndescs_environ[bin_ind + 1].max(), ndescs_environ[bin_ind + 1].max() + 1)
+        progbins = np.linspace(0, max(nprogs_environ[bin_ind + 1]), max(nprogs_environ[bin_ind + 1]) + 1)
+        descbins = np.linspace(0, max(ndescs_environ[bin_ind + 1]), max(ndescs_environ[bin_ind + 1]) + 1)
 
         progcounts, progbins = np.histogram(nprogs_environ[bin_ind + 1], bins=progbins)
         desccounts, desccounts = np.histogram(ndescs_environ[bin_ind + 1], bins=descbins)
