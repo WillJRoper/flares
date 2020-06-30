@@ -398,7 +398,7 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
             desc_mass_conts[desc_start: desc_start + ndesc] = this_desc_cont
             desc_masses_final[desc_start: desc_start + ndesc] = this_desc_mass
 
-    return prog_mass_conts, desc_mass_conts, prog_masses_final, desc_masses_final, snap_masses
+    return prog_mass_conts, desc_mass_conts, prog_masses_final, desc_masses_final, halo_mass
 
 
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/', part_types=(0, 1, 4, 5)):
