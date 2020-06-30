@@ -22,7 +22,8 @@ def main():
         else:
             regions.append(str(reg))
 
-    snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000']
+    # snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000']
+    snaps = ['005_z010p000', ]
 
     reg_snaps = []
     for reg in reversed(regions):
