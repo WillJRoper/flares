@@ -68,29 +68,36 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
     tauVs_ISM = (10 ** 0.0063) * gal_met_surfden
     tauVs_BC = 2.0 * (gal_mets / 0.01)
 
-    # Extract the flux in nanoJansky
+    # Extract the flux in erg s^-1 Hz^-1
     if f.split(".")[0] == 'FAKE':
         L = (models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
                                        tauVs_BC, F, f))
     else:
         L = (models.generate_Fnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
-                                       tauVs_BC, F, f) * u.nJy)
+                                       tauVs_BC, F, f))
 
     return L
 
 
 @nb.njit(nogil=True, parallel=True)
-def calc_light_mass_rad(poss, ls, i, j):
+def calc_rad(poss, i, j):
 
     # Get galaxy particle indices
     rs = np.sqrt(poss[:, i]**2 + poss[:, j]**2)
 
     # Sort the radii and masses
     sinds = np.argsort(rs)
+
+    return rs, sinds
+
+
+@nb.njit(nogil=True, parallel=True)
+def calc_light_mass_rad(ls, rs):
+
+    # Sort the radii and masses
+    sinds = np.argsort(rs)
     rs = rs[sinds]
     ls = ls[sinds]
-    ls = ls[rs < 0.03]
-    rs = rs[rs < 0.03]
 
     # Get the cumalative sum of masses
     l_profile = np.cumsum(ls)
@@ -357,19 +364,28 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
                 # Get the luminosities
                 try:
-                    ls = get_lumins(all_gal_poss[id] - means[id], gal_ms[id], gal_ages[id], gal_mets[id], gas_mets[id],
-                                    all_gas_poss[id] - means[id], gas_ms[id], gas_smls[id], lkernel, kbins, conv, model,
-                                    F, i, j, f)
+                    centd_star_pos = all_gal_poss[id] - means[id]
+                    centd_gas_pos = all_gas_poss[id] - means[id]
+                    star_rs = calc_rad(centd_star_pos, i, j)
+                    gas_rs = calc_rad(centd_gas_pos, i, j)
+                    okinds_star = star_rs <= 0.03
+                    okinds_gas = gas_rs <= 0.03
+                    centd_star_pos = centd_star_pos[okinds_star]
+                    centd_gas_pos = centd_gas_pos[okinds_gas]
+                    ls = get_lumins(centd_star_pos, gal_ms[id][okinds_star], gal_ages[id][okinds_star],
+                                    gal_mets[id][okinds_star], gas_mets[id][okinds_gas], centd_gas_pos,
+                                    gas_ms[id][okinds_gas], gas_smls[id][okinds_gas], lkernel, kbins,
+                                    conv, model, F, i, j, f)
 
                     # Compute half mass radii
                     try:
-                        hls[ind2, ind1], tot_l[ind2, ind1] = calc_light_mass_rad(all_gal_poss[id] - means[id], ls, i, j)
+                        hls[ind2, ind1], tot_l[ind2, ind1] = calc_light_mass_rad(ls, star_rs)
                     except ValueError:
                         print("Galaxy", id, "had no stars within 30 kpc of COP")
                         continue
 
                     # Compute total mass
-                    ms[ind2, ind1] = np.sum(gal_ms[id]) / 10**10
+                    ms[ind2, ind1] = np.sum(gal_ms[id][okinds_star]) / 10**10
 
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
@@ -378,7 +394,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         # Write out the results for this filter
         filt = hdf.create_group(f)  # create halo group
         filt.create_dataset('half_light_rad', data=hls, dtype=float)  # Half light radius [Mpc]
-        filt.create_dataset('Total_Mass', data=ms, dtype=float)  # Aperture mass [Msun * 10*10]
+        filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=float)  # Aperture mass [Msun * 10*10]
         filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=float)  # Aperture Luminosity [nJy]
 
     hdf.close()
