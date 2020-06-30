@@ -107,7 +107,7 @@ def main():
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    im = ax.scatter(mine, aswins, c=masses, cmap='plasma', s=6, norm=LogNorm)
+    im = ax.scatter(mine, aswins, c=masses, cmap='plasma', s=6, norm=LogNorm())
     mins = np.min([min(mine), min(aswins)])
     maxs = np.max([max(mine), max(aswins)])
     ax.plot((mins, maxs), (mins, maxs), linestyle='--', color='k')
