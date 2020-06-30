@@ -53,13 +53,15 @@ def main():
             for (ind, g), sg in zip(enumerate(grpid), subgrpid):
                 halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-            aswins.extend(a_hdf[f'{reg}/{snap}/Galaxy/BPASS_2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...])
+            aswins_lumins = a_hdf[f'{reg}/{snap}/Galaxy/BPASS_2.2.1/Chabrier300/Luminosity/DustModelI/FUV'][...]
 
             my_hdf = h5py.File(my_path, 'r')
             myids = my_hdf['galaxy_ids'][...]
             my_lumins = my_hdf['FAKE.TH.FUV/Aperture_Luminosity_30kpc'][:, 0]
             okinds = np.isin(myids, halo_ids)
             mine.extend(my_lumins[okinds])
+            okinds = np.isin(halo_ids, myids)
+            aswins.extend(aswins_lumins[okinds])
 
             my_hdf.close()
         except OSError:
