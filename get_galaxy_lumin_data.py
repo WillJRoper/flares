@@ -361,11 +361,11 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         print("Extracting data for filter:", f)
 
         # Create images for these galaxies
-        hls = np.zeros((len(star_halo_ids), 3))
-        ms = np.zeros((len(star_halo_ids), 3))
-        tot_l = np.zeros((len(star_halo_ids), 3))
+        hls = np.zeros((len(gal_ages), 3))
+        ms = np.zeros((len(gal_ages), 3))
+        tot_l = np.zeros((len(gal_ages), 3))
         for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
-            for ind2, id in enumerate(star_halo_ids):
+            for ind2, id in enumerate(gal_ages.keys()):
 
                 # Get the luminosities
                 try:
