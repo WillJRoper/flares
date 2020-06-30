@@ -71,7 +71,7 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
     # Extract the flux in erg s^-1 Hz^-1
     if f.split(".")[0] == 'FAKE':
         L = (models.generate_Lnu(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
-                                       tauVs_BC, F, fesc=0, log10t_BC=7))
+                                 tauVs_BC, F, fesc=0, log10t_BC=7))
     else:
         L = (models.generate_Fnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
                                        tauVs_BC, F, f, fesc=0, log10t_BC=7))
@@ -97,7 +97,7 @@ def calc_rad(poss):
     return rs
 
 
-@nb.njit(nogil=True, parallel=True)
+# @nb.njit(nogil=True, parallel=True)
 def calc_light_mass_rad(ls, rs):
 
     # Sort the radii and masses
