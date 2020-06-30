@@ -64,8 +64,12 @@ def main():
             okinds = np.isin(myids, halo_ids)
             mine.extend(my_lumins[okinds])
             masses.extend(mass[okinds])
+            print(mass[okinds])
             okinds = np.isin(halo_ids, myids)
             aswins.extend(aswins_lumins[okinds])
+
+            amass = a_hdf[f'{reg}/{snap}/Galaxy/Mstar_30'][...]
+            print(amass[okinds])
 
             my_hdf.close()
         except OSError:

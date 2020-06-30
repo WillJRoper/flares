@@ -157,7 +157,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                physicalUnits=True, numThreads=8)
         a_born = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
                               physicalUnits=True, numThreads=8)
-        metallicities = E.read_array('PARTDATA', path, snap, 'PartType4/Metallicity', noH=True,
+        metallicities = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothedMetallicity', noH=True,
                                      physicalUnits=True, numThreads=8)
         masses = E.read_array('PARTDATA', path, snap, 'PartType4/InitialMass', noH=True, physicalUnits=True,
                               numThreads=8) * 10 ** 10
@@ -256,7 +256,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     # Get gas particle information
     gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True,
                                 numThreads=8)
-    gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/Metallicity', noH=True,
+    gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothedMetallicity', noH=True,
                                      physicalUnits=True, numThreads=8)
     gas_smooth_ls = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True,
                                  numThreads=8)
