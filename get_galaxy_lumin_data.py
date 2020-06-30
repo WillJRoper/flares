@@ -66,15 +66,15 @@ def get_lumins(gal_poss, gal_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms,
 
     # Calculate optical depth of ISM and birth cloud
     tauVs_ISM = (10 ** 0.0063) * gal_met_surfden
-    tauVs_BC = 2.0 * (gal_mets / 0.01)
+    tauVs_BC = 1.25 * (gal_mets / 0.01)
 
     # Extract the flux in erg s^-1 Hz^-1
     if f.split(".")[0] == 'FAKE':
         L = (models.generate_Lnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
-                                       tauVs_BC, F, f))
+                                       tauVs_BC, F, f, fesc=0, log10t_BC=7))
     else:
         L = (models.generate_Fnu_array(model, gal_ms, gal_ages, gal_mets, tauVs_ISM,
-                                       tauVs_BC, F, f))
+                                       tauVs_BC, F, f, fesc=0, log10t_BC=7))
 
     return L
 
