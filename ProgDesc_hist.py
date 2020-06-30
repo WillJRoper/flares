@@ -144,7 +144,7 @@ def main():
     plt.close(fig)
 
     regs_ovdens = np.loadtxt("region_overdensity.txt", dtype=float)
-    bin_edges = np.linspace(regs_ovdens.min(), regs_ovdens.max(), 6)
+    bin_edges = np.linspace(regs_ovdens.min(), regs_ovdens.max(), 8)
     reg_bins = np.digitize(regs_ovdens, bins=bin_edges)
     bin_wid = bin_edges[1] - bin_edges[0]
     bin_cents = bin_edges[1:] - bin_wid / 2
@@ -173,8 +173,8 @@ def main():
         progbins = np.linspace(0, max(nprogs_environ[bin_ind + 1]), max(nprogs_environ[bin_ind + 1]) + 1)
         descbins = np.linspace(0, max(ndescs_environ[bin_ind + 1]), max(ndescs_environ[bin_ind + 1]) + 1)
 
-        progbin_cents = np.arange(0, max(nprogs_environ[bin_ind + 1]) + 1, 1)
-        descbin_cents = np.arange(0, max(ndescs_environ[bin_ind + 1]) + 1, 1)
+        progbin_cents = progbins[1:] - 0.5
+        descbin_cents = descbins[1:] - 0.5
 
         progcounts, progbins = np.histogram(nprogs_environ[bin_ind + 1], bins=progbins)
         desccounts, descbins = np.histogram(ndescs_environ[bin_ind + 1], bins=descbins)
