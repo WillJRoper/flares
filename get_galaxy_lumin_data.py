@@ -85,10 +85,7 @@ def calc_rad(poss, i, j):
     # Get galaxy particle indices
     rs = np.sqrt(poss[:, i]**2 + poss[:, j]**2)
 
-    # Sort the radii and masses
-    sinds = np.argsort(rs)
-
-    return rs, sinds
+    return rs
 
 
 @nb.njit(nogil=True, parallel=True)
