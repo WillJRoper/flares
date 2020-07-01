@@ -8,6 +8,7 @@ import gc
 import os
 import sys
 from utilities import calc_ages, get_Z_LOS
+from photutils import CircularAperture, aperture_photometry
 import h5py
 from astropy.cosmology import Planck13 as cosmo
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
@@ -77,6 +78,34 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
                                        tauVs_BC, F, f, fesc=0, log10t_BC=7))
 
     return L
+
+
+def make_soft_img(pos, nbin, i, j, imgrange, ls):
+
+    img, xedges, yedges = np.histogram2d(pos[:, i], pos[:, j], bins=nbin, range=imgrange, weights=ls)
+
+    return img
+
+
+def get_img_hlr(img, apertures, tot_l, app_rs):
+
+    # Apply the apertures
+    phot_table = aperture_photometry(img, apertures, method='subpixel', subpixels=5)
+
+    # Extract the aperture luminosities
+    lumins = np.array(phot_table[0])[3:]
+
+    print(lumins)
+
+    # Get half the total luminosity
+    half_l = tot_l / 2
+
+    # Get the half mass radius particle
+    hmr_ind = np.argmin(np.abs(lumins - half_l))
+    hmr = app_rs[hmr_ind]
+
+    return hmr
+
 
 
 # @nb.njit(nogil=True, parallel=True)
@@ -327,6 +356,32 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     print('Got gas properties')
 
+    # ======================== Set up images ========================
+
+    # Define comoving softening length in pMpc
+    csoft = 0.001802390 / 0.6777 / (1 + z)
+
+    # Define width
+    ini_width = 0.05
+
+    # Compute the resolution
+    ini_res = ini_width / csoft
+    res = int(np.ceil(ini_res))
+
+    print(res)
+
+    # Compute the new width
+    width = csoft * res
+
+    # Define range and extent for the images
+    imgrange = ((-width / 2, width / 2), (-width / 2, width / 2))
+    imgextent = [-width / 2, width / 2, -width / 2, width / 2]
+
+    # Set up aperture objects
+    positions = [(res / 2, res / 2)]
+    app_radii = np.linspace(0.01, res / 2, 100)
+    apertures = [CircularAperture(positions, r=r) for r in app_radii]
+
     # Open the HDF5 file
     hdf = h5py.File(savepath + filename + snap + '.hdf5', 'w')
     hdf.create_dataset('orientation', data=[(0, 1), (1, 2), (0, 2)])
@@ -346,6 +401,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         hls = np.zeros((len(star_halo_ids), 3))
         ms = np.zeros((len(star_halo_ids), 3))
         tot_l = np.zeros((len(star_halo_ids), 3))
+        imgs = np.zeros((len(star_halo_ids), res, res, 3))
         for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
             for ind2, id in enumerate(star_halo_ids):
 
@@ -370,6 +426,13 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     except ValueError:
                         print("Galaxy", id, "had no stars within 30 kpc of COP")
                         continue
+
+                    # Make an image at softening length
+                    img = make_soft_img(centd_star_pos, res, i, j, imgrange, ls)
+                    imgs[ind2, :, :, ind1] = img
+
+                    # Get the image half light radius
+                    img_hlr = get_img_hlr(img, apertures, tot_l, app_radii * csoft)
 
                     # Compute total mass
                     ms[ind2, ind1] = np.sum(gal_app_ms[id][okinds_star]) / 10**10
