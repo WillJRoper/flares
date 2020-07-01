@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH --ntasks 1 # The number of cores you need...
-#SBATCH --array=1-480
+#SBATCH --array=1-480%40
 #SBATCH --cpus-per-task=8
 #SBATCH -J FLARES-WEBBDATA #Give it something meaningful.
 #SBATCH -o logs/output_WEBBDATA.%J.out
