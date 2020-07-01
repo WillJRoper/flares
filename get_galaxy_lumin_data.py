@@ -183,11 +183,12 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                             physicalUnits=True, numThreads=8)
     all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)
+    all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', numThreads=8)
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
                             np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) >= 100,
-                                           np.logical_and(all_gal_ns[:, 4] != 0, all_gal_ns[:, 0] != 0)
+                                           np.logical_and(all_gal_ms[:, 4] >= 1e8, all_gal_ms[:, 0] > 0)
                                            )
                             )
     subfind_grp_ids = subfind_grp_ids[okinds]
@@ -481,28 +482,28 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
         hdf.close()
 
-        H, binedges = np.histogram(img_hlrs[:, 0] / csoft, bins=100)
-        binwid = binedges[1] - binedges[0]
-        bin_cents = binedges[1:] - binwid / 2
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-
-        ax.bar(bin_cents, H, width=binwid, label="Image")
-
-        H, binedges = np.histogram(hls[:, 0] / csoft, bins=100)
-        binwid = binedges[1] - binedges[0]
-        bin_cents = binedges[1:] - binwid / 2
-
-        ax.plot(bin_cents, H, label="Particle", color='r')
-
-        ax.set_xlabel("$R_{1/2}/\epsilon$")
-        ax.set_ylabel("$N$")
-
-        handles, labels = ax.get_legend_handles_labels()
-        ax.legend(handles, labels)
-
-        fig.savefig("plots/imghalflightrads_" + f.split(".")[-1] + ".png", bbox_inches="tight")
+        # H, binedges = np.histogram(img_hlrs[:, 0] / csoft, bins=100)
+        # binwid = binedges[1] - binedges[0]
+        # bin_cents = binedges[1:] - binwid / 2
+        #
+        # fig = plt.figure()
+        # ax = fig.add_subplot(111)
+        #
+        # ax.bar(bin_cents, H, width=binwid, label="Image")
+        #
+        # H, binedges = np.histogram(hls[:, 0] / csoft, bins=100)
+        # binwid = binedges[1] - binedges[0]
+        # bin_cents = binedges[1:] - binwid / 2
+        #
+        # ax.plot(bin_cents, H, label="Particle", color='r')
+        #
+        # ax.set_xlabel("$R_{1/2}/\epsilon$")
+        # ax.set_ylabel("$N$")
+        #
+        # handles, labels = ax.get_legend_handles_labels()
+        # ax.legend(handles, labels)
+        #
+        # fig.savefig("plots/imghalflightrads_" + f.split(".")[-1] + ".png", bbox_inches="tight")
 
 
 # Define SED model
