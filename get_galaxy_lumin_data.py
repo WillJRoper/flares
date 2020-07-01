@@ -366,7 +366,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     csoft = 0.001802390 / 0.6777 / (1 + z)
 
     # Define width
-    ini_width = 0.05
+    ini_width = 0.1
 
     # Compute the resolution
     ini_res = ini_width / csoft
@@ -383,7 +383,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     # Set up aperture objects
     positions = [(res / 2, res / 2)]
-    app_radii = np.linspace(0.01, res / 2, 100)
+    app_radii = np.linspace(0.005, res / 3, 200)
     apertures = [CircularAperture(positions, r=r) for r in app_radii]
 
     # Open the HDF5 file
