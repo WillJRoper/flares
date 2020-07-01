@@ -83,6 +83,7 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
     return L
 
 
+@nb.njit(nogil=True, parallel=True)
 def make_soft_img(pos, nbin, i, j, imgrange, ls):
 
     img, xedges, yedges = np.histogram2d(pos[:, i], pos[:, j], bins=nbin, range=imgrange, weights=ls)
@@ -473,7 +474,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         ax.bar(bin_cents, H, width=binwid)
         ax.set_xlabel("$R_{1/2}$")
         ax.set_ylabel("$N$")
-        fig.savefig("plots/imghalflightrads.png", bbox_inches="tight")
+        fig.savefig("plots/imghalflightrads_" + f.split(".")[-1] + ".png", bbox_inches="tight")
 
 
 # Define SED model
