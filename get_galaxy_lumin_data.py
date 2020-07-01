@@ -11,11 +11,13 @@ import sys
 from utilities import calc_ages, get_Z_LOS
 from photutils import CircularAperture, aperture_photometry
 import h5py
+import warnings
 from astropy.cosmology import Planck13 as cosmo
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
 from SynthObs.SED import models
 matplotlib.use('Agg')
+warnings.filterwarnings('ignore')
 
 
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
@@ -410,7 +412,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         ms = np.zeros((len(star_halo_ids), 3))
         tot_l = np.zeros((len(star_halo_ids), 3))
         imgs = np.zeros((len(star_halo_ids), res, res, 3))
-        for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
+        # for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
+        for ind1, (i, j) in enumerate([(0, 1), ]):
             for ind2, id in enumerate(star_halo_ids):
 
                 # Get the luminosities
@@ -461,7 +464,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
         hdf.close()
 
-        H, binedges = np.histogram(img_hlrs[:, 0] / csoft, bins=100)
+        H, binedges = np.histogram(img_hlrs[:, 0] / csoft, bins=20)
         binwid = binedges[1] - binedges[0]
         bin_cents = binedges[1:] - binwid / 2
 
