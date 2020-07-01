@@ -97,7 +97,7 @@ def get_img_hlr(img, apertures, tot_l, app_rs):
     phot_table = aperture_photometry(img, apertures, method='subpixel', subpixels=5)
 
     # Extract the aperture luminosities
-    row = np.array(phot_table[0])[:]
+    row = np.lib.recfunctions.structured_to_unstructured(np.array(phot_table[0]))
     lumins = row[3:]
 
     # Get half the total luminosity
