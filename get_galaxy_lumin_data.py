@@ -83,7 +83,7 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
     return L
 
 
-@nb.njit(nogil=True, parallel=True)
+@nb.jit(nogil=True, parallel=True)
 def make_soft_img(pos, nbin, i, j, imgrange, ls):
 
     img, xedges, yedges = np.histogram2d(pos[:, i], pos[:, j], bins=nbin, range=imgrange, weights=ls)
@@ -480,7 +480,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
         ax.plot(bin_cents, H, label="Particle")
 
-        ax.set_xlabel("$R_{1/2}$")
+        ax.set_xlabel("$R_{1/2}/\epsilon$")
         ax.set_ylabel("$N$")
 
         handles, labels = ax.get_legened_handles_labels()
