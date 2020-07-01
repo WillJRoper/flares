@@ -471,9 +471,21 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.bar(bin_cents, H, width=binwid)
+
+        ax.bar(bin_cents, H, width=binwid, label="Image")
+
+        H, binedges = np.histogram(hls[:, 0] / csoft, bins=20)
+        binwid = binedges[1] - binedges[0]
+        bin_cents = binedges[1:] - binwid / 2
+
+        ax.plot(bin_cents, H, label="Particle")
+
         ax.set_xlabel("$R_{1/2}$")
         ax.set_ylabel("$N$")
+
+        handles, labels = ax.get_legened_handles_labels()
+        ax.legned(handles, labels)
+
         fig.savefig("plots/imghalflightrads_" + f.split(".")[-1] + ".png", bbox_inches="tight")
 
 
