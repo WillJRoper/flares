@@ -93,7 +93,7 @@ def make_soft_img(pos, nbin, i, j, imgrange, ls):
 
 
 @nb.jit(nogil=True, parallel=True)
-def get_img_hlr(img, apertures, tot_l, app_rs, res):
+def get_img_hlr(img, apertures, tot_l, app_rs, res, csoft):
 
     # Apply the apertures
     phot_table = aperture_photometry(img, apertures, method='subpixel', subpixels=5)
@@ -107,7 +107,7 @@ def get_img_hlr(img, apertures, tot_l, app_rs, res):
 
     # Interpolate to increase resolution
     func = interp1d(app_rs, lumins, kind="linear")
-    interp_rs = np.linspace(0.001, res / 4, 10000)
+    interp_rs = np.linspace(0.001, res / 4, 10000) * csoft
     interp_lumins = func(interp_rs)
 
     # Get the half mass radius particle
@@ -458,7 +458,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     imgs[ind2, :, :, ind1] = img
 
                     # Get the image half light radius
-                    img_hlrs[ind2, ind1] = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii, res)
+                    img_hlrs[ind2, ind1] = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii, res, csoft)
 
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
