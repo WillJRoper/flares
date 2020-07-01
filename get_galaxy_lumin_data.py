@@ -375,10 +375,10 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     ini_res = ini_width / csoft
     res = int(np.ceil(ini_res))
 
-    print(res)
-
     # Compute the new width
     width = csoft * res
+
+    print(width, res)
 
     # Define range and extent for the images
     imgrange = ((-width / 2, width / 2), (-width / 2, width / 2))
@@ -386,7 +386,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     # Set up aperture objects
     positions = [(res / 2, res / 2)]
-    app_radii = np.linspace(0.001, res / 2, 100)
+    app_radii = np.linspace(0.001, res / 4, 50)
     apertures = [CircularAperture(positions, r=r) for r in app_radii]
 
     # Open the HDF5 file
