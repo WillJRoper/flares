@@ -363,7 +363,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     # ======================== Set up images ========================
 
     # Define comoving softening length in pMpc
-    csoft = 0.001802390 / 0.6777 / (1 + z)
+    csoft = 0.001802390 / 0.6777 / (1 + z) / 4
 
     # Define width
     ini_width = 0.1
