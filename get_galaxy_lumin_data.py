@@ -1,6 +1,7 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 import numpy as np
 import matplotlib
+import matplotlib.pyplot as plt
 import eagle_IO.eagle_IO as E
 import numba as nb
 import astropy.units as u
@@ -363,7 +364,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     # ======================== Set up images ========================
 
     # Define comoving softening length in pMpc
-    csoft = 0.001802390 / 0.6777 / (1 + z) / 4
+    csoft = 0.001802390 / 0.6777 / (1 + z)
 
     # Define width
     ini_width = 0.1
@@ -383,7 +384,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     # Set up aperture objects
     positions = [(res / 2, res / 2)]
-    app_radii = np.linspace(0.005, res / 3, 200)
+    app_radii = np.linspace(0.001, res / 2, 100)
     apertures = [CircularAperture(positions, r=r) for r in app_radii]
 
     # Open the HDF5 file
@@ -405,6 +406,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
         # Create images for these galaxies
         hls = np.zeros((len(star_halo_ids), 3))
+        img_hlrs = np.zeros((len(star_halo_ids), 3))
         ms = np.zeros((len(star_halo_ids), 3))
         tot_l = np.zeros((len(star_halo_ids), 3))
         imgs = np.zeros((len(star_halo_ids), res, res, 3))
@@ -442,8 +444,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     imgs[ind2, :, :, ind1] = img
 
                     # Get the image half light radius
-                    img_hlr = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii * csoft)
-                    print(img_hlr, hls[ind2, ind1], (img_hlr - hls[ind2, ind1]) / hls[ind2, ind1])
+                    img_hlrs[ind2, ind1] = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii * csoft)
 
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
@@ -459,6 +460,17 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=float)  # Aperture Luminosity [nJy]
 
         hdf.close()
+
+        H, binedges = np.histogram(img_hlrs[:, 0] / csoft, bins=100)
+        binwid = binedges[1] - binedges[0]
+        bin_cents = binedges[1:] - binwid / 2
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.bar(bin_cents, H, width=binwid)
+        ax.set_xlabel("$R_{1/2}$")
+        ax.set_ylabel("$N$")
+        fig.savefig("plots/imghalflightrads.png", bbox_inches="tight")
 
 
 # Define SED model
