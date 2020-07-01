@@ -92,13 +92,9 @@ def get_img_hlr(img, apertures, tot_l, app_rs):
     # Apply the apertures
     phot_table = aperture_photometry(img, apertures, method='subpixel', subpixels=5)
 
-    print(phot_table)
-
     # Extract the aperture luminosities
     row = np.lib.recfunctions.structured_to_unstructured(np.array(phot_table[0]))
-    print(row)
     lumins = row[3:]
-    print(lumins)
 
     # Get half the total luminosity
     half_l = tot_l / 2
@@ -110,18 +106,17 @@ def get_img_hlr(img, apertures, tot_l, app_rs):
     return hmr
 
 
+@nb.njit(nogil=True, parallel=True)
+def calc_rad(poss, i, j):
 
-# @nb.njit(nogil=True, parallel=True)
-# def calc_rad(poss, i, j):
-#
-#     # Get galaxy particle indices
-#     rs = np.sqrt(poss[:, i]**2 + poss[:, j]**2)
-#
-#     return rs
+    # Get galaxy particle indices
+    rs = np.sqrt(poss[:, i]**2 + poss[:, j]**2)
+
+    return rs
 
 
 @nb.njit(nogil=True, parallel=True)
-def calc_rad(poss):
+def calc_3drad(poss):
 
     # Get galaxy particle indices
     rs = np.sqrt(poss[:, 0]**2 + poss[:, 1]**2 + poss[:, 2]**2)
@@ -130,12 +125,18 @@ def calc_rad(poss):
 
 
 @nb.njit(nogil=True, parallel=True)
-def calc_light_mass_rad(ls, rs):
+def calc_light_mass_rad(ls, poss, i, j, ms):
+
+    rs = calc_rad(poss, i, j)
 
     # Sort the radii and masses
     sinds = np.argsort(rs)
     rs = rs[sinds]
     ls = ls[sinds]
+    okinds = rs <= 0.03
+    rs = rs[okinds]
+    ls = ls[okinds]
+    ms = ms[okinds]
 
     # Get the cumalative sum of masses
     l_profile = np.cumsum(ls)
@@ -148,7 +149,7 @@ def calc_light_mass_rad(ls, rs):
     hmr_ind = np.argmin(np.abs(l_profile - half_l))
     hmr = rs[hmr_ind]
 
-    return hmr, tot_l
+    return hmr, tot_l, np.sum(ms) / 10**10
 
 
 def get_main(path, snap, savepath, filters, F, model, filename):
@@ -414,20 +415,24 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                 try:
                     centd_star_pos = all_gal_poss[id] - means[id]
                     centd_gas_pos = all_gas_poss[id] - means[id]
-                    star_rs = calc_rad(centd_star_pos)
-                    gas_rs = calc_rad(centd_gas_pos)
-                    okinds_star = star_rs <= 0.03
-                    okinds_gas = gas_rs <= 0.03
-                    centd_star_pos = centd_star_pos[okinds_star]
-                    centd_gas_pos = centd_gas_pos[okinds_gas]
-                    ls = get_lumins(centd_star_pos, gal_ini_ms[id][okinds_star], gal_ages[id][okinds_star],
-                                    gal_mets[id][okinds_star], gas_mets[id][okinds_gas], centd_gas_pos,
-                                    gas_ms[id][okinds_gas], gas_smls[id][okinds_gas], lkernel, kbins,
+                    # star_rs = calc_3drad(centd_star_pos)
+                    # gas_rs = calc_3drad(centd_gas_pos)
+                    # okinds_star = star_rs <= 0.03
+                    # okinds_gas = gas_rs <= 0.03
+                    # centd_star_pos = centd_star_pos[okinds_star]
+                    # centd_gas_pos = centd_gas_pos[okinds_gas]
+                    # ls = get_lumins(centd_star_pos, gal_ini_ms[id][okinds_star], gal_ages[id][okinds_star],
+                    #                 gal_mets[id][okinds_star], gas_mets[id][okinds_gas], centd_gas_pos,
+                    #                 gas_ms[id][okinds_gas], gas_smls[id][okinds_gas], lkernel, kbins,
+                    #                 conv, model, F, i, j, f)
+                    ls = get_lumins(centd_star_pos, gal_ini_ms[id], gal_ages[id], gal_mets[id],
+                                    gas_mets[id], centd_gas_pos, gas_ms[id], gas_smls[id], lkernel, kbins,
                                     conv, model, F, i, j, f)
 
                     # Compute half mass radii
                     try:
-                        hls[ind2, ind1], tot_l[ind2, ind1] = calc_light_mass_rad(ls, star_rs)
+                        hls[ind2, ind1], tot_l[ind2, ind1], ms[ind2, ind1] = calc_light_mass_rad(ls, centd_star_pos,
+                                                                                                 i, j, gal_app_ms[id])
                     except ValueError:
                         print("Galaxy", id, "had no stars within 30 kpc of COP")
                         continue
@@ -438,10 +443,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
                     # Get the image half light radius
                     img_hlr = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii * csoft)
-                    print(img_hlr, hls[ind2, ind1])
-
-                    # Compute total mass
-                    ms[ind2, ind1] = np.sum(gal_app_ms[id][okinds_star]) / 10**10
+                    print(img_hlr, hls[ind2, ind1], (img_hlr - hls[ind2, ind1]) / hlrs[ind2, ind1])
 
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
