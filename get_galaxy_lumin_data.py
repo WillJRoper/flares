@@ -435,6 +435,9 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                     gas_mets[id], centd_gas_pos, gas_ms[id], gas_smls[id], lkernel, kbins,
                                     conv, model, F, i, j, f)
 
+                    if np.sum(ls) > 10**50:
+                        print("Bizarrely high luminosity", id)
+
                     # Compute half mass radii
                     try:
                         hls[ind2, ind1], tot_l[ind2, ind1], ms[ind2, ind1] = calc_light_mass_rad(ls, centd_star_pos,
