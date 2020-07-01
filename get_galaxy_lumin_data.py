@@ -484,7 +484,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         ax.set_ylabel("$N$")
 
         handles, labels = ax.get_legend_handles_labels()
-        ax.legned(handles, labels)
+        ax.legend(handles, labels)
 
         fig.savefig("plots/imghalflightrads_" + f.split(".")[-1] + ".png", bbox_inches="tight")
 
