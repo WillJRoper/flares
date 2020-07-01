@@ -437,7 +437,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     imgs[ind2, :, :, ind1] = img
 
                     # Get the image half light radius
-                    img_hlr = get_img_hlr(img, apertures, tot_l, app_radii * csoft)
+                    img_hlr = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii * csoft)
+                    print(img_hlr, hls[ind2, ind1])
 
                     # Compute total mass
                     ms[ind2, ind1] = np.sum(gal_app_ms[id][okinds_star]) / 10**10
