@@ -90,14 +90,14 @@ def make_soft_img(pos, nbin, i, j, imgrange, ls):
 
     return img
 
-
+@nb.jit(nogil=True, parallel=True)
 def get_img_hlr(img, apertures, tot_l, app_rs):
 
     # Apply the apertures
     phot_table = aperture_photometry(img, apertures, method='subpixel', subpixels=5)
 
     # Extract the aperture luminosities
-    row = np.lib.recfunctions.structured_to_unstructured(np.array(phot_table[0]))
+    row = np.array(phot_table[0])[:]
     lumins = row[3:]
 
     # Get half the total luminosity
