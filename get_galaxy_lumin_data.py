@@ -10,6 +10,7 @@ import os
 import sys
 from utilities import calc_ages, get_Z_LOS
 from photutils import CircularAperture, aperture_photometry
+from scipy.interpolate import interp1d
 import h5py
 import warnings
 from astropy.cosmology import Planck13 as cosmo
@@ -90,8 +91,9 @@ def make_soft_img(pos, nbin, i, j, imgrange, ls):
 
     return img
 
+
 @nb.jit(nogil=True, parallel=True)
-def get_img_hlr(img, apertures, tot_l, app_rs):
+def get_img_hlr(img, apertures, tot_l, app_rs, res):
 
     # Apply the apertures
     phot_table = aperture_photometry(img, apertures, method='subpixel', subpixels=5)
@@ -103,9 +105,14 @@ def get_img_hlr(img, apertures, tot_l, app_rs):
     # Get half the total luminosity
     half_l = tot_l / 2
 
+    # Interpolate to increase resolution
+    func = interp1d(app_rs, lumins, kind="linear")
+    interp_rs = np.linspace(0.001, res / 4, 10000)
+    interp_lumins = func(interp_rs)
+
     # Get the half mass radius particle
-    hmr_ind = np.argmin(np.abs(lumins - half_l))
-    hmr = app_rs[hmr_ind]
+    hmr_ind = np.argmin(np.abs(interp_lumins - half_l))
+    hmr = interp_rs[hmr_ind]
 
     return hmr
 
@@ -387,8 +394,9 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     # Set up aperture objects
     positions = [(res / 2, res / 2)]
-    app_radii = np.linspace(0.001, res / 4, 50)
+    app_radii = np.linspace(0.001, res / 4, 100)
     apertures = [CircularAperture(positions, r=r) for r in app_radii]
+    app_radii *= csoft
 
     # Open the HDF5 file
     hdf = h5py.File(savepath + filename + snap + '.hdf5', 'w')
@@ -413,8 +421,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
         ms = np.zeros((len(star_halo_ids), 3))
         tot_l = np.zeros((len(star_halo_ids), 3))
         imgs = np.zeros((len(star_halo_ids), res, res, 3))
-        # for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
-        for ind1, (i, j) in enumerate([(0, 1), ]):
+        for ind1, (i, j) in enumerate([(0, 1), (1, 2), (0, 2)]):
             for ind2, id in enumerate(star_halo_ids):
 
                 # Get the luminosities
@@ -451,7 +458,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     imgs[ind2, :, :, ind1] = img
 
                     # Get the image half light radius
-                    img_hlrs[ind2, ind1] = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii * csoft)
+                    img_hlrs[ind2, ind1] = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii)
 
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
@@ -462,13 +469,19 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
         # Write out the results for this filter
         filt = hdf.create_group(f)  # create halo group
-        filt.create_dataset('half_light_rad', data=hls, dtype=float)  # Half light radius [Mpc]
-        filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=float)  # Aperture mass [Msun * 10*10]
-        filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=float)  # Aperture Luminosity [nJy]
+        filt.create_dataset('particle_half_light_rad', data=hls, dtype=float,
+                            compression="gzip")  # Half light radius [Mpc]
+        filt.create_dataset('Image_half_light_rad', data=img_hlrs, dtype=float,
+                            compression="gzip")  # Half light radius [Mpc]
+        filt.create_dataset('Images', data=imgs, dtype=float, compression="gzip")  # Images in erg/s/Hz
+        filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=float,
+                            compression="gzip")  # Aperture mass [Msun * 10*10]
+        filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=float,
+                            compression="gzip")  # Aperture Luminosity [nJy]
 
         hdf.close()
 
-        H, binedges = np.histogram(img_hlrs[:, 0] / csoft, bins=50)
+        H, binedges = np.histogram(img_hlrs[:, 0] / csoft, bins=100)
         binwid = binedges[1] - binedges[0]
         bin_cents = binedges[1:] - binwid / 2
 
@@ -477,7 +490,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
         ax.bar(bin_cents, H, width=binwid, label="Image")
 
-        H, binedges = np.histogram(hls[:, 0] / csoft, bins=50)
+        H, binedges = np.histogram(hls[:, 0] / csoft, bins=100)
         binwid = binedges[1] - binedges[0]
         bin_cents = binedges[1:] - binwid / 2
 
