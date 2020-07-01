@@ -458,7 +458,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     imgs[ind2, :, :, ind1] = img
 
                     # Get the image half light radius
-                    img_hlrs[ind2, ind1] = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii)
+                    img_hlrs[ind2, ind1] = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii, res)
 
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
