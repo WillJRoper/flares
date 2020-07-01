@@ -369,7 +369,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     csoft = 0.001802390 / 0.6777 / (1 + z)
 
     # Define width
-    ini_width = 0.1
+    ini_width = 0.7
 
     # Compute the resolution
     ini_res = ini_width / csoft
