@@ -465,7 +465,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
         hdf.close()
 
-        H, binedges = np.histogram(img_hlrs[:, 0] / csoft, bins=20)
+        H, binedges = np.histogram(img_hlrs[:, 0] / csoft, bins=50)
         binwid = binedges[1] - binedges[0]
         bin_cents = binedges[1:] - binwid / 2
 
@@ -474,11 +474,11 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
         ax.bar(bin_cents, H, width=binwid, label="Image")
 
-        H, binedges = np.histogram(hls[:, 0] / csoft, bins=20)
+        H, binedges = np.histogram(hls[:, 0] / csoft, bins=50)
         binwid = binedges[1] - binedges[0]
         bin_cents = binedges[1:] - binwid / 2
 
-        ax.plot(bin_cents, H, label="Particle")
+        ax.plot(bin_cents, H, label="Particle", color='r')
 
         ax.set_xlabel("$R_{1/2}/\epsilon$")
         ax.set_ylabel("$N$")
