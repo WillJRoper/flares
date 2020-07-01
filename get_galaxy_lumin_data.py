@@ -93,7 +93,7 @@ def get_img_hlr(img, apertures, tot_l, app_rs):
     phot_table = aperture_photometry(img, apertures, method='subpixel', subpixels=5)
 
     # Extract the aperture luminosities
-    lumins = np.array(phot_table[0])[3:]
+    lumins = np.array(phot_table[0])
 
     print(lumins)
 
@@ -387,6 +387,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     hdf.create_dataset('orientation', data=[(0, 1), (1, 2), (0, 2)])
     hdf.create_dataset('galaxy_ids', data=star_halo_ids)  # galaxy ids
 
+    hdf.close()
+
     # Loop over filters
     for f in filters:
 
@@ -441,13 +443,16 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     print("Galaxy", id, "Does not appear in the dictionaries")
                     continue
 
+        # Open the HDF5 file
+        hdf = h5py.File(savepath + filename + snap + '.hdf5', 'r+')
+
         # Write out the results for this filter
         filt = hdf.create_group(f)  # create halo group
         filt.create_dataset('half_light_rad', data=hls, dtype=float)  # Half light radius [Mpc]
         filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=float)  # Aperture mass [Msun * 10*10]
         filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=float)  # Aperture Luminosity [nJy]
 
-    hdf.close()
+        hdf.close()
 
 
 # Define SED model
