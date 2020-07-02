@@ -79,7 +79,7 @@ def calc_3drad(poss):
 def main(snaps):
 
     regions = []
-    for reg in range(0, 1):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -116,7 +116,7 @@ def main(snaps):
             # Remove particles not in a subgroup
             okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
                                     np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) >= 100,
-                                                   np.logical_and(all_gal_ms[:, 4] >= 1e8, all_gal_ms[:, 0] > 0)
+                                                   np.logical_and(all_gal_ms[:, 4] >= 1e9, all_gal_ms[:, 0] > 0)
                                                    )
                                     )
             subfind_grp_ids = subfind_grp_ids[okinds]
@@ -240,11 +240,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if j == 0:
         ax.set_ylabel('$c/a$')
 
-# for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
-#     ax.set_xlim(0.001, 1)
-#     ax.set_ylim(0.001, 1)
-#     for spine in ax.spines.values():
-#         spine.set_edgecolor('k')
+for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
+    ax.set_xlim(0.001, 1)
+    ax.set_ylim(0.001, 1)
+    for spine in ax.spines.values():
+        spine.set_edgecolor('k')
 
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
