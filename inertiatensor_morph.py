@@ -76,7 +76,7 @@ def calc_3drad(poss):
     return rs
 
 
-def main():
+def main(snaps):
 
     regions = []
     for reg in range(0, 1):
@@ -84,11 +84,6 @@ def main():
             regions.append('0' + str(reg))
         else:
             regions.append(str(reg))
-
-    # Define snapshots
-    snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
-             '006_z009p000', '007_z008p000', '008_z007p000',
-             '009_z006p000', '010_z005p000', '011_z004p770']
 
     b_a_dict = {}
     c_a_dict = {}
@@ -206,7 +201,12 @@ def main():
     return b_a_dict, c_a_dict
 
 
-b_a_dict, c_a_dict = main()
+# Define snapshots
+snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000',
+         '009_z006p000', '010_z005p000', '011_z004p770']
+
+b_a_dict, c_a_dict = main(snaps)
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
