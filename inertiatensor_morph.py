@@ -5,6 +5,7 @@ import seaborn as sns
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
 import numba as nb
+import eagle_IO.eagle_IO as E
 
 
 sns.set_context("paper")
