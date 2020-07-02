@@ -86,7 +86,7 @@ def calc_3drad(poss):
 def main(snaps):
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 1):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -127,7 +127,7 @@ def main(snaps):
             # Remove particles not in a subgroup
             okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
                                     np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) >= 100,
-                                                   np.logical_and(all_gal_ms[:, 4] >= 1e9, all_gal_ms[:, 0] > 0)
+                                                   np.logical_and(all_gal_ms[:, 4] >= 1e8, all_gal_ms[:, 0] > 0)
                                                    )
                                     )
             subfind_grp_ids = subfind_grp_ids[okinds]
@@ -221,6 +221,10 @@ res = main(snaps)
 print(res)
 b_a_dict, c_a_dict =res
 
+disk_edge = lambda x: x - 0.6
+disk_edges = np.linspace(0.6, 1.0)
+
+
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
 gs = gridspec.GridSpec(3, 6)
@@ -246,6 +250,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
                          linewidths=0.2, cmap='viridis')
     except ValueError:
         continue
+
+    ax.plot((0, 1), (0, 1), color='k')
+    ax.plot(disk_edges, disk_edge(disk_edges), color='k')
 
     ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='left', fontsize=8)
