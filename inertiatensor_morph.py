@@ -30,15 +30,12 @@ def get_diag_stensor(masses, pos):
 
     s_tensor = shape_tensor(masses, pos)
     eigs = np.linalg.eigvals(s_tensor)
-    print(eigs)
 
     maxind = np.argmax(eigs)
     minind = np.argmin(eigs)
     setinds = {0, 1, 2}
     maxminset = {maxind, minind}
     inds = [np.argmax(eigs), int(list(setinds - maxminset)[0]), np.argmin(eigs)]
-    print(inds)
-    print(eigs[inds])
 
     return eigs[inds]
 
@@ -126,7 +123,7 @@ def main(snaps):
             # Remove particles not in a subgroup
             okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
                                     np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) >= 100,
-                                                   np.logical_and(all_gal_ms[:, 4] >= 1e8, all_gal_ms[:, 0] > 0)
+                                                   np.logical_and(all_gal_ms[:, 4] >= 1e9, all_gal_ms[:, 0] > 0)
                                                    )
                                     )
             subfind_grp_ids = subfind_grp_ids[okinds]
@@ -238,11 +235,14 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    cbar = ax.hexbin(b_a_dict[snap], c_a_dict[snap], gridsize=100, mincnt=1, norm=LogNorm(),
-                     linewidths=0.2, cmap='viridis')
+    try:
+        cbar = ax.hexbin(b_a_dict[snap], c_a_dict[snap], gridsize=100, mincnt=1, norm=LogNorm(),
+                         linewidths=0.2, cmap='viridis')
+    except ValueError:
+        continue
 
     ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-            transform=ax.transAxes, horizontalalignment='right', fontsize=8)
+            transform=ax.transAxes, horizontalalignment='left', fontsize=8)
 
     # Label axes
     if i == 2:
