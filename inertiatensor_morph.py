@@ -12,6 +12,7 @@ sns.set_context("paper")
 sns.set_style('whitegrid')
 
 
+@nb.njit(nogil=True, parallel=True)
 def shape_tensor(masses, pos):
 
     s_tensor = np.zeros((3, 3))
@@ -19,11 +20,12 @@ def shape_tensor(masses, pos):
     for i in range(3):
         for j in range(3):
             for k in range(len(masses)):
-                s_tensor[i, j] += masses[k] * pos[i] * pos[j]
+                s_tensor[i, j] += masses[k] * pos[k, i] * pos[k, j]
 
     return s_tensor / np.sum(masses)
 
 
+@nb.njit(nogil=True, parallel=True)
 def get_diag_stensor(masses, pos):
 
     s_tensor = shape_tensor(masses, pos)
@@ -104,6 +106,8 @@ def main():
             # Get the redshift
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
+
+            print(reg, z)
 
             # Load all necessary arrays
             subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
