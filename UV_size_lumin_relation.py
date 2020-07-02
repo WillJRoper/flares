@@ -78,11 +78,11 @@ for ind in range(len(reg_snaps)):
         hdf = h5py.File(hdfpath + "RestUV" + snap + '.hdf5', 'r')
 
         try:
-            ms = hdf[f]['Aperture_Mass_30kpc'][:, 0]
-            okinds = ms * 10**10 > 1e8
-            lumins = hdf[f]['Aperture_Luminosity_30kpc'][okinds, 0]
-            hlrs = hdf[f]['half_light_rad'][okinds, 0]
+            lumins = hdf[f]['Aperture_Luminosity_30kpc'][:, 0]
+            hlrs = hdf[f]['Image_half_light_rad'][:, 0]
         except UnboundLocalError:
+            continue
+        except KeyError:
             continue
 
         print(lumins.shape)
@@ -271,7 +271,7 @@ for snap in snaps:
     ax.set_xlabel(r'$L_{FUV}/$ [erg $/$ s $/$ Hz]')
     ax.set_ylabel('$R_{1/2}/ [pkpc]$')
 
-    fig.savefig('plots/HalfLightRadiusFUV_' + str(z) + '.png', bbox_inches='tight')
+    fig.savefig('plots/Img_HalfLightRadiusFUV_' + str(z) + '.png', bbox_inches='tight')
 
     plt.close(fig)
 
