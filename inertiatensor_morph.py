@@ -25,7 +25,7 @@ def shape_tensor(masses, pos):
     return s_tensor / np.sum(masses)
 
 
-@nb.njit(nogil=True, parallel=True)
+@nb.jit(nogil=True, parallel=True)
 def get_diag_stensor(masses, pos):
 
     s_tensor = shape_tensor(masses, pos)
