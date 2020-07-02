@@ -86,7 +86,7 @@ def calc_3drad(poss):
 def main(snaps):
 
     regions = []
-    for reg in range(0, 1):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -218,10 +218,9 @@ snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
          '009_z006p000', '010_z005p000', '011_z004p770']
 
 res = main(snaps)
-print(res)
 b_a_dict, c_a_dict =res
 
-disk_edge = lambda x: x - 0.6
+disk_edge = lambda x: (x - 0.6)**2
 disk_edges = np.linspace(0.6, 1.0)
 
 
