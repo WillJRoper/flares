@@ -86,7 +86,7 @@ def calc_3drad(poss):
 def main(snaps):
 
     regions = []
-    for reg in range(0, 3):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -122,7 +122,7 @@ def main(snaps):
                 all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                           numThreads=8) * 10**10
             except OSError:
-                return
+                continue
 
             # Remove particles not in a subgroup
             okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
@@ -156,9 +156,9 @@ def main(snaps):
                 part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
                                         physicalUnits=True, verbose=False, numThreads=8)
             except OSError:
-                return
+                continue
             except KeyError:
-                return
+                continue
 
             # A copy of this array is needed for the extraction method
             group_part_ids = np.copy(part_ids)
