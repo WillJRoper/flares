@@ -86,7 +86,7 @@ def calc_3drad(poss):
 def main(snaps):
 
     regions = []
-    for reg in range(0, 1):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
