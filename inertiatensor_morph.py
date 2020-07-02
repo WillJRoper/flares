@@ -228,11 +228,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    cbar = ax.hexbin(b_a_dict[snap], c_a_dict[snap], gridsize=100, mincnt=1,
-                     norm=LogNorm(),
+    cbar = ax.hexbin(b_a_dict[snap], c_a_dict[snap], gridsize=100, mincnt=1, norm=LogNorm(),
                      linewidths=0.2, cmap='viridis')
 
-    ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+    ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
     # Label axes
@@ -241,9 +240,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if j == 0:
         ax.set_ylabel('$c/a$')
 
-for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
-    ax.set_xlim(0, 1)
-    ax.set_ylim(0, 1)
+# for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
+#     ax.set_xlim(0.001, 1)
+#     ax.set_ylim(0.001, 1)
+#     for spine in ax.spines.values():
+#         spine.set_edgecolor('k')
 
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
