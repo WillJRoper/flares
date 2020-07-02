@@ -228,7 +228,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    cbar = ax.hexbin(b_a_dict[snap], c_a_dict[snap], gridsize=100, mincnt=1, xscale='log', yscale='log',
+    cbar = ax.hexbin(b_a_dict[snap], c_a_dict[snap], gridsize=100, mincnt=1,
                      norm=LogNorm(),
                      linewidths=0.2, cmap='viridis')
 
