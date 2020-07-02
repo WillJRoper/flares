@@ -29,8 +29,18 @@ def shape_tensor(masses, pos):
 def get_diag_stensor(masses, pos):
 
     s_tensor = shape_tensor(masses, pos)
+    eigs = np.linalg.eigvals(s_tensor)
+    print(eigs)
 
-    return np.linalg.eigvals(s_tensor)
+    maxind = np.argmax(eigs)
+    minind = np.argmin(eigs)
+    setinds = {0, 1, 2}
+    maxminset = {maxind, minind}
+    inds = [np.argmax(eigs), int(list(setinds - maxminset)[0]), np.argmin(eigs)]
+    print(inds)
+    print(eigs[inds])
+
+    return eigs[inds]
 
 
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
@@ -79,7 +89,7 @@ def calc_3drad(poss):
 def main(snaps):
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 1):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
