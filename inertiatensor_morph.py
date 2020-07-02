@@ -86,7 +86,7 @@ def calc_3drad(poss):
 def main(snaps):
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 1):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -96,6 +96,7 @@ def main(snaps):
     c_a_dict = {}
 
     for snap in snaps:
+
         b_a_dict[snap] = []
         c_a_dict[snap] = []
 
@@ -216,7 +217,9 @@ snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000',
          '009_z006p000', '010_z005p000', '011_z004p770']
 
-b_a_dict, c_a_dict = main(snaps)
+res = main(snaps)
+print(res)
+b_a_dict, c_a_dict =res
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
