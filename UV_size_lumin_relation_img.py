@@ -79,8 +79,10 @@ for ind in range(len(reg_snaps)):
 
         try:
             lumins = hdf[f]['Aperture_Luminosity_30kpc'][:, 0]
-            hlrs = hdf[f]['particle_half_light_rad'][:, 0]
+            hlrs = hdf[f]['Image_half_light_rad'][:, 0]
         except UnboundLocalError:
+            continue
+        except KeyError:
             continue
 
         print(lumins.shape)
@@ -162,7 +164,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/HalfLightRadiusFUV_soft.png', bbox_inches='tight')
+fig.savefig('plots/Img_HalfLightRadiusFUV_soft.png', bbox_inches='tight')
 
 plt.close(fig)
 
@@ -234,7 +236,7 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/HalfLightRadiusFUV.png', bbox_inches='tight')
+fig.savefig('plots/Img_HalfLightRadiusFUV.png', bbox_inches='tight')
 
 plt.close(fig)
 
@@ -253,11 +255,11 @@ for snap in snaps:
     fig = plt.figure()
     ax = fig.add_subplot(111)
     try:
-        popt, pcov = curve_fit(linfit, lumins, hlrs, p0=[1, 1])
-        fitxs = np.linspace(10 ** 28, 10 ** 30, 1000)
+        # popt, pcov = curve_fit(linfit, lumins, hlrs, p0=[1, 1])
+        # fitxs = np.linspace(10 ** 28, 10 ** 30, 1000)
         cbar = ax.hexbin(lumins, hlrs, gridsize=50, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='viridis')
-        ax.plot(fitxs, linfit(fitxs, popt[0], popt[1]), linestyle='--', color='k')
+        # ax.plot(fitxs, linfit(fitxs, popt[0], popt[1]), linestyle='--', color='k')
         # plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
     except ValueError:
         continue
@@ -269,7 +271,7 @@ for snap in snaps:
     ax.set_xlabel(r'$L_{FUV}/$ [erg $/$ s $/$ Hz]')
     ax.set_ylabel('$R_{1/2}/ [pkpc]$')
 
-    fig.savefig('plots/HalfLightRadiusFUV_' + str(z) + '.png', bbox_inches='tight')
+    fig.savefig('plots/Img_HalfLightRadiusFUV_' + str(z) + '.png', bbox_inches='tight')
 
     plt.close(fig)
 
