@@ -1,12 +1,10 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 import numpy as np
-import h5py
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
-from scipy.stats import binned_statistic
-from scipy.optimize import curve_fit
+import numba as nb
 
 
 sns.set_context("paper")
