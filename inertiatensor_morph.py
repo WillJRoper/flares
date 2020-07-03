@@ -127,7 +127,7 @@ def main(snaps, part_type):
             # Remove particles not in a subgroup
             okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
                                     np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) >= 100,
-                                                   np.logical_and(all_gal_ms[:, 4] >= 1e8, all_gal_ms[:, 0] > 0)
+                                                   np.logical_and(all_gal_ms[:, 4] >= 1e9, all_gal_ms[:, 0] > 0)
                                                    )
                                     )
             subfind_grp_ids = subfind_grp_ids[okinds]
@@ -212,7 +212,7 @@ def main(snaps, part_type):
     return b_a_dict, c_a_dict
 
 
-for part_type in (0, 1, 4):
+for part_type in (0, 4):
 
     # Define snapshots
     snaps = ['003_z012p000', '004_z011p000', '005_z010p000',

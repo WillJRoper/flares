@@ -90,6 +90,9 @@ for ind in range(len(reg_snaps)):
         lumin_dict[snap].extend(lumins)
     except OSError:
         continue
+    except KeyError:
+        continue
+
 
 # Define comoving softening length in kpc
 csoft = 0.001802390 / 0.6777
