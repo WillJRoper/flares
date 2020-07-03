@@ -83,7 +83,7 @@ def calc_3drad(poss):
     return rs
 
 
-def main(snaps):
+def main(snaps, part_type):
 
     regions = []
     for reg in range(0, 40):
@@ -143,17 +143,17 @@ def main(snaps):
 
             try:
                 # Load data for luminosities
-                all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
+                all_poss = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
                                         physicalUnits=True, numThreads=8)
-                masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True,
+                masses = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Mass', noH=True, physicalUnits=True,
                                       numThreads=8) * 10 ** 10
-                grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', noH=True,
+                grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', noH=True,
                                        physicalUnits=True, verbose=False, numThreads=8)
 
-                subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', noH=True,
+                subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', noH=True,
                                           physicalUnits=True, verbose=False, numThreads=8)
 
-                part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
+                part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', noH=True,
                                         physicalUnits=True, verbose=False, numThreads=8)
             except OSError:
                 continue
@@ -212,77 +212,79 @@ def main(snaps):
     return b_a_dict, c_a_dict
 
 
-# Define snapshots
-snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
-         '006_z009p000', '007_z008p000', '008_z007p000',
-         '009_z006p000', '010_z005p000', '011_z004p770']
+for part_type in (0, 1, 4):
 
-res = main(snaps)
-b_a_dict, c_a_dict =res
+    # Define snapshots
+    snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
+             '006_z009p000', '007_z008p000', '008_z007p000',
+             '009_z006p000', '010_z005p000', '011_z004p770']
 
-disk_edge = lambda x: (x - 0.6)**2
-disk_edges = np.linspace(0.6, 1.0)
+    res = main(snaps, part_type)
+    b_a_dict, c_a_dict =res
+
+    # disk_edge = lambda x: (x - 0.6)**2
+    # disk_edges = np.linspace(0.6, 1.0)
 
 
-# Set up plot
-fig = plt.figure(figsize=(18, 10))
-gs = gridspec.GridSpec(3, 6)
-gs.update(wspace=0.0, hspace=0.0)
-ax1 = fig.add_subplot(gs[0, 0])
-ax2 = fig.add_subplot(gs[0, 1])
-ax3 = fig.add_subplot(gs[0, 2])
-ax4 = fig.add_subplot(gs[1, 0])
-ax5 = fig.add_subplot(gs[1, 1])
-ax6 = fig.add_subplot(gs[1, 2])
-ax7 = fig.add_subplot(gs[2, 0])
-ax8 = fig.add_subplot(gs[2, 1])
-ax9 = fig.add_subplot(gs[2, 2])
+    # Set up plot
+    fig = plt.figure(figsize=(18, 10))
+    gs = gridspec.GridSpec(3, 6)
+    gs.update(wspace=0.0, hspace=0.0)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax3 = fig.add_subplot(gs[0, 2])
+    ax4 = fig.add_subplot(gs[1, 0])
+    ax5 = fig.add_subplot(gs[1, 1])
+    ax6 = fig.add_subplot(gs[1, 2])
+    ax7 = fig.add_subplot(gs[2, 0])
+    ax8 = fig.add_subplot(gs[2, 1])
+    ax9 = fig.add_subplot(gs[2, 2])
 
-for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps,
-                            [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
+    for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps,
+                                [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
 
-    z_str = snap.split('z')[1].split('p')
-    z = float(z_str[0] + '.' + z_str[1])
+        z_str = snap.split('z')[1].split('p')
+        z = float(z_str[0] + '.' + z_str[1])
 
-    try:
-        cbar = ax.hexbin(b_a_dict[snap], c_a_dict[snap], gridsize=100, mincnt=1, norm=LogNorm(),
-                         linewidths=0.2, cmap='viridis')
-    except ValueError:
-        continue
+        try:
+            cbar = ax.hexbin(b_a_dict[snap], c_a_dict[snap], gridsize=100, mincnt=1, norm=LogNorm(),
+                             linewidths=0.2, cmap='viridis')
+        except ValueError:
+            continue
 
-    ax.plot((0, 1), (0, 1), color='k')
-    ax.plot(disk_edges, disk_edge(disk_edges), color='k')
+        ax.plot((0, 1), (0, 1), color='k')
+        # ax.plot(disk_edges, disk_edge(disk_edges), color='k')
 
-    ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-            transform=ax.transAxes, horizontalalignment='left', fontsize=8)
+        ax.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                transform=ax.transAxes, horizontalalignment='left', fontsize=8)
 
-    # Label axes
-    if i == 2:
-        ax.set_xlabel(r'$b/a$')
-    if j == 0:
-        ax.set_ylabel('$c/a$')
+        # Label axes
+        if i == 2:
+            ax.set_xlabel(r'$b/a$')
+        if j == 0:
+            ax.set_ylabel('$c/a$')
 
-for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
-    ax.set_xlim(0.001, 1)
-    ax.set_ylim(0.001, 1)
-    for spine in ax.spines.values():
-        spine.set_edgecolor('k')
+    for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
+        ax.set_xlim(0.001, 1)
+        ax.set_ylim(0.001, 1)
+        for spine in ax.spines.values():
+            spine.set_edgecolor('k')
 
-# Remove axis labels
-ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
-ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                labelright=False, labelbottom=False)
-ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                labelright=False, labelbottom=False)
-ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
-ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                labelright=False, labelbottom=False)
-ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                labelright=False, labelbottom=False)
-ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
-ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+    # Remove axis labels
+    ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+    ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/morph_inertiatensor.png',
-            bbox_inches='tight')
+    fig.savefig('plots/morph_inertiatensor_' + str(part_type) + '.png',
+                bbox_inches='tight')
 
-plt.close(fig)
+    plt.close(fig)
