@@ -239,9 +239,9 @@ regions = []
 for reg in range(0, 1):
 
     if reg < 10:
-        regions.append('000' + str(reg))
+        regions.append('0' + str(reg))
     else:
-        regions.append('00' + str(reg))
+        regions.append(str(reg))
 
 gregions = []
 for reg in range(0, 1):
