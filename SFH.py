@@ -208,7 +208,7 @@ def forest_worker(z0halo, treepath):
 
     print('Halo ' + str(z0halo) + '\'s Forest extracted...')
 
-    return forest_dict
+    return forest_dict[1]
 
 
 def calc_srf(z, a_born, mass, t_bin=100):
@@ -344,8 +344,11 @@ graphs = {}
 for reg in halos_in_pop:
     for root in halos_in_pop[reg]:
         print("Building Tree For", reg, root)
-        graphs.setdefault(reg, []).append(forest_worker(root, '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/'
-                                                              'GEAGLE_' + reg + '/'))
+        try:
+            graphs.setdefault(reg, []).append(forest_worker(root, '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/'
+                                                                  'GEAGLE_' + reg + '/'))
+        except KeyError:
+            continue
 
 all_sfrs = []
 all_zs = []
