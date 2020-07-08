@@ -259,7 +259,7 @@ gsnaps = reversed(snaps)
 mthresh = 10**10
 rthresh = 1.1
 
-zs_dict = {}
+part_halo_ids_dict = {}
 stellar_a_dict = {}
 starmass_dict = {}
 halo_id_part_inds = {}
@@ -268,6 +268,7 @@ for snap in snaps:
     stellar_a_dict[snap] = {}
     starmass_dict[snap] = {}
     halo_id_part_inds[snap] = {}
+    part_halo_ids_dict[snap] = {}
 
 for reg in regions:
 
@@ -296,6 +297,8 @@ for reg in regions:
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
+        part_halo_ids_dict[snap][reg] = part_halo_ids
+
         print("There are", len(part_halo_ids), "particles")
 
         print("Got halo IDs")
@@ -315,31 +318,17 @@ for reg in regions:
 # Get halos which are in the distribution at the z=4.77
 halos_in_pop = {}
 for reg in regions:
-    for grp in starmass_dict['011_z004p770'][reg].keys():
-        if starmass_dict['011_z004p770'][reg][grp] >= mthresh:
-            halos_in_pop.setdefault(reg, []).append(grp)
+    okinds = starmass_dict['011_z004p770'][reg] >= mthresh
+    halos_in_pop[reg] = part_halo_ids_dict['011_z004p770'][reg][okinds]
 
 # Build graphs
 graphs = {}
 for reg in halos_in_pop:
     for root in halos_in_pop[reg]:
-        print("Building Tree For")
+        print("Building Tree For", reg, root)
         graphs.setdefault(reg, []).append(forest_worker(root, '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/'
                                                               'GEAGLE_' + reg + '/SubMgraph_011_z004p770_'
                                                                                 'PartType1.hdf5'))
-
-sfrs_gals = {}
-for snap in halo_id_part_inds.keys():
-    sfrs_gals[snap] = {}
-    z_str = snap.split('z')[1].split('p')
-    z = float(z_str[0] + '.' + z_str[1])
-    for reg in halo_id_part_inds[snap].keys():
-        sfrs_gals[snap][reg] = {}
-        for grp in halo_id_part_inds[snap][reg].keys():
-            if grp in halos_included[reg][snap]:
-                parts = list(halo_id_part_inds[snap][reg][grp])
-                sfrs_gals[snap][reg][grp] = calc_srf(z, stellar_a_dict[snap][reg][parts],
-                                                     starmass_dict[snap][reg][parts])
 
 all_sfrs = []
 all_zs = []
