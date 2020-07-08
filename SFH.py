@@ -299,7 +299,7 @@ for reg in regions:
         group_part_ids = np.copy(part_ids)
 
         # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-        halo_ids = np.zeros(grp_ids.size, dtype=float)
+        halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
