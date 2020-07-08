@@ -256,7 +256,7 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 gsnaps = reversed(snaps)
 
 # Define thresholds for roots
-mthresh = 10**10
+mthresh = 10**9.5
 rthresh = 1.1
 
 part_halo_ids_dict = {}
@@ -314,6 +314,8 @@ for reg in regions:
         for key, val in halo_part_inds.items():
             halo_part_inds[key] = np.array(list(val))
         halo_id_part_inds[snap][reg] = halo_part_inds
+
+        print("There are", len(halo_part_inds), "halos")
 
 # Get halos which are in the distribution at the z=4.77
 halos_in_pop = {}
