@@ -256,10 +256,11 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 gsnaps = reversed(snaps)
 
 # Define thresholds for roots
-mthresh = 10**9.5
+mthresh = 10**10
 rthresh = 1.1
 
-part_halo_ids_dict = {}
+halo_ids_dict = {}
+halo_ms_dict = {}
 stellar_a_dict = {}
 starmass_dict = {}
 halo_id_part_inds = {}
@@ -268,7 +269,8 @@ for snap in snaps:
     stellar_a_dict[snap] = {}
     starmass_dict[snap] = {}
     halo_id_part_inds[snap] = {}
-    part_halo_ids_dict[snap] = {}
+    halo_ids_dict[snap] = {}
+    halo_ms_dict[snap] = {}
 
 for reg in regions:
 
@@ -286,6 +288,10 @@ for reg in regions:
             part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
             grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
             subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+            subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+            subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+            gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                  numThreads=8) * 10 ** 10
         except:
             continue
 
@@ -293,11 +299,17 @@ for reg in regions:
         group_part_ids = np.copy(part_ids)
 
         # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
+        halo_ids = np.zeros(grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
+            halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+        halo_ids_dict[snap][reg] = halo_ids
+        halo_ms_dict[snap][reg] = gal_ms
+
+        # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
         part_halo_ids = np.zeros(grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
-
-        part_halo_ids_dict[snap][reg] = part_halo_ids
 
         print("There are", len(part_halo_ids), "particles")
 
@@ -321,8 +333,8 @@ for reg in regions:
 halos_in_pop = {}
 count = 0
 for reg in regions:
-    okinds = starmass_dict['011_z004p770'][reg] >= mthresh
-    halos_in_pop[reg] = part_halo_ids_dict['011_z004p770'][reg][okinds]
+
+    halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][halo_ms_dict['011_z004p770'][reg] >= mthresh]
     count += len(halos_in_pop[reg])
 
 print("There are", count, "halos fullfilling condition")
