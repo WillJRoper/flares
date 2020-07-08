@@ -345,8 +345,7 @@ for reg in halos_in_pop:
     for root in halos_in_pop[reg]:
         print("Building Tree For", reg, root)
         graphs.setdefault(reg, []).append(forest_worker(root, '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/'
-                                                              'GEAGLE_' + reg + '/SubMgraph_011_z004p770_'
-                                                                                'PartType1.hdf5'))
+                                                              'GEAGLE_' + reg + '/'))
 
 all_sfrs = []
 all_zs = []
@@ -377,7 +376,7 @@ for z, sfr in zip(all_zs, all_sfrs):
 
 
 ax.set_xlabel('$z$')
-ax.set_ylabel('SFR / $[M_\odot/\mathrm{yr} / pMpc]$')
+ax.set_ylabel('SFRD / $[M_\odot/\mathrm{yr} / pMpc]$')
 
 ax.set_yscale('log')
 
