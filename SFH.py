@@ -317,9 +317,13 @@ for reg in regions:
 
 # Get halos which are in the distribution at the z=4.77
 halos_in_pop = {}
+count = 0
 for reg in regions:
     okinds = starmass_dict['011_z004p770'][reg] >= mthresh
     halos_in_pop[reg] = part_halo_ids_dict['011_z004p770'][reg][okinds]
+    count += len(halos_in_pop[reg])
+
+print("There are", count, "halos fullfilling condition")
 
 # Build graphs
 graphs = {}
