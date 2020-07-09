@@ -323,7 +323,7 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 gsnaps = reversed(snaps)
 
 # Define thresholds for roots
-mthresh = 10**10
+mthresh = 5 * 10**10
 rthresh = 1.1
 
 halo_ids_dict = {}
