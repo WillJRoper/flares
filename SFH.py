@@ -107,7 +107,7 @@ def get_graph(z0halo, data_dict):
     # =============== Progenitors ===============
 
     count = 0
-
+    print(snaplist)
     # Loop until no new halos are found
     while len(new_halos) != 0:
 
