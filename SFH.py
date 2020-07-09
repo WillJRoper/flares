@@ -124,9 +124,6 @@ def get_graph(z0halo, data_dict):
             # Loop over halos in this snapshot
             for halo in halos:
 
-                print(data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0],
-                      data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]][0])
-
                 # Get the progenitors
                 these_progs = get_linked_halo_data(data_dict['progs'][snap], data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0],
                                                    data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0])
@@ -136,7 +133,8 @@ def get_graph(z0halo, data_dict):
                 graph_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in these_progs})
 
             # Add any new halos not found in found halos to the new halos set
-            new_halos.update(graph_dict[prog_snap] - found_halos)
+            if prog_snap in graph_dict:
+                new_halos.update(graph_dict[prog_snap] - found_halos)
 
         # =============== Descendants ===============
 
@@ -159,7 +157,8 @@ def get_graph(z0halo, data_dict):
                 graph_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in these_descs})
 
             # Redefine the new halos set to have any new halos not found in found halos
-            new_halos.update(graph_dict[desc_snap] - found_halos)
+            if desc_snap in graph_dict:
+                new_halos.update(graph_dict[desc_snap] - found_halos)
 
         # Add the new_halos to the found halos set
         found_halos.update(new_halos)
