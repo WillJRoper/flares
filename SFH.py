@@ -89,14 +89,14 @@ def get_graph(z0halo, data_dict):
     mass_dict = {}
 
     # Initialise the halo's set for tree walking
-    halos = {(z0halo, snaplist[0])}
-
-    # Initialise the graph dictionary with the present day halo as the first entry
-    graph_dict[snaplist[0]] = halos
+    halos = {(z0halo, '011_z004p770')}
 
     # Initialise entries in the graph dictionary
     for snap in snaplist:
         graph_dict[snap] = set()
+
+    # Initialise the graph dictionary with the present day halo as the first entry
+    graph_dict['011_z004p770'] = halos
 
     # Initialise the set of new found halos used to loop until no new halos are found
     new_halos = halos
