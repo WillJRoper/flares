@@ -411,7 +411,7 @@ print("There are", count, "halos fullfilling condition")
 graphs = {}
 for reg in halos_in_pop:
 
-    treepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/'
+    treepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/Stellar'
 
     # Get the start indices, progs, and descs and store them in dictionaries
     progs = {}

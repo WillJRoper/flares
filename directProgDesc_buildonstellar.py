@@ -487,7 +487,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
     desc_mass_conts = np.array(desc_mass_conts)
 
     # Create file to store this snapshots graph results
-    hdf = h5py.File(savepath + 'StellarSubMgraph_' + snap + '.hdf5', 'w')
+    hdf = h5py.File(savepath + 'SubMgraph_' + snap + '.hdf5', 'w')
 
     hdf.create_dataset('MEGA_halo_IDs', shape=index_haloids.shape, dtype=int, data=index_haloids, compression='gzip')
     hdf.create_dataset('SUBFIND_halo_IDs', shape=sim_haloids.shape, dtype=float, data=sim_haloids, compression='gzip')
@@ -613,7 +613,7 @@ if __name__ == '__main__':
     mainDirectProgDesc(snap=reg_snaps[ind][2], prog_snap=reg_snaps[ind][1], desc_snap=reg_snaps[ind][3],
                        path='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg_snaps[ind][0] + '/data',
                        savepath='/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_'
-                                + reg_snaps[ind][0] + '/')
+                                + reg_snaps[ind][0] + '/Stellar')
 
 
 def get_link_data(all_linked_halos, start_ind, nlinked_halos):
