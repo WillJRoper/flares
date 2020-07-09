@@ -186,14 +186,6 @@ def get_graph(z0halo, data_dict):
         # Convert entry to an array for sorting
         graph_dict[snap] = np.array([int(halo[0]) for halo in graph_dict[snap]])
 
-        # Get the halo masses
-        mass_dict[snap] = data_dict['nparts'][snap][graph_dict[snap]]
-
-        # Sort by mass
-        sinds = np.argsort(mass_dict[snap])[::-1]
-        mass_dict[snap] = mass_dict[snap][sinds]
-        graph_dict[snap] = graph_dict[snap][sinds]
-
     return graph_dict
 
 
