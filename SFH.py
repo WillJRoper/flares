@@ -339,13 +339,13 @@ for reg in halos_in_pop:
         hdf = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
         # Assign
-        progs[snap] = hdf['Prog_haloIDs'][...]
-        descs[snap] = hdf['Desc_haloIDs'][...]
+        progs[snap] = hdf['prog_halo_ids'][...]
+        descs[snap] = hdf['desc_halo_ids'][...]
         nprogs[snap] = hdf['nProgs'][...]
         ndescs[snap] = hdf['nDescs'][...]
-        prog_start_index[snap] = hdf['prog_start_index'][...]
-        desc_start_index[snap] = hdf['desc_start_index'][...]
-        nparts[snap] = hdf['nparts'][...]
+        prog_start_index[snap] = hdf['Prog_Start_Index'][...]
+        desc_start_index[snap] = hdf['Desc_Start_Index'][...]
+        nparts[snap] = hdf['nParts'][...]
 
         hdf.close()
 
