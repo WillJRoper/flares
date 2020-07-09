@@ -459,6 +459,7 @@ for reg in graphs:
             z = float(z_str[0] + '.' + z_str[1])
             zs.append(z)
             this_sfr = 0
+            print(graph[snap])
             for grp in graph[snap]:
                 parts = list(halo_id_part_inds[snap][reg][grp])
                 this_sfr += calc_srf(z, stellar_a_dict[snap][reg][parts], starmass_dict[snap][reg][parts])
