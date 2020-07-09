@@ -461,8 +461,11 @@ for reg in graphs:
             zs.append(z)
             this_sfr = 0
             for grp in graph[snap]:
-                parts = list(halo_id_part_inds[snap][reg][grp])
-                this_sfr += calc_srf(z, stellar_a_dict[snap][reg][parts], starmass_dict[snap][reg][parts])
+                try:
+                    parts = list(halo_id_part_inds[snap][reg][grp])
+                    this_sfr += calc_srf(z, stellar_a_dict[snap][reg][parts], starmass_dict[snap][reg][parts])
+                except KeyError:
+                    continue
             sfrs.append(this_sfr / (3200 / (1 + z)))
         all_zs.append(zs)
         all_sfrs.append(sfrs)
