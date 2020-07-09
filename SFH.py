@@ -125,8 +125,8 @@ def get_graph(z0halo, data_dict):
             for halo in halos:
 
                 # Get the progenitors
-                these_progs = get_linked_halo_data(data_dict['progs'], data_dict['prog_start_index'][halo[0]],
-                                                   data_dict['nprogs'][halo[0]])
+                these_progs = get_linked_halo_data(data_dict['progs'][snap], data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]],
+                                                   data_dict['nprogs'][snap][halo[0]])
 
                 # Assign progenitors using a tuple to keep track of the snapshot ID
                 # in addition to the halo ID
@@ -148,8 +148,8 @@ def get_graph(z0halo, data_dict):
             for halo in halos:
 
                 # Get the descendants
-                these_descs = get_linked_halo_data(data_dict['descs'], data_dict['desc_start_index'][halo[0]],
-                                                   data_dict['ndescs'][halo[0]])
+                these_descs = get_linked_halo_data(data_dict['descs'][snap], data_dict['desc_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]],
+                                                   data_dict['ndescs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]])
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
@@ -334,6 +334,8 @@ for reg in halos_in_pop:
     prog_start_index = {}
     desc_start_index = {}
     nparts = {}
+    mega = {}
+    sim = {}
     for snap in snaps:
 
         hdf = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
@@ -345,12 +347,15 @@ for reg in halos_in_pop:
         ndescs[snap] = hdf['nDescs'][...]
         prog_start_index[snap] = hdf['Prog_Start_Index'][...]
         desc_start_index[snap] = hdf['Desc_Start_Index'][...]
+        mega[snap] = hdf['MEGA_halo_IDs'][...]
+        sim[snap] = hdf['MEGA_halo_IDs'][...]
         nparts[snap] = hdf['nParts'][...]
 
         hdf.close()
 
     data_dict = {'progs': progs, 'descs': descs, 'nprogs': nprogs, 'ndescs': ndescs,
-                 'prog_start_index': prog_start_index, 'desc_start_index': desc_start_index, 'nparts': nparts}
+                 'prog_start_index': prog_start_index, 'desc_start_index': desc_start_index,
+                 'nparts': nparts, 'mega': mega, 'sim': sim}
 
     for root in halos_in_pop[reg]:
         print("Building Tree For", reg, root)
