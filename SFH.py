@@ -94,6 +94,10 @@ def get_graph(z0halo, data_dict):
     # Initialise the graph dictionary with the present day halo as the first entry
     graph_dict[snaplist[0]] = halos
 
+    # Initialise entries in the graph dictionary
+    for snap in snaplist:
+        graph_dict[snap] = set()
+
     # Initialise the set of new found halos used to loop until no new halos are found
     new_halos = halos
 
@@ -124,9 +128,6 @@ def get_graph(z0halo, data_dict):
             # Assign the halos variable for the next stage of the tree
             halos = graph_dict[snap]
 
-            if len(halos) == 0:
-                continue
-
             # Loop over halos in this snapshot
             for halo in halos:
 
@@ -141,7 +142,7 @@ def get_graph(z0halo, data_dict):
 
                 # Assign progenitors using a tuple to keep track of the snapshot ID
                 # in addition to the halo ID
-                graph_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in these_progs})
+                graph_dict[prog_snap].update({(p, prog_snap) for p in these_progs})
                 print(graph_dict[prog_snap])
             # Add any new halos not found in found halos to the new halos set
             new_halos.update(graph_dict[prog_snap] - found_halos)
@@ -158,9 +159,6 @@ def get_graph(z0halo, data_dict):
             # Assign the halos variable for the next stage of the tree
             halos = graph_dict[snap]
 
-            if len(halos) == 0:
-                continue
-
             # Loop over the progenitor halos
             for halo in halos:
 
@@ -173,7 +171,7 @@ def get_graph(z0halo, data_dict):
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
-                graph_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in these_descs})
+                graph_dict[desc_snap].update({(d, desc_snap) for d in these_descs})
 
             # Redefine the new halos set to have any new halos not found in found halos
             new_halos.update(graph_dict[desc_snap] - found_halos)
