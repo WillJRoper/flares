@@ -131,10 +131,11 @@ def get_graph(z0halo, data_dict):
             for halo in halos:
 
                 # Get the progenitors
-                print(data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]])
-                print(data_dict['prog_start_index'][snap].size)
-                start_ind = data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
-                nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
+                try:
+                    start_ind = data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
+                    nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
+                except IndexError:
+                    continue
                 print(start_ind, nprog, data_dict['nparts'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0])
                 if nprog == 0:
                     continue
@@ -163,8 +164,11 @@ def get_graph(z0halo, data_dict):
             for halo in halos:
 
                 # Get the descendants
-                start_ind = data_dict['desc_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
-                ndesc = data_dict['ndescs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
+                try:
+                    start_ind = data_dict['desc_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
+                    ndesc = data_dict['ndescs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
+                except IndexError:
+                    continue
                 if ndesc == 0:
                     continue
                 these_descs = get_linked_halo_data(data_dict['descs'][snap], start_ind, ndesc)
