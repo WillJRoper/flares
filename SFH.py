@@ -131,6 +131,8 @@ def get_graph(z0halo, data_dict):
             for halo in halos:
 
                 # Get the progenitors
+                print(data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]])
+                print(data_dict['prog_start_index'][snap].size)
                 start_ind = data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
                 nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
                 print(start_ind, nprog, data_dict['nparts'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0])
