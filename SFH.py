@@ -123,8 +123,9 @@ def get_graph(z0halo, data_dict):
 
             # Loop over halos in this snapshot
             for halo in halos:
-                
-                print(data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]], data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]])
+
+                print(data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]],
+                      data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]])
 
                 # Get the progenitors
                 these_progs = get_linked_halo_data(data_dict['progs'][snap], data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]],
