@@ -263,7 +263,7 @@ def get_graph(z0halo, data_dict):
             continue
 
         # Convert entry to an array for sorting
-        graph_dict[snap] = np.array([int(halo[0]) for halo in graph_dict[snap]])
+        graph_dict[snap] = np.array([int(halo[0]) for halo in graph_dict[snap]], dtype=float)
 
     return graph_dict
 
