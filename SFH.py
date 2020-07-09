@@ -466,7 +466,7 @@ for reg in graphs:
                     this_sfr += calc_srf(z, stellar_a_dict[snap][reg][parts], starmass_dict[snap][reg][parts])
                 except KeyError:
                     continue
-            sfrs.append(this_sfr / (3200 / (1 + z)))
+            sfrs.append(this_sfr / (3200 / (1 + z))**3)
         all_zs.append(zs)
         all_sfrs.append(sfrs)
 
@@ -477,11 +477,12 @@ ax = fig.add_subplot(111)
 #                  linewidths=0.2, cmap='Greys', zorder=0)
 
 for z, sfr in zip(all_zs, all_sfrs):
+    print(all_zs, all_sfrs)
     ax.plot(all_zs, all_sfrs, linestyle='-', color='k', alpha=0.3)
 
 
 ax.set_xlabel('$z$')
-ax.set_ylabel('SFRD / $[M_\odot/\mathrm{yr} / pMpc]$')
+ax.set_ylabel('SFRD / $[M_\odot/\mathrm{Myr} / \mathrm{pMpc}^3]$')
 
 ax.set_yscale('log')
 
