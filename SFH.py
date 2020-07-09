@@ -477,8 +477,8 @@ ax = fig.add_subplot(111)
 #                  linewidths=0.2, cmap='Greys', zorder=0)
 
 for z, sfr in zip(all_zs, all_sfrs):
-    print(all_zs, all_sfrs)
-    ax.plot(all_zs, all_sfrs, linestyle='-', color='k', alpha=0.3)
+    print(z, sfr)
+    ax.plot(z, sfr, linestyle='-', color='k', alpha=0.3)
 
 
 ax.set_xlabel('$z$')
