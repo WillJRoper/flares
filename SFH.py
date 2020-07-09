@@ -303,7 +303,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
 
 
 regions = []
-for reg in range(0, 1):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -323,7 +323,7 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 gsnaps = reversed(snaps)
 
 # Define thresholds for roots
-mthresh = 5 * 10**10
+mthresh = 10**9
 rthresh = 1.1
 
 halo_ids_dict = {}
