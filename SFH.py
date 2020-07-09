@@ -130,7 +130,7 @@ def get_graph(z0halo, data_dict):
                 # Get the progenitors
                 start_ind = data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
                 nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
-                print(start_ind, nprog)
+                print(start_ind, nprog, data_dict['nparts'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0])
                 if nprog == 0:
                     continue
                 these_progs = get_linked_halo_data(data_dict['progs'][snap], start_ind, nprog)
