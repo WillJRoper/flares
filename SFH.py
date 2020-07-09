@@ -116,7 +116,10 @@ def get_graph(z0halo, data_dict):
         # =============== Progenitors ===============
 
         # Loop over snapshots and progenitor snapshots
-        for prog_snap, snap in zip(snaplist[1:], snaplist[:-1]):
+        for i in range(len(snaplist[:-1])):
+
+            snap = snaplist[i]
+            prog_snap = snaplist[i + 1]
 
             # Assign the halos variable for the next stage of the tree
             halos = graph_dict[snap]
@@ -142,8 +145,11 @@ def get_graph(z0halo, data_dict):
         # =============== Descendants ===============
 
         # Loop over halos found during the progenitor step
-        snapshots = list(reversed(list(graph_dict.keys())))
-        for desc_snap, snap in zip(snapshots[1:], snapshots[:-1]):
+        snaplist.reverse()
+        for i in range(len(snaplist[:-1])):
+
+            snap = snaplist[i]
+            desc_snap = snaplist[i + 1]
 
             # Assign the halos variable for the next stage of the tree
             halos = graph_dict[snap]
