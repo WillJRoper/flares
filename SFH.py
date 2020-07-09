@@ -136,16 +136,14 @@ def get_graph(z0halo, data_dict):
                     nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
                 except IndexError:
                     continue
-                print(start_ind, nprog, data_dict['nparts'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0])
                 if nprog == 0:
                     continue
                 these_progs = get_linked_halo_data(data_dict['progs'][snap], start_ind, nprog)
-                print(these_progs)
 
                 # Assign progenitors using a tuple to keep track of the snapshot ID
                 # in addition to the halo ID
                 graph_dict[prog_snap].update({(p, prog_snap) for p in these_progs})
-                print(graph_dict[prog_snap])
+                
             # Add any new halos not found in found halos to the new halos set
             new_halos.update(graph_dict[prog_snap] - found_halos)
 
