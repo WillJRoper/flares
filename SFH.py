@@ -132,7 +132,7 @@ def get_main_branch(z0halo, data_dict):
             continue
 
         # Convert entry to an array for sorting
-        graph_dict[snap] = np.array([int(halo[0]) for halo in graph_dict[snap]])
+        graph_dict[snap] = np.array([halo[0] for halo in graph_dict[snap]], dtype=float)
 
     return graph_dict
 
@@ -263,7 +263,7 @@ def get_graph(z0halo, data_dict):
             continue
 
         # Convert entry to an array for sorting
-        graph_dict[snap] = np.array([int(halo[0]) for halo in graph_dict[snap]], dtype=float)
+        graph_dict[snap] = np.array([halo[0] for halo in graph_dict[snap]], dtype=float)
 
     return graph_dict
 
@@ -454,12 +454,12 @@ for reg in graphs:
     for graph in graphs[reg]:
         sfrs = []
         zs = []
+        print(graph)
         for snap in graph:
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
             zs.append(z)
             this_sfr = 0
-            print(graph[snap])
             for grp in graph[snap]:
                 parts = list(halo_id_part_inds[snap][reg][grp])
                 this_sfr += calc_srf(z, stellar_a_dict[snap][reg][parts], starmass_dict[snap][reg][parts])
