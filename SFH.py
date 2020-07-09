@@ -401,9 +401,12 @@ for reg in regions:
 halos_in_pop = {}
 count = 0
 for reg in regions:
-
-    halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][halo_ms_dict['011_z004p770'][reg] >= mthresh]
-    count += len(halos_in_pop[reg])
+    
+    try:
+        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][halo_ms_dict['011_z004p770'][reg] >= mthresh]
+        count += len(halos_in_pop[reg])
+    except KeyError:
+        continue
 
 print("There are", count, "halos fullfilling condition")
 
