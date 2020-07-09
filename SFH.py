@@ -14,6 +14,22 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 
+def get_linked_halo_data(all_linked_halos, start_ind, nlinked_halos):
+    """ A helper function for extracting a halo's linked halos
+        (i.e. progenitors and descendants)
+
+    :param all_linked_halos: Array containing all progenitors and descendants.
+    :type all_linked_halos: float[N_linked halos]
+    :param start_ind: The start index for this halos progenitors or descendents elements in all_linked_halos
+    :type start_ind: int
+    :param nlinked_halos: The number of progenitors or descendents (linked halos) the halo in question has
+    :type nlinked_halos: int
+    :return:
+    """
+
+    return all_linked_halos[start_ind: start_ind + nlinked_halos]
+
+
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
     """ A function to find the indexes and halo IDs associated to particles/a particle producing an array for each
 
@@ -48,25 +64,19 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
     return parts_in_groups, part_groups
 
 
-def get_forest(z0halo, treepath):
-    """ A funciton which traverses a tree including all halos which have interacted with the tree
-    in a 'forest/mangrove'.
+def get_graph(z0halo, data_dict):
+    """ A funciton which traverses a graph including all linked halos.
 
     :param tree_data: The tree data dictionary produced by the Merger Graph.
-    :param z0halo: The halo ID of a z=0 halo for which the forest/mangrove plot is desired.
+    :param z0halo: The halo ID of a z=0 halo for which the graph is desired.
 
-    :return: forest_dict: The dictionary containing the forest. Each key is the snapshot ID and
-             the value is a list of halos in this snapshot of the forest.
-             massgrowth: The mass history of the forest.
+    :return: graph_dict: The dictionary containing the graph. Each key is the snapshot ID and
+             the value is a list of halos in this snapshot of the graph.
+             massgrowth: The mass history of the graph.
              tree: The dictionary containing the tree. Each key is the snapshot ID and
              the value is a list of halos in this snapshot of the tree.
              main_growth: The mass history of the main branch.
     """
-
-    # Initialise dictionary instances
-    forest_dict = {}
-    mass_dict = {}
-    main_branch = {'011_z004p770': z0halo}
 
     # Create snapshot list in reverse order (present day to past) for the progenitor searching loop
     snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
@@ -74,11 +84,15 @@ def get_forest(z0halo, treepath):
                 '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
     snaplist.reverse()
 
-    # Initialise the halo's set for tree walking
-    halos = {(z0halo, '011_z004p770')}
+    # Initialise dictionary instances
+    graph_dict = {}
+    mass_dict = {}
 
-    # Initialise the forest dictionary with the present day halo as the first entry
-    forest_dict[snaplist[0]] = halos
+    # Initialise the halo's set for tree walking
+    halos = {(z0halo, snaplist[0])}
+
+    # Initialise the graph dictionary with the present day halo as the first entry
+    graph_dict[snaplist[0]] = halos
 
     # Initialise the set of new found halos used to loop until no new halos are found
     new_halos = halos
@@ -105,110 +119,78 @@ def get_forest(z0halo, treepath):
         for prog_snap, snap in zip(snaplist[1:], snaplist[:-1]):
 
             # Assign the halos variable for the next stage of the tree
-            halos = forest_dict[snap]
-
-            # Open this snapshots root group
-            snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+            halos = graph_dict[snap]
 
             # Loop over halos in this snapshot
             for halo in halos:
+                
+                print(data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]], data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]])
 
-                if halo in found_halos:
-                    continue
+                # Get the progenitors
+                these_progs = get_linked_halo_data(data_dict['progs'][snap], data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]],
+                                                   data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0])
 
-                # Assign progenitors adding the snapshot * 100000 to the ID to keep track of the snapshot ID
+                # Assign progenitors using a tuple to keep track of the snapshot ID
                 # in addition to the halo ID
-                forest_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in
-                                                                 snap_tree_data[str(halo[0])]['Prog_haloIDs'][...]})
-            snap_tree_data.close()
+                graph_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in these_progs})
 
             # Add any new halos not found in found halos to the new halos set
-            new_halos.update(forest_dict[prog_snap] - found_halos)
+            new_halos.update(graph_dict[prog_snap] - found_halos)
 
         # =============== Descendants ===============
 
         # Loop over halos found during the progenitor step
-        snapshots = list(reversed(list(forest_dict.keys())))
+        snapshots = list(reversed(list(graph_dict.keys())))
         for desc_snap, snap in zip(snapshots[1:], snapshots[:-1]):
 
             # Assign the halos variable for the next stage of the tree
-            halos = forest_dict[snap]
-
-            # Open this snapshots root group
-            snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+            halos = graph_dict[snap]
 
             # Loop over the progenitor halos
             for halo in halos:
 
-                if halo in found_halos:
-                    continue
+                # Get the descendants
+                these_descs = get_linked_halo_data(data_dict['descs'][snap], data_dict['desc_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]],
+                                                   data_dict['ndescs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0])
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
                 # in addition to the halo ID
-                forest_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in
-                                                                 snap_tree_data[str(halo[0])]['Desc_haloIDs'][...]})
-
-            snap_tree_data.close()
+                graph_dict.setdefault(desc_snap, set()).update({(d, desc_snap) for d in these_descs})
 
             # Redefine the new halos set to have any new halos not found in found halos
-            new_halos.update(forest_dict[desc_snap] - found_halos)
+            new_halos.update(graph_dict[desc_snap] - found_halos)
 
         # Add the new_halos to the found halos set
         found_halos.update(new_halos)
 
-    forest_snaps = list(forest_dict.keys())
+    # Get the number of particle in each halo and sort based on mass
+    for snap in graph_dict:
 
-    for snap in forest_snaps:
-
-        if len(forest_dict[snap]) == 0:
-            del forest_dict[snap]
+        if len(graph_dict[snap]) == 0:
             continue
 
-        forest_dict[snap] = np.array([float(halo[0]) for halo in forest_dict[snap]])
+        # Convert entry to an array for sorting
+        graph_dict[snap] = np.array([int(halo[0]) for halo in graph_dict[snap]])
 
-        # Open this snapshots root group
-        snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+        # Get the halo masses
+        mass_dict[snap] = data_dict['nparts'][graph_dict[snap]]
 
-        mass_dict[snap] = np.array([snap_tree_data[str(halo)].attrs['current_halo_nPart']
-                                    for halo in forest_dict[snap]])
+        # Sort by mass
+        sinds = np.argsort(mass_dict[snap])[::-1]
+        mass_dict[snap] = mass_dict[snap][sinds]
+        graph_dict[snap] = graph_dict[snap][sinds]
 
-        snap_tree_data.close()
-
-    gen0 = forest_dict['011_z004p770']
-    root = gen0[np.argmax(mass_dict['011_z004p770'])]
-
-    # Define the main branch start
-    main = root
-
-    # Loop over snapshots to get main branch
-    for snap, prog_snap in zip(snaplist[:-1], snaplist[1:]):
-
-        # Open this snapshots root group
-        snap_tree_data = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
-        progs = snap_tree_data[str(main)]['Prog_haloIDs'][...]
-        pconts = snap_tree_data[str(main)]['prog_npart_contribution'][...]
-        sinds = np.argsort(pconts)
-        try:
-            main_branch[prog_snap] = progs[sinds][-1]
-            main = main_branch[prog_snap]
-        except IndexError:
-            snap_tree_data.close()
-            main_branch[snap] = []
-            break
-
-        snap_tree_data.close()
-
-    return forest_dict, main_branch, gen0, root
+    return graph_dict
 
 
-def forest_worker(z0halo, treepath):
+def forest_worker(z0halo, data_dict):
 
     # Get the forest with this halo at it's root
-    forest_dict = get_forest(z0halo, treepath)
+    forest_dict = get_graph(z0halo, data_dict)
 
     print('Halo ' + str(z0halo) + '\'s Forest extracted...')
 
-    return forest_dict[1]
+    return forest_dict
 
 
 def calc_srf(z, a_born, mass, t_bin=100):
@@ -329,6 +311,7 @@ for reg in regions:
 
         print("There are", len(halo_part_inds), "halos")
 
+
 # Get halos which are in the distribution at the z=4.77
 halos_in_pop = {}
 count = 0
@@ -342,13 +325,43 @@ print("There are", count, "halos fullfilling condition")
 # Build graphs
 graphs = {}
 for reg in halos_in_pop:
+
+    treepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/'
+
+    # Get the start indices, progs, and descs and store them in dictionaries
+    progs = {}
+    descs = {}
+    nprogs = {}
+    ndescs = {}
+    prog_start_index = {}
+    desc_start_index = {}
+    nparts = {}
+    mega = {}
+    sim = {}
+    for snap in snaps:
+
+        hdf = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+
+        # Assign
+        progs[snap] = hdf['prog_halo_ids'][...]
+        descs[snap] = hdf['desc_halo_ids'][...]
+        nprogs[snap] = hdf['nProgs'][...]
+        ndescs[snap] = hdf['nDescs'][...]
+        prog_start_index[snap] = hdf['Prog_Start_Index'][...]
+        desc_start_index[snap] = hdf['Desc_Start_Index'][...]
+        mega[snap] = hdf['MEGA_halo_IDs'][...]
+        sim[snap] = hdf['MEGA_halo_IDs'][...]
+        nparts[snap] = hdf['nParts'][...]
+
+        hdf.close()
+
+    data_dict = {'progs': progs, 'descs': descs, 'nprogs': nprogs, 'ndescs': ndescs,
+                 'prog_start_index': prog_start_index, 'desc_start_index': desc_start_index,
+                 'nparts': nparts, 'mega': mega, 'sim': sim}
+
     for root in halos_in_pop[reg]:
         print("Building Tree For", reg, root)
-        try:
-            graphs.setdefault(reg, []).append(forest_worker(root, '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/'
-                                                                  'GEAGLE_' + reg + '/'))
-        except KeyError:
-            continue
+        graphs.setdefault(reg, []).append(forest_worker(root, data_dict))
 
 all_sfrs = []
 all_zs = []
