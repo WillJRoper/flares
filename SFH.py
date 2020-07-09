@@ -135,7 +135,7 @@ def get_graph(z0halo, data_dict):
                 # Assign progenitors using a tuple to keep track of the snapshot ID
                 # in addition to the halo ID
                 graph_dict.setdefault(prog_snap, set()).update({(p, prog_snap) for p in these_progs})
-
+                print(graph_dict[prog_snap])
             # Add any new halos not found in found halos to the new halos set
             new_halos.update(graph_dict[prog_snap] - found_halos)
 
@@ -156,7 +156,6 @@ def get_graph(z0halo, data_dict):
                 ndesc = data_dict['ndescs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
                 if ndesc == 0:
                     continue
-
                 these_descs = get_linked_halo_data(data_dict['descs'][snap], start_ind, ndesc)
 
                 # Load descendants adding the snapshot * 100000 to keep track of the snapshot ID
