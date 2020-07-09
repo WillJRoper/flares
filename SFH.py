@@ -64,6 +64,79 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
     return parts_in_groups, part_groups
 
 
+def get_main_branch(z0halo, data_dict):
+    """ A funciton which traverses a graph including all linked halos.
+
+    :param tree_data: The tree data dictionary produced by the Merger Graph.
+    :param z0halo: The halo ID of a z=0 halo for which the graph is desired.
+
+    :return: graph_dict: The dictionary containing the graph. Each key is the snapshot ID and
+             the value is a list of halos in this snapshot of the graph.
+             massgrowth: The mass history of the graph.
+             tree: The dictionary containing the tree. Each key is the snapshot ID and
+             the value is a list of halos in this snapshot of the tree.
+             main_growth: The mass history of the main branch.
+    """
+
+    # Create snapshot list in reverse order (present day to past) for the progenitor searching loop
+    snaplist = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
+                '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
+                '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+    rev_snaplist = list(reversed(snaplist))
+
+    # Initialise dictionary instances
+    graph_dict = {}
+
+    # Initialise the halo's set for tree walking
+    halos = {(z0halo, '011_z004p770')}
+
+    # Initialise entries in the graph dictionary
+    for snap in snaplist:
+        graph_dict[snap] = set()
+
+    # Initialise the graph dictionary with the present day halo as the first entry
+    graph_dict['011_z004p770'] = halos
+
+    # Loop over snapshots and progenitor snapshots
+    for i in range(len(snaplist) - 1):
+
+        snap = rev_snaplist[i]
+        prog_snap = rev_snaplist[i + 1]
+
+        # Assign the halos variable for the next stage of the tree
+        halos = graph_dict[snap]
+
+        # Loop over halos in this snapshot
+        for halo in halos:
+
+            # Get the progenitors
+            try:
+                start_ind = \
+                data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
+                nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
+            except IndexError:
+                print(halo, "does not appear in the graph arrays")
+                continue
+            if nprog == 0:
+                continue
+            these_progs = get_linked_halo_data(data_dict['progs'][snap], start_ind, nprog)
+
+            # Assign progenitors using a tuple to keep track of the snapshot ID
+            # in addition to the halo ID
+            graph_dict[prog_snap].update({(these_progs[0], prog_snap)})
+
+    # Get the number of particle in each halo and sort based on mass
+    for snap in graph_dict:
+
+        if len(graph_dict[snap]) == 0:
+            continue
+
+        # Convert entry to an array for sorting
+        graph_dict[snap] = np.array([int(halo[0]) for halo in graph_dict[snap]])
+
+    return graph_dict
+
+
 def get_graph(z0halo, data_dict):
     """ A funciton which traverses a graph including all linked halos.
 
@@ -135,6 +208,7 @@ def get_graph(z0halo, data_dict):
                     start_ind = data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
                     nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
                 except IndexError:
+                    print(halo, "does not appear in the graph arrays")
                     continue
                 if nprog == 0:
                     continue
@@ -143,7 +217,7 @@ def get_graph(z0halo, data_dict):
                 # Assign progenitors using a tuple to keep track of the snapshot ID
                 # in addition to the halo ID
                 graph_dict[prog_snap].update({(p, prog_snap) for p in these_progs})
-                
+
             # Add any new halos not found in found halos to the new halos set
             new_halos.update(graph_dict[prog_snap] - found_halos)
 
@@ -166,6 +240,7 @@ def get_graph(z0halo, data_dict):
                     start_ind = data_dict['desc_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
                     ndesc = data_dict['ndescs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
                 except IndexError:
+                    print(halo, "does not appear in the graph arrays")
                     continue
                 if ndesc == 0:
                     continue
@@ -196,7 +271,7 @@ def get_graph(z0halo, data_dict):
 def forest_worker(z0halo, data_dict):
 
     # Get the forest with this halo at it's root
-    forest_dict = get_graph(z0halo, data_dict)
+    forest_dict = get_main_branch(z0halo, data_dict)
 
     print('Halo ' + str(z0halo) + '\'s Forest extracted...')
 
