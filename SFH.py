@@ -124,6 +124,9 @@ def get_graph(z0halo, data_dict):
             # Assign the halos variable for the next stage of the tree
             halos = graph_dict[snap]
 
+            if len(halos) == 0:
+                continue
+
             # Loop over halos in this snapshot
             for halo in halos:
 
@@ -154,6 +157,9 @@ def get_graph(z0halo, data_dict):
 
             # Assign the halos variable for the next stage of the tree
             halos = graph_dict[snap]
+
+            if len(halos) == 0:
+                continue
 
             # Loop over the progenitor halos
             for halo in halos:
