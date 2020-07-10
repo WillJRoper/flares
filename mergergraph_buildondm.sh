@@ -24,7 +24,7 @@ source activate flares-env
 i=$(($SLURM_ARRAY_TASK_ID - 1))
 
 # Run the program
-./directProgDesc_buildonstellar.py $i
+./directProgDesc.py $i
 
 source deactivate
 

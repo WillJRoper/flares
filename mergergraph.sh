@@ -24,7 +24,7 @@ source activate flares-env
 i=$(($SLURM_ARRAY_TASK_ID - 1))
 
 # Run the program
-./directProgDesc.py $i
+./directProgDesc_allparts.py $i
 
 source deactivate
 
