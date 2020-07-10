@@ -584,8 +584,6 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         desc_mass_contribution = np.array(desc_mass_cont)
         ndesc = sim_desc_haloids.size
 
-        print(prog_mass_contribution, desc_mass_contribution)
-
         # Write out the data produced
         nprogs[haloID] = nprog  # number of progenitors
         ndescs[haloID] = ndesc  # number of descendants
