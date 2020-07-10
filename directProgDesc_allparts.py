@@ -50,13 +50,13 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
         # current halo (number of particles from the current halo in the progenitor or descendant)
         sorting_inds = uniprog_counts.argsort()[::-1]
         prog_haloids = uniprog_haloids[sorting_inds]
-        prog_mass_contribution = uniprog_counts[sorting_inds]
+        prog_npart_contribution = uniprog_counts[sorting_inds]
 
     # If there is no progenitor store Null values
     else:
         nprog = -1
         prog_haloids = np.array([], copy=False, dtype=int)
-        prog_mass_contribution = np.array([], copy=False, dtype=int)
+        prog_npart_contribution = np.array([], copy=False, dtype=int)
 
     # =============== Find Descendant IDs ===============
 
@@ -87,16 +87,16 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
         # current halo (number of particles from the current halo in the progenitor or descendant)
         sorting_inds = unidesc_counts.argsort()[::-1]
         desc_haloids = unidesc_haloids[sorting_inds]
-        desc_mass_contribution = unidesc_counts[sorting_inds]
+        desc_npart_contribution = unidesc_counts[sorting_inds]
 
     # If there is no descendant snapshot store Null values
     else:
         ndesc = -1
         desc_haloids = np.array([], copy=False, dtype=int)
-        desc_mass_contribution = np.array([], copy=False, dtype=int)
+        desc_npart_contribution = np.array([], copy=False, dtype=int)
 
-    return (nprog, prog_haloids, prog_mass_contribution,
-            ndesc, desc_haloids, desc_mass_contribution,
+    return (nprog, prog_haloids, prog_npart_contribution,
+            ndesc, desc_haloids, desc_npart_contribution,
             current_halo_pids)
 
 
@@ -361,7 +361,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path):
         # Run the progenitor/descendant finder
         results[haloID] = dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs)
 
-    print('Processed', len(results.keys()), 'dark matter halos in snapshot', snap)
+    print('Processed', len(results.keys()), 'halos in snapshot', snap)
 
     return results, part_ids, halo_id_part_inds
 
@@ -583,6 +583,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         sim_desc_haloids = np.array(sim_desc_haloids)
         desc_mass_contribution = np.array(desc_mass_cont)
         ndesc = sim_desc_haloids.size
+
+        print(prog_mass_contribution, desc_mass_contribution)
 
         # Write out the data produced
         nprogs[haloID] = nprog  # number of progenitors
