@@ -392,8 +392,8 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
     if part_type == 1:
 
         # Get dark matter particle mass
-        subfind_halo_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/MassType', numThreads=8)[:, 1] / 0.6777
-        subfind_halo_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)[:, 1] / 0.6777
+        subfind_halo_mass = E.read_array('FOF', path, snap, 'FOF/GroupMassType', numThreads=8)[:, 1] / 0.6777
+        subfind_halo_ns = E.read_array('FOF', path, snap, 'FOF/GroupLengthType', numThreads=8)[:, 1] / 0.6777
         dm_mass = subfind_halo_mass[0] / subfind_halo_ns[0]
 
         try:
