@@ -318,7 +318,7 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path):
 
     # =============== Current Snapshot ===============
 
-    halo_id_part_inds = get_current_part_ind_dict(path, snap, part_type, part_ids)
+    halo_id_part_inds = get_current_part_ind_dict(path, snap, part_ids)
 
     # =============== Progenitor Snapshot ===============
 
