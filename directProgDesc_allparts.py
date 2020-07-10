@@ -100,13 +100,38 @@ def dmgetLinks(current_halo_pids, prog_snap_haloIDs, desc_snap_haloIDs):
             current_halo_pids)
 
 
-def get_current_part_ind_dict(path, snap, part_type, part_ids):
-    
+def get_current_part_ind_dict(path, snap, part_ids):
+
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                  numThreads=8)
-    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+    # Get the particle data for all particle types
+    try:
+        gas_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', numThreads=8)
+        gas_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
+    except ValueError:
+        gas_grp_ids = np.array([])
+        gas_subgrp_ids = np.array([])
+    try:
+        dm_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType1/GroupNumber', numThreads=8)
+        dm_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType1/SubGroupNumber', numThreads=8)
+    except ValueError:
+        dm_grp_ids = np.array([])
+        dm_subgrp_ids = np.array([])
+    try:
+        star_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
+        star_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+    except ValueError:
+        star_grp_ids = np.array([])
+        star_subgrp_ids = np.array([])
+    try:
+        bh_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType5/GroupNumber', numThreads=8)
+        bh_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType5/SubGroupNumber', numThreads=8)
+    except ValueError:
+        bh_grp_ids = np.array([])
+        bh_subgrp_ids = np.array([])
+
+    group_part_ids = np.copy(part_ids)
+    grp_ids = np.concatenate([gas_grp_ids, dm_grp_ids, star_grp_ids, bh_grp_ids])
+    subgrp_ids = np.concatenate([gas_subgrp_ids, dm_subgrp_ids, star_subgrp_ids, bh_subgrp_ids])
 
     # Convert to group.subgroup ID format
     halo_ids = np.zeros(grp_ids.size, dtype=float)
@@ -167,13 +192,55 @@ def get_parttype_ind_dict(path, snap, part_type, part_ids):
     return halo_id_part_inds
 
 
-def get_progdesc_part_ind_dict(path, snap, part_type, part_ids):
+def get_progdesc_part_ind_dict(path, snap, part_ids):
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
-    group_part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs',
-                                  numThreads=8)
-    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', numThreads=8)
-    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', numThreads=8)
+    # Get the particle data for all particle types
+    try:
+        gas_snap_part_ids = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', numThreads=8)
+        gas_part_types = np.full_like(gas_snap_part_ids, 0)
+        gas_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', numThreads=8)
+        gas_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', numThreads=8)
+    except ValueError:
+        gas_snap_part_ids = np.array([])
+        gas_part_types = np.array([])
+        gas_grp_ids = np.array([])
+        gas_subgrp_ids = np.array([])
+    try:
+        dm_snap_part_ids = E.read_array('PARTDATA', path, snap, 'PartType1/ParticleIDs', numThreads=8)
+        dm_part_types = np.full_like(dm_snap_part_ids, 1)
+        dm_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType1/GroupNumber', numThreads=8)
+        dm_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType1/SubGroupNumber', numThreads=8)
+    except ValueError:
+        dm_snap_part_ids = np.array([])
+        dm_part_types = np.array([])
+        dm_grp_ids = np.array([])
+        dm_subgrp_ids = np.array([])
+    try:
+        star_snap_part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
+        star_part_types = np.full_like(star_snap_part_ids, 4)
+        star_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
+        star_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+    except ValueError:
+        star_snap_part_ids = np.array([])
+        star_part_types = np.array([])
+        star_grp_ids = np.array([])
+        star_subgrp_ids = np.array([])
+    try:
+        bh_snap_part_ids = E.read_array('PARTDATA', path, snap, 'PartType5/ParticleIDs', numThreads=8)
+        bh_part_types = np.full_like(bh_snap_part_ids, 5)
+        bh_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType5/GroupNumber', numThreads=8)
+        bh_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType5/SubGroupNumber', numThreads=8)
+    except ValueError:
+        bh_snap_part_ids = np.array([])
+        bh_part_types = np.array([])
+        bh_grp_ids = np.array([])
+        bh_subgrp_ids = np.array([])
+
+    group_part_ids = np.concatenate([gas_snap_part_ids, dm_snap_part_ids, star_snap_part_ids, bh_snap_part_ids])
+    grp_ids = np.concatenate([gas_grp_ids, dm_grp_ids, star_grp_ids, bh_grp_ids])
+    subgrp_ids = np.concatenate([gas_subgrp_ids, dm_subgrp_ids, star_subgrp_ids, bh_subgrp_ids])
+    part_types = np.concatenate([gas_part_types, dm_part_types, star_part_types, bh_part_types])
 
     # Convert to group.subgroup ID format
     halo_ids = np.zeros(grp_ids.size, dtype=float)
@@ -205,7 +272,7 @@ def get_progdesc_part_ind_dict(path, snap, part_type, part_ids):
             continue
         snap_haloIDs[pinds] = key
 
-    return snap_haloIDs
+    return snap_haloIDs, part_types
 
 
 def partDirectProgDesc(snap, prog_snap, desc_snap, path):
@@ -258,20 +325,22 @@ def partDirectProgDesc(snap, prog_snap, desc_snap, path):
     # Only look for progenitor data if there is a descendant snapshot
     if prog_snap != None:
 
-        prog_snap_haloIDs = get_progdesc_part_ind_dict(path, prog_snap, part_type, part_ids)
+        prog_snap_haloIDs, prog_part_types = get_progdesc_part_ind_dict(path, prog_snap, part_ids)
 
     else:  # Assign an empty array if the snapshot is less than the earliest (000)
         prog_snap_haloIDs = np.array([], copy=False)
+        prog_part_types = np.array([], copy=False)
 
     # =============== Descendant Snapshot ===============
 
     # Only look for descendant data if there is a descendant snapshot
     if desc_snap != None:
 
-        desc_snap_haloIDs = get_progdesc_part_ind_dict(path, desc_snap, part_type, part_ids)
+        desc_snap_haloIDs, desc_part_types = get_progdesc_part_ind_dict(path, desc_snap, part_ids)
 
     else:  # Assign an empty array if the snapshot is less than the earliest (000)
         desc_snap_haloIDs = np.array([], copy=False)
+        desc_part_types = np.array([], copy=False)
 
     # =============== Find all Direct Progenitors And Descendant Of Halos In This Snapshot ===============
 
