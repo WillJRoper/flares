@@ -106,9 +106,14 @@ def main():
 
     for reg, snap in reg_snaps:
 
+        print(reg, snap)
+
         graphpath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/MergerGraphs/GEAGLE_' + reg + '/SubMgraph_'
 
-        nprog, ndesc = get_ns(graphpath, snap)
+        try:
+            nprog, ndesc = get_ns(graphpath, snap)
+        except KeyError:
+            continue
         nprogs.extend(nprog)
         ndescs.extend(ndesc)
         nprogs_dict.setdefault(reg, []).extend(nprog)
