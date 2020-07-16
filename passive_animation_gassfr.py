@@ -130,7 +130,7 @@ for reg in regions:
 
 lim = 50 / 1000
 soft = 0.000474390 / 0.6777
-scale = 5 / 1000
+scale = 10 / 1000
 
 for reg in regions:
 
@@ -172,9 +172,13 @@ for reg in regions:
             ax1 = fig.add_subplot(131)
             ax2 = fig.add_subplot(132)
             ax3 = fig.add_subplot(133)
+
+            ax1.imshow(np.zeros_like(Hstar), extent=(-lim, lim, -lim, lim), cmap='Greys_r')
+            ax2.imshow(np.zeros_like(Hgas), extent=(-lim, lim, -lim, lim), cmap='Greys_r')
+            ax3.imshow(np.zeros_like(Hsfr), extent=(-lim, lim, -lim, lim), cmap='Greys_r')
             
-            im1 = ax1.imshow(Hstar, cmap='Greys_r', extent=(-lim, lim, -lim, lim))
-            im2 = ax2.imshow(Hgas, cmap='plasma', extent=(-lim, lim, -lim, lim))
+            im1 = ax1.imshow(np.log10(Hstar), cmap='Greys_r', extent=(-lim, lim, -lim, lim))
+            im2 = ax2.imshow(np.log10(Hgas), cmap='plasma', extent=(-lim, lim, -lim, lim))
             im3 = ax3.imshow(np.log10(Hsfr), cmap='magma', extent=(-lim, lim, -lim, lim))
 
             # Remove ticks
@@ -230,7 +234,7 @@ for reg in regions:
             cbar3.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
             fig.savefig("plots/passive_ani" + reg + "_" + str(ind) + "_" + snap.split("_")[0] + ".png",
-                        bbox_inches='tight')
+                        bbox_inches='tight', dpi=300)
 
         for snap in snips:
 
@@ -325,5 +329,5 @@ for reg in regions:
             cbar3.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
             fig.savefig("plots/passive_ani" + reg + "_" + str(ind) + "_" + snap.split("_")[0] + ".png",
-                        bbox_inches='tight')
+                        bbox_inches='tight', dpi=300)
 
