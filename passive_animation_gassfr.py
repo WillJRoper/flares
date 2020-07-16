@@ -86,7 +86,7 @@ snips = ['000_z014p500', '001_z013p500', '002_z012p500', '003_z011p500', '004_z0
          '006_z008p500', '007_z007p500', '008_z006p500', '009_z005p500']
 
 # Define galaxy thresholds
-ssfr_thresh = 1
+ssfr_thresh = 0.5
 
 snap = '011_z004p770'
 
@@ -145,7 +145,7 @@ for reg in regions:
             try:
                 star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
                 gas_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8) - cop
-                gas_sfr = E.read_array('SNAP', path, snap, 'PartType4/StarFormationRate', numThreads=8) - cop
+                gas_sfr = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8) - cop
             except ValueError:
                 print("Error")
                 continue
