@@ -129,7 +129,7 @@ for reg in regions:
 
     print(len(cops_dict[reg]))
 
-lim = 100 / 1000
+lim = 50 / 1000
 soft = 0.001802390 / 0.6777
 scale = 10 / 1000
 
@@ -194,7 +194,7 @@ for reg in regions:
                             labeltop=False, labelright=False, labelbottom=False)
 
             ax1.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-                     transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
+                     transform=ax1.transAxes, horizontalalignment='left', fontsize=8)
             
             # Draw scale line
             right_side = lim - (lim * 0.1)
@@ -207,11 +207,11 @@ for reg in regions:
 
             # Label scale
             ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                     fontsize=2, color='w')
+                     fontsize=5, color='w')
             ax2.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                     fontsize=2, color='w')
+                     fontsize=5, color='w')
             ax3.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-                     fontsize=2, color='w')
+                     fontsize=5, color='w')
             
             # Add colorbars
             cax1 = inset_axes(ax1, width="50%", height="3%", loc='lower left')
@@ -222,18 +222,18 @@ for reg in regions:
             cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
             
             # Label colorbars
-            cbar1.ax.set_xlabel(r'$N_(\star}$', fontsize=2, color='w', labelpad=1.0)
+            cbar1.ax.set_xlabel(r'$\log_{10}(N_(\star})$', fontsize=3, color='w', labelpad=1.0)
             cbar1.ax.xaxis.set_label_position('top')
             cbar1.outline.set_edgecolor('w')
             cbar1.outline.set_linewidth(0.05)
             cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar2.ax.set_xlabel(r'$N_(\mathrm{gas}}$', fontsize=2, color='w',
+            cbar2.ax.set_xlabel(r'$\log_{10}(N_(\mathrm{gas}})$', fontsize=3, color='w',
                                 labelpad=1.0)
             cbar2.ax.xaxis.set_label_position('top')
             cbar2.outline.set_edgecolor('w')
             cbar2.outline.set_linewidth(0.05)
             cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-            cbar3.ax.set_xlabel(r'$\log_{10}(SFR}/[M_{\odot}/\mathrm{Myr}^{-1}])$', fontsize=2,
+            cbar3.ax.set_xlabel(r'$\log_{10}(SFR/[M_{\odot}/\mathrm{Myr}^{-1}])$', fontsize=3,
                                 color='w', labelpad=1.0)
             cbar3.ax.xaxis.set_label_position('top')
             cbar3.outline.set_edgecolor('w')
