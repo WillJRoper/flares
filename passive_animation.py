@@ -117,7 +117,7 @@ for reg in regions:
         continue
 
     sfrs = calc_srf(z, form_t, masses, t_bin=100)
-
+    print(sfrs)
     # A copy of this array is needed for the extraction method
     group_part_ids = np.copy(part_ids)
 
