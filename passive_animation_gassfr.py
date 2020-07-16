@@ -157,6 +157,9 @@ for reg in regions:
         except ValueError:
             print("Error")
             continue
+        except OSError:
+            print("Error")
+            continue
 
     for snap in snips:
 
@@ -165,6 +168,9 @@ for reg in regions:
             gas_poss_dict[(reg, snap)] = E.read_array('SNIP', path, snap, 'PartType0/Coordinates', numThreads=8)
             # sfr_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8)
         except ValueError:
+            print("Error")
+            continue
+        except OSError:
             print("Error")
             continue
 
