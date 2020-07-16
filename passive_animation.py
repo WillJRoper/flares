@@ -116,8 +116,6 @@ for reg in regions:
     except:
         continue
 
-    sfrs = calc_srf(z, form_t, masses, t_bin=100)
-    print(sfrs)
     # A copy of this array is needed for the extraction method
     group_part_ids = np.copy(part_ids)
 
@@ -148,9 +146,10 @@ for reg in regions:
 
     for key, cop in zip(halo_part_inds, gal_cops):
         parts = halo_part_inds[key]
-        print(sfrs[parts], masses[parts])
-        grp_ssfr = np.sum(sfrs[parts]) / np.sum(masses[parts])
-        if grp_ssfr < ssfr_thresh:
+        sfr = calc_srf(z, form_t[parts], masses[parts])
+        print(sfr)
+        grp_ssfr = sfr / np.sum(masses[parts])
+        if grp_ssfr < ssfr_thresh and grp_ssfr != 0:
             cops_dict.setdefault(reg, []).append(cop)
 
 lim = 50 / 1000
