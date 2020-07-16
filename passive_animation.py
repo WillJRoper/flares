@@ -102,8 +102,8 @@ for reg in regions:
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
     try:
-        mass = E.read_array('PARTDATA', path, snap, 'PartType4/Mass',
-                            noH=True, numThreads=8)
+        masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass',
+                            noH=True, numThreads=8) * 10**10
         form_t = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime',
                                                  noH=True, numThreads=8)
         part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
@@ -116,7 +116,7 @@ for reg in regions:
     except:
         continue
 
-    sfrs = calc_srf(z, form_t, mass, t_bin=100)
+    sfrs = calc_srf(z, form_t, masses, t_bin=100)
 
     # A copy of this array is needed for the extraction method
     group_part_ids = np.copy(part_ids)
@@ -148,8 +148,8 @@ for reg in regions:
 
     for key, cop in zip(halo_part_inds, gal_cops):
         parts = halo_part_inds[key]
-        print(sfrs[parts], mass[parts])
-        grp_ssfr = np.sum(sfrs[parts]) / np.sum(mass[parts])
+        print(sfrs[parts], masses[parts])
+        grp_ssfr = np.sum(sfrs[parts]) / np.sum(masses[parts])
         if grp_ssfr < ssfr_thresh:
             cops_dict.setdefault(reg, []).append(cop)
 
