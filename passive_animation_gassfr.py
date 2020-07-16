@@ -88,7 +88,6 @@ snips = ['000_z014p500', '001_z013p500', '002_z012p500', '003_z011p500', '004_z0
 
 # Define galaxy thresholds
 ssfr_thresh = 0.5
-m_thresh
 
 snap = '011_z004p770'
 
