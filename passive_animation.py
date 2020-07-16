@@ -32,7 +32,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
         sfr = np.sum(mass[ok]) / (t_bin * 1e6)
 
     else:
-        sfr = np.zeros(len(a_born))
+        sfr = 0.0
 
     return sfr
 
