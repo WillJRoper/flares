@@ -150,6 +150,9 @@ for reg in regions:
 
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
+    if len(cops_dict[reg]) == 0:
+        continue
+
     for snap in snaps:
 
         try:
@@ -179,6 +182,8 @@ for reg in regions:
 snaps.extend(snips)
 
 for reg in regions:
+
+    print(reg)
 
     for ind, cop in enumerate(cops_dict[reg]):
 
