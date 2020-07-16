@@ -122,8 +122,8 @@ for reg in regions:
         if m == 0:
             continue
         grp_ssfr = sfr / m
-        print(grp_ssfr)
         if grp_ssfr < ssfr_thresh and grp_ssfr != 0:
+            print(grp_ssfr)
             cops_dict[reg].append(cop)
 
     print(len(cops_dict[reg]))
@@ -144,9 +144,10 @@ for reg in regions:
 
             try:
                 star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
-                gas_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
+                gas_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8) - cop
                 gas_sfr = E.read_array('SNAP', path, snap, 'PartType4/StarFormationRate', numThreads=8) - cop
             except ValueError:
+                print("Error")
                 continue
 
             # Get only stars within the aperture
@@ -241,7 +242,7 @@ for reg in regions:
                 star_poss = E.read_array('SNIP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
                 gas_poss = E.read_array('SNIP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
                 gas_sfr = E.read_array('SNIP', path, snap, 'PartType4/StarFormationRate', numThreads=8) - cop
-            except:
+            except ValueError:
                 continue
 
             # Get only stars within the aperture
