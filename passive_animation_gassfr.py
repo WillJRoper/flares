@@ -81,6 +81,7 @@ for reg in range(30, 40):
 
 snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+snaps.reverse()
 
 snips = ['000_z014p500', '001_z013p500', '002_z012p500', '003_z011p500', '004_z010p500', '005_z009p500',
          '006_z008p500', '007_z007p500', '008_z006p500', '009_z005p500']
@@ -128,8 +129,8 @@ for reg in regions:
 
     print(len(cops_dict[reg]))
 
-lim = 50 / 1000
-soft = 0.000474390 / 0.6777
+lim = 100 / 1000
+soft = 0.001802390 / 0.6777
 scale = 10 / 1000
 
 for reg in regions:
@@ -137,6 +138,9 @@ for reg in regions:
     for ind, cop in enumerate(cops_dict[reg]):
 
         for snap in snaps:
+
+            z_str = snap.split('z')[1].split('p')
+            z = float(z_str[0] + '.' + z_str[1])
 
             print(reg, snap, ind)
 
@@ -188,6 +192,9 @@ for reg in regions:
                             labeltop=False, labelright=False, labelbottom=False)
             ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                             labeltop=False, labelright=False, labelbottom=False)
+
+            ax1.text(0.1, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                     transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
             
             # Draw scale line
             right_side = lim - (lim * 0.1)
