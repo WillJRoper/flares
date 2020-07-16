@@ -113,6 +113,8 @@ for reg in regions:
                               numThreads=8)
     except ValueError:
         continue
+    except OSError:
+        continue
 
     okinds = app_mass > 1e9
     app_mass = app_mass[okinds]
