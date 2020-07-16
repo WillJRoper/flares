@@ -72,7 +72,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
 
 
 regions = []
-for reg in range(0, 40):
+for reg in range(30, 40):
 
     if reg < 10:
         regions.append('0' + str(reg))
