@@ -166,7 +166,7 @@ for reg in regions:
 
             star_poss = star_poss_dict[(reg, snap)] - cop
             gas_poss = gas_poss_dict[(reg, snap)] - cop
-            sfrs = sfr_dict[(reg, snap)]
+            gas_sfr = sfr_dict[(reg, snap)]
 
             # Get only stars within the aperture
             star_okinds = np.logical_and(np.abs(star_poss[:, 0]) < lim,
