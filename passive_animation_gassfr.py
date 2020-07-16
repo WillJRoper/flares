@@ -133,6 +133,22 @@ lim = 50 / 1000
 soft = 0.001802390 / 0.6777
 scale = 10 / 1000
 
+star_poss_dict = {}
+gas_poss_dict = {}
+sfr_dict = {}
+
+for reg in regions:
+
+    for snap in snaps:
+
+        try:
+            star_poss_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8)
+            gas_poss_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8)
+            sfr_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8)
+        except ValueError:
+            print("Error")
+            continue
+
 for reg in regions:
 
     for ind, cop in enumerate(cops_dict[reg]):
@@ -146,13 +162,9 @@ for reg in regions:
 
             path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-            try:
-                star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
-                gas_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8) - cop
-                gas_sfr = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8)
-            except ValueError:
-                print("Error")
-                continue
+            star_poss = star_poss_dict[(reg, snap)] - cop
+            gas_poss = gas_poss_dict[(reg, snap)] - cop
+            sfrs = sfr_dict[(reg, snap)]
 
             # Get only stars within the aperture
             star_okinds = np.logical_and(np.abs(star_poss[:, 0]) < lim,
