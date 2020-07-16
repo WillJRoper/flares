@@ -122,6 +122,7 @@ for reg in regions:
         if m == 0:
             continue
         grp_ssfr = sfr / m
+        print(grp_ssfr)
         if grp_ssfr < ssfr_thresh and grp_ssfr != 0:
             cops_dict[reg].append(cop)
 
