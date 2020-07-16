@@ -94,6 +94,8 @@ cops_dict = {}
 
 for reg in regions:
 
+    cops_dict[reg] = []
+
     print(reg, snap)
 
     z_str = snap.split('z')[1].split('p')
@@ -121,7 +123,9 @@ for reg in regions:
             continue
         grp_ssfr = sfr / m
         if grp_ssfr < ssfr_thresh and grp_ssfr != 0:
-            cops_dict.setdefault(reg, []).append(cop)
+            cops_dict[reg].append(cop)
+
+    print(len(cops_dict[reg]))
 
 lim = 50 / 1000
 soft = 0.000474390 / 0.6777
