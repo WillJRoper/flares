@@ -104,8 +104,8 @@ for reg in regions:
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
     try:
-        app_mass = E.read_array('SUBFIND', path, snap, 'ApertureMeasurements/Mass/030kpc', numThreads=8)[:, 4] * 10**10
-        sfrs = E.read_array('SUBFIND', path, snap, 'ApertureMeasurements/SFR/030kpc', numThreads=8)
+        app_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', numThreads=8)[:, 4] * 10**10
+        sfrs = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/SFR/030kpc', numThreads=8)
         subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
         subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
         gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
