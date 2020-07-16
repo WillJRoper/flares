@@ -145,7 +145,7 @@ for reg in regions:
             try:
                 star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
                 gas_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8) - cop
-                gas_sfr = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8) - cop
+                gas_sfr = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8)
             except ValueError:
                 print("Error")
                 continue
