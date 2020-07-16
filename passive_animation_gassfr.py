@@ -157,7 +157,7 @@ for reg in regions:
                                         np.logical_and(np.abs(gas_poss[:, 1]) < lim, np.abs(gas_poss[:, 2]) < lim))
             this_star_poss = star_poss[star_okinds, :]
             this_gas_poss = gas_poss[gas_okinds, :]
-            this_gas_sfr = gas_sfr[gas_okinds, :]
+            this_gas_sfr = gas_sfr[gas_okinds]
 
             # Define resolution
             res = 2 * lim / soft
