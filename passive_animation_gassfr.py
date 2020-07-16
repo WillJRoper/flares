@@ -140,8 +140,6 @@ lim = 100 / 1000
 soft = 0.001802390 / 0.6777
 scale = 10 / 1000
 
-snaps.extend(snips)
-
 star_poss_dict = {}
 gas_poss_dict = {}
 sfr_dict = {}
@@ -159,6 +157,18 @@ for reg in regions:
         except ValueError:
             print("Error")
             continue
+
+    for snap in snips:
+
+        try:
+            star_poss_dict[(reg, snap)] = E.read_array('SNIP', path, snap, 'PartType4/Coordinates', numThreads=8)
+            gas_poss_dict[(reg, snap)] = E.read_array('SNIP', path, snap, 'PartType0/Coordinates', numThreads=8)
+            # sfr_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8)
+        except ValueError:
+            print("Error")
+            continue
+
+snaps.extend(snips)
 
 for reg in regions:
 
