@@ -110,7 +110,7 @@ for reg in regions:
         subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
         gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
                               numThreads=8)
-    except:
+    except ValueError:
         continue
 
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
@@ -146,7 +146,7 @@ for reg in regions:
                 star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
                 gas_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
                 gas_sfr = E.read_array('SNAP', path, snap, 'PartType4/StarFormationRate', numThreads=8) - cop
-            except:
+            except ValueError:
                 continue
 
             # Get only stars within the aperture
