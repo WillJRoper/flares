@@ -116,7 +116,7 @@ for reg in regions:
     except:
         continue
 
-    ssfrs = calc_srf(z, form_t, mass, t_bin=100)
+    sfrs = calc_srf(z, form_t, mass, t_bin=100)
 
     # A copy of this array is needed for the extraction method
     group_part_ids = np.copy(part_ids)
@@ -148,7 +148,8 @@ for reg in regions:
 
     for key, cop in zip(halo_part_inds, gal_cops):
         parts = halo_part_inds[key]
-        grp_ssfr = np.sum(ssfrs[parts]) / np.sum(mass[parts])
+        print(sfrs[parts], mass[parts])
+        grp_ssfr = np.sum(sfrs[parts]) / np.sum(mass[parts])
         if grp_ssfr < ssfr_thresh:
             cops_dict.setdefault(reg, []).append(cop)
 
@@ -233,6 +234,101 @@ for reg in regions:
             cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
             cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
             
+            # Label colorbars
+            cbar1.ax.set_xlabel(r'$N_(\star}$', fontsize=2, color='w', labelpad=1.0)
+            cbar1.ax.xaxis.set_label_position('top')
+            cbar1.outline.set_edgecolor('w')
+            cbar1.outline.set_linewidth(0.05)
+            cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
+            cbar2.ax.set_xlabel(r'$N_(\mathrm{gas}}$', fontsize=2, color='w',
+                                labelpad=1.0)
+            cbar2.ax.xaxis.set_label_position('top')
+            cbar2.outline.set_edgecolor('w')
+            cbar2.outline.set_linewidth(0.05)
+            cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
+            cbar3.ax.set_xlabel(r'$\log_{10}(SFR}/[M_{\odot}/\mathrm{Myr}^{-1}])$', fontsize=2,
+                                color='w', labelpad=1.0)
+            cbar3.ax.xaxis.set_label_position('top')
+            cbar3.outline.set_edgecolor('w')
+            cbar3.outline.set_linewidth(0.05)
+            cbar3.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
+
+            fig.savefig("plots/passive_ani" + reg + "_" + str(ind) + "_" + snap.split("_")[0] + ".png",
+                        bbox_inches='tight')
+
+        for snap in snips:
+
+            print(reg, snap, ind)
+
+            path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+
+            try:
+                star_poss = E.read_array('SNIP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
+                gas_poss = E.read_array('SNIP', path, snap, 'PartType4/Coordinates', numThreads=8) - cop
+                gas_sfr = E.read_array('SNIP', path, snap, 'PartType4/StarFormationRate', numThreads=8) - cop
+            except:
+                continue
+
+            # Get only stars within the aperture
+            star_okinds = np.logical_and(np.abs(star_poss[:, 0]) < lim,
+                                         np.logical_and(np.abs(star_poss[:, 1]) < lim, np.abs(star_poss[:, 2]) < lim))
+            gas_okinds = np.logical_and(np.abs(gas_poss[:, 0]) < lim,
+                                        np.logical_and(np.abs(gas_poss[:, 1]) < lim, np.abs(gas_poss[:, 2]) < lim))
+            this_star_poss = star_poss[star_okinds, :]
+            this_gas_poss = gas_poss[gas_okinds, :]
+            this_gas_sfr = gas_sfr[gas_okinds, :]
+
+            # Define resolution
+            res = 2 * lim / soft
+
+            # Histogram positions into images
+            Hstar, _, _ = np.histogram2d(star_poss[:, 0], star_poss[:, 1], bins=res, range=((-lim, lim), (-lim, lim)))
+            Hgas, _, _ = np.histogram2d(gas_poss[:, 0], gas_poss[:, 1], bins=res, range=((-lim, lim), (-lim, lim)))
+            Hsfr, _, _ = np.histogram2d(gas_poss[:, 0], gas_poss[:, 1], bins=res, range=((-lim, lim), (-lim, lim)),
+                                        weights=this_gas_sfr)
+
+            fig = plt.figure()
+            ax1 = fig.add_subplot(131)
+            ax2 = fig.add_subplot(132)
+            ax3 = fig.add_subplot(133)
+
+            im1 = ax1.imshow(Hstar, cmap='Greys_r', extent=(-lim, lim, -lim, lim))
+            im2 = ax2.imshow(Hgas, cmap='plasma', extent=(-lim, lim, -lim, lim))
+            im3 = ax3.imshow(np.log10(Hsfr), cmap='magma', extent=(-lim, lim, -lim, lim))
+
+            # Remove ticks
+            ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+            ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
+                            labeltop=False, labelright=False, labelbottom=False)
+
+            # Draw scale line
+            right_side = lim - (lim * 0.1)
+            vert = lim - (lim * 0.175)
+            lab_vert = vert + (lim * 0.1) * 5 / 8
+            lab_horz = right_side - scale / 2
+            ax1.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+            ax2.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+            ax3.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
+
+            # Label scale
+            ax1.text(lab_horz, lab_vert, str(int(scale * 1e3)) + ' ckpc', horizontalalignment='center',
+                     fontsize=2, color='w')
+            ax2.text(lab_horz, lab_vert, str(int(scale * 1e3)) + ' ckpc', horizontalalignment='center',
+                     fontsize=2, color='w')
+            ax3.text(lab_horz, lab_vert, str(int(scale * 1e3)) + ' ckpc', horizontalalignment='center',
+                     fontsize=2, color='w')
+
+            # Add colorbars
+            cax1 = inset_axes(ax1, width="50%", height="3%", loc='lower left')
+            cax2 = inset_axes(ax2, width="50%", height="3%", loc='lower left')
+            cax3 = inset_axes(ax3, width="50%", height="3%", loc='lower left')
+            cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
+            cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
+            cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
+
             # Label colorbars
             cbar1.ax.set_xlabel(r'$N_(\star}$', fontsize=2, color='w', labelpad=1.0)
             cbar1.ax.xaxis.set_label_position('top')
