@@ -141,6 +141,8 @@ for reg in regions:
 
     for snap in snaps:
 
+        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+
         try:
             star_poss_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8)
             gas_poss_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8)
