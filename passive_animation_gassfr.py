@@ -72,7 +72,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
 
 
 regions = []
-for reg in range(30, 31):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -87,7 +87,7 @@ snips = ['000_z014p500', '001_z013p500', '002_z012p500', '003_z011p500', '004_z0
          '006_z008p500', '007_z007p500', '008_z006p500', '009_z005p500']
 
 # Define galaxy thresholds
-ssfr_thresh = 0.5
+ssfr_thresh = 1
 
 snap = '011_z004p770'
 
