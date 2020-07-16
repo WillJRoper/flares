@@ -102,13 +102,8 @@ for reg in regions:
     path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
     try:
-        masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass',
-                            noH=True, numThreads=8) * 10**10
-        form_t = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime',
-                                                 noH=True, numThreads=8)
-        part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
-        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
-        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+        app_mass = E.read_array('SUBFIND', path, snap, 'ApertureMeasurements/Mass/030kpc', numThreads=8)[:, 4] * 10**10
+        sfrs = E.read_array('SUBFIND', path, snap, 'ApertureMeasurements/SFR/030kpc', numThreads=8)
         subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
         subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
         gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
@@ -116,39 +111,15 @@ for reg in regions:
     except:
         continue
 
-    # A copy of this array is needed for the extraction method
-    group_part_ids = np.copy(part_ids)
-
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
     halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
         halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-    # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-    part_halo_ids = np.zeros(grp_ids.size, dtype=float)
-    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
-
-    print("There are", len(part_halo_ids), "particles")
-
-    print("Got halo IDs")
-
-    parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids, group_part_ids, False)
-
-    # Produce a dictionary containing the index of particles in each halo
-    halo_part_inds = {}
-    for ind, grp in zip(parts_in_groups, part_groups):
-        halo_part_inds.setdefault(grp, set()).update({ind})
-
-    # Now the dictionary is fully populated convert values from sets to arrays for indexing
-    for key, val in halo_part_inds.items():
-        halo_part_inds[key] = np.array(list(val))
-
-    for key, cop in zip(halo_part_inds, gal_cops):
-        parts = halo_part_inds[key]
-        sfr = calc_srf(z, form_t[parts], masses[parts])
-        print(sfr)
-        grp_ssfr = sfr / np.sum(masses[parts])
+    for sfr, m, cop in zip(sfrs, app_mass, gal_cops):
+        if m == 0:
+            continue
+        grp_ssfr = sfr / m
         if grp_ssfr < ssfr_thresh and grp_ssfr != 0:
             cops_dict.setdefault(reg, []).append(cop)
 
