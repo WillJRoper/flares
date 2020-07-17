@@ -72,7 +72,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
 
 
 regions = []
-for reg in range(1, 5):
+for reg in range(3, 4):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -138,9 +138,9 @@ for reg in regions:
 
     print(len(cops_dict[reg]))
 
-lim = 100 / 1000
+lim = 500 / 1000
 soft = 0.001802390 / 0.6777
-scale = 10 / 1000
+scale = 100 / 1000
 
 star_poss_dict = {}
 gas_poss_dict = {}
