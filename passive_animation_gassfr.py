@@ -286,5 +286,7 @@ for reg in regions:
             # cbar3.outline.set_linewidth(0.05)
             # cbar3.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
-            fig.savefig("plots/passive_animation/passive_ani" + reg + "_" + str(ind) + "_" + snap.split("_")[0] + ".png",
+            fig.savefig("plots/passive_animation/passive_ani" + reg + "_" + str(ind) + "_" + snap + ".png",
                         bbox_inches='tight', dpi=300)
+
+            plt.close(fig)
