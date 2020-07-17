@@ -86,6 +86,11 @@ snaps.reverse()
 snips = ['000_z014p500', '001_z013p500', '002_z012p500', '003_z011p500', '004_z010p500', '005_z009p500',
          '006_z008p500', '007_z007p500', '008_z006p500', '009_z005p500']
 
+snipsnaps = ['000_z015p000', '000_z014p500', '001_z014p000', '001_z013p500', '002_z013p000', '002_z012p500',
+             '003_z012p000', '003_z011p500', '004_z011p000', '004_z010p500', '005_z010p000', '005_z009p500',
+             '006_z009p000', '006_z008p500', '007_z008p000', '007_z007p500', '008_z007p000', '008_z006p500',
+             '009_z006p000', '009_z005p500', '010_z005p000', '011_z004p770']
+
 # Define galaxy thresholds
 ssfr_thresh = 1
 
@@ -148,46 +153,37 @@ sfr_dict = {}
 
 for reg in regions:
 
-    path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
-
-    if len(cops_dict[reg]) == 0:
-        continue
-
-    for snap in snaps:
-
-        try:
-            star_poss_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8)
-            gas_poss_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8)
-            # sfr_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8)
-        except ValueError:
-            print("Error")
-            continue
-        except OSError:
-            print("Error")
-            continue
-
-    for snap in snips:
-
-        try:
-            star_poss_dict[(reg, snap)] = E.read_array('SNIP', path, snap, 'PartType4/Coordinates', numThreads=8)
-            gas_poss_dict[(reg, snap)] = E.read_array('SNIP', path, snap, 'PartType0/Coordinates', numThreads=8)
-            # sfr_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8)
-        except ValueError:
-            print("Error")
-            continue
-        except OSError:
-            print("Error")
-            continue
-
-snaps.extend(snips)
-
-for reg in regions:
-
     print(reg)
 
-    for ind, cop in enumerate(cops_dict[reg]):
+    for num, snap in enumerate(snipsnaps):
 
-        for snap in snaps:
+        if snap in snaps:
+
+            try:
+                star_poss_dict = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8)
+                gas_poss_dict = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8)
+                # sfr_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8)
+            except ValueError:
+                print("Error")
+                continue
+            except OSError:
+                print("Error")
+                continue
+
+        elif snap in snips:
+
+            try:
+                star_poss_dict = E.read_array('SNIP', path, snap, 'PartType4/Coordinates', numThreads=8)
+                gas_poss_dict = E.read_array('SNIP', path, snap, 'PartType0/Coordinates', numThreads=8)
+                # sfr_dict[(reg, snap)] = E.read_array('SNAP', path, snap, 'PartType0/StarFormationRate', numThreads=8)
+            except ValueError:
+                print("Error")
+                continue
+            except OSError:
+                print("Error")
+                continue
+
+        for ind, cop in enumerate(cops_dict[reg]):
 
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
@@ -196,8 +192,8 @@ for reg in regions:
 
             path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-            star_poss = star_poss_dict[(reg, snap)] - cop
-            gas_poss = gas_poss_dict[(reg, snap)] - cop
+            star_poss = star_poss_dict - cop
+            gas_poss = gas_poss_dict - cop
             # gas_sfr = sfr_dict[(reg, snap)]
 
             # Get only stars within the aperture
@@ -286,7 +282,7 @@ for reg in regions:
             # cbar3.outline.set_linewidth(0.05)
             # cbar3.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
-            fig.savefig("plots/passive_animation/passive_ani" + reg + "_" + str(ind) + "_" + snap + ".png",
+            fig.savefig("plots/passive_animation/passive_ani" + reg + "_" + str(ind) + "_%03d" % num + ".png",
                         bbox_inches='tight', dpi=300)
 
             plt.close(fig)
