@@ -113,11 +113,6 @@ for reg in regions:
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
                                   numThreads=8)
-
-            star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8)
-            gas_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8)
-            stellar_masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10
-            gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10
         except ValueError:
             continue
         except OSError:
