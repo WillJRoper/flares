@@ -79,7 +79,7 @@ scale = 30 / 1000
 res = int(np.floor(2 * lim / soft))
 
 regions = []
-for reg in range(3, 5):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -191,9 +191,9 @@ im2 = ax2.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim))
 ax3.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim), alpha=0.8)
 ax3.imshow(np.log10(star_img), cmap='Greys_r', extent=(-lim, lim, -lim, lim), alpha=0.6)
 
-ax1.scatter(0.0, 0.0, marker='+', s=10, color='r')
-ax2.scatter(0.0, 0.0, marker='+', s=10, color='r')
-ax3.scatter(0.0, 0.0, marker='+', s=10, color='r')
+ax1.scatter(0.0, 0.0, marker='+', s=5, color='r')
+ax2.scatter(0.0, 0.0, marker='+', s=5, color='r')
+ax3.scatter(0.0, 0.0, marker='+', s=5, color='r')
 
 app1 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='r', linestyle='-')
 app2 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='r', linestyle='-')
