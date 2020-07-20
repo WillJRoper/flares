@@ -71,7 +71,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
     return parts_in_groups, part_groups
 
 
-lim = 100 / 1000
+lim = 75 / 1000
 soft = 0.000474390 / 0.6777
 scale = 30 / 1000
 
@@ -144,10 +144,10 @@ for reg in regions:
         if len(cops) > 0:
             try:
 
-                star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8)
-                gas_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8)
-                stellar_masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10
-                gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10
+                star_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', numThreads=8)
+                gas_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', numThreads=8)
+                stellar_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10
+                gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10
 
             except ValueError:
                 continue
@@ -191,6 +191,10 @@ im2 = ax2.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim))
 ax3.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim))
 ax3.imshow(np.log10(star_img), cmap='Greys_r', extent=(-lim, lim, -lim, lim))
 
+ax1.scatter(0.0, 0.0, marker='+', s=10, color='r')
+ax2.scatter(0.0, 0.0, marker='+', s=10, color='r')
+ax3.scatter(0.0, 0.0, marker='+', s=10, color='r')
+
 # Remove ticks
 ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                 labeltop=False, labelright=False, labelbottom=False)
@@ -223,12 +227,12 @@ cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
 cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
 
 # Label colorbars
-cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=3, color='w', labelpad=1.0)
+cbar1.ax.set_xlabel(r'$\log_{10}(M_{\star}/M_{\odot})$', fontsize=3, color='w', labelpad=1.0)
 cbar1.ax.xaxis.set_label_position('top')
 cbar1.outline.set_edgecolor('w')
 cbar1.outline.set_linewidth(0.05)
 cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-cbar2.ax.set_xlabel(r'$M_{\mathrm{gas}}/M_{\odot}$', fontsize=3, color='w',
+cbar2.ax.set_xlabel(r'$\log_{10}(M_{\mathrm{gas}}/M_{\odot})$', fontsize=3, color='w',
                     labelpad=1.0)
 cbar2.ax.xaxis.set_label_position('top')
 cbar2.outline.set_edgecolor('w')
