@@ -188,12 +188,20 @@ ax3.imshow(np.zeros_like(star_img), cmap='magma', extent=(-lim, lim, -lim, lim))
 
 im1 = ax1.imshow(np.log10(star_img), cmap='magma', extent=(-lim, lim, -lim, lim))
 im2 = ax2.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim))
-ax3.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim))
-ax3.imshow(np.log10(star_img), cmap='Greys_r', extent=(-lim, lim, -lim, lim))
+ax3.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim), alpha=0.8)
+ax3.imshow(np.log10(star_img), cmap='Greys_r', extent=(-lim, lim, -lim, lim), alpha=0.6)
 
 ax1.scatter(0.0, 0.0, marker='+', s=10, color='r')
 ax2.scatter(0.0, 0.0, marker='+', s=10, color='r')
 ax3.scatter(0.0, 0.0, marker='+', s=10, color='r')
+
+app1 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='r', linestyle='-')
+app2 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='r', linestyle='-')
+app3 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='r', linestyle='-')
+
+ax1.add_artist(app1)
+ax2.add_artist(app2)
+ax3.add_artist(app3)
 
 # Remove ticks
 ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
