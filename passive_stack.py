@@ -107,10 +107,8 @@ for reg in regions:
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
         try:
-            masses = E.read_array('PARTDATA', path, snap, 'PartType4/InitialMass',
-                                noH=True, numThreads=8) * 10**10
-            form_t = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime',
-                                                     noH=True, numThreads=8)
+            masses = E.read_array('PARTDATA', path, snap, 'PartType4/InitialMass', noH=True, numThreads=8) * 10**10
+            form_t = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True, numThreads=8)
             part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
             grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
             subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
@@ -135,6 +133,7 @@ for reg in regions:
         okinds = gal_appms > 1e9
         halo_ids = halo_ids[okinds]
         gal_cops = gal_cops[okinds]
+        gal_appms = gal_appms[okinds]
 
         # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
         part_halo_ids = np.zeros(grp_ids.size, dtype=float)
@@ -164,10 +163,10 @@ for reg in regions:
             halo_part_inds[key] = np.array(list(val))
 
         cops = []
-        for key, cop in zip(halo_ids, gal_cops):
+        for key, cop, m in zip(halo_ids, gal_cops, gal_appms):
             parts = halo_part_inds[key]
             sfr = calc_srf(z, form_t[parts], masses[parts])
-            grp_ssfr = sfr / np.sum(masses[parts])
+            grp_ssfr = sfr / m
             if grp_ssfr < ssfr_thresh and grp_ssfr != 0:
                 cops.append(cop)
 
