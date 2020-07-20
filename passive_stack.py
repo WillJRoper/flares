@@ -174,12 +174,14 @@ for reg in regions:
     for cop in cops:
 
         # Get only stars within the aperture
-        star_okinds = np.logical_and(np.abs(star_poss[:, 0]) < lim,
-                                     np.logical_and(np.abs(star_poss[:, 1]) < lim, np.abs(star_poss[:, 2]) < lim))
-        gas_okinds = np.logical_and(np.abs(gas_poss[:, 0]) < lim,
-                                    np.logical_and(np.abs(gas_poss[:, 1]) < lim, np.abs(gas_poss[:, 2]) < lim))
-        this_star_poss = star_poss[star_okinds, :]
-        this_gas_poss = gas_poss[gas_okinds, :]
+        star_okinds = np.logical_and(np.abs(star_poss[:, 0] - cop[0]) < lim,
+                                     np.logical_and(np.abs(star_poss[:, 1] - cop[1]) < lim,
+                                                    np.abs(star_poss[:, 2] - cop[2]) < lim))
+        gas_okinds = np.logical_and(np.abs(gas_poss[:, 0] - cop[0]) < lim,
+                                    np.logical_and(np.abs(gas_poss[:, 1] - cop[1]) < lim,
+                                                   np.abs(gas_poss[:, 2] - cop[2]) < lim))
+        this_star_poss = star_poss[star_okinds, :] - cop
+        this_gas_poss = gas_poss[gas_okinds, :] - cop
         this_star_ms = stellar_masses[star_okinds]
         this_gas_ms = gas_masses[gas_okinds]
 
@@ -225,11 +227,11 @@ for reg in regions:
 
     # Label scale
     ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-             fontsize=2, color='w')
+             fontsize=4, color='w')
     ax2.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-             fontsize=2, color='w')
+             fontsize=4, color='w')
     ax3.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
-             fontsize=2, color='w')
+             fontsize=4, color='w')
 
     # Add colorbars
     cax1 = inset_axes(ax1, width="50%", height="3%", loc='lower left')
@@ -238,16 +240,16 @@ for reg in regions:
     cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
 
     # Label colorbars
-    cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=2, color='w', labelpad=1.0)
+    cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=3, color='w', labelpad=1.0)
     cbar1.ax.xaxis.set_label_position('top')
     cbar1.outline.set_edgecolor('w')
     cbar1.outline.set_linewidth(0.05)
     cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-    cbar2.ax.set_xlabel(r'$M_{\mathrm{gas}}/M_{\odot}$', fontsize=2, color='w',
+    cbar2.ax.set_xlabel(r'$M_{\mathrm{gas}}/M_{\odot}$', fontsize=3, color='w',
                         labelpad=1.0)
     cbar2.ax.xaxis.set_label_position('top')
     cbar2.outline.set_edgecolor('w')
     cbar2.outline.set_linewidth(0.05)
     cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
-    fig.savefig("plots/passive_stack.png", bbox_inches='tight')
+    fig.savefig("plots/passive_stack.png", bbox_inches='tight', dpi=300)
