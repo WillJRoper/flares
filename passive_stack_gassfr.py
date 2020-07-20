@@ -146,6 +146,19 @@ for reg in regions:
 
         print("There are", len(cops), "passive galaxies in", reg, snap)
 
+        if len(cops) > 0:
+            try:
+
+                star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8)
+                gas_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8)
+                stellar_masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10
+                gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10
+
+            except ValueError:
+                continue
+            except OSError:
+                continue
+
         for cop in cops:
 
             # Get only stars within the aperture
@@ -227,4 +240,4 @@ cbar2.outline.set_edgecolor('w')
 cbar2.outline.set_linewidth(0.05)
 cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
-fig.savefig("plots/passive_stack.png", bbox_inches='tight', dpi=300)
+fig.savefig("plots/passive_stack_gassfr.png", bbox_inches='tight', dpi=300)
