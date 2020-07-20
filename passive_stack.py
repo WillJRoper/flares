@@ -71,15 +71,15 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
     return parts_in_groups, part_groups
 
 
-lim = 100 / 1000
-soft = 0.000474390 / 0.6777
-scale = 30 / 1000
+lim = 40 / 1000
+soft = 0.001802390 / 0.6777 / 4
+scale = 10 / 1000
 
 # Define resolution
 res = int(np.floor(2 * lim / soft))
 
 regions = []
-for reg in range(0, 1):
+for reg in range(3, 5):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -117,14 +117,9 @@ for reg in regions:
             subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
-                                  numThreads=8)
+                                  numThreads=8) / 0.6777
             gal_appms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                      numThreads=8)[:, 4] * 10**10
-
-            star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8)
-            gas_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8)
-            stellar_masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10
-            gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10
 
         except:
             continue
@@ -171,6 +166,19 @@ for reg in regions:
 
         print("There are", len(cops), "passive galaxies in", reg, snap)
 
+        if len(cops) > 0:
+            try:
+
+                star_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', numThreads=8) / 0.6777
+                gas_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', numThreads=8) / 0.6777
+                stellar_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10  / 0.6777
+                gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10  / 0.6777
+
+            except ValueError:
+                continue
+            except OSError:
+                continue
+
         for cop in cops:
 
             # Get only stars within the aperture
@@ -205,8 +213,20 @@ ax3.imshow(np.zeros_like(star_img), cmap='magma', extent=(-lim, lim, -lim, lim))
 
 im1 = ax1.imshow(np.log10(star_img), cmap='magma', extent=(-lim, lim, -lim, lim))
 im2 = ax2.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim))
-ax3.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim))
-ax3.imshow(np.log10(star_img), cmap='Greys_r', extent=(-lim, lim, -lim, lim))
+ax3.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim), alpha=0.8)
+ax3.imshow(np.log10(star_img), cmap='Greys_r', extent=(-lim, lim, -lim, lim), alpha=0.5)
+
+app1 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='r', linestyle='-')
+app2 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='r', linestyle='-')
+app3 = plt.Circle((0., 0.), 0.03, facecolor='none', edgecolor='r', linestyle='-')
+
+ax1.add_artist(app1)
+ax2.add_artist(app2)
+ax3.add_artist(app3)
+
+ax1.set_title("Stellar")
+ax2.set_title("Gas")
+ax3.set_title("Gas + Stellar")
 
 # Remove ticks
 ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
@@ -240,16 +260,16 @@ cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
 cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
 
 # Label colorbars
-cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=3, color='w', labelpad=1.0)
+cbar1.ax.set_xlabel(r'$\log_{10}(M_{\star}/M_{\odot})$', fontsize=3, color='w', labelpad=1.0)
 cbar1.ax.xaxis.set_label_position('top')
 cbar1.outline.set_edgecolor('w')
 cbar1.outline.set_linewidth(0.05)
 cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-cbar2.ax.set_xlabel(r'$M_{\mathrm{gas}}/M_{\odot}$', fontsize=3, color='w',
+cbar2.ax.set_xlabel(r'$\log_{10}(M_{\mathrm{gas}}/M_{\odot})$', fontsize=3, color='w',
                     labelpad=1.0)
 cbar2.ax.xaxis.set_label_position('top')
 cbar2.outline.set_edgecolor('w')
 cbar2.outline.set_linewidth(0.05)
 cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
-fig.savefig("plots/passive_stack.png", bbox_inches='tight', dpi=300)
+fig.savefig("plots/passive_stack_gassfr.png", bbox_inches='tight', dpi=300)
