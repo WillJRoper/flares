@@ -96,7 +96,6 @@ snap = '011_z004p770'
 
 star_img = np.zeros((res, res))
 gas_img = np.zeros((res, res))
-combo_img = np.zeros((res, res))
 
 for reg in regions:
 
@@ -112,8 +111,6 @@ for reg in regions:
                             noH=True, numThreads=8) * 10**10
         form_t = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime',
                                                  noH=True, numThreads=8)
-        stellar_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10
-        gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10
         part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
         subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
@@ -125,6 +122,9 @@ for reg in regions:
 
         star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8)
         gas_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8)
+        stellar_masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10
+        gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10
+
     except:
         continue
 
@@ -191,7 +191,6 @@ for reg in regions:
 
         star_img += Hstar
         gas_img += Hgas
-        combo_img += (Hstar + Hgas)
 
     fig = plt.figure()
     ax1 = fig.add_subplot(131)
@@ -204,7 +203,8 @@ for reg in regions:
 
     im1 = ax1.imshow(np.log10(star_img), cmap='magma', extent=(-lim, lim, -lim, lim))
     im2 = ax2.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim))
-    im3 = ax3.imshow(np.log10(combo_img), cmap='magma', extent=(-lim, lim, -lim, lim))
+    ax3.imshow(np.log10(gas_img), cmap='magma', extent=(-lim, lim, -lim, lim))
+    ax3.imshow(np.log10(star_img), cmap='Greys_r', extent=(-lim, lim, -lim, lim))
 
     # Remove ticks
     ax1.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
@@ -234,10 +234,8 @@ for reg in regions:
     # Add colorbars
     cax1 = inset_axes(ax1, width="50%", height="3%", loc='lower left')
     cax2 = inset_axes(ax2, width="50%", height="3%", loc='lower left')
-    cax3 = inset_axes(ax3, width="50%", height="3%", loc='lower left')
     cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
     cbar2 = fig.colorbar(im2, cax=cax2, orientation="horizontal")
-    cbar3 = fig.colorbar(im3, cax=cax3, orientation="horizontal")
 
     # Label colorbars
     cbar1.ax.set_xlabel(r'$M_{\star}/M_{\odot}$', fontsize=2, color='w', labelpad=1.0)
@@ -251,11 +249,5 @@ for reg in regions:
     cbar2.outline.set_edgecolor('w')
     cbar2.outline.set_linewidth(0.05)
     cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
-    cbar3.ax.set_xlabel(r'$M_{\mathrm{gas}+\mathrm{star}}/M_{\odot}$', fontsize=2,
-                        color='w', labelpad=1.0)
-    cbar3.ax.xaxis.set_label_position('top')
-    cbar3.outline.set_edgecolor('w')
-    cbar3.outline.set_linewidth(0.05)
-    cbar3.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
     fig.savefig("plots/passive_stack.png", bbox_inches='tight')
