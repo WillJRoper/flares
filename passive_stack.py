@@ -79,7 +79,7 @@ scale = 30 / 1000
 res = int(np.floor(2 * lim / soft))
 
 regions = []
-for reg in range(30, 31):
+for reg in range(0, 1):
 
     if reg < 10:
         regions.append('0' + str(reg))
