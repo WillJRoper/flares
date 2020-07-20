@@ -107,66 +107,41 @@ for reg in regions:
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
         try:
-            masses = E.read_array('PARTDATA', path, snap, 'PartType4/InitialMass',
-                                noH=True, numThreads=8) * 10**10
-            form_t = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime',
-                                                     noH=True, numThreads=8)
-            part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
-            grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
-            subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+            app_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', numThreads=8)[:, 4] * 10**10
+            sfrs = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/SFR/030kpc', numThreads=8) * 10**10
             subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
                                   numThreads=8)
-            gal_appms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                     numThreads=8)[:, 4] * 10**10
 
             star_poss = E.read_array('SNAP', path, snap, 'PartType4/Coordinates', numThreads=8)
             gas_poss = E.read_array('SNAP', path, snap, 'PartType0/Coordinates', numThreads=8)
             stellar_masses = E.read_array('SNAP', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10
             gas_masses = E.read_array('SNAP', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10
-
-        except:
+        except ValueError:
+            continue
+        except OSError:
             continue
 
-        # A copy of this array is needed for the extraction method
-        group_part_ids = np.copy(part_ids)
+        okinds = app_mass > 1e9
+        app_mass = app_mass[okinds]
+        sfrs = sfrs[okinds]
+        subfind_grp_ids = subfind_grp_ids[okinds]
+        subfind_subgrp_ids = subfind_subgrp_ids[okinds]
+        gal_cops = gal_cops[okinds]
 
         # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
         halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
             halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        okinds = gal_appms > 1e9
-        halo_ids = halo_ids[okinds]
-        gal_cops = gal_cops[okinds]
-
-        # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-        part_halo_ids = np.zeros(grp_ids.size, dtype=float)
-        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-            part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
-
-        print("There are", len(part_halo_ids), "particles")
-
-        print("Got halo IDs")
-
-        parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids, group_part_ids, False)
-
-        # Produce a dictionary containing the index of particles in each halo
-        halo_part_inds = {}
-        for ind, grp in zip(parts_in_groups, part_groups):
-            halo_part_inds.setdefault(grp, set()).update({ind})
-
-        # Now the dictionary is fully populated convert values from sets to arrays for indexing
-        for key, val in halo_part_inds.items():
-            halo_part_inds[key] = np.array(list(val))
-
         cops = []
-        for key, cop in zip(halo_ids, gal_cops):
-            parts = halo_part_inds[key]
-            sfr = calc_srf(z, form_t[parts], masses[parts])
-            grp_ssfr = sfr / np.sum(masses[parts])
+        for sfr, m, cop in zip(sfrs, app_mass, gal_cops):
+            if m == 0:
+                continue
+            grp_ssfr = sfr / m
             if grp_ssfr < ssfr_thresh and grp_ssfr != 0:
+                # print(grp_ssfr)
                 cops.append(cop)
 
         print("There are", len(cops), "passive galaxies in", reg, snap)
@@ -186,10 +161,10 @@ for reg in regions:
             this_gas_ms = gas_masses[gas_okinds]
 
             # Histogram positions into images
-            Hstar, _, _ = np.histogram2d(this_star_poss[:, 0], this_star_poss[:, 1], bins=res, range=((-lim, lim), (-lim, lim)),
-                                         weights=this_star_ms)
-            Hgas, _, _ = np.histogram2d(this_gas_poss[:, 0], this_gas_poss[:, 1], bins=res, range=((-lim, lim), (-lim, lim)),
-                                        weights=this_gas_ms)
+            Hstar, _, _ = np.histogram2d(this_star_poss[:, 0], this_star_poss[:, 1], bins=res,
+                                         range=((-lim, lim), (-lim, lim)), weights=this_star_ms)
+            Hgas, _, _ = np.histogram2d(this_gas_poss[:, 0], this_gas_poss[:, 1], bins=res,
+                                        range=((-lim, lim), (-lim, lim)), weights=this_gas_ms)
 
             star_img += Hstar
             gas_img += Hgas
