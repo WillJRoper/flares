@@ -90,7 +90,7 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 
 # Define galaxy thresholds
-ssfr_thresh = 1
+ssfr_thresh = 0.1
 
 star_img = np.zeros((res, res))
 gas_img = np.zeros((res, res))
@@ -141,6 +141,13 @@ for reg in regions:
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
+        okinds = np.isin(part_halo_ids, halo_ids)
+        part_halo_ids = part_halo_ids[okinds]
+        part_ids = part_ids[okinds]
+        group_part_ids = group_part_ids[okinds]
+        masses = masses[okinds]
+        form_t = form_t[okinds]
+
         print("There are", len(part_halo_ids), "particles")
 
         print("Got halo IDs")
@@ -171,8 +178,8 @@ for reg in regions:
 
                 star_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', numThreads=8) / 0.6777
                 gas_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', numThreads=8) / 0.6777
-                stellar_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10  / 0.6777
-                gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10  / 0.6777
+                stellar_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10 / 0.6777
+                gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10 / 0.6777
 
             except ValueError:
                 continue
@@ -272,4 +279,4 @@ cbar2.outline.set_edgecolor('w')
 cbar2.outline.set_linewidth(0.05)
 cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
-fig.savefig("plots/passive_stack_gassfr.png", bbox_inches='tight', dpi=300)
+fig.savefig("plots/passive_stack.png", bbox_inches='tight', dpi=300)
