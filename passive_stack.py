@@ -184,9 +184,9 @@ for reg in regions:
         this_gas_ms = gas_masses[gas_okinds]
 
         # Histogram positions into images
-        Hstar, _, _ = np.histogram2d(star_poss[:, 0], star_poss[:, 1], bins=res, range=((-lim, lim), (-lim, lim)),
+        Hstar, _, _ = np.histogram2d(this_star_poss[:, 0], this_star_poss[:, 1], bins=res, range=((-lim, lim), (-lim, lim)),
                                      weights=this_star_ms)
-        Hgas, _, _ = np.histogram2d(gas_poss[:, 0], gas_poss[:, 1], bins=res, range=((-lim, lim), (-lim, lim)),
+        Hgas, _, _ = np.histogram2d(this_gas_poss[:, 0], this_gas_poss[:, 1], bins=res, range=((-lim, lim), (-lim, lim)),
                                     weights=this_gas_ms)
 
         star_img += Hstar
