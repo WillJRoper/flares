@@ -76,7 +76,7 @@ soft = 0.000474390 / 0.6777
 scale = 30 / 1000
 
 # Define resolution
-res = 2 * lim / soft
+res = int(np.floor(2 * lim / soft))
 
 regions = []
 for reg in range(30, 31):
