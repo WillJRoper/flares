@@ -62,7 +62,7 @@ for reg in regions:
         except OSError:
             continue
 
-        ssfrs = sfrs / app_mass
+        ssfrs = sfrs / app_mass[:, 4]
 
         okinds = np.logical_and(app_mass[:, 4] > 1e9, np.logical_and(ssfrs <= ssfr_thresh, app_mass[:, 1] > 0))
         app_mass = app_mass[okinds]
