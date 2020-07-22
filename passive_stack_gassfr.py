@@ -13,64 +13,6 @@ import h5py
 matplotlib.use('Agg')
 
 
-def calc_srf(z, a_born, mass, t_bin=100):
-
-    # Convert scale factor into redshift
-    z_born = 1 / a_born - 1
-
-    # Convert to time in Gyrs
-    t = cosmo.age(z)
-    t_born = cosmo.age(z_born)
-
-    # Calculate the VR
-    age = (t - t_born).to(u.Myr)
-
-    ok = np.where(age.value <= t_bin)[0]
-    if len(ok) > 0:
-
-        # Calculate the SFR
-        sfr = np.sum(mass[ok]) / (t_bin * 1e6)
-
-    else:
-        sfr = 0.0
-
-    return sfr
-
-
-def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
-    """ A function to find the indexes and halo IDs associated to particles/a particle producing an array for each
-
-    :param halo_ids:
-    :param part_ids:
-    :param group_part_ids:
-    :return:
-    """
-
-    # Sort particle IDs if required and store an unsorted version in an array
-    if sorted:
-        part_ids = np.sort(part_ids)
-    unsort_part_ids = np.copy(part_ids)
-
-    # Get the indices that would sort the array (if the array is sorted this is just a range form 0-Npart)
-    if sorted:
-        sinds = np.arange(part_ids.size)
-    else:
-        sinds = np.argsort(part_ids)
-        part_ids = part_ids[sinds]
-
-    # Get the index of particles in the snapshot array from the in particles in a group array
-    sorted_index = np.searchsorted(part_ids, group_part_ids)  # find the indices that would sort the array
-    yindex = np.take(sinds, sorted_index, mode="raise")  # take the indices at the indices found above
-    mask = unsort_part_ids[yindex] != group_part_ids  # define the mask based on these particles
-    result = np.ma.array(yindex, mask=mask)  # create a mask array
-
-    # Apply the mask to the id arrays to get halo ids and the particle indices
-    part_groups = halo_ids[np.logical_not(result.mask)]  # halo ids
-    parts_in_groups = result.data[np.logical_not(result.mask)]  # particle indices
-
-    return parts_in_groups, part_groups
-
-
 lim = 40 / 1000
 soft = 0.001802390 / 0.6777 / 4
 scale = 10 / 1000
@@ -107,37 +49,23 @@ for reg in regions:
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
         try:
-            app_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', numThreads=8)[:, 4] * 10**10
-            sfrs = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/SFR/030kpc', numThreads=8) * 10**10
-            subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-            subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+            app_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                    numThreads=8)[:, 4] * 10**10 / 0.6777
+            sfrs = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/SFR/030kpc',
+                                numThreads=8) * 10**10 / 0.6777
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
-                                  numThreads=8)  / 0.6777
+                                  numThreads=8) / 0.6777
         except ValueError:
             continue
         except OSError:
             continue
 
-        okinds = app_mass > 1e9
+        ssfrs = sfrs / app_mass
+
+        okinds = np.logical_and(app_mass > 1e9, ssfrs <= ssfr_thresh)
         app_mass = app_mass[okinds]
         sfrs = sfrs[okinds]
-        subfind_grp_ids = subfind_grp_ids[okinds]
-        subfind_subgrp_ids = subfind_subgrp_ids[okinds]
-        gal_cops = gal_cops[okinds]
-
-        # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-        halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
-        for (ind, g), sg in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
-            halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
-
-        cops = []
-        for sfr, m, cop in zip(sfrs, app_mass, gal_cops):
-            if m == 0:
-                continue
-            grp_ssfr = sfr / m
-            if grp_ssfr < ssfr_thresh and grp_ssfr != 0:
-                # print(grp_ssfr)
-                cops.append(cop)
+        cops = gal_cops[okinds]
 
         print("There are", len(cops), "passive galaxies in", reg, snap)
 
