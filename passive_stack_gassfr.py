@@ -34,6 +34,8 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 # Define galaxy thresholds
 ssfr_thresh = 0.1
 
+count = 0
+
 star_img = np.zeros((res, res))
 gas_img = np.zeros((res, res))
 
@@ -104,6 +106,9 @@ for reg in regions:
 
             star_img += Hstar
             gas_img += Hgas
+            count += 1
+
+print(count, "Passive Galaxies")
 
 fig = plt.figure()
 ax1 = fig.add_subplot(131)
