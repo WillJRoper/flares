@@ -90,7 +90,7 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 
 # Define galaxy thresholds
-ssfr_thresh = -1
+ssfr_thresh = 0.1
 
 star_img = np.zeros((res, res))
 gas_img = np.zeros((res, res))
