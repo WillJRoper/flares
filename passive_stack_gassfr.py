@@ -52,7 +52,7 @@ for reg in regions:
 
         try:
             app_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                    numThreads=8)[:, 4] * 10**10 / 0.6777
+                                    numThreads=8) * 10**10 / 0.6777
             sfrs = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/SFR/030kpc',
                                 numThreads=8) * 10**10 / 0.6777
             gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
@@ -64,7 +64,7 @@ for reg in regions:
 
         ssfrs = sfrs / app_mass
 
-        okinds = np.logical_and(app_mass > 1e9, ssfrs <= ssfr_thresh)
+        okinds = np.logical_and(app_mass[:, 4] > 1e9, np.logical_and(ssfrs <= ssfr_thresh, app_mass[:, 1] > 0))
         app_mass = app_mass[okinds]
         sfrs = sfrs[okinds]
         cops = gal_cops[okinds]
