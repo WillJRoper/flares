@@ -199,6 +199,9 @@ for reg, snap in reg_snaps:
     subfind_subgrp_ids = subfind_subgrp_ids[okinds]
     gal_cops = gal_cops[okinds]
 
+    if len(subfind_grp_ids) == 0:
+        continue
+
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
     halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
     for (ind, g), sg in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
