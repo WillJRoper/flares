@@ -161,11 +161,11 @@ ax2.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.
 ax3.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
 
 # Label scale
-ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' pkpc', horizontalalignment='center',
          fontsize=4, color='w')
-ax2.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+ax2.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' pkpc', horizontalalignment='center',
          fontsize=4, color='w')
-ax3.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+ax3.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' pkpc', horizontalalignment='center',
          fontsize=4, color='w')
 
 # Add colorbars
