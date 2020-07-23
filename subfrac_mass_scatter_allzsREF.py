@@ -309,6 +309,8 @@ def plot_relation(ms_dict, hmr_dict, savepath):
             plot_median_stat(ms, hmr / soft, ax, lab='REF', color='r')
         except ValueError:
             continue
+        except OverflowError:
+            continue
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -408,6 +410,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         plot_spread_stat(ms, hmr0p90 / soft, ax, color='mediumorchid')
         plot_median_stat(ms, hmr0p90 / soft, ax, lab='$\mathrm{frac}=0.90$', color='mediumorchid')
     except ValueError:
+        continue
+    except OverflowError:
         continue
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
