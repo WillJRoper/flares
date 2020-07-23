@@ -48,7 +48,7 @@ for reg in regions:
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    lim = 75 / 1000 / (1 + z)
+    lim = 150 / 1000 / (1 + z)
     soft = 0.001802390 / 0.6777 / 4 / (1 + z)
     scale = 10 / 1000
 
