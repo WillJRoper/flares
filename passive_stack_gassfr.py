@@ -48,6 +48,13 @@ for reg in regions:
         z_str = snap.split('z')[1].split('p')
         z = float(z_str[0] + '.' + z_str[1])
 
+        lim = 75 / 1000 / (1 + z)
+        soft = 0.001802390 / 0.6777 / 4 / (1 + z)
+        scale = 10 / 1000
+
+        # Define resolution
+        res = int(np.floor(2 * lim / soft))
+
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
         try:
@@ -55,7 +62,7 @@ for reg in regions:
                                     numThreads=8) * 10**10 / 0.6777
             sfrs = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/SFR/030kpc',
                                 numThreads=8) * 10**10 / 0.6777
-            gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
+            gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', physicalUnits=True,
                                   numThreads=8) / 0.6777
         except ValueError:
             continue
@@ -74,8 +81,8 @@ for reg in regions:
         if len(cops) > 0:
             try:
 
-                star_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', numThreads=8) / 0.6777
-                gas_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', numThreads=8) / 0.6777
+                star_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', physicalUnits=True, numThreads=8) / 0.6777
+                gas_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', physicalUnits=True, numThreads=8) / 0.6777
                 stellar_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10 / 0.6777
                 gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10 / 0.6777
 
