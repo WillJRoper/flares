@@ -13,7 +13,7 @@ import h5py
 matplotlib.use('Agg')
 
 
-lim = 40 / 1000
+lim = 75 / 1000
 soft = 0.001802390 / 0.6777 / 4
 scale = 10 / 1000
 
