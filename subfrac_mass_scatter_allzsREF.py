@@ -154,11 +154,7 @@ hmr0p95_dict = {}
 hmr0p98_dict = {}
 ms_dict = {}
 
-for reg, snap in reg_snaps:
-
-    path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
-
-    print(reg, snap)
+for snap in snaps:
 
     hmr0p05_dict[snap] = []
     hmr0p25_dict[snap] = []
@@ -168,6 +164,12 @@ for reg, snap in reg_snaps:
     hmr0p95_dict[snap] = []
     hmr0p98_dict[snap] = []
     ms_dict[snap] = []
+
+for reg, snap in reg_snaps:
+
+    path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+
+    print(reg, snap)
 
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
