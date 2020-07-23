@@ -39,74 +39,81 @@ count = 0
 star_img = np.zeros((res, res))
 gas_img = np.zeros((res, res))
 
+snap = '010_z005p000'
+
 for reg in regions:
 
-    for snap in snaps:
+    print(reg, snap)
 
-        print(reg, snap)
+    z_str = snap.split('z')[1].split('p')
+    z = float(z_str[0] + '.' + z_str[1])
 
-        z_str = snap.split('z')[1].split('p')
-        z = float(z_str[0] + '.' + z_str[1])
+    lim = 75 / 1000 / (1 + z)
+    soft = 0.001802390 / 0.6777 / 4 / (1 + z)
+    scale = 10 / 1000
 
-        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+    # Define resolution
+    res = int(np.floor(2 * lim / soft))
 
-        try:
-            app_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                    numThreads=8) * 10**10 / 0.6777
-            sfrs = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/SFR/030kpc',
+    path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+
+    try:
+        app_mass = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                 numThreads=8) * 10**10 / 0.6777
-            gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
-                                  numThreads=8) / 0.6777
+        sfrs = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/SFR/030kpc',
+                            numThreads=8) * 10**10 / 0.6777
+        gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', physicalUnits=True,
+                              numThreads=8) / 0.6777
+    except ValueError:
+        continue
+    except OSError:
+        continue
+
+    ssfrs = sfrs / app_mass[:, 4]
+
+    okinds = np.logical_and(app_mass[:, 4] > 1e9, np.logical_and(ssfrs <= ssfr_thresh, app_mass[:, 1] > 0))
+    app_mass = app_mass[okinds]
+    sfrs = sfrs[okinds]
+    cops = gal_cops[okinds]
+
+    print("There are", len(cops), "passive galaxies in", reg, snap)
+
+    if len(cops) > 0:
+        try:
+
+            star_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', physicalUnits=True, numThreads=8) / 0.6777
+            gas_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', physicalUnits=True, numThreads=8) / 0.6777
+            stellar_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10 / 0.6777
+            gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10 / 0.6777
+
         except ValueError:
             continue
         except OSError:
             continue
 
-        ssfrs = sfrs / app_mass[:, 4]
+    for cop in cops:
 
-        okinds = np.logical_and(app_mass[:, 4] > 1e9, np.logical_and(ssfrs <= ssfr_thresh, app_mass[:, 1] > 0))
-        app_mass = app_mass[okinds]
-        sfrs = sfrs[okinds]
-        cops = gal_cops[okinds]
+        # Get only stars within the aperture
+        star_okinds = np.logical_and(np.abs(star_poss[:, 0] - cop[0]) < lim,
+                                     np.logical_and(np.abs(star_poss[:, 1] - cop[1]) < lim,
+                                                    np.abs(star_poss[:, 2] - cop[2]) < lim))
+        gas_okinds = np.logical_and(np.abs(gas_poss[:, 0] - cop[0]) < lim,
+                                    np.logical_and(np.abs(gas_poss[:, 1] - cop[1]) < lim,
+                                                   np.abs(gas_poss[:, 2] - cop[2]) < lim))
+        this_star_poss = star_poss[star_okinds, :] - cop
+        this_gas_poss = gas_poss[gas_okinds, :] - cop
+        this_star_ms = stellar_masses[star_okinds]
+        this_gas_ms = gas_masses[gas_okinds]
 
-        print("There are", len(cops), "passive galaxies in", reg, snap)
+        # Histogram positions into images
+        Hstar, _, _ = np.histogram2d(this_star_poss[:, 0], this_star_poss[:, 1], bins=res,
+                                     range=((-lim, lim), (-lim, lim)), weights=this_star_ms)
+        Hgas, _, _ = np.histogram2d(this_gas_poss[:, 0], this_gas_poss[:, 1], bins=res,
+                                    range=((-lim, lim), (-lim, lim)), weights=this_gas_ms)
 
-        if len(cops) > 0:
-            try:
-
-                star_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', numThreads=8) / 0.6777
-                gas_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', numThreads=8) / 0.6777
-                stellar_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', numThreads=8) * 10 ** 10 / 0.6777
-                gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', numThreads=8) * 10 ** 10 / 0.6777
-
-            except ValueError:
-                continue
-            except OSError:
-                continue
-
-        for cop in cops:
-
-            # Get only stars within the aperture
-            star_okinds = np.logical_and(np.abs(star_poss[:, 0] - cop[0]) < lim,
-                                         np.logical_and(np.abs(star_poss[:, 1] - cop[1]) < lim,
-                                                        np.abs(star_poss[:, 2] - cop[2]) < lim))
-            gas_okinds = np.logical_and(np.abs(gas_poss[:, 0] - cop[0]) < lim,
-                                        np.logical_and(np.abs(gas_poss[:, 1] - cop[1]) < lim,
-                                                       np.abs(gas_poss[:, 2] - cop[2]) < lim))
-            this_star_poss = star_poss[star_okinds, :] - cop
-            this_gas_poss = gas_poss[gas_okinds, :] - cop
-            this_star_ms = stellar_masses[star_okinds]
-            this_gas_ms = gas_masses[gas_okinds]
-
-            # Histogram positions into images
-            Hstar, _, _ = np.histogram2d(this_star_poss[:, 0], this_star_poss[:, 1], bins=res,
-                                         range=((-lim, lim), (-lim, lim)), weights=this_star_ms)
-            Hgas, _, _ = np.histogram2d(this_gas_poss[:, 0], this_gas_poss[:, 1], bins=res,
-                                        range=((-lim, lim), (-lim, lim)), weights=this_gas_ms)
-
-            star_img += Hstar
-            gas_img += Hgas
-            count += 1
+        star_img += Hstar
+        gas_img += Hgas
+        count += 1
 
 print(count, "Passive Galaxies")
 
@@ -154,11 +161,11 @@ ax2.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.
 ax3.plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.5)
 
 # Label scale
-ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+ax1.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' pkpc', horizontalalignment='center',
          fontsize=4, color='w')
-ax2.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+ax2.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' pkpc', horizontalalignment='center',
          fontsize=4, color='w')
-ax3.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' ckpc', horizontalalignment='center',
+ax3.text(lab_horz, lab_vert, str(int(scale*1e3)) + ' pkpc', horizontalalignment='center',
          fontsize=4, color='w')
 
 # Add colorbars
@@ -180,4 +187,4 @@ cbar2.outline.set_edgecolor('w')
 cbar2.outline.set_linewidth(0.05)
 cbar2.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
-fig.savefig("plots/passive_stack_gassfr.png", bbox_inches='tight', dpi=300)
+fig.savefig("plots/passive_stack_gassfr__physical_" + snap + ".png", bbox_inches='tight', dpi=300)
