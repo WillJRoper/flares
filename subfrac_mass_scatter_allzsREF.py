@@ -186,6 +186,8 @@ for reg, snap in reg_snaps:
         continue
     except KeyError:
         continue
+    except OSError:
+        continue
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
@@ -221,6 +223,8 @@ for reg, snap in reg_snaps:
     except ValueError:
         continue
     except KeyError:
+        continue
+    except OSError:
         continue
 
     # A copy of this array is needed for the extraction method
