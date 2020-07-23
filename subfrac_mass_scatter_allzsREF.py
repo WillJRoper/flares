@@ -150,6 +150,8 @@ hmr0p25_dict = {}
 hmr0p5_dict = {}
 hmr0p75_dict = {}
 hmr0p90_dict = {}
+hmr0p95_dict = {}
+hmr0p98_dict = {}
 ms_dict = {}
 
 for reg, snap in reg_snaps:
@@ -163,6 +165,8 @@ for reg, snap in reg_snaps:
     hmr0p5_dict[snap] = []
     hmr0p75_dict[snap] = []
     hmr0p90_dict[snap] = []
+    hmr0p95_dict[snap] = []
+    hmr0p98_dict[snap] = []
     ms_dict[snap] = []
 
     # Get the redshift
@@ -258,11 +262,15 @@ for reg, snap in reg_snaps:
         r0p50, _ = calc_mass_rad(0.5, rs, mass)
         r0p75, _ = calc_mass_rad(0.75, rs, mass)
         r0p90, _ = calc_mass_rad(0.90, rs, mass)
+        r0p95, _ = calc_mass_rad(0.95, rs, mass)
+        r0p98, _ = calc_mass_rad(0.98, rs, mass)
         hmr0p05_dict[snap].append(r0p05)
         hmr0p25_dict[snap].append(r0p25)
         hmr0p5_dict[snap].append(r0p50)
         hmr0p75_dict[snap].append(r0p75)
         hmr0p90_dict[snap].append(r0p90)
+        hmr0p95_dict[snap].append(r0p95)
+        hmr0p98_dict[snap].append(r0p98)
         ms_dict[snap].append(m)
 
     print('There are', len(star_halo_ids), 'galaxies in ', reg, snap)
@@ -357,6 +365,9 @@ plot_relation(ms_dict, hmr0p25_dict, savepath='plots/0p25MassRadii_all_snaps_REF
 plot_relation(ms_dict, hmr0p5_dict, savepath='plots/0p5MassRadii_all_snaps_REF.png')
 plot_relation(ms_dict, hmr0p75_dict, savepath='plots/0p75MassRadii_all_snaps_REF.png')
 plot_relation(ms_dict, hmr0p90_dict, savepath='plots/0p90MassRadii_all_snaps_REF.png')
+plot_relation(ms_dict, hmr0p95_dict, savepath='plots/0p95MassRadii_all_snaps_REF.png')
+plot_relation(ms_dict, hmr0p98_dict, savepath='plots/0p98MassRadii_all_snaps_REF.png')
+
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
@@ -389,6 +400,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     hmr0p5 = np.array(hmr0p5_dict[snap])
     hmr0p75 = np.array(hmr0p75_dict[snap])
     hmr0p90 = np.array(hmr0p90_dict[snap])
+    hmr0p95 = np.array(hmr0p95_dict[snap])
+    hmr0p98 = np.array(hmr0p98_dict[snap])
 
     okinds =  np.logical_and(ms > 1e8, hmr0p05 > 0)
     ms = ms[okinds]
@@ -397,6 +410,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     hmr0p5 = hmr0p5[okinds]
     hmr0p75 = hmr0p75[okinds]
     hmr0p90 = hmr0p90[okinds]
+    hmr0p95 = hmr0p95[okinds]
+    hmr0p98 = hmr0p98[okinds]
 
     try:
         plot_spread_stat(ms, hmr0p05 / soft, ax, color='darkgrey')
@@ -409,6 +424,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         plot_median_stat(ms, hmr0p75 / soft, ax, lab='$\mathrm{frac}=0.75$', color='deepskyblue')
         plot_spread_stat(ms, hmr0p90 / soft, ax, color='mediumorchid')
         plot_median_stat(ms, hmr0p90 / soft, ax, lab='$\mathrm{frac}=0.90$', color='mediumorchid')
+        plot_spread_stat(ms, hmr0p95 / soft, ax, color='peachpuff')
+        plot_median_stat(ms, hmr0p95 / soft, ax, lab='$\mathrm{frac}=0.95$', color='peachpuff')
+        plot_spread_stat(ms, hmr0p98 / soft, ax, color='navy')
+        plot_median_stat(ms, hmr0p98 / soft, ax, lab='$\mathrm{frac}=0.98$', color='navy')
     except ValueError:
         continue
     except OverflowError:
