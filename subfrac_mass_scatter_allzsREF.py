@@ -126,7 +126,7 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 
 regions = []
-for reg in range(0, 1):
+for reg in range(0, 2):
     if reg < 10:
         regions.append('0' + str(reg))
     else:
@@ -413,6 +413,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     hmr0p95 = hmr0p95[okinds]
     hmr0p98 = hmr0p98[okinds]
 
+    ax.loglog()
+
     try:
         plot_spread_stat(ms, hmr0p05 / soft, ax, color='darkgrey')
         plot_median_stat(ms, hmr0p05 / soft, ax, lab='$\mathrm{frac}=0.05$', color='darkgrey')
@@ -466,8 +468,8 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-handles, labels = ax1.get_legend_handles_labels()
-ax1.legend(handles, labels, loc='upper left')
+handles, labels = ax9.get_legend_handles_labels()
+ax9.legend(handles, labels, loc='upper left')
 
 fig.savefig('plots/MassRadii_all_snaps_REF.png', bbox_inches='tight')
 
