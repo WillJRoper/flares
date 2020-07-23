@@ -248,13 +248,6 @@ for reg, snap in reg_snaps:
         halo_part_inds[key] = np.array(list(val))
 
     # Get the position of each of these galaxies
-    gal_ages = {}
-    gal_mets = {}
-    gal_ini_ms = {}
-    gal_app_ms = {}
-    gal_smls = {}
-    all_gal_poss = {}
-    means = {}
     for id, cop in zip(star_halo_ids, gal_cops):
         mask = halo_part_inds[id]
         poss = all_poss[mask, :] - cop
@@ -272,7 +265,8 @@ for reg, snap in reg_snaps:
         hmr0p90_dict[snap].append(r0p90)
         ms_dict[snap].append(m)
 
-    print('There are', len(gal_ages.keys()), 'galaxies')
+    print('There are', len(star_halo_ids), 'galaxies in ', reg, snap)
+    print('There are', len(ms_dict[snap]), 'galaxies in ', snap)
 
 
 def plot_relation(ms_dict, hmr_dict, savepath):
@@ -302,8 +296,8 @@ def plot_relation(ms_dict, hmr_dict, savepath):
         else:
             soft = 0.001802390 / (0.6777 * (1 + z))
 
-        ms = ms_dict[snap]
-        hmr = hmr_dict[snap]
+        ms = np.array(ms_dict[snap])
+        hmr = np.array(hmr_dict[snap])
 
         okinds =  np.logical_and(ms > 1e8, hmr > 0)
         ms = ms[okinds]
@@ -385,11 +379,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         soft = 0.001802390 / (0.6777 * (1 + z))
 
     ms = ms_dict[snap]
-    hmr0p05 = hmr0p05_dict[snap]
-    hmr0p25 = hmr0p25_dict[snap]
-    hmr0p5 = hmr0p5_dict[snap]
-    hmr0p75 = hmr0p75_dict[snap]
-    hmr0p90 = hmr0p90_dict[snap]
+    hmr0p05 = np.array(hmr0p05_dict[snap])
+    hmr0p25 = np.array(hmr0p25_dict[snap])
+    hmr0p5 = np.array(hmr0p5_dict[snap])
+    hmr0p75 = np.array(hmr0p75_dict[snap])
+    hmr0p90 = np.array(hmr0p90_dict[snap])
 
     okinds =  np.logical_and(ms > 1e8, hmr0p05 > 0)
     ms = ms[okinds]
