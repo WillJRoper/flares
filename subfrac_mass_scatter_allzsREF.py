@@ -383,7 +383,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     else:
         soft = 0.001802390 / (0.6777 * (1 + z))
 
-    ms = ms_dict[snap]
+    ms = np.array(ms_dict[snap])
     hmr0p05 = np.array(hmr0p05_dict[snap])
     hmr0p25 = np.array(hmr0p25_dict[snap])
     hmr0p5 = np.array(hmr0p5_dict[snap])
