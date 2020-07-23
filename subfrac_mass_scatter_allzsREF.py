@@ -117,7 +117,7 @@ def plot_spread_stat(xs, ys, ax, color, bins=None):
     bin_wid = binedges[1] - binedges[0]
     bin_cents = binedges[1:] - bin_wid / 2
 
-    okinds = np.logical_and(~np.isnan(bin_cents), np.logicak_and(~np.isnan(y_stat_16), ~np.isnan(y_stat_84)))
+    okinds = np.logical_and(~np.isnan(bin_cents), np.logical_and(~np.isnan(y_stat_16), ~np.isnan(y_stat_84)))
 
     ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], color=color, alpha=0.6)
 
