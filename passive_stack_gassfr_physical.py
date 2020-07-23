@@ -13,8 +13,13 @@ import h5py
 matplotlib.use('Agg')
 
 
-lim = 75 / 1000
-soft = 0.001802390 / 0.6777 / 4
+snap = '010_z005p000'
+
+z_str = snap.split('z')[1].split('p')
+z = float(z_str[0] + '.' + z_str[1])
+
+lim = 150 / 1000 / (1 + z)
+soft = 0.001802390 / 0.6777 / 4 / (1 + z)
 scale = 10 / 1000
 
 # Define resolution
@@ -39,18 +44,9 @@ count = 0
 star_img = np.zeros((res, res))
 gas_img = np.zeros((res, res))
 
-snap = '010_z005p000'
-
 for reg in regions:
 
     print(reg, snap)
-
-    z_str = snap.split('z')[1].split('p')
-    z = float(z_str[0] + '.' + z_str[1])
-
-    lim = 150 / 1000 / (1 + z)
-    soft = 0.001802390 / 0.6777 / 4 / (1 + z)
-    scale = 10 / 1000
 
     # Define resolution
     res = int(np.floor(2 * lim / soft))
