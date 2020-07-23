@@ -469,7 +469,7 @@ ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=F
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
 handles, labels = ax9.get_legend_handles_labels()
-ax1.legend(handles, labels, loc='upper left', ncol=2)
+ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=10)
 
 fig.savefig('plots/MassRadii_all_snaps_REF.png', bbox_inches='tight')
 
