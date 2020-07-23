@@ -3,10 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import matplotlib
-import astropy.units as u
-import astropy.constants as cons
-from astropy.cosmology import Planck13 as cosmo
-from matplotlib.colors import LogNorm
 import eagle_IO.eagle_IO as E
 import seaborn as sns
 import h5py
