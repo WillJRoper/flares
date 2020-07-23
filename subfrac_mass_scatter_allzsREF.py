@@ -184,6 +184,8 @@ for reg, snap in reg_snaps:
                                   numThreads=8) * 10**10
     except ValueError:
         continue
+    except KeyError:
+        continue
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
@@ -217,6 +219,8 @@ for reg, snap in reg_snaps:
         part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
                                 physicalUnits=True, verbose=False, numThreads=8)
     except ValueError:
+        continue
+    except KeyError:
         continue
 
     # A copy of this array is needed for the extraction method
