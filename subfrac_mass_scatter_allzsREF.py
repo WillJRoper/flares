@@ -303,9 +303,12 @@ def plot_relation(ms_dict, hmr_dict, savepath):
         ms = ms[okinds]
         hmr = hmr[okinds]
 
-        cbar = ax.hexbin(ms, hmr / soft, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                         norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
-        plot_median_stat(ms, hmr / soft, ax, lab='REF', color='r')
+        try:
+            cbar = ax.hexbin(ms, hmr / soft, gridsize=100, mincnt=1, xscale='log', yscale='log',
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
+            plot_median_stat(ms, hmr / soft, ax, lab='REF', color='r')
+        except ValueError:
+            continue
 
         ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -392,17 +395,20 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     hmr0p5 = hmr0p5[okinds]
     hmr0p75 = hmr0p75[okinds]
     hmr0p90 = hmr0p90[okinds]
-    
-    plot_spread_stat(ms, hmr0p05 / soft, ax, color='darkgrey')
-    plot_median_stat(ms, hmr0p05 / soft, ax, lab='$\mathrm{frac}=0.05$', color='darkgrey')
-    plot_spread_stat(ms, hmr0p25 / soft, ax, color='limegreen')
-    plot_median_stat(ms, hmr0p25 / soft, ax, lab='$\mathrm{frac}=0.25$', color='limegreen')
-    plot_spread_stat(ms, hmr0p5 / soft, ax, color='orangered')
-    plot_median_stat(ms, hmr0p5 / soft, ax, lab='$\mathrm{frac}=0.50$', color='orangered')
-    plot_spread_stat(ms, hmr0p75 / soft, ax, color='deepskyblue')
-    plot_median_stat(ms, hmr0p75 / soft, ax, lab='$\mathrm{frac}=0.75$', color='deepskyblue')
-    plot_spread_stat(ms, hmr0p90 / soft, ax, color='mediumorchid')
-    plot_median_stat(ms, hmr0p90 / soft, ax, lab='$\mathrm{frac}=0.90$', color='mediumorchid')
+
+    try:
+        plot_spread_stat(ms, hmr0p05 / soft, ax, color='darkgrey')
+        plot_median_stat(ms, hmr0p05 / soft, ax, lab='$\mathrm{frac}=0.05$', color='darkgrey')
+        plot_spread_stat(ms, hmr0p25 / soft, ax, color='limegreen')
+        plot_median_stat(ms, hmr0p25 / soft, ax, lab='$\mathrm{frac}=0.25$', color='limegreen')
+        plot_spread_stat(ms, hmr0p5 / soft, ax, color='orangered')
+        plot_median_stat(ms, hmr0p5 / soft, ax, lab='$\mathrm{frac}=0.50$', color='orangered')
+        plot_spread_stat(ms, hmr0p75 / soft, ax, color='deepskyblue')
+        plot_median_stat(ms, hmr0p75 / soft, ax, lab='$\mathrm{frac}=0.75$', color='deepskyblue')
+        plot_spread_stat(ms, hmr0p90 / soft, ax, color='mediumorchid')
+        plot_median_stat(ms, hmr0p90 / soft, ax, lab='$\mathrm{frac}=0.90$', color='mediumorchid')
+    except ValueError:
+        continue
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
