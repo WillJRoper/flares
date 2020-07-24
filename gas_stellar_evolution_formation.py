@@ -459,9 +459,9 @@ def main_evolve_graph(snap):
 
             print(reg, snap)
 
-            stellar_hmr_dict.setdefault(snap, []).extend(star_hmrs)
-            gas_hmr_dict.setdefault(snap, []).extend(gas_hmrs)
-            form_zs_dict.setdefault(snap, []).extend(form)
+            stellar_hmr_dict.setdefault(snap, []).extend(star_hmrs[snap])
+            gas_hmr_dict.setdefault(snap, []).extend(gas_hmrs[snap])
+            form_zs_dict.setdefault(snap, []).extend(form[snap])
 
     axlims_x = []
     axlims_y = []
@@ -487,14 +487,13 @@ def main_evolve_graph(snap):
         z = float(z_str[0] + '.' + z_str[1])
 
         stellar_hmr = np.array(stellar_hmr_dict[snap])
-        print(stellar_hmr)
         gas_hmr = np.array(gas_hmr_dict[snap])
         form_zs = np.array(form_zs_dict[snap])
 
-        # okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, form_zs > 0))
-        # stellar_hmr = stellar_hmr[okinds]
-        # gas_hmr = gas_hmr[okinds]
-        # form_zs = form_zs[okinds]
+        okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, form_zs > 0))
+        stellar_hmr = stellar_hmr[okinds]
+        gas_hmr = gas_hmr[okinds]
+        form_zs = form_zs[okinds]
 
         try:
             cbar = ax.hexbin(form_zs, gas_hmr, gridsize=100, mincnt=1, yscale='log',
