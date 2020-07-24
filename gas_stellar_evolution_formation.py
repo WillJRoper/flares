@@ -429,7 +429,7 @@ def get_evolution(path, snaps):
 def main_evolve_graph(snap):
 
     regions = []
-    for reg in range(0, 1):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -482,11 +482,15 @@ def main_evolve_graph(snap):
 
     ax1.set_xlabel("$z_{\mathrm{form}}$")
     ax2.set_xlabel("$z_{\mathrm{form}}$")
-    ax1.set_ylabel("$R_{1/2, \mathrm{gas}} / \epsilon$")
-    ax2.set_ylabel("$R_{1/2, \star} / \epsilon$")
+    ax1.set_ylabel("$R_{1/2} / \epsilon$")
+
+    ax2.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
     # handles, labels = ax1.get_legend_handles_labels()
     # ax1.legend(handles, labels)
+
+    ax1.set_ylim(10**-1, 10**2)
+    ax2.set_ylim(10**-1, 10**2)
 
     fig.savefig("plots/gas_stellar_formation_hmr.png", bbox_inches="tight")
 
