@@ -2,6 +2,7 @@
 import matplotlib as ml
 ml.use('Agg')
 import numpy as np
+import matplotlib.gridspec as gridspec
 from scipy.stats import binned_statistic
 import matplotlib.pyplot as plt
 import eagle_IO.eagle_IO as E
@@ -328,9 +329,9 @@ def forest_worker(z0halo, data_dict):
 def get_evolution(path, snaps):
 
     # Set up dictionaries to store data
-    gas_hmrs = []
-    star_hmrs = []
-    form = []
+    gas_hmrs = {}
+    star_hmrs = {}
+    form = {}
 
     for snap in snaps:
 
@@ -419,11 +420,9 @@ def get_evolution(path, snaps):
         # Get the position of each of these galaxies
         for id, hmr in zip(star_halo_ids, gal_hmrs):
             mask = halo_part_inds[id]
-            form.append(np.mean(1 / form_a[mask] - 1))
-            star_hmrs.append(hmr[4] / soft)
-            gas_hmrs.append(hmr[0] / soft)
-
-        print(len(star_hmrs), len(gas_hmrs), len(form))
+            form.setdefault(snap, []).append(np.mean(1 / form_a[mask] - 1))
+            star_hmrs.setdefault(snap, []).append(hmr[4] / soft)
+            gas_hmrs.setdefault(snap, []).append(hmr[0] / soft)
 
     return gas_hmrs, star_hmrs, form
 
@@ -431,17 +430,19 @@ def get_evolution(path, snaps):
 def main_evolve_graph(snap):
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 1):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
             regions.append(str(reg))
 
-    snaplist = [snap, ]
+    snaplist = ['003_z012p000', '004_z011p000', '005_z010p000',
+                '006_z009p000', '007_z008p000', '008_z007p000',
+                '009_z006p000', '010_z005p000', '011_z004p770']
 
-    stellar_hmr = []
-    gas_hmr = []
-    form_zs = []
+    stellar_hmr_dict = {}
+    gas_hmr_dict = {}
+    form_zs_dict = {}
 
     for reg in regions:
 
@@ -458,46 +459,174 @@ def main_evolve_graph(snap):
 
             print(reg, snap)
 
-            stellar_hmr.extend(star_hmrs)
-            gas_hmr.extend(gas_hmrs)
-            form_zs.extend(form)
+            stellar_hmr_dict.setdefault(snap, []).extend(star_hmrs)
+            gas_hmr_dict.setdefault(snap, []).extend(gas_hmrs)
+            form_zs_dict.setdefault(snap, []).extend(form)
 
-    fig = plt.figure(figsize=(12, 6))
-    ax1 = fig.add_subplot(121)
-    ax2 = fig.add_subplot(122)
+    axlims_x = []
+    axlims_y = []
 
-    stellar_hmr = np.array(stellar_hmr)
-    gas_hmr = np.array(gas_hmr)
-    form_zs = np.array(form_zs)
+    # Set up plot
+    fig = plt.figure(figsize=(18, 10))
+    gs = gridspec.GridSpec(3, 6)
+    gs.update(wspace=0.0, hspace=0.0)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax3 = fig.add_subplot(gs[0, 2])
+    ax4 = fig.add_subplot(gs[1, 0])
+    ax5 = fig.add_subplot(gs[1, 1])
+    ax6 = fig.add_subplot(gs[1, 2])
+    ax7 = fig.add_subplot(gs[2, 0])
+    ax8 = fig.add_subplot(gs[2, 1])
+    ax9 = fig.add_subplot(gs[2, 2])
 
-    okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, form_zs > 0))
-    stellar_hmr = stellar_hmr[okinds]
-    gas_hmr = gas_hmr[okinds]
-    form_zs = form_zs[okinds]
+    for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaplist,
+                                [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
 
-    cbar = ax1.hexbin(form_zs, gas_hmr, gridsize=100, mincnt=1, yscale='log',
-                      norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
-    cbar = ax2.hexbin(form_zs, stellar_hmr, gridsize=100, mincnt=1, yscale='log',
-                      norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
+        z_str = snap.split('z')[1].split('p')
+        z = float(z_str[0] + '.' + z_str[1])
 
-    # plot_spread_stat(np.array(form_zs), np.array(stellar_hmr), ax2, color='limegreen')
-    plot_median_stat(np.array(form_zs), np.array(stellar_hmr), ax2, lab='Stellar', color='limegreen')
-    # plot_spread_stat(np.array(form_zs), np.array(gas_hmr), ax1, color='orangered')
-    plot_median_stat(np.array(form_zs), np.array(gas_hmr), ax1, lab='Gas', color='orangered')
+        stellar_hmr = np.array(stellar_hmr_dict[snap])
+        gas_hmr = np.array(gas_hmr_dict[snap])
+        form_zs = np.array(form_zs_dict[snap])
 
-    ax1.set_xlabel("$z_{\mathrm{form}}$")
-    ax2.set_xlabel("$z_{\mathrm{form}}$")
-    ax1.set_ylabel("$R_{1/2} / \epsilon$")
+        okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, form_zs > 0))
+        stellar_hmr = stellar_hmr[okinds]
+        gas_hmr = gas_hmr[okinds]
+        form_zs = form_zs[okinds]
 
-    ax2.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+        try:
+            cbar = ax.hexbin(form_zs, gas_hmr, gridsize=100, mincnt=1, yscale='log',
+                              norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
-    # handles, labels = ax1.get_legend_handles_labels()
-    # ax1.legend(handles, labels)
+            # plot_spread_stat(np.array(form_zs), np.array(gas_hmr), ax1, color='orangered')
+            plot_median_stat(np.array(form_zs), np.array(gas_hmr), ax, lab='Gas', color='orangered')
+        except ValueError:
+            continue
+        except OverflowError:
+            continue
 
-    ax1.set_ylim(10**-1, 10**2)
-    ax2.set_ylim(10**-1, 10**2)
+        ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                transform=ax.transAxes, horizontalalignment='right', fontsize=8)
+
+        axlims_x.extend(ax.get_xlim())
+        axlims_y.extend(ax.get_ylim())
+
+        # Label axes
+        if i == 2:
+            ax1.set_xlabel("$z_{\mathrm{form}}$")
+        if j == 0:
+            ax.set_ylabel("$R_{1/2} / \epsilon$")
+
+    for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
+
+        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
+        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+        for spine in ax.spines.values():
+            spine.set_edgecolor('k')
+
+    # Remove axis labels
+    ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+    ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+
+    handles, labels = ax9.get_legend_handles_labels()
+    ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
 
     fig.savefig("plots/gas_stellar_formation_hmr.png", bbox_inches="tight")
+
+    plt.close(fig)
+
+    axlims_x = []
+    axlims_y = []
+
+    # Set up plot
+    fig = plt.figure(figsize=(18, 10))
+    gs = gridspec.GridSpec(3, 6)
+    gs.update(wspace=0.0, hspace=0.0)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax3 = fig.add_subplot(gs[0, 2])
+    ax4 = fig.add_subplot(gs[1, 0])
+    ax5 = fig.add_subplot(gs[1, 1])
+    ax6 = fig.add_subplot(gs[1, 2])
+    ax7 = fig.add_subplot(gs[2, 0])
+    ax8 = fig.add_subplot(gs[2, 1])
+    ax9 = fig.add_subplot(gs[2, 2])
+
+    for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaplist,
+                                [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
+
+        z_str = snap.split('z')[1].split('p')
+        z = float(z_str[0] + '.' + z_str[1])
+
+        stellar_hmr = np.array(stellar_hmr_dict[snap])
+        gas_hmr = np.array(gas_hmr_dict[snap])
+        form_zs = np.array(form_zs_dict[snap])
+
+        okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, form_zs > 0))
+        stellar_hmr = stellar_hmr[okinds]
+        gas_hmr = gas_hmr[okinds]
+        form_zs = form_zs[okinds]
+
+        try:
+            cbar = ax.hexbin(form_zs, stellar_hmr, gridsize=100, mincnt=1, yscale='log',
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
+
+            # plot_spread_stat(np.array(form_zs), np.array(stellar_hmr), ax2, color='limegreen')
+            plot_median_stat(np.array(form_zs), np.array(stellar_hmr), ax, lab='Stellar', color='limegreen')
+
+        except ValueError:
+            continue
+        except OverflowError:
+            continue
+
+        ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                transform=ax.transAxes, horizontalalignment='right', fontsize=8)
+
+        axlims_x.extend(ax.get_xlim())
+        axlims_y.extend(ax.get_ylim())
+
+        # Label axes
+        if i == 2:
+            ax1.set_xlabel("$z_{\mathrm{form}}$")
+        if j == 0:
+            ax.set_ylabel("$R_{1/2} / \epsilon$")
+
+    for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
+
+        ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
+        ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
+        for spine in ax.spines.values():
+            spine.set_edgecolor('k')
+
+    # Remove axis labels
+    ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+    ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                    labelright=False, labelbottom=False)
+    ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+    ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+
+    handles, labels = ax9.get_legend_handles_labels()
+    ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
+
+    fig.savefig("plots/gas_stellar_formation_stellarhmr.png", bbox_inches="tight")
 
     plt.close(fig)
 
