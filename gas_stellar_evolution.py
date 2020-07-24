@@ -340,7 +340,7 @@ def get_evolution(path, snaps):
 
         # Remove particles not associated to a subgroup
         okinds = np.logical_and(subgrp_ids != 1073741824,
-                                np.logical_and(gal_hmrs[:, 4] < soft,
+                                np.logical_and(gal_hmrs[:, 4] / soft < 1.5,
                                                np.logical_and(gal_ms[:, 1] != 0, gal_ms[:, 4] > 10**9.5)))
         gal_hmrs = gal_hmrs[okinds]
         gal_ms = gal_ms[okinds]
@@ -395,12 +395,14 @@ def main_evolve_graph():
     ax = fig.add_subplot(121)
 
     plot_spread_stat(np.array(zs), np.array(stellar_hmr), ax, color='limegreen')
-    plot_median_stat(np.array(zs), np.array(stellar_hmr), ax, lab='$\mathrm{frac}=0.05$', color='limegreen')
+    plot_median_stat(np.array(zs), np.array(stellar_hmr), ax, lab='Stellar', color='limegreen')
     plot_spread_stat(np.array(zs), np.array(gas_hmr), ax, color='orangered')
-    plot_median_stat(np.array(zs), np.array(gas_hmr), ax, lab='$\mathrm{frac}=0.05$', color='orangered')
+    plot_median_stat(np.array(zs), np.array(gas_hmr), ax, lab='Gas', color='orangered')
 
-    ax.set_xlabel("$R_{1/2, \mathrm{gas}} / \epsilon$")
-    ax.set_xlabel("$R_{1/2, \star} / \epsilon$")
+    ax.set_xlabel("$R_{1/2} / \epsilon$")
+    ax.set_xlabel("$z$")
+
+    ax.set_yscale("log")
 
     fig.savefig("plots/gas_stellar_hmr_zs.png", bbox_inches="tight")
 
