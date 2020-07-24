@@ -331,12 +331,17 @@ def get_evolution(path, snaps):
         soft = 0.001802390 / 0.6777 * 1 / (1 + z)
 
         # Get halo IDs and halo data
-        subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-        gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                physicalUnits=True, numThreads=8)
-        gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                              noH=True, physicalUnits=True, numThreads=8) * 10 ** 10
+        try:
+            subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+            grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+            gal_hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                    physicalUnits=True, numThreads=8)
+            gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                  noH=True, physicalUnits=True, numThreads=8) * 10 ** 10
+        except OSError:
+            continue
+        except ValueError:
+            continue
 
         # Remove particles not associated to a subgroup
         okinds = np.logical_and(subgrp_ids != 1073741824,
