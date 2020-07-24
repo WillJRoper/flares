@@ -462,7 +462,7 @@ def main_evolve_graph(snap):
             gas_hmr.extend(gas_hmrs)
             form_zs.extend(form)
 
-    fig = plt.figure(figsize=(6, 12))
+    fig = plt.figure(figsize=(12, 6))
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
 
@@ -494,8 +494,8 @@ def main_evolve_graph(snap):
     # handles, labels = ax1.get_legend_handles_labels()
     # ax1.legend(handles, labels)
 
-    ax1.set_ylim(10**-1, 10**2)
-    ax2.set_ylim(10**-1, 10**2)
+    # ax1.set_ylim(10**-1, 10**2)
+    # ax2.set_ylim(10**-1, 10**2)
 
     fig.savefig("plots/gas_stellar_formation_hmr.png", bbox_inches="tight")
 
