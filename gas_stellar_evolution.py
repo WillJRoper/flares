@@ -2,17 +2,9 @@
 import matplotlib as ml
 ml.use('Agg')
 import numpy as np
-from collections import defaultdict
+from scipy.stats import binned_statistic
 import matplotlib.pyplot as plt
-import matplotlib as mpl
-import matplotlib.gridspec as gridspec
-from matplotlib.colors import LogNorm
 import eagle_IO.eagle_IO as E
-import h5py
-import sys
-import multiprocessing
-import pickle
-import time
 import seaborn as sns
 
 
