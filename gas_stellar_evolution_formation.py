@@ -489,9 +489,12 @@ def main_evolve_graph(snap):
         z_str = snap.split('z')[1].split('p')
         z = float(z_str[0] + '.' + z_str[1])
 
-        stellar_hmr = np.array(stellar_hmr_dict[snap])
-        gas_hmr = np.array(gas_hmr_dict[snap])
-        form_zs = np.array(form_zs_dict[snap])
+        try:
+            stellar_hmr = np.array(stellar_hmr_dict[snap])
+            gas_hmr = np.array(gas_hmr_dict[snap])
+            form_zs = np.array(form_zs_dict[snap])
+        except KeyError:
+            continue
 
         okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, form_zs > 0))
         stellar_hmr = stellar_hmr[okinds]
