@@ -419,9 +419,11 @@ def get_evolution(path, snaps):
         # Get the position of each of these galaxies
         for id, hmr in zip(star_halo_ids, gal_hmrs):
             mask = halo_part_inds[id]
-            form.append(np.min(1 / form_a[mask] - 1))
+            form.append(np.mean(1 / form_a[mask] - 1))
             star_hmrs.append(hmr[4])
             gas_hmrs.append(hmr[0])
+
+        print(len(star_hmrs), len(gas_hmrs), len(form))
 
     return gas_hmrs, star_hmrs, form
 
@@ -429,7 +431,7 @@ def get_evolution(path, snaps):
 def main_evolve_graph(snap):
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 1):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -456,19 +458,22 @@ def main_evolve_graph(snap):
 
             print(reg, snap)
 
-            z_str = snap.split('z')[1].split('p')
-            z = float(z_str[0] + '.' + z_str[1])
+            stellar_hmr.extend(star_hmrs)
+            gas_hmr.extend(gas_hmrs)
+            form_zs.extend(form)
 
-            try:
-                stellar_hmr.extend(star_hmrs)
-                gas_hmr.extend(gas_hmrs)
-                form_zs.extend(form)
-            except KeyError:
-                continue
-
-    fig = plt.figure()
+    fig = plt.figure(figsize=(6, 12))
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
+
+    stellar_hmr = np.array(stellar_hmr)
+    gas_hmr = np.array(gas_hmr)
+    form_zs = np.array(form_zs)
+
+    okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, form_zs > 0))
+    stellar_hmr = stellar_hmr[okinds]
+    gas_hmr = gas_hmr[okinds]
+    form_zs = form_zs[okinds]
 
     cbar = ax1.hexbin(form_zs, gas_hmr, gridsize=100, mincnt=1, yscale='log',
                       norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
