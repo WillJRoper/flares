@@ -356,8 +356,8 @@ def get_evolution(path, snaps):
 
         # Remove particles not associated to a subgroup
         okinds = np.logical_and(subgrp_ids != 1073741824,
-                                np.logical_and(gal_hmrs[:, 4] / soft < 1000,
-                                               np.logical_and(gal_ms[:, 1] != 0, gal_ms[:, 4] > 10**8)))
+                                np.logical_and(gal_hmrs[:, 4] / soft < 2,
+                                               np.logical_and(gal_ms[:, 1] != 0, gal_ms[:, 4] > 10**9)))
         gal_hmrs = gal_hmrs[okinds]
         grp_ids = grp_ids[okinds]
         subgrp_ids = subgrp_ids[okinds]
@@ -505,6 +505,8 @@ def main_evolve_graph(snap):
             cbar = ax.hexbin(form_zs, gas_hmr, gridsize=100, mincnt=1, yscale='log',
                               norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
+            ax.avline(z, linestyle='dashed', color='k')
+
             # plot_spread_stat(np.array(form_zs), np.array(gas_hmr), ax1, color='orangered')
             plot_median_stat(np.array(form_zs), np.array(gas_hmr), ax, lab='Gas', color='orangered')
         except ValueError:
@@ -520,7 +522,7 @@ def main_evolve_graph(snap):
 
         # Label axes
         if i == 2:
-            ax1.set_xlabel(r"$\langle z_{\mathrm{form}} \rangle$")
+            ax1.set_xlabel(r"$< z_{\mathrm{form}} >$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
@@ -548,7 +550,7 @@ def main_evolve_graph(snap):
     # handles, labels = ax9.get_legend_handles_labels()
     # ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
 
-    fig.savefig("plots/gas_stellar_formation_hmr_allgals.png", bbox_inches="tight")
+    fig.savefig("plots/gas_stellar_formation_hmr_compact.png", bbox_inches="tight")
 
     plt.close(fig)
 
@@ -591,6 +593,8 @@ def main_evolve_graph(snap):
             cbar = ax.hexbin(form_zs, stellar_hmr, gridsize=100, mincnt=1, yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
+            ax.avline(z, linestyle='dashed', color='k')
+
             # plot_spread_stat(np.array(form_zs), np.array(stellar_hmr), ax2, color='limegreen')
             plot_median_stat(np.array(form_zs), np.array(stellar_hmr), ax, lab='Stellar', color='limegreen')
 
@@ -607,7 +611,7 @@ def main_evolve_graph(snap):
 
         # Label axes
         if i == 2:
-            ax1.set_xlabel(r"$\langle z_{\mathrm{form}} \rangle$")
+            ax1.set_xlabel(r"$< z_{\mathrm{form}} >$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
@@ -635,7 +639,7 @@ def main_evolve_graph(snap):
     # handles, labels = ax9.get_legend_handles_labels()
     # ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
 
-    fig.savefig("plots/gas_stellar_formation_stellarhmr_allgals.png", bbox_inches="tight")
+    fig.savefig("plots/gas_stellar_formation_stellarhmr_compact.png", bbox_inches="tight")
 
     plt.close(fig)
 
