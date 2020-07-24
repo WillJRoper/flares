@@ -391,7 +391,7 @@ def main_evolve_graph():
             continue
         except ValueError:
             continue
-            
+
         for snap in snaplist:
 
             print(reg, snap)
@@ -399,9 +399,12 @@ def main_evolve_graph():
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
 
-            stellar_hmr.extend(star_hmrs[snap])
-            gas_hmr.extend(gas_hmrs[snap])
-            zs.extend(np.full_like(gas_hmrs[snap], z))
+            try:
+                stellar_hmr.extend(star_hmrs[snap])
+                gas_hmr.extend(gas_hmrs[snap])
+                zs.extend(np.full_like(gas_hmrs[snap], z))
+            except KeyError:
+                continue
 
     fig = plt.figure()
     ax = fig.add_subplot(121)
