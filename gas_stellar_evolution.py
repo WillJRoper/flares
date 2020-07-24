@@ -403,7 +403,7 @@ def main_evolve_graph():
     ax = fig.add_subplot(121)
 
     plot_spread_stat(np.array(zs), np.array(stellar_hmr), ax, color='limegreen')
-    plot_median_stat(np.array(zs), np.array(stellar_hmr, ax, lab='$\mathrm{frac}=0.05$', color='limegreen')
+    plot_median_stat(np.array(zs), np.array(stellar_hmr), ax, lab='$\mathrm{frac}=0.05$', color='limegreen')
     plot_spread_stat(np.array(zs), np.array(gas_hmr), ax, color='orangered')
     plot_median_stat(np.array(zs), np.array(gas_hmr), ax, lab='$\mathrm{frac}=0.05$', color='orangered')
 
