@@ -385,8 +385,13 @@ def main_evolve_graph():
 
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
-        gas_hmrs, star_hmrs, masses, ids = get_evolution(path, snaplist)
-
+        try:
+            gas_hmrs, star_hmrs, masses, ids = get_evolution(path, snaplist)
+        except OSError:
+            continue
+        except ValueError:
+            continue
+            
         for snap in snaplist:
 
             print(reg, snap)
