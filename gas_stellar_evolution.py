@@ -19,6 +19,45 @@ import seaborn as sns
 sns.set_style('whitegrid')
 
 
+def plot_median_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
+
+    if bins == None:
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+    else:
+        bin = bins
+
+    # Compute binned statistics
+    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median', bins=bin)
+
+    # Compute bincentres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+
+    ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls, label=lab)
+
+
+def plot_spread_stat(xs, ys, ax, color, bins=None):
+
+    if bins == None:
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+    else:
+        bin = bins
+
+    # Compute binned statistics
+    y_stat_16, binedges, bin_ind = binned_statistic(xs, ys, statistic=lambda y: np.percentile(y, 16), bins=bin)
+    y_stat_84, binedges, bin_ind = binned_statistic(xs, ys, statistic=lambda y: np.percentile(y, 84), bins=bin)
+
+    # Compute bincentres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    okinds = np.logical_and(~np.isnan(bin_cents), np.logical_and(~np.isnan(y_stat_16), ~np.isnan(y_stat_84)))
+
+    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], color=color, alpha=0.4)
+
+
 def get_linked_halo_data(all_linked_halos, start_ind, nlinked_halos):
     """ A helper function for extracting a halo's linked halos
         (i.e. progenitors and descendants)
@@ -361,35 +400,17 @@ def main_evolve_graph():
             zs.extend(np.full_like(gas_hmrs[snap], z))
 
     fig = plt.figure()
-    ax = fig.add_subplot(111)
+    ax = fig.add_subplot(121)
 
-    im = ax.hexbin(gas_hmr, stellar_hmr, C=zs, gridsize=50, mincnt=1, xscale='log',
-                     yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis')
+    plot_spread_stat(zs, stellar_hmr, ax, color='limegreen')
+    plot_median_stat(zs, stellar_hmr, ax, lab='$\mathrm{frac}=0.05$', color='limegreen')
+    plot_spread_stat(zs, gas_hmr, ax, color='orangered')
+    plot_median_stat(zs, gas_hmr, ax, lab='$\mathrm{frac}=0.05$', color='orangered')
 
     ax.set_xlabel("$R_{1/2, \mathrm{gas}} / \epsilon$")
     ax.set_xlabel("$R_{1/2, \star} / \epsilon$")
-
-    cbar = fig.colorbar(im)
-    cbar.ax.set_xlabel(r'$z$')
 
     fig.savefig("plots/gas_stellar_hmr_zs.png", bbox_inches="tight")
-
-    plt.close(fig)
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    ax.loglog()
-
-    im = ax.scatter(gas_hmr, stellar_hmr, c=zs, norm=LogNorm(), cmap='viridis')
-
-    ax.set_xlabel("$R_{1/2, \mathrm{gas}} / \epsilon$")
-    ax.set_xlabel("$R_{1/2, \star} / \epsilon$")
-
-    cbar = fig.colorbar(im)
-    cbar.ax.set_xlabel(r'$z$')
-
-    fig.savefig("plots/gas_stellar_hmr_zs_scatter.png", bbox_inches="tight")
 
     plt.close(fig)
 
