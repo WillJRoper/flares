@@ -11,7 +11,7 @@ import seaborn as sns
 sns.set_style('whitegrid')
 
 
-def plot_median_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
+def plot_median_stat(xs, ys, ax, lab, color, bins=None, ls='-', func="median"):
 
     if bins == None:
         bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
@@ -19,7 +19,7 @@ def plot_median_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
         bin = bins
 
     # Compute binned statistics
-    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median', bins=bin)
+    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic=func, bins=bin)
 
     # Compute bincentres
     bin_wid = binedges[1] - binedges[0]
@@ -362,7 +362,7 @@ def get_evolution(path, snaps):
 def main_evolve_graph():
 
     regions = []
-    for reg in range(0, 1):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
