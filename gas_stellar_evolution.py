@@ -402,10 +402,10 @@ def main_evolve_graph():
     fig = plt.figure()
     ax = fig.add_subplot(121)
 
-    plot_spread_stat(zs, stellar_hmr, ax, color='limegreen')
-    plot_median_stat(zs, stellar_hmr, ax, lab='$\mathrm{frac}=0.05$', color='limegreen')
-    plot_spread_stat(zs, gas_hmr, ax, color='orangered')
-    plot_median_stat(zs, gas_hmr, ax, lab='$\mathrm{frac}=0.05$', color='orangered')
+    plot_spread_stat(np.array(zs), np.array(stellar_hmr), ax, color='limegreen')
+    plot_median_stat(np.array(zs), np.array(stellar_hmr, ax, lab='$\mathrm{frac}=0.05$', color='limegreen')
+    plot_spread_stat(np.array(zs), np.array(gas_hmr), ax, color='orangered')
+    plot_median_stat(np.array(zs), np.array(gas_hmr), ax, lab='$\mathrm{frac}=0.05$', color='orangered')
 
     ax.set_xlabel("$R_{1/2, \mathrm{gas}} / \epsilon$")
     ax.set_xlabel("$R_{1/2, \star} / \epsilon$")
