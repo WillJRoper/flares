@@ -384,6 +384,8 @@ def main_evolve_graph():
 
         for snap in snaplist:
 
+            print(reg, snap)
+
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
 
@@ -406,6 +408,8 @@ def main_evolve_graph():
 
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(handles, labels)
+
+    ax.set_aspect('equal')
 
     fig.savefig("plots/gas_stellar_hmr_zs.png", bbox_inches="tight")
 
