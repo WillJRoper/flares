@@ -459,9 +459,12 @@ def main_evolve_graph(snap):
 
             print(reg, snap)
 
-            stellar_hmr_dict.setdefault(snap, []).extend(star_hmrs[snap])
-            gas_hmr_dict.setdefault(snap, []).extend(gas_hmrs[snap])
-            form_zs_dict.setdefault(snap, []).extend(form[snap])
+            try:
+                stellar_hmr_dict.setdefault(snap, []).extend(star_hmrs[snap])
+                gas_hmr_dict.setdefault(snap, []).extend(gas_hmrs[snap])
+                form_zs_dict.setdefault(snap, []).extend(form[snap])
+            except KeyError:
+                continue
 
     axlims_x = []
     axlims_y = []
