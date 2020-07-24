@@ -356,8 +356,8 @@ def get_evolution(path, snaps):
 
         # Remove particles not associated to a subgroup
         okinds = np.logical_and(subgrp_ids != 1073741824,
-                                np.logical_and(gal_hmrs[:, 4] / soft < 1.5,
-                                               np.logical_and(gal_ms[:, 1] != 0, gal_ms[:, 4] > 10**9.5)))
+                                np.logical_and(gal_hmrs[:, 4] / soft < 2,
+                                               np.logical_and(gal_ms[:, 1] != 0, gal_ms[:, 4] > 10**9)))
         gal_hmrs = gal_hmrs[okinds]
         grp_ids = grp_ids[okinds]
         subgrp_ids = subgrp_ids[okinds]
@@ -575,9 +575,12 @@ def main_evolve_graph(snap):
         z_str = snap.split('z')[1].split('p')
         z = float(z_str[0] + '.' + z_str[1])
 
-        stellar_hmr = np.array(stellar_hmr_dict[snap])
-        gas_hmr = np.array(gas_hmr_dict[snap])
-        form_zs = np.array(form_zs_dict[snap])
+        try:
+            stellar_hmr = np.array(stellar_hmr_dict[snap])
+            gas_hmr = np.array(gas_hmr_dict[snap])
+            form_zs = np.array(form_zs_dict[snap])
+        except KeyError:
+            continue
 
         okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, form_zs > 0))
         stellar_hmr = stellar_hmr[okinds]
