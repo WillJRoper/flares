@@ -430,7 +430,7 @@ def get_evolution(path, snaps):
 def main_evolve_graph(snap):
 
     regions = []
-    for reg in range(0, 1):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -545,8 +545,8 @@ def main_evolve_graph(snap):
     ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
     ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-    handles, labels = ax9.get_legend_handles_labels()
-    ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
+    # handles, labels = ax9.get_legend_handles_labels()
+    # ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
 
     fig.savefig("plots/gas_stellar_formation_hmr.png", bbox_inches="tight")
 
@@ -632,8 +632,8 @@ def main_evolve_graph(snap):
     ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
     ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-    handles, labels = ax9.get_legend_handles_labels()
-    ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
+    # handles, labels = ax9.get_legend_handles_labels()
+    # ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
 
     fig.savefig("plots/gas_stellar_formation_stellarhmr.png", bbox_inches="tight")
 
