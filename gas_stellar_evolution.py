@@ -404,6 +404,9 @@ def main_evolve_graph():
 
     ax.set_yscale("log")
 
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles, labels)
+
     fig.savefig("plots/gas_stellar_hmr_zs.png", bbox_inches="tight")
 
     plt.close(fig)
