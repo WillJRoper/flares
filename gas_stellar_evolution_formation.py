@@ -420,8 +420,8 @@ def get_evolution(path, snaps):
         for id, hmr in zip(star_halo_ids, gal_hmrs):
             mask = halo_part_inds[id]
             form.append(np.mean(1 / form_a[mask] - 1))
-            star_hmrs.append(hmr[4])
-            gas_hmrs.append(hmr[0])
+            star_hmrs.append(hmr[4] / soft)
+            gas_hmrs.append(hmr[0] / soft)
 
         print(len(star_hmrs), len(gas_hmrs), len(form))
 
@@ -494,8 +494,8 @@ def main_evolve_graph(snap):
     # handles, labels = ax1.get_legend_handles_labels()
     # ax1.legend(handles, labels)
 
-    # ax1.set_ylim(10**-1, 10**2)
-    # ax2.set_ylim(10**-1, 10**2)
+    ax1.set_ylim(10**-1, 10**2)
+    ax2.set_ylim(10**-1, 10**2)
 
     fig.savefig("plots/gas_stellar_formation_hmr.png", bbox_inches="tight")
 
