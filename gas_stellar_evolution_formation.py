@@ -505,8 +505,6 @@ def main_evolve_graph(snap):
             cbar = ax.hexbin(form_zs, gas_hmr, gridsize=100, mincnt=1, yscale='log',
                               norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
-            ax.avline(z, linestyle='dashed', color='k')
-
             # plot_spread_stat(np.array(form_zs), np.array(gas_hmr), ax1, color='orangered')
             plot_median_stat(np.array(form_zs) - z, np.array(gas_hmr), ax, lab='Gas', color='orangered')
         except ValueError:
@@ -592,8 +590,6 @@ def main_evolve_graph(snap):
         try:
             cbar = ax.hexbin(form_zs, stellar_hmr, gridsize=100, mincnt=1, yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
-
-            ax.avline(z, linestyle='dashed', color='k')
 
             # plot_spread_stat(np.array(form_zs), np.array(stellar_hmr), ax2, color='limegreen')
             plot_median_stat(np.array(form_zs) - z, np.array(stellar_hmr), ax, lab='Stellar', color='limegreen')
