@@ -508,7 +508,7 @@ def main_evolve_graph(snap):
             ax.avline(z, linestyle='dashed', color='k')
 
             # plot_spread_stat(np.array(form_zs), np.array(gas_hmr), ax1, color='orangered')
-            plot_median_stat(np.array(form_zs), np.array(gas_hmr), ax, lab='Gas', color='orangered')
+            plot_median_stat(np.array(form_zs) - z, np.array(gas_hmr), ax, lab='Gas', color='orangered')
         except ValueError:
             continue
         except OverflowError:
@@ -522,7 +522,7 @@ def main_evolve_graph(snap):
 
         # Label axes
         if i == 2:
-            ax1.set_xlabel(r"$< z_{\mathrm{form}} >$")
+            ax.set_xlabel(r"$< z_{\mathrm{form}} > - z_{\mathrm{current}}$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
@@ -596,7 +596,7 @@ def main_evolve_graph(snap):
             ax.avline(z, linestyle='dashed', color='k')
 
             # plot_spread_stat(np.array(form_zs), np.array(stellar_hmr), ax2, color='limegreen')
-            plot_median_stat(np.array(form_zs), np.array(stellar_hmr), ax, lab='Stellar', color='limegreen')
+            plot_median_stat(np.array(form_zs) - z, np.array(stellar_hmr), ax, lab='Stellar', color='limegreen')
 
         except ValueError:
             continue
@@ -611,7 +611,7 @@ def main_evolve_graph(snap):
 
         # Label axes
         if i == 2:
-            ax1.set_xlabel(r"$< z_{\mathrm{form}} >$")
+            ax.set_xlabel(r"$< z_{\mathrm{form}} > - z_{\mathrm{current}}$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
