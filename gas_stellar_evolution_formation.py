@@ -502,7 +502,7 @@ def main_evolve_graph(snap):
         form_zs = form_zs[okinds]
 
         try:
-            cbar = ax.hexbin(form_zs, gas_hmr, gridsize=100, mincnt=1, yscale='log',
+            cbar = ax.hexbin(np.array(form_zs) - z, gas_hmr, gridsize=100, mincnt=1, yscale='log',
                               norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
             # plot_spread_stat(np.array(form_zs), np.array(gas_hmr), ax1, color='orangered')
@@ -520,7 +520,7 @@ def main_evolve_graph(snap):
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r"$< z_{\mathrm{form}} > - z_{\mathrm{current}}$")
+            ax.set_xlabel(r"$z_{\mathrm{form, 50}} - z_{\mathrm{current}}$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
@@ -588,7 +588,7 @@ def main_evolve_graph(snap):
         form_zs = form_zs[okinds]
 
         try:
-            cbar = ax.hexbin(form_zs, stellar_hmr, gridsize=100, mincnt=1, yscale='log',
+            cbar = ax.hexbin(np.array(form_zs) - z, stellar_hmr, gridsize=100, mincnt=1, yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
             # plot_spread_stat(np.array(form_zs), np.array(stellar_hmr), ax2, color='limegreen')
@@ -607,7 +607,7 @@ def main_evolve_graph(snap):
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r"$< z_{\mathrm{form}} > - z_{\mathrm{current}}$")
+            ax.set_xlabel(r"$z_{\mathrm{form}, 50} - z_{\mathrm{current}}$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
