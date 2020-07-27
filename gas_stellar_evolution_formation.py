@@ -10,6 +10,7 @@ import eagle_IO.eagle_IO as E
 from matplotlib.colors import LogNorm
 import seaborn as sns
 import numba as nb
+import sys
 
 
 sns.set_style('whitegrid')
@@ -327,7 +328,7 @@ def forest_worker(z0halo, data_dict):
     return forest_dict
 
 
-def get_evolution(path, snaps):
+def get_evolution(path, snaps, pcent):
 
     # Set up dictionaries to store data
     gas_hmrs = {}
@@ -421,14 +422,15 @@ def get_evolution(path, snaps):
         # Get the position of each of these galaxies
         for id, hmr in zip(star_halo_ids, gal_hmrs):
             mask = halo_part_inds[id]
-            form.setdefault(snap, []).append(np.median(1 / form_a[mask] - 1))
+            form.setdefault(snap, []).append(cosmo.age(z).value - cosmo.age(np.percentile(1 / form_a[mask] - 1),
+                                             pcent).value)
             star_hmrs.setdefault(snap, []).append(hmr[4] / soft)
             gas_hmrs.setdefault(snap, []).append(hmr[0] / soft)
 
     return gas_hmrs, star_hmrs, form
 
 
-def main_evolve_graph(snap):
+def main_evolve_graph(pcent):
 
     regions = []
     for reg in range(0, 40):
@@ -443,14 +445,14 @@ def main_evolve_graph(snap):
 
     stellar_hmr_dict = {}
     gas_hmr_dict = {}
-    form_zs_dict = {}
+    pcent_stellar_age_dict = {}
 
     for reg in regions:
 
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
         try:
-            gas_hmrs, star_hmrs, form = get_evolution(path, snaplist)
+            gas_hmrs, star_hmrs, form = get_evolution(path, snaplist, pcent)
         except OSError:
             continue
         except ValueError:
@@ -463,7 +465,7 @@ def main_evolve_graph(snap):
             try:
                 stellar_hmr_dict.setdefault(snap, []).extend(star_hmrs[snap])
                 gas_hmr_dict.setdefault(snap, []).extend(gas_hmrs[snap])
-                form_zs_dict.setdefault(snap, []).extend(form[snap])
+                pcent_stellar_age_dict.setdefault(snap, []).extend(form[snap])
             except KeyError:
                 continue
 
@@ -493,21 +495,21 @@ def main_evolve_graph(snap):
         try:
             stellar_hmr = np.array(stellar_hmr_dict[snap])
             gas_hmr = np.array(gas_hmr_dict[snap])
-            form_zs = np.array(form_zs_dict[snap])
+            pcent_stellar_age = np.array(pcent_stellar_age_dict[snap])
         except KeyError:
             continue
 
-        okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, form_zs > 0))
+        okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, pcent_stellar_age > 0))
         stellar_hmr = stellar_hmr[okinds]
         gas_hmr = gas_hmr[okinds]
-        form_zs = form_zs[okinds]
+        pcent_stellar_age = pcent_stellar_age[okinds]
 
         try:
-            cbar = ax.hexbin(cosmo.age(z).value - cosmo.age(np.array(form_zs)).value, gas_hmr, gridsize=100, mincnt=1, yscale='log',
+            cbar = ax.hexbin(pcent_stellar_age, gas_hmr, gridsize=100, mincnt=1, yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
-            # plot_spread_stat(np.array(form_zs), np.array(gas_hmr), ax1, color='orangered')
-            plot_median_stat(cosmo.age(z).value - cosmo.age(np.array(form_zs)).value, np.array(gas_hmr), ax, lab='Gas',
+            # plot_spread_stat(np.array(pcent_stellar_age), np.array(gas_hmr), ax1, color='orangered')
+            plot_median_stat(pcent_stellar_age, np.array(gas_hmr), ax, lab='Gas',
                              color='orangered')
         except ValueError:
             continue
@@ -522,7 +524,7 @@ def main_evolve_graph(snap):
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r"$t_{\mathrm{current}} - t_{50^{\mathrm{th}}, \mathrm{form}}$")
+            ax.set_xlabel(r"$t_{\mathrm{current}} - t_{" + str(pcent) + "^{\mathrm{th}}, \mathrm{form}}$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
@@ -550,7 +552,7 @@ def main_evolve_graph(snap):
     # handles, labels = ax9.get_legend_handles_labels()
     # ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
 
-    fig.savefig("plots/gas_stellar_formation_hmr_compact.png", bbox_inches="tight")
+    fig.savefig("plots/gas_stellar_formation_hmr_compact_" + str(pcent) + ".png", bbox_inches="tight")
 
     plt.close(fig)
 
@@ -580,21 +582,21 @@ def main_evolve_graph(snap):
         try:
             stellar_hmr = np.array(stellar_hmr_dict[snap])
             gas_hmr = np.array(gas_hmr_dict[snap])
-            form_zs = np.array(form_zs_dict[snap])
+            pcent_stellar_age = np.array(pcent_stellar_age_dict[snap])
         except KeyError:
             continue
 
-        okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, form_zs > 0))
+        okinds = np.logical_and(stellar_hmr > 0, np.logical_and(gas_hmr > 0, pcent_stellar_age > 0))
         stellar_hmr = stellar_hmr[okinds]
         gas_hmr = gas_hmr[okinds]
-        form_zs = form_zs[okinds]
+        pcent_stellar_age = pcent_stellar_age[okinds]
 
         try:
-            cbar = ax.hexbin(cosmo.age(z).value - cosmo.age(np.array(form_zs)).value, stellar_hmr, gridsize=100, mincnt=1,
+            cbar = ax.hexbin(pcent_stellar_age, stellar_hmr, gridsize=100, mincnt=1,
                              yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
-            # plot_spread_stat(np.array(form_zs), np.array(stellar_hmr), ax2, color='limegreen')
-            plot_median_stat(cosmo.age(z).value - cosmo.age(np.array(form_zs)).value, np.array(stellar_hmr), ax, lab='Stellar',
+            # plot_spread_stat(np.array(pcent_stellar_age), np.array(stellar_hmr), ax2, color='limegreen')
+            plot_median_stat(pcent_stellar_age, np.array(stellar_hmr), ax, lab='Stellar',
                              color='limegreen')
 
         except ValueError:
@@ -610,7 +612,7 @@ def main_evolve_graph(snap):
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r"$t_{\mathrm{current}} - t_{50^{\mathrm{th}}, \mathrm{form}}$")
+            ax.set_xlabel(r"$t_{\mathrm{current}} - t_{" + str(pcent) + "^{\mathrm{th}}, \mathrm{form}}$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
@@ -638,9 +640,9 @@ def main_evolve_graph(snap):
     # handles, labels = ax9.get_legend_handles_labels()
     # ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
 
-    fig.savefig("plots/gas_stellar_formation_stellarhmr_compact.png", bbox_inches="tight")
+    fig.savefig("plots/gas_stellar_formation_stellarhmr_compact_" + str(pcent) + ".png", bbox_inches="tight")
 
     plt.close(fig)
 
-
-main_evolve_graph(snap='011_z004p770')
+pcent = sys.argv[1]
+main_evolve_graph(pcent)
