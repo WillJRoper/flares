@@ -549,7 +549,7 @@ def main_evolve_graph(snap):
     # handles, labels = ax9.get_legend_handles_labels()
     # ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
 
-    fig.savefig("plots/gas_stellar_formation_hmr_compact.png", bbox_inches="tight")
+    fig.savefig("plots/gas_stellar_formation_hmr_allgals.png", bbox_inches="tight")
 
     plt.close(fig)
 
@@ -637,7 +637,7 @@ def main_evolve_graph(snap):
     # handles, labels = ax9.get_legend_handles_labels()
     # ax1.legend(handles, labels, loc='upper left', ncol=2, fontsize=6)
 
-    fig.savefig("plots/gas_stellar_formation_stellarhmr_compact.png", bbox_inches="tight")
+    fig.savefig("plots/gas_stellar_formation_stellarhmr_allgals.png", bbox_inches="tight")
 
     plt.close(fig)
 
