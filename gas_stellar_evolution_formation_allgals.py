@@ -524,7 +524,7 @@ def main_evolve_graph(pcent):
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r"$t_{" + str(pcent) + "^{\mathrm{th}}, \mathrm{age}}$ / \mathrm{Myr}")
+            ax.set_xlabel(r"$t_{" + str(pcent) + "^{\mathrm{th}}, \mathrm{age}} / \mathrm{Myr}$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
@@ -612,7 +612,7 @@ def main_evolve_graph(pcent):
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r"$t_{" + str(pcent) + "^{\mathrm{th}}, \mathrm{age}}$ / \mathrm{Myr}")
+            ax.set_xlabel(r"$t_{" + str(pcent) + "^{\mathrm{th}}, \mathrm{age}} / \mathrm{Myr}$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
