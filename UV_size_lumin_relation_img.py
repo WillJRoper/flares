@@ -106,6 +106,8 @@ for ind in range(len(reg_snaps)):
 # Define comoving softening length in kpc
 csoft = 0.001802390 / 0.6777
 
+fit_lumins = np.logspace(28, 31, 1000)
+
 axlims_x = []
 axlims_y = []
 
@@ -141,6 +143,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         plot_meidan_stat(lumins, hlrs / (csoft / (1 + z)), ax, lab='REF', color='r')
     except ValueError:
         continue
+
+    if int(z) in [6, 7, 8, 9]:
+        ax.plot(fit_lumins, kawa_fit(fit_lumins, kawa_params['r_0'][int(z)], kawa_params['beta'][int(z)]),
+                linestyle='dashed', color='k', alpha=0.9)
 
     ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -215,7 +221,6 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         continue
 
     if int(z) in [6, 7, 8, 9]:
-        fit_lumins = np.logspace(10**28, 10**31, 1000)
         ax.plot(fit_lumins, kawa_fit(fit_lumins, kawa_params['r_0'][int(z)], kawa_params['beta'][int(z)]),
                 linestyle='dashed', color='k', alpha=0.9)
 
