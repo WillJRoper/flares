@@ -503,11 +503,11 @@ def main_evolve_graph(snap):
         form_zs = form_zs[okinds]
 
         try:
-            cbar = ax.hexbin(cosmo.age(z) - cosmo.age(np.array(form_zs)), gas_hmr, gridsize=100, mincnt=1, yscale='log',
+            cbar = ax.hexbin(cosmo.age(z).value - cosmo.age(np.array(form_zs)).value, gas_hmr, gridsize=100, mincnt=1, yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
             # plot_spread_stat(np.array(form_zs), np.array(gas_hmr), ax1, color='orangered')
-            plot_median_stat(cosmo.age(z) - cosmo.age(np.array(form_zs)), np.array(gas_hmr), ax, lab='Gas',
+            plot_median_stat(cosmo.age(z).value - cosmo.age(np.array(form_zs)).value, np.array(gas_hmr), ax, lab='Gas',
                              color='orangered')
         except ValueError:
             continue
@@ -590,11 +590,11 @@ def main_evolve_graph(snap):
         form_zs = form_zs[okinds]
 
         try:
-            cbar = ax.hexbin(cosmo.age(z) - cosmo.age(np.array(form_zs)), stellar_hmr, gridsize=100, mincnt=1,
+            cbar = ax.hexbin(cosmo.age(z).value - cosmo.age(np.array(form_zs)).value, stellar_hmr, gridsize=100, mincnt=1,
                              yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
             # plot_spread_stat(np.array(form_zs), np.array(stellar_hmr), ax2, color='limegreen')
-            plot_median_stat(cosmo.age(z) - cosmo.age(np.array(form_zs)), np.array(stellar_hmr), ax, lab='Stellar',
+            plot_median_stat(cosmo.age(z).value - cosmo.age(np.array(form_zs)).value, np.array(stellar_hmr), ax, lab='Stellar',
                              color='limegreen')
 
         except ValueError:
