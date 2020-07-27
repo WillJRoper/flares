@@ -6,6 +6,8 @@ import seaborn as sns
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
 from scipy.stats import binned_statistic
+from astropy.cosmology import Planck13 as cosmo
+from astropy import units as u
 from scipy.optimize import curve_fit
 
 
@@ -35,6 +37,10 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 
     ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls, label=lab)
 
+
+# Define Kawamata17 fit and parameters
+kawa_params = {'beta': {6: 0.46, 7: 0.46, 8: 0.38, 9: 0.56}, 'r_0': {6: 0.94, 7: 0.94, 8: 0.81, 9: 1.2}}
+kawa_fit = lambda l, r0, b: r0 * (l / (3.0128*10**28 * u.W).to(u.erg / u.s))**b
 
 regions = []
 for reg in range(0, 40):
@@ -204,6 +210,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     except ValueError:
         continue
 
+    if int(z) in [6, 7, 8, 9]:
+        fit_lumins = np.logspace(10**28, 10**31, 1000)
+        ax.plot(fit_lumins, kawa_fit(fit_lumins, kawa_params['r_0'][int(z)], kawa_params['beta'][int(z)]),
+                linestyle='dashed', color='k', alpha=0.9)
+
     ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
@@ -263,6 +274,11 @@ for snap in snaps:
         # plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
     except ValueError:
         continue
+
+    if int(z) in [6, 7, 8, 9]:
+        fit_lumins = np.logspace(10**28, 10**31, 1000)
+        ax.plot(fit_lumins, kawa_fit(fit_lumins, kawa_params['r_0'][int(z)], kawa_params['beta'][int(z)]),
+                linestyle='dashed', color='k', alpha=0.9)
 
     ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
