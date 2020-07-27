@@ -4,6 +4,7 @@ ml.use('Agg')
 import numpy as np
 import matplotlib.gridspec as gridspec
 from scipy.stats import binned_statistic
+from astropy.cosmology import Planck13 as cosmo
 import matplotlib.pyplot as plt
 import eagle_IO.eagle_IO as E
 from matplotlib.colors import LogNorm
@@ -430,7 +431,7 @@ def get_evolution(path, snaps):
 def main_evolve_graph(snap):
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 1):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -502,11 +503,12 @@ def main_evolve_graph(snap):
         form_zs = form_zs[okinds]
 
         try:
-            cbar = ax.hexbin(np.array(form_zs) - z, gas_hmr, gridsize=100, mincnt=1, yscale='log',
-                              norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
+            cbar = ax.hexbin(cosmo.age(z) - cosmo.age(np.array(form_zs)), gas_hmr, gridsize=100, mincnt=1, yscale='log',
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
             # plot_spread_stat(np.array(form_zs), np.array(gas_hmr), ax1, color='orangered')
-            plot_median_stat(np.array(form_zs) - z, np.array(gas_hmr), ax, lab='Gas', color='orangered')
+            plot_median_stat(cosmo.age(z) - cosmo.age(np.array(form_zs)), np.array(gas_hmr), ax, lab='Gas',
+                             color='orangered')
         except ValueError:
             continue
         except OverflowError:
@@ -520,7 +522,7 @@ def main_evolve_graph(snap):
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r"$z_{\mathrm{form, 50}} - z_{\mathrm{current}}$")
+            ax.set_xlabel(r"$t_{\mathrm{current}} - t_{50^{\mathrm{th}}, \mathrm{form}}$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
@@ -588,11 +590,12 @@ def main_evolve_graph(snap):
         form_zs = form_zs[okinds]
 
         try:
-            cbar = ax.hexbin(np.array(form_zs) - z, stellar_hmr, gridsize=100, mincnt=1, yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
+            cbar = ax.hexbin(cosmo.age(z) - cosmo.age(np.array(form_zs)), stellar_hmr, gridsize=100, mincnt=1,
+                             yscale='log', norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.7)
 
             # plot_spread_stat(np.array(form_zs), np.array(stellar_hmr), ax2, color='limegreen')
-            plot_median_stat(np.array(form_zs) - z, np.array(stellar_hmr), ax, lab='Stellar', color='limegreen')
+            plot_median_stat(cosmo.age(z) - cosmo.age(np.array(form_zs)), np.array(stellar_hmr), ax, lab='Stellar',
+                             color='limegreen')
 
         except ValueError:
             continue
@@ -607,7 +610,7 @@ def main_evolve_graph(snap):
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r"$z_{\mathrm{form}, 50} - z_{\mathrm{current}}$")
+            ax.set_xlabel(r"$t_{\mathrm{current}} - t_{50^{\mathrm{th}}, \mathrm{form}}$")
         if j == 0:
             ax.set_ylabel("$R_{1/2} / \epsilon$")
 
