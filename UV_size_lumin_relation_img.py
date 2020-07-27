@@ -44,6 +44,7 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 # Define Kawamata17 fit and parameters
 kawa_params = {'beta': {6: 0.46, 7: 0.46, 8: 0.38, 9: 0.56}, 'r_0': {6: 0.94, 7: 0.94, 8: 0.81, 9: 1.2}}
 kawa_fit = lambda l, r0, b: r0 * (l / M_to_lum(-21))**b
+print(M_to_lum(-21))
 
 regions = []
 for reg in range(0, 40):
