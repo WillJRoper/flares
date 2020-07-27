@@ -44,9 +44,8 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 # Define Kawamata17 fit and parameters
 kawa_params = {'beta': {6: 0.46, 7: 0.46, 8: 0.38, 9: 0.56}, 'r_0': {6: 0.94, 7: 0.94, 8: 0.81, 9: 1.2}}
 kawa_up_params = {'beta': {6: 0.46 + 0.08, 7: 0.46 + 0.08, 8: 0.38 + 0.28, 9: 0.56 + 1.01}, 'r_0': {6: 0.94 + 0.2, 7: 0.94 + 0.2, 8: 0.81 + 5.28, 9: 1.2 + 367.64}}
-kawa_low_params = {'beta': {6: 0.46 - 0.09, 7: 0.46 - 0.09, 8: 0.38 - 0.78, 9: 0.56 - 0.27}, 'r_0': {6: 0.94 - 0.15, 7: 0.94 - 0.15, 8: 0.81 - 0.26, 9: 1.2 - 0.74}}
+kawa_low_params = {'beta': {6: 0.46 - 0.09, 7: 0.46 - 0.09, 8: 0, 9: 0.56 - 0.27}, 'r_0': {6: 0.94 - 0.15, 7: 0.94 - 0.15, 8: 0.81 - 0.26, 9: 1.2 - 0.74}}
 kawa_fit = lambda l, r0, b: r0 * (l / M_to_lum(-21))**b
-print(M_to_lum(-21))
 
 regions = []
 for reg in range(0, 40):
@@ -281,7 +280,7 @@ for snap in snaps:
         # popt, pcov = curve_fit(linfit, lumins, hlrs, p0=[1, 1])
         # fitxs = np.linspace(10 ** 28, 10 ** 30, 1000)
         cbar = ax.hexbin(lumins, hlrs, gridsize=50, mincnt=1, xscale='log', yscale='log',
-                         norm=LogNorm(), linewidths=0.2, cmap='viridis', zorder=1)
+                         norm=LogNorm(), linewidths=0.2, cmap='viridis', zorder=0)
         # ax.plot(fitxs, linfit(fitxs, popt[0], popt[1]), linestyle='--', color='k')
         # plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
     except ValueError:
@@ -293,7 +292,7 @@ for snap in snaps:
         ax.fill_between(fit_lumins,
                         kawa_fit(fit_lumins, kawa_low_params['r_0'][int(z)], kawa_low_params['beta'][int(z)]),
                         kawa_fit(fit_lumins, kawa_up_params['r_0'][int(z)], kawa_up_params['beta'][int(z)]),
-                        color='k', alpha=0.4, zorder=0)
+                        color='k', alpha=0.4, zorder=1)
 
     ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)

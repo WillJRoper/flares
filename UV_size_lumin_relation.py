@@ -12,9 +12,19 @@ from scipy.optimize import curve_fit
 sns.set_context("paper")
 sns.set_style('whitegrid')
 
+geo = 4.*np.pi*(100.*10.*3.0867*10**16)**2 # factor relating the L to M in cm^2
 
-def linfit(x, m, c):
-    return m * x + c
+
+def M_to_lum(M):
+
+    return 10**(-0.4*(M+48.6)) * geo
+
+
+# Define Kawamata17 fit and parameters
+kawa_params = {'beta': {6: 0.46, 7: 0.46, 8: 0.38, 9: 0.56}, 'r_0': {6: 0.94, 7: 0.94, 8: 0.81, 9: 1.2}}
+kawa_up_params = {'beta': {6: 0.46 + 0.08, 7: 0.46 + 0.08, 8: 0.38 + 0.28, 9: 0.56 + 1.01}, 'r_0': {6: 0.94 + 0.2, 7: 0.94 + 0.2, 8: 0.81 + 5.28, 9: 1.2 + 367.64}}
+kawa_low_params = {'beta': {6: 0.46 - 0.09, 7: 0.46 - 0.09, 8: 0.38 - 0.78, 9: 0.56 - 0.27}, 'r_0': {6: 0.94 - 0.15, 7: 0.94 - 0.15, 8: 0.81 - 0.26, 9: 1.2 - 0.74}}
+kawa_fit = lambda l, r0, b: r0 * (l / M_to_lum(-21))**b
 
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
@@ -97,6 +107,8 @@ for ind in range(len(reg_snaps)):
 # Define comoving softening length in kpc
 csoft = 0.001802390 / 0.6777
 
+fit_lumins = np.logspace(28, 31, 1000)
+
 axlims_x = []
 axlims_y = []
 
@@ -132,6 +144,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         plot_meidan_stat(lumins, hlrs / (csoft / (1 + z)), ax, lab='REF', color='r')
     except ValueError:
         continue
+
+    if int(z) in [6, 7, 8, 9]:
+        ax.plot(fit_lumins,
+                kawa_fit(fit_lumins, kawa_params['r_0'][int(z)], kawa_params['beta'][int(z)]) / (csoft / (1 + z)),
+                linestyle='dashed', color='k', alpha=0.9)
 
     ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
@@ -205,6 +222,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     except ValueError:
         continue
 
+    if int(z) in [6, 7, 8, 9]:
+        ax.plot(fit_lumins, kawa_fit(fit_lumins, kawa_params['r_0'][int(z)], kawa_params['beta'][int(z)]),
+                linestyle='dashed', color='k', alpha=0.9)
+
     ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
@@ -260,10 +281,17 @@ for snap in snaps:
         fitxs = np.linspace(10 ** 28, 10 ** 30, 1000)
         cbar = ax.hexbin(lumins, hlrs, gridsize=50, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='viridis')
-        ax.plot(fitxs, linfit(fitxs, popt[0], popt[1]), linestyle='--', color='k')
         # plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
     except ValueError:
         continue
+
+    if int(z) in [6, 7, 8, 9]:
+        ax.plot(fit_lumins, kawa_fit(fit_lumins, kawa_params['r_0'][int(z)], kawa_params['beta'][int(z)]),
+                linestyle='dashed', color='k', alpha=0.9, zorder=2)
+        ax.fill_between(fit_lumins,
+                        kawa_fit(fit_lumins, kawa_low_params['r_0'][int(z)], kawa_low_params['beta'][int(z)]),
+                        kawa_fit(fit_lumins, kawa_up_params['r_0'][int(z)], kawa_up_params['beta'][int(z)]),
+                        color='k', alpha=0.4, zorder=1)
 
     ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
