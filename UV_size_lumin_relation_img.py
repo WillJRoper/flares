@@ -14,9 +14,12 @@ from scipy.optimize import curve_fit
 sns.set_context("paper")
 sns.set_style('whitegrid')
 
+geo = 4.*np.pi*(100.*10.*3.0867*10**16)**2 # factor relating the L to M in cm^2
 
-def linfit(x, m, c):
-    return m * x + c
+
+def M_to_lum(M):
+
+    return 10**(-0.4*(M+48.6)) * geo
 
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
@@ -40,7 +43,7 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 
 # Define Kawamata17 fit and parameters
 kawa_params = {'beta': {6: 0.46, 7: 0.46, 8: 0.38, 9: 0.56}, 'r_0': {6: 0.94, 7: 0.94, 8: 0.81, 9: 1.2}}
-kawa_fit = lambda l, r0, b: r0 * (l / (3.0128*10**28 * u.W).to(u.erg / u.s))**b
+kawa_fit = lambda l, r0, b: r0 * (l / M_to_lum(-21))**b
 
 regions = []
 for reg in range(0, 40):
