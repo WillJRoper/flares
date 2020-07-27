@@ -422,7 +422,7 @@ def get_evolution(path, snaps):
         for id, hmr in zip(star_halo_ids, gal_hmrs):
             mask = halo_part_inds[id]
             form.setdefault(snap, []).append(cosmo.age(z).value - cosmo.age(np.percentile(1 / form_a[mask] - 1,
-                                             pcent).value))
+                                             pcent)).value)
             star_hmrs.setdefault(snap, []).append(hmr[4] / soft)
             gas_hmrs.setdefault(snap, []).append(hmr[0] / soft)
 
