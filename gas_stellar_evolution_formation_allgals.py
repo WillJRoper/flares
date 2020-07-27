@@ -645,5 +645,6 @@ def main_evolve_graph(pcent):
     plt.close(fig)
 
 
-pcent = sys.argv[1]
+pcent = int(sys.argv[1])
+print(pcent)
 main_evolve_graph(pcent)
