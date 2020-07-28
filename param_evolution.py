@@ -468,7 +468,7 @@ for reg in regions:
 print("There are", count, "halos fullfilling condition")
 
 # Define comoving softening length in kpc
-csoft = 0.001802390 / 0.6777
+csoft = 0.001802390 / 0.6777 * 1e3
 
 # Build graphs
 graphs = {}
