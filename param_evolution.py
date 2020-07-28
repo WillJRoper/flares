@@ -380,7 +380,7 @@ for reg in regions:
             gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad',
                                    numThreads=8) / 0.6777 * 1e3
             gal_sfr[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/StarFormationRate',
-                                   numThreads=8) * 10 ** 10 / 0.6777 / gal_hmr[:, 4]
+                                   numThreads=8) * 10 ** 10 / 0.6777 / gal_ms[:, 4]
             gal_gas_hmrs[snap][reg] = gal_hmr[:, 0]
             gal_star_hmrs[snap][reg] = gal_hmr[:, 4]
             gal_dm_hmrs[snap][reg] = gal_hmr[:, 1]
