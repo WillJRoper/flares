@@ -146,7 +146,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     try:
         cbar = ax.hexbin(lumins, hlrs / (csoft / (1 + z)), gridsize=100, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='viridis')
-        plot_meidan_stat(lumins, hlrs / (csoft / (1 + z)), ax, lab='REF', color='r')
+        # plot_meidan_stat(lumins, hlrs / (csoft / (1 + z)), ax, lab='REF', color='r')
+        popt, pcov = curve_fit(kawa_fit, lumins, hlrs, p0=[1, 1])
+        ax.plot(fit_lumins, kawa_fit(fit_lumins, popt[0], popt[1]) / (csoft / (1 + z)) , color='b')
     except ValueError:
         continue
 
@@ -223,6 +225,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     try:
         cbar = ax.hexbin(lumins, hlrs, gridsize=50, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='viridis')
+        popt, pcov = curve_fit(kawa_fit, lumins, hlrs, p0=[1, 1])
+        ax.plot(fit_lumins, kawa_fit(fit_lumins, popt[0], popt[1]), color='b')
         # plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
     except ValueError:
         continue
@@ -281,13 +285,12 @@ for snap in snaps:
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
+    
     try:
-        # popt, pcov = curve_fit(linfit, lumins, hlrs, p0=[1, 1])
-        # fitxs = np.linspace(10 ** 28, 10 ** 30, 1000)
         cbar = ax.hexbin(lumins, hlrs, gridsize=50, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='viridis', zorder=0)
-        # ax.plot(fitxs, linfit(fitxs, popt[0], popt[1]), linestyle='--', color='k')
-        # plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
+        popt, pcov = curve_fit(kawa_fit, lumins, hlrs, p0=[1, 1])
+        ax.plot(fit_lumins, kawa_fit(fit_lumins, popt[0], popt[1]), color='b')
     except ValueError:
         continue
 
