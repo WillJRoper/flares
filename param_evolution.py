@@ -324,7 +324,7 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 gsnaps = reversed(snaps)
 
 # Define thresholds for roots
-mthresh = 10**10
+mthresh = 10**10.5
 rthresh = 1.1
 
 halo_ids_dict = {}
@@ -489,7 +489,7 @@ for reg in halos_in_pop:
                 gas_hmr.append(gal_gas_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 star_hmr .append(gal_star_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
 
-        fig = plt.figure(figsize=(15, 5))
+        fig = plt.figure(figsize=(5, 15))
         gs = gridspec.GridSpec(ncols=3, nrows=5)
         gs.update(wspace=0.0, hspace=0.0)
         ax1 = fig.add_subplot(gs[0, :])
