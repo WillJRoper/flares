@@ -151,6 +151,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         ax.plot(fit_lumins, kawa_fit(fit_lumins, popt[0], popt[1]) / (csoft / (1 + z)) , color='b')
     except ValueError:
         continue
+    except TypeError:
+        continue
 
     if int(z) in [6, 7, 8, 9]:
         ax.plot(fit_lumins,
@@ -234,6 +236,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         # plot_meidan_stat(lumins, hlrs, ax, lab='REF', color='r')
     except ValueError:
         continue
+    except TypeError:
+        continue
 
     if int(z) in [6, 7, 8, 9]:
         ax.plot(fit_lumins, kawa_fit(fit_lumins, kawa_params['r_0'][int(z)], kawa_params['beta'][int(z)]),
@@ -300,6 +304,8 @@ for snap in snaps:
         popt, pcov = curve_fit(kawa_fit, lumins, hlrs, p0=[1, 1])
         ax.plot(fit_lumins, kawa_fit(fit_lumins, popt[0], popt[1]), color='b')
     except ValueError:
+        continue
+    except TypeError:
         continue
 
     if int(z) in [6, 7, 8, 9]:
