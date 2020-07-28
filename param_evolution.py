@@ -378,7 +378,7 @@ for reg in regions:
             gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad',
                                    numThreads=8) / 0.6777 * 1e3
             gal_sfr[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/StarFormationRate',
-                                   numThreads=8) * 10 ** 10 / 0.6777
+                                   numThreads=8) * 10 ** 10 / 0.6777 / gal_hmr[:, 4]
             gal_gas_hmrs[snap][reg] = gal_hmr[:, 0]
             gal_star_hmrs[snap][reg] = gal_hmr[:, 4]
             gal_dm_hmrs[snap][reg] = gal_hmr[:, 1]
@@ -526,7 +526,7 @@ for reg in halos_in_pop:
         ax4.set_ylabel('$R_{1/2, \mathrm{dm}} / \mathrm{pkpc}$')
         ax5.set_ylabel('$R_{1/2, \mathrm{gas}} / \mathrm{pkpc}$')
         ax6.set_ylabel('$R_{1/2, \star} / \mathrm{pkpc}$')
-        ax5.set_ylabel('SFR / $[M_\odot/\mathrm{Myr}]$')
+        ax7.set_ylabel('sSFR / $[1/\mathrm{Myr}]$')
 
         ax1.set_yscale('log')
         ax2.set_yscale('log')
