@@ -520,4 +520,4 @@ for reg in halos_in_pop:
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
 
-        fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{root.split(".")[0]}p{root.split(".")[1]}.png')
+        fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
