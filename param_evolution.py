@@ -96,8 +96,8 @@ def get_main_branch(z0halo, data_dict):
     # Initialise entries in the graph dictionary
     for snap in snaplist:
         graph_dict[snap] = set()
-        nprogs[snap] = []
-        ndescs[snap] = []
+        nprogs[snap] = -1
+        ndescs[snap] = -1
 
     # Initialise the graph dictionary with the present day halo as the first entry
     graph_dict['011_z004p770'] = halos
@@ -121,8 +121,8 @@ def get_main_branch(z0halo, data_dict):
                 start_ind = data_dict['prog_start_index'][snap][snap_halo_ids[sim_halo_ids == halo[0]]][0]
                 nprog = data_dict['nprogs'][snap][snap_halo_ids[sim_halo_ids == halo[0]]][0]
                 ndesc = data_dict['ndescs'][snap][snap_halo_ids[sim_halo_ids == halo[0]]][0]
-                nprogs[snap] = [nprog]
-                ndescs[snap] = [ndesc]
+                nprogs[snap] = nprog
+                ndescs[snap] = ndesc
             except IndexError:
                 print(halo, "does not appear in the graph arrays")
                 continue
