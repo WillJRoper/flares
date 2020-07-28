@@ -331,9 +331,12 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 gsnaps = reversed(snaps)
 
+# Define comoving softening length in kpc
+csoft = 0.001802390 / 0.6777 * 1e3
+
 # Define thresholds for roots
 mthresh = 10**9.5
-rthresh = 0.7
+rthresh = csoft / (1 + 4.77)
 
 halo_ids_dict = {}
 # halo_ms_dict = {}
@@ -466,9 +469,6 @@ for reg in regions:
         continue
 
 print("There are", count, "halos fullfilling condition")
-
-# Define comoving softening length in kpc
-csoft = 0.001802390 / 0.6777 * 1e3
 
 # Build graphs
 graphs = {}
@@ -634,6 +634,6 @@ for reg in halos_in_pop:
         handles, labels = ax5.get_legend_handles_labels()
         ax5.legend(handles, labels)
 
-        fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}_compactgas.png')
+        fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
 
         plt.close(fig)
