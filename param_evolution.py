@@ -621,7 +621,7 @@ for reg in halos_in_pop:
         ax7.set_yscale('log')
         ax8.set_yscale('log')
         ax11.set_yscale('log')
-        # ax12.set_yscale('log')
+        ax12.set_yscale('log')
 
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
