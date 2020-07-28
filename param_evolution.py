@@ -506,7 +506,7 @@ for reg in halos_in_pop:
                 dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 energy.append(gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp])
 
-        fig = plt.figure(figsize=(7, 12))
+        fig = plt.figure(figsize=(12, 12))
         gs = gridspec.GridSpec(ncols=2, nrows=4)
         gs.update(wspace=0.5, hspace=0.0)
         ax1 = fig.add_subplot(gs[0, 0])
@@ -538,6 +538,13 @@ for reg in halos_in_pop:
         ax6.set_ylabel('$R_{1/2, \mathrm{gas}} / \mathrm{pkpc}$')
         ax7.set_ylabel('$R_{1/2, \star} / \mathrm{pkpc}$')
         ax8.set_ylabel('|Total Energy| / $[???]$')
+
+        ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+        ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+        ax3.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+        ax5.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+        ax6.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+        ax7.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
 
         ax1.set_yscale('log')
         ax2.set_yscale('log')
