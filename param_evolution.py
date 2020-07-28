@@ -312,7 +312,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
 
 
 regions = []
-for reg in range(1, 2):
+for reg in range(0, 2):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -320,7 +320,7 @@ for reg in range(1, 2):
         regions.append(str(reg))
 
 gregions = []
-for reg in range(1, 2):
+for reg in range(0, 2):
 
     if reg < 10:
         gregions.append('0' + str(reg))
@@ -386,18 +386,18 @@ for reg in regions:
             # subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
             subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-            gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                  numThreads=8) * 10 ** 10 / 0.6777
-            gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad',
-                                   numThreads=8) / 0.6777 * 1e3
-            gal_sfr[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/StarFormationRate',
-                                   numThreads=8) * 10 ** 10 / 0.6777
-            gal_energy[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/TotalEnergy',
-                                              numThreads=8) / 0.6777
-            gal_bhmar[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/BlackHoleMassAccretionRate',
-                                                 numThreads=8) / 0.6777 * 10**10
-            gal_veldisp[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/StellarVelDisp',
-                                                  numThreads=8) / 0.6777
+            gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                                  numThreads=8) * 10 ** 10
+            gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                   numThreads=8) * 1e3
+            gal_sfr[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/StarFormationRate', noH=True,
+                                   numThreads=8) * 10 ** 10
+            gal_energy[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/TotalEnergy', noH=True,
+                                              numThreads=8)
+            gal_bhmar[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/BlackHoleMassAccretionRate', noH=True,
+                                                 numThreads=8) * 10**10
+            gal_veldisp[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/StellarVelDisp', noH=True,
+                                                  numThreads=8)
             gal_gas_hmrs[snap][reg] = gal_hmr[:, 0]
             gal_star_hmrs[snap][reg] = gal_hmr[:, 4]
             gal_dm_hmrs[snap][reg] = gal_hmr[:, 1]
@@ -457,6 +457,9 @@ for reg in regions:
 
 print("There are", count, "halos fullfilling condition")
 
+# Define comoving softening length in kpc
+csoft = 0.001802390 / 0.6777
+
 # Build graphs
 graphs = {}
 for reg in halos_in_pop:
@@ -511,6 +514,7 @@ for reg in halos_in_pop:
         nprogs = []
         ndescs = []
         vel_disp = []
+        soft = []
         for snap in graph:
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
@@ -528,6 +532,7 @@ for reg in halos_in_pop:
                 ndescs.append(ndescs_dict[snap])
                 bhmar.append(gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp])
                 vel_disp.append(gal_veldisp[snap][reg][halo_ids_dict[snap][reg] == grp])
+                soft.append(csoft / (1 + z))
 
         fig = plt.figure(figsize=(12, 12))
         gs = gridspec.GridSpec(ncols=3, nrows=4)
@@ -549,8 +554,11 @@ for reg in halos_in_pop:
         ax2.plot(zs, gas_ms)
         ax3.plot(zs, star_ms)
         ax4.plot(zs, sfrs)
+        ax5.plot(zs, soft, linestyle='--', color='k')
         ax5.plot(zs, dm_hmr)
+        ax6.plot(zs, soft, linestyle='--', color='k')
         ax6.plot(zs, gas_hmr)
+        ax7.plot(zs, soft, linestyle='--', color='k')
         ax7.plot(zs, star_hmr)
         ax8.plot(zs, np.abs(energy))
         ax9.plot(zs, nprogs)
@@ -601,7 +609,7 @@ for reg in halos_in_pop:
         ax7.set_yscale('log')
         ax8.set_yscale('log')
         ax11.set_yscale('log')
-        ax12.set_yscale('log')
+        # ax12.set_yscale('log')
 
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
