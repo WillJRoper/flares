@@ -573,7 +573,7 @@ for reg in halos_in_pop:
         ax9.set_ylabel('$N_{\mathrm{dprog}}$')
         ax10.set_ylabel('$N_{\mathrm{ddesc}}$')
         ax11.set_ylabel('$\dot{M_{BH}} / [M_\odot / \mathrm{s}]$')
-        ax11.set_ylabel('$\sigma_{\star} /$ [km / s]')
+        ax12.set_ylabel('$\sigma_{\star} /$ [km / s]')
 
         ax1.set_ylim(10**6.5, 10**12.5)
         ax2.set_ylim(10 ** 6.5, 10 ** 12.5)
@@ -600,6 +600,8 @@ for reg in halos_in_pop:
         ax6.set_yscale('log')
         ax7.set_yscale('log')
         ax8.set_yscale('log')
+        ax11.set_yscale('log')
+        ax12.set_yscale('log')
 
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
