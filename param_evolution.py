@@ -444,8 +444,12 @@ for reg in regions:
 
         print("There are", len(halo_part_inds), "halos")
 
+        gal_birthden[snap][reg] = []
         for halo in halo_ids:
-            gal_birthden[snap][reg] = np.mean(gal_bd[halo_part_inds[halo]])
+            try:
+                gal_birthden[snap][reg].append(np.mean(gal_bd[halo_part_inds[halo]]))
+            except KeyError:
+                gal_birthden[snap][reg].append(np.nan)
 
 
 # Get halos which are in the distribution at the z=4.77
