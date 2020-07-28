@@ -90,7 +90,7 @@ for ind in range(len(reg_snaps)):
 
         try:
             lumins = hdf[f]['Aperture_Luminosity_30kpc'][:, 0]
-            ms = hdf[f]['Aperture_Mass_30kpc'][:, 0]
+            ms = hdf[f]['Aperture_Mass_30kpc'][:, 0] * 10**10
             hlrs = hdf[f]['Image_half_light_rad'][:, 0]
 
             okinds = ms > 10**9
