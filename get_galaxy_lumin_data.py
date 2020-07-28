@@ -135,6 +135,13 @@ def calc_3drad(poss):
     return rs
 
 
+def lumin_weighted_centre(poss, ls):
+
+    cent = np.average(poss, axis=0, weights=ls)
+
+    return cent
+
+
 @nb.njit(nogil=True, parallel=True)
 def calc_light_mass_rad(ls, poss, i, j, ms):
 
@@ -443,6 +450,10 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                     gas_mets[id], centd_gas_pos, gas_ms[id], gas_smls[id], lkernel, kbins,
                                     conv, model, F, i, j, f)
 
+                    # Centre on luminosity weighted centre
+                    cent = lumin_weighted_centre(centd_star_pos, ls)
+                    centd_star_pos = centd_star_pos - cent
+
                     if np.sum(ls) > 10**50:
                         print("Bizarrely high luminosity", id)
 
@@ -513,7 +524,7 @@ model.dust_BC = ('simple', {'slope': -1.0})
 # filters = FLARE.filters.NIRCam
 # filename = 'ObsWebbLumins_'
 filters = ['FAKE.TH.'+f for f in ['FUV', 'NUV', 'V']]
-filename = "RestUV"
+filename = "LuminCentRestUV"
 F = FLARE.filters.add_filters(filters, new_lam=model.lam)
 print(filters)
 

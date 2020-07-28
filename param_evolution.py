@@ -336,7 +336,7 @@ csoft = 0.001802390 / 0.6777 * 1e3
 
 # Define thresholds for roots
 mthresh = 10**9.5
-rthresh = csoft / (1 + 4.77) * 2
+rthresh = csoft / (1 + 4.77)
 
 halo_ids_dict = {}
 # halo_ms_dict = {}
@@ -463,7 +463,7 @@ count = 0
 for reg in regions:
 
     try:
-        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][np.logical_and(gal_star_ms['011_z004p770'][reg] >= mthresh, gal_star_hmrs[snap][reg] > rthresh)]
+        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][np.logical_and(gal_star_ms['011_z004p770'][reg] >= mthresh, gal_star_hmrs[snap][reg] < rthresh)]
         count += len(halos_in_pop[reg])
     except KeyError:
         continue
@@ -634,6 +634,6 @@ for reg in halos_in_pop:
         handles, labels = ax5.get_legend_handles_labels()
         ax5.legend(handles, labels)
 
-        fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}_noncompactstar.png')
+        fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
 
         plt.close(fig)
