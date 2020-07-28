@@ -501,7 +501,7 @@ for reg in halos_in_pop:
                 dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
 
         fig = plt.figure(figsize=(7, 18))
-        gs = gridspec.GridSpec(ncols=3, nrows=5)
+        gs = gridspec.GridSpec(ncols=3, nrows=7)
         gs.update(wspace=0.0, hspace=0.0)
         ax1 = fig.add_subplot(gs[0, :])
         ax2 = fig.add_subplot(gs[1, :])
