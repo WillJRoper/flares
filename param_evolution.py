@@ -333,7 +333,7 @@ gsnaps = reversed(snaps)
 
 # Define thresholds for roots
 mthresh = 10**10.5
-rthresh = 1.1
+rthresh = 0.7
 
 halo_ids_dict = {}
 # halo_ms_dict = {}
@@ -460,7 +460,7 @@ count = 0
 for reg in regions:
 
     try:
-        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][gal_star_ms['011_z004p770'][reg] >= mthresh]
+        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][np.logical_and(gal_star_ms['011_z004p770'][reg] >= mthresh, gal_gas_hmrs[snap][reg] < rthresh)]
         count += len(halos_in_pop[reg])
     except KeyError:
         continue
@@ -622,6 +622,11 @@ for reg in halos_in_pop:
         ax8.set_yscale('log')
         ax11.set_yscale('log')
         ax12.set_yscale('log')
+
+        for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12]:
+            ax.set_xlim(4.6, 15.1)
+            for spine in ax.spines.values():
+                spine.set_edgecolor('k')
 
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
