@@ -93,7 +93,7 @@ for ind in range(len(reg_snaps)):
             ms = hdf[f]['Aperture_Mass_30kpc'][:, 0] * 10**10
             hlrs = hdf[f]['Image_half_light_rad'][:, 0]
 
-            okinds = ms > 10**9.5
+            okinds = ms > 10**9
             lumins = lumins[okinds]
             hlrs = hlrs[okinds]
         except UnboundLocalError:
