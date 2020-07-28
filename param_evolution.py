@@ -104,7 +104,7 @@ def get_main_branch(z0halo, data_dict):
         snap = rev_snaplist[i]
         prog_snap = rev_snaplist[i + 1]
         snap_halo_ids = data_dict['mega'][snap]
-        sim_halo_ids = data_dict['mega'][snap]
+        sim_halo_ids = data_dict['sim'][snap]
 
         # Assign the halos variable for the next stage of the tree
         halos = graph_dict[snap]
