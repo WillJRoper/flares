@@ -463,7 +463,7 @@ count = 0
 for reg in regions:
 
     try:
-        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][np.logical_and(gal_star_ms['011_z004p770'][reg] >= mthresh, gal_gas_hmrs[snap][reg] < rthresh)]
+        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][np.logical_and(gal_star_ms['011_z004p770'][reg] >= mthresh, gal_star_hmrs[snap][reg] < rthresh)]
         count += len(halos_in_pop[reg])
     except KeyError:
         continue
