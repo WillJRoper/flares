@@ -506,7 +506,7 @@ for reg in halos_in_pop:
                 dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 energy.append(gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp])
 
-        fig = plt.figure(figsize=(7, 18))
+        fig = plt.figure(figsize=(7, 12))
         gs = gridspec.GridSpec(ncols=2, nrows=4)
         gs.update(wspace=0.5, hspace=0.0)
         ax1 = fig.add_subplot(gs[0, 0])
@@ -517,7 +517,7 @@ for reg in halos_in_pop:
         ax6 = fig.add_subplot(gs[1, 1])
         ax7 = fig.add_subplot(gs[2, 1])
         ax8 = fig.add_subplot(gs[3, 1])
-
+        print(energy)
         ax1.plot(zs, dm_ms)
         ax2.plot(zs, gas_ms)
         ax3.plot(zs, star_ms)
@@ -546,7 +546,7 @@ for reg in halos_in_pop:
         ax5.set_yscale('log')
         ax6.set_yscale('log')
         # ax7.set_yscale('log')
-        ax8.set_yscale('log')
+        # ax8.set_yscale('log')
 
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
