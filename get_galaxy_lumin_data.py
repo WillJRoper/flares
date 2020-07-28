@@ -85,11 +85,31 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
 
 
 @nb.jit(nogil=True, parallel=True)
-def make_soft_img(pos, nbin, i, j, imgrange, ls):
+def make_soft_img(pos, Ndim, i, j, imgrange, ls, smooth):
 
-    img, xedges, yedges = np.histogram2d(pos[:, i], pos[:, j], bins=nbin, range=imgrange, weights=ls)
+    # Define x and y positions for the gaussians
+    Gx, Gy = np.meshgrid(np.linspace(imgrange[0][0], imgrange[0][1], Ndim),
+                         np.linspace(imgrange[1][0], imgrange[1][1], Ndim))
 
-    return img
+    # Initialise the image array
+    gsmooth_img = np.zeros((Ndim, Ndim))
+
+    # Loop over each star computing the smoothed gaussian distribution for this particle
+    for x, y, l, sml in zip(pos[:, i], pos[:, j], ls, smooth):
+
+        # Compute the image
+        g = np.exp(-(((Gx - x) ** 2 + (Gy - y) ** 2) / (2.0 * sml ** 2)))
+
+        # Get the sum of the gaussian
+        gsum = np.sum(g)
+
+        # If there are stars within the image in this gaussian add it to the image array
+        if gsum > 0:
+            gsmooth_img += g * l / gsum
+
+    # img, xedges, yedges = np.histogram2d(pos[:, i], pos[:, j], bins=nbin, range=imgrange, weights=ls)
+
+    return gsmooth_img
 
 
 @nb.jit(nogil=True, parallel=True)
@@ -454,9 +474,6 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     cent = lumin_weighted_centre(centd_star_pos, ls)
                     centd_star_pos = centd_star_pos - cent
 
-                    if np.sum(ls) > 10**50:
-                        print("Bizarrely high luminosity", id)
-
                     # Compute half mass radii
                     try:
                         hls[ind2, ind1], tot_l[ind2, ind1], ms[ind2, ind1] = calc_light_mass_rad(ls, centd_star_pos,
@@ -466,7 +483,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                         continue
 
                     # Make an image at softening length
-                    img = make_soft_img(centd_star_pos, res, i, j, imgrange, ls)
+                    img = make_soft_img(centd_star_pos, res, i, j, imgrange, ls, gal_smls[id])
                     imgs[ind2, :, :, ind1] = img
 
                     # Get the image half light radius
@@ -534,7 +551,7 @@ for reg in range(0, 40):
         regions.append('0' + str(reg))
     else:
         regions.append(str(reg))
-
+regions.reverse()
 snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 
