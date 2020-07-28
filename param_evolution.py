@@ -98,6 +98,8 @@ def get_main_branch(z0halo, data_dict):
     # Initialise the graph dictionary with the present day halo as the first entry
     graph_dict['011_z004p770'] = halos
 
+    nprogs = {}
+
     # Loop over snapshots and progenitor snapshots
     for i in range(len(snaplist) - 1):
 
@@ -116,6 +118,9 @@ def get_main_branch(z0halo, data_dict):
             try:
                 start_ind = data_dict['prog_start_index'][snap][snap_halo_ids[sim_halo_ids == halo[0]]][0]
                 nprog = data_dict['nprogs'][snap][snap_halo_ids[sim_halo_ids == halo[0]]][0]
+                ndesc = data_dict['ndescs'][snap][snap_halo_ids[sim_halo_ids == halo[0]]][0]
+                nprogs[snap] = nprog
+                ndescs[snap] = ndesc
             except IndexError:
                 print(halo, "does not appear in the graph arrays")
                 continue
@@ -136,7 +141,7 @@ def get_main_branch(z0halo, data_dict):
         # Convert entry to an array for sorting
         graph_dict[snap] = np.array([halo[0] for halo in graph_dict[snap]], dtype=float)
 
-    return graph_dict
+    return graph_dict, nprogs, ndescs
 
 
 def get_graph(z0halo, data_dict):
@@ -481,7 +486,7 @@ for reg in halos_in_pop:
 
     for root in halos_in_pop[reg]:
         print("Building graph For", reg, root)
-        graph = forest_worker(root, data_dict)
+        graph, nprogs_dict, ndescs_dict = forest_worker(root, data_dict)
         print("Plotting graph")
         sfrs = []
         gas_ms = []
@@ -492,6 +497,8 @@ for reg in halos_in_pop:
         star_hmr = []
         energy = []
         zs = []
+        nprogs = []
+        ndescs = []
         for snap in graph:
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
@@ -505,10 +512,12 @@ for reg in halos_in_pop:
                 dm_ms.append(gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 energy.append(gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp])
+                nprogs.append(nprogs_dict[snap])
+                ndescs.append(ndescs_dict[snap])
 
         fig = plt.figure(figsize=(12, 12))
-        gs = gridspec.GridSpec(ncols=2, nrows=4)
-        gs.update(wspace=0.5, hspace=0.0)
+        gs = gridspec.GridSpec(ncols=3, nrows=4)
+        gs.update(wspace=0.3, hspace=0.0)
         ax1 = fig.add_subplot(gs[0, 0])
         ax2 = fig.add_subplot(gs[1, 0])
         ax3 = fig.add_subplot(gs[2, 0])
@@ -517,6 +526,10 @@ for reg in halos_in_pop:
         ax6 = fig.add_subplot(gs[1, 1])
         ax7 = fig.add_subplot(gs[2, 1])
         ax8 = fig.add_subplot(gs[3, 1])
+        ax9 = fig.add_subplot(gs[0, 2])
+        ax10 = fig.add_subplot(gs[1, 2])
+        ax11 = fig.add_subplot(gs[2, 2])
+        ax12 = fig.add_subplot(gs[3, 2])
 
         ax1.plot(zs, dm_ms)
         ax2.plot(zs, gas_ms)
@@ -526,6 +539,8 @@ for reg in halos_in_pop:
         ax6.plot(zs, gas_hmr)
         ax7.plot(zs, star_hmr)
         ax8.plot(zs, np.abs(energy))
+        ax9.plot(zs, nprogs)
+        ax10.plot(zs, ndescs)
 
         ax4.set_xlabel('$z$')
         ax8.set_xlabel('$z$')
@@ -538,6 +553,15 @@ for reg in halos_in_pop:
         ax6.set_ylabel('$R_{1/2, \mathrm{gas}} / \mathrm{pkpc}$')
         ax7.set_ylabel('$R_{1/2, \star} / \mathrm{pkpc}$')
         ax8.set_ylabel('|Total Energy| / $[???]$')
+        ax9.set_ylabel('$N_{\mathrm{dprog}}$')
+        ax10.set_ylabel('$N_{\mathrm{ddesc}}$')
+ 
+        ax1.set_ylim(10**7, 10**12.5)
+        ax2.set_ylim(10 ** 7, 10 ** 12.5)
+        ax3.set_ylim(10 ** 7, 10 ** 12.5)
+        ax5.set_ylim(10 ** -1, 10 ** 2)
+        ax6.set_ylim(10 ** -1, 10 ** 2)
+        ax7.set_ylim(10 ** -1, 10 ** 2)
 
         ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
         ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
