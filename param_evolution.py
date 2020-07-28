@@ -332,7 +332,7 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
 gsnaps = reversed(snaps)
 
 # Define thresholds for roots
-mthresh = 10**10.5
+mthresh = 10**9.5
 rthresh = 0.7
 
 halo_ids_dict = {}
@@ -634,6 +634,6 @@ for reg in halos_in_pop:
         handles, labels = ax5.get_legend_handles_labels()
         ax5.legend(handles, labels)
 
-        fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
+        fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}_compactgas.png')
 
         plt.close(fig)
