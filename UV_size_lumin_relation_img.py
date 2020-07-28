@@ -160,6 +160,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
+    ax.text(0.1, 0.9, f"$r_{0}={popt[0]}$" + "\n" + r"$\beta=" + f"{popt[1]}$",
+            bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            transform=ax.transAxes, horizontalalignment='left', fontsize=8)
+
     axlims_x.extend(ax.get_xlim())
     axlims_y.extend(ax.get_ylim())
 
@@ -235,6 +239,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         ax.plot(fit_lumins, kawa_fit(fit_lumins, kawa_params['r_0'][int(z)], kawa_params['beta'][int(z)]),
                 linestyle='dashed', color='k', alpha=0.9)
 
+    ax.text(0.1, 0.9, f"$r_{0}={popt[0]}$" + "\n" + r"$\beta=" + f"{popt[1]}$",
+            bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            transform=ax.transAxes, horizontalalignment='left', fontsize=8)
+
     ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
@@ -285,7 +293,7 @@ for snap in snaps:
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    
+
     try:
         cbar = ax.hexbin(lumins, hlrs, gridsize=50, mincnt=1, xscale='log', yscale='log',
                          norm=LogNorm(), linewidths=0.2, cmap='viridis', zorder=0)
@@ -301,6 +309,10 @@ for snap in snaps:
                         kawa_fit(fit_lumins, kawa_low_params['r_0'][int(z)], kawa_low_params['beta'][int(z)]),
                         kawa_fit(fit_lumins, kawa_up_params['r_0'][int(z)], kawa_up_params['beta'][int(z)]),
                         color='k', alpha=0.4, zorder=1)
+
+    ax.text(0.1, 0.9, f"$r_{0}={popt[0]}$" + "\n" + r"$\beta=" + f"{popt[1]}$",
+            bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+            transform=ax.transAxes, horizontalalignment='left', fontsize=8)
 
     ax.text(0.8, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
