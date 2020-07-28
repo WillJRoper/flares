@@ -123,6 +123,8 @@ def get_main_branch(z0halo, data_dict):
                 continue
             these_progs = get_linked_halo_data(data_dict['progs'][snap], start_ind, nprog)
 
+            print(snap, prog_snap, these_progs)
+
             # Assign progenitors using a tuple to keep track of the snapshot ID
             # in addition to the halo ID
             graph_dict[prog_snap].update({(these_progs[0], prog_snap)})
@@ -526,13 +528,15 @@ for reg in halos_in_pop:
         ax4.set_ylabel('$R_{1/2, \mathrm{dm}} / \mathrm{pkpc}$')
         ax5.set_ylabel('$R_{1/2, \mathrm{gas}} / \mathrm{pkpc}$')
         ax6.set_ylabel('$R_{1/2, \star} / \mathrm{pkpc}$')
-        ax7.set_ylabel('sSFR / $[1/\mathrm{Myr}]$')
+        ax7.set_ylabel('sSFR / $[1/\mathrm{yr}]$')
 
         ax1.set_yscale('log')
         ax2.set_yscale('log')
         ax3.set_yscale('log')
         ax4.set_yscale('log')
-        # ax5.set_yscale('log')
+        ax5.set_yscale('log')
+        ax6.set_yscale('log')
+        # ax7.set_yscale('log')
 
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
