@@ -517,7 +517,7 @@ for reg in halos_in_pop:
         ax6 = fig.add_subplot(gs[1, 1])
         ax7 = fig.add_subplot(gs[2, 1])
         ax8 = fig.add_subplot(gs[3, 1])
-        print(energy)
+
         ax1.plot(zs, dm_ms)
         ax2.plot(zs, gas_ms)
         ax3.plot(zs, star_ms)
@@ -525,7 +525,7 @@ for reg in halos_in_pop:
         ax5.plot(zs, gas_hmr)
         ax6.plot(zs, star_hmr)
         ax7.plot(zs, sfrs)
-        ax8.plot(zs, energy)
+        ax8.plot(zs, np.abs(energy))
 
         ax4.set_xlabel('$z$')
         ax8.set_xlabel('$z$')
@@ -537,7 +537,7 @@ for reg in halos_in_pop:
         ax5.set_ylabel('$R_{1/2, \mathrm{gas}} / \mathrm{pkpc}$')
         ax6.set_ylabel('$R_{1/2, \star} / \mathrm{pkpc}$')
         ax7.set_ylabel('SFR / $[M_\odot/\mathrm{yr}]$')
-        ax8.set_ylabel('Total Energy / $[???]$')
+        ax8.set_ylabel('|Total Energy| / $[???]$')
 
         ax1.set_yscale('log')
         ax2.set_yscale('log')
@@ -546,7 +546,7 @@ for reg in halos_in_pop:
         ax5.set_yscale('log')
         ax6.set_yscale('log')
         # ax7.set_yscale('log')
-        # ax8.set_yscale('log')
+        ax8.set_yscale('log')
 
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
