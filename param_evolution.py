@@ -103,6 +103,8 @@ def get_main_branch(z0halo, data_dict):
 
         snap = rev_snaplist[i]
         prog_snap = rev_snaplist[i + 1]
+        snap_halo_ids = data_dict['mega'][snap]
+        sim_halo_ids = data_dict['mega'][snap]
 
         # Assign the halos variable for the next stage of the tree
         halos = graph_dict[snap]
@@ -112,9 +114,8 @@ def get_main_branch(z0halo, data_dict):
 
             # Get the progenitors
             try:
-                start_ind = \
-                data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
-                nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == halo[0]]][0]
+                start_ind = data_dict['prog_start_index'][snap][snap_halo_ids[sim_halo_ids == halo[0]]][0]
+                nprog = data_dict['nprogs'][snap][snap_halo_ids[sim_halo_ids == halo[0]]][0]
             except IndexError:
                 print(halo, "does not appear in the graph arrays")
                 continue
@@ -459,7 +460,7 @@ for reg in halos_in_pop:
         prog_start_index[snap] = hdf['Prog_Start_Index'][...]
         desc_start_index[snap] = hdf['Desc_Start_Index'][...]
         mega[snap] = hdf['MEGA_halo_IDs'][...]
-        sim[snap] = hdf['MEGA_halo_IDs'][...]
+        sim[snap] = hdf['SUBFIND_halo_IDs'][...]
         nparts[snap] = hdf['nParts'][...]
 
         hdf.close()
