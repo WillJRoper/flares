@@ -305,7 +305,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
 
 
 regions = []
-for reg in range(0, 1):
+for reg in range(1, 2):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -313,7 +313,7 @@ for reg in range(0, 1):
         regions.append(str(reg))
 
 gregions = []
-for reg in range(0, 1):
+for reg in range(1, 2):
 
     if reg < 10:
         gregions.append('0' + str(reg))
@@ -335,8 +335,10 @@ halo_ids_dict = {}
 # halo_id_part_inds = {}
 gal_gas_hmrs = {}
 gal_star_hmrs = {}
+gal_dm_hmrs = {}
 gal_star_ms = {}
 gal_gas_ms = {}
+gal_dm_ms = {}
 gal_sfr = {}
 for snap in snaps:
 
@@ -347,6 +349,8 @@ for snap in snaps:
     # halo_ms_dict[snap] = {}
     gal_gas_hmrs[snap] = {}
     gal_star_hmrs[snap] = {}
+    gal_dm_hmrs[snap] = {}
+    gal_dm_ms[snap] = {}
     gal_gas_ms[snap] = {}
     gal_star_ms[snap] = {}
     gal_sfr[snap] = {}
@@ -377,6 +381,8 @@ for reg in regions:
                                    numThreads=8) * 10 ** 10 / 0.6777
             gal_gas_hmrs[snap][reg] = gal_hmr[:, 0]
             gal_star_hmrs[snap][reg] = gal_hmr[:, 4]
+            gal_dm_hmrs[snap][reg] = gal_hmr[:, 1]
+            gal_dm_ms[snap][reg] = gal_ms[:, 1]
             gal_gas_ms[snap][reg] = gal_ms[:, 0]
             gal_star_ms[snap][reg] = gal_ms[:, 4]
             gal_ms = gal_ms[:, 4]
@@ -450,7 +456,7 @@ for reg in halos_in_pop:
     sim = {}
     for snap in snaps:
 
-        hdf = h5py.File(treepath + 'StellarSubMgraph_' + snap + '.hdf5', 'r')
+        hdf = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
 
         # Assign
         progs[snap] = hdf['prog_halo_ids'][...]
@@ -476,6 +482,8 @@ for reg in halos_in_pop:
         sfrs = []
         gas_ms = []
         star_ms = []
+        dm_ms = []
+        dm_hmr = []
         gas_hmr = []
         star_hmr = []
         zs = []
@@ -489,8 +497,10 @@ for reg in halos_in_pop:
                 star_ms.append(gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 gas_hmr.append(gal_gas_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 star_hmr .append(gal_star_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
+                dm_ms.append(gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
+                dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
 
-        fig = plt.figure(figsize=(5, 15))
+        fig = plt.figure(figsize=(7, 18))
         gs = gridspec.GridSpec(ncols=3, nrows=5)
         gs.update(wspace=0.0, hspace=0.0)
         ax1 = fig.add_subplot(gs[0, :])
@@ -498,18 +508,24 @@ for reg in halos_in_pop:
         ax3 = fig.add_subplot(gs[2, :])
         ax4 = fig.add_subplot(gs[3, :])
         ax5 = fig.add_subplot(gs[4, :])
+        ax6 = fig.add_subplot(gs[5, :])
+        ax7 = fig.add_subplot(gs[6, :])
 
-        ax1.plot(zs, star_ms)
+        ax1.plot(zs, dm_ms)
         ax2.plot(zs, gas_ms)
-        ax3.plot(zs, star_hmr)
-        ax4.plot(zs, gas_hmr)
-        ax5.plot(zs, sfrs)
+        ax3.plot(zs, star_ms)
+        ax4.plot(zs, dm_hmr)
+        ax5.plot(zs, gas_hmr)
+        ax6.plot(zs, star_hmr)
+        ax7.plot(zs, sfrs)
 
-        ax5.set_xlabel('$z$')
-        ax1.set_ylabel('$M_{\star} / M_\odot$')
+        ax7.set_xlabel('$z$')
+        ax1.set_ylabel('$M_{\mathrm{dm}} / M_\odot$')
         ax2.set_ylabel('$M_{\mathrm{gas}} / M_\odot$')
-        ax3.set_ylabel('$R_{1/2, \star} / \mathrm{pkpc}$')
-        ax4.set_ylabel('$R_{1/2, \mathrm{gas}} / \mathrm{pkpc}$')
+        ax3.set_ylabel('$M_{\star} / M_\odot$')
+        ax4.set_ylabel('$R_{1/2, \mathrm{dm}} / \mathrm{pkpc}$')
+        ax5.set_ylabel('$R_{1/2, \mathrm{gas}} / \mathrm{pkpc}$')
+        ax6.set_ylabel('$R_{1/2, \star} / \mathrm{pkpc}$')
         ax5.set_ylabel('SFR / $[M_\odot/\mathrm{Myr}]$')
 
         ax1.set_yscale('log')
