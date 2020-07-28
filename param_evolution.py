@@ -348,6 +348,8 @@ gal_gas_ms = {}
 gal_dm_ms = {}
 gal_sfr = {}
 gal_energy = {}
+gal_bhmar = {}
+gal_veldisp = {}
 for snap in snaps:
 
     # stellar_a_dict[snap] = {}
@@ -363,6 +365,8 @@ for snap in snaps:
     gal_star_ms[snap] = {}
     gal_sfr[snap] = {}
     gal_energy[snap] = {}
+    gal_bhmar[snap] = {}
+    gal_veldisp[snap] = {}
 
 for reg in regions:
 
@@ -390,6 +394,10 @@ for reg in regions:
                                    numThreads=8) * 10 ** 10 / 0.6777
             gal_energy[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/TotalEnergy',
                                               numThreads=8) / 0.6777
+            gal_bhmar[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/BlackHoleMassAccretionRate',
+                                                 numThreads=8) / 0.6777 * 10**10
+            gal_veldisp[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/StellarVelDisp',
+                                                  numThreads=8) / 0.6777
             gal_gas_hmrs[snap][reg] = gal_hmr[:, 0]
             gal_star_hmrs[snap][reg] = gal_hmr[:, 4]
             gal_dm_hmrs[snap][reg] = gal_hmr[:, 1]
@@ -499,8 +507,10 @@ for reg in halos_in_pop:
         star_hmr = []
         energy = []
         zs = []
+        bhmar = []
         nprogs = []
         ndescs = []
+        vel_disp = []
         for snap in graph:
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
@@ -516,6 +526,8 @@ for reg in halos_in_pop:
                 energy.append(gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp])
                 nprogs.append(nprogs_dict[snap])
                 ndescs.append(ndescs_dict[snap])
+                bhmar.append(gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp])
+                vel_disp.append(gal_veldisp[snap][reg][halo_ids_dict[snap][reg] == grp])
 
         fig = plt.figure(figsize=(12, 12))
         gs = gridspec.GridSpec(ncols=3, nrows=4)
@@ -543,9 +555,12 @@ for reg in halos_in_pop:
         ax8.plot(zs, np.abs(energy))
         ax9.plot(zs, nprogs)
         ax10.plot(zs, ndescs)
+        ax11.plot(zs, bhmar)
+        ax12.plot(zs, vel_disp)
 
         ax4.set_xlabel('$z$')
         ax8.set_xlabel('$z$')
+        ax12.set_xlabel('$z$')
 
         ax1.set_ylabel('$M_{\mathrm{dm}} / M_\odot$')
         ax2.set_ylabel('$M_{\mathrm{gas}} / M_\odot$')
@@ -557,13 +572,15 @@ for reg in halos_in_pop:
         ax8.set_ylabel('|Total Energy| / $[???]$')
         ax9.set_ylabel('$N_{\mathrm{dprog}}$')
         ax10.set_ylabel('$N_{\mathrm{ddesc}}$')
+        ax11.set_ylabel('$\dot{M_{BH}} / [M_\odot / \mathrm{s}]$')
+        ax11.set_ylabel('$\sigma_{\star} /$ [km / s]')
 
-        ax1.set_ylim(10**7, 10**12.5)
-        ax2.set_ylim(10 ** 7, 10 ** 12.5)
-        ax3.set_ylim(10 ** 7, 10 ** 12.5)
-        ax5.set_ylim(10 ** -1, 10 ** 2)
-        ax6.set_ylim(10 ** -1, 10 ** 2)
-        ax7.set_ylim(10 ** -1, 10 ** 2)
+        ax1.set_ylim(10**6.5, 10**12.5)
+        ax2.set_ylim(10 ** 6.5, 10 ** 12.5)
+        ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
+        ax5.set_ylim(10 ** -1, 10 ** 1.9)
+        ax6.set_ylim(10 ** -1, 10 ** 1.9)
+        ax7.set_ylim(10 ** -1, 10 ** 1.9)
 
         ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
         ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
@@ -571,6 +588,9 @@ for reg in halos_in_pop:
         ax5.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
         ax6.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
         ax7.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+        ax9.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+        ax10.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+        ax11.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
 
         ax1.set_yscale('log')
         ax2.set_yscale('log')
