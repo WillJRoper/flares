@@ -566,8 +566,8 @@ for reg in halos_in_pop:
         ax2.plot(zs, gas_ms)
         ax3.plot(zs, star_ms)
         ax4.plot(zs, sfrs)
-        ax5.plot(zs, soft, linestyle='--', color='k')
-        ax5.plot(zs, dm_hmr)
+        ax5.plot(zs, soft, linestyle='--', color='k', label='soft')
+        ax5.plot(zs, dm_hmr, label='Galaxy')
         ax6.plot(zs, soft, linestyle='--', color='k')
         ax6.plot(zs, gas_hmr)
         ax7.plot(zs, soft, linestyle='--', color='k')
@@ -625,6 +625,9 @@ for reg in halos_in_pop:
 
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
+
+        handles, labels = ax5.get_legend_handles_labels()
+        ax5.legend(handles, labels)
 
         fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
 
