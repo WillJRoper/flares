@@ -123,8 +123,6 @@ def get_main_branch(z0halo, data_dict):
                 continue
             these_progs = get_linked_halo_data(data_dict['progs'][snap], start_ind, nprog)
 
-            print(snap, prog_snap, these_progs)
-
             # Assign progenitors using a tuple to keep track of the snapshot ID
             # in addition to the halo ID
             graph_dict[prog_snap].update({(these_progs[0], prog_snap)})
@@ -342,6 +340,7 @@ gal_star_ms = {}
 gal_gas_ms = {}
 gal_dm_ms = {}
 gal_sfr = {}
+gal_energy = {}
 for snap in snaps:
 
     # stellar_a_dict[snap] = {}
@@ -356,6 +355,7 @@ for snap in snaps:
     gal_gas_ms[snap] = {}
     gal_star_ms[snap] = {}
     gal_sfr[snap] = {}
+    gal_energy[snap] = {}
 
 for reg in regions:
 
@@ -380,7 +380,9 @@ for reg in regions:
             gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad',
                                    numThreads=8) / 0.6777 * 1e3
             gal_sfr[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/StarFormationRate',
-                                   numThreads=8) * 10 ** 10 / 0.6777 / gal_ms[:, 4]
+                                   numThreads=8) * 10 ** 10 / 0.6777
+            gal_energy[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/TotalEnergy',
+                                              numThreads=8) / 0.6777
             gal_gas_hmrs[snap][reg] = gal_hmr[:, 0]
             gal_star_hmrs[snap][reg] = gal_hmr[:, 4]
             gal_dm_hmrs[snap][reg] = gal_hmr[:, 1]
@@ -488,6 +490,7 @@ for reg in halos_in_pop:
         dm_hmr = []
         gas_hmr = []
         star_hmr = []
+        energy = []
         zs = []
         for snap in graph:
             z_str = snap.split('z')[1].split('p')
@@ -501,17 +504,19 @@ for reg in halos_in_pop:
                 star_hmr .append(gal_star_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_ms.append(gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
+                energy.append(gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp])
 
         fig = plt.figure(figsize=(7, 18))
-        gs = gridspec.GridSpec(ncols=3, nrows=7)
-        gs.update(wspace=0.0, hspace=0.0)
-        ax1 = fig.add_subplot(gs[0, :])
-        ax2 = fig.add_subplot(gs[1, :])
-        ax3 = fig.add_subplot(gs[2, :])
-        ax4 = fig.add_subplot(gs[3, :])
-        ax5 = fig.add_subplot(gs[4, :])
-        ax6 = fig.add_subplot(gs[5, :])
-        ax7 = fig.add_subplot(gs[6, :])
+        gs = gridspec.GridSpec(ncols=2, nrows=4)
+        gs.update(wspace=0.5, hspace=0.0)
+        ax1 = fig.add_subplot(gs[0, 0])
+        ax2 = fig.add_subplot(gs[1, 0])
+        ax3 = fig.add_subplot(gs[2, 0])
+        ax4 = fig.add_subplot(gs[3, 0])
+        ax5 = fig.add_subplot(gs[4, 1])
+        ax6 = fig.add_subplot(gs[5, 1])
+        ax7 = fig.add_subplot(gs[6, 1])
+        ax8 = fig.add_subplot(gs[7, 1])
 
         ax1.plot(zs, dm_ms)
         ax2.plot(zs, gas_ms)
@@ -520,15 +525,19 @@ for reg in halos_in_pop:
         ax5.plot(zs, gas_hmr)
         ax6.plot(zs, star_hmr)
         ax7.plot(zs, sfrs)
+        ax8.plot(zs, energy)
 
-        ax7.set_xlabel('$z$')
+        ax4.set_xlabel('$z$')
+        ax8.set_xlabel('$z$')
+
         ax1.set_ylabel('$M_{\mathrm{dm}} / M_\odot$')
         ax2.set_ylabel('$M_{\mathrm{gas}} / M_\odot$')
         ax3.set_ylabel('$M_{\star} / M_\odot$')
         ax4.set_ylabel('$R_{1/2, \mathrm{dm}} / \mathrm{pkpc}$')
         ax5.set_ylabel('$R_{1/2, \mathrm{gas}} / \mathrm{pkpc}$')
         ax6.set_ylabel('$R_{1/2, \star} / \mathrm{pkpc}$')
-        ax7.set_ylabel('sSFR / $[1/\mathrm{yr}]$')
+        ax7.set_ylabel('SFR / $[M_\odot/\mathrm{yr}]$')
+        ax8.set_ylabel('Total Energy / $[???]$')
 
         ax1.set_yscale('log')
         ax2.set_yscale('log')
@@ -537,6 +546,7 @@ for reg in halos_in_pop:
         ax5.set_yscale('log')
         ax6.set_yscale('log')
         # ax7.set_yscale('log')
+        ax8.set_yscale('log')
 
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
