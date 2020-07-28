@@ -450,7 +450,7 @@ for reg in halos_in_pop:
     sim = {}
     for snap in snaps:
 
-        hdf = h5py.File(treepath + 'SubMgraph_' + snap + '.hdf5', 'r')
+        hdf = h5py.File(treepath + 'StellarSubMgraph_' + snap + '.hdf5', 'r')
 
         # Assign
         progs[snap] = hdf['prog_halo_ids'][...]
