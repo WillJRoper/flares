@@ -350,6 +350,7 @@ gal_sfr = {}
 gal_energy = {}
 gal_bhmar = {}
 gal_veldisp = {}
+gal_birthden = {}
 for snap in snaps:
 
     # stellar_a_dict[snap] = {}
@@ -367,6 +368,7 @@ for snap in snaps:
     gal_energy[snap] = {}
     gal_bhmar[snap] = {}
     gal_veldisp[snap] = {}
+    gal_birthden[snap] = {}
 
 for reg in regions:
 
@@ -379,11 +381,11 @@ for reg in regions:
         try:
             # starmass_dict[snap][reg] = E.read_array('PARTDATA', path, snap, 'PartType4/Mass',
             #                                         noH=True, numThreads=8) * 10**10
-            # stellar_a_dict[snap][reg] = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime',
-            #                                          noH=True, numThreads=8)
-            # part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
-            # grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
-            # subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+            gal_bd = E.read_array('PARTDATA', path, snap, 'PartType4/BirthDensity', noH=True,
+                                  physicalUnits=True, numThreads=8)
+            part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
+            grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
+            subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
             subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
             gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
@@ -409,9 +411,9 @@ for reg in regions:
         except:
             continue
 
-        # # A copy of this array is needed for the extraction method
-        # group_part_ids = np.copy(part_ids)
-        #
+        # A copy of this array is needed for the extraction method
+        group_part_ids = np.copy(part_ids)
+
         # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
         halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
         for (ind, g), sg in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
@@ -419,29 +421,31 @@ for reg in regions:
 
         halo_ids_dict[snap][reg] = halo_ids
         # halo_ms_dict[snap][reg] = gal_ms
-        #
-        # # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-        # part_halo_ids = np.zeros(grp_ids.size, dtype=float)
-        # for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        #     part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
-        #
-        # print("There are", len(part_halo_ids), "particles")
-        #
-        # print("Got halo IDs")
-        #
-        # parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids, group_part_ids, False)
-        #
-        # # Produce a dictionary containing the index of particles in each halo
-        # halo_part_inds = {}
-        # for ind, grp in zip(parts_in_groups, part_groups):
-        #     halo_part_inds.setdefault(grp, set()).update({ind})
-        #
-        # # Now the dictionary is fully populated convert values from sets to arrays for indexing
-        # for key, val in halo_part_inds.items():
-        #     halo_part_inds[key] = np.array(list(val))
-        # halo_id_part_inds[snap][reg] = halo_part_inds
-        #
-        # print("There are", len(halo_part_inds), "halos")
+
+        # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
+        part_halo_ids = np.zeros(grp_ids.size, dtype=float)
+        for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+            part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
+
+        print("There are", len(part_halo_ids), "particles")
+
+        print("Got halo IDs")
+
+        parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids, group_part_ids, False)
+
+        # Produce a dictionary containing the index of particles in each halo
+        halo_part_inds = {}
+        for ind, grp in zip(parts_in_groups, part_groups):
+            halo_part_inds.setdefault(grp, set()).update({ind})
+
+        # Now the dictionary is fully populated convert values from sets to arrays for indexing
+        for key, val in halo_part_inds.items():
+            halo_part_inds[key] = np.array(list(val))
+
+        print("There are", len(halo_part_inds), "halos")
+
+        for halo in halo_ids:
+            gal_birthden[snap][reg] = np.mean(gal_bd[halo_part_inds[halo]])
 
 
 # Get halos which are in the distribution at the z=4.77
@@ -515,6 +519,7 @@ for reg in halos_in_pop:
         ndescs = []
         vel_disp = []
         soft = []
+        bd = []
         for snap in graph:
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
@@ -533,6 +538,7 @@ for reg in halos_in_pop:
                 bhmar.append(gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp])
                 vel_disp.append(gal_veldisp[snap][reg][halo_ids_dict[snap][reg] == grp])
                 soft.append(csoft / (1 + z))
+                bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
 
         fig = plt.figure(figsize=(12, 12))
         gs = gridspec.GridSpec(ncols=3, nrows=4)
@@ -564,7 +570,7 @@ for reg in halos_in_pop:
         ax9.plot(zs, nprogs)
         ax10.plot(zs, ndescs)
         ax11.plot(zs, bhmar)
-        ax12.plot(zs, vel_disp)
+        ax12.plot(zs, bd)
 
         ax4.set_xlabel('$z$')
         ax8.set_xlabel('$z$')
@@ -581,7 +587,7 @@ for reg in halos_in_pop:
         ax9.set_ylabel('$N_{\mathrm{dprog}}$')
         ax10.set_ylabel('$N_{\mathrm{ddesc}}$')
         ax11.set_ylabel('$\dot{M_{BH}} / [M_\odot / \mathrm{s}]$')
-        ax12.set_ylabel('$\sigma_{\star} /$ [km / s]')
+        ax12.set_ylabel(r'$<\rho_{birth}> /$ [$n_H$ cm$^{-3}$]')
 
         ax1.set_ylim(10**6.5, 10**12.5)
         ax2.set_ylim(10 ** 6.5, 10 ** 12.5)
@@ -615,3 +621,5 @@ for reg in halos_in_pop:
         # cax.ax.set_ylabel(r'$N$')
 
         fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
+
+        plt.close(fig)
