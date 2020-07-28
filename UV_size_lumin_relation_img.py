@@ -94,7 +94,6 @@ for ind in range(len(reg_snaps)):
             hlrs = hdf[f]['Image_half_light_rad'][:, 0]
 
             okinds = ms > 10**9
-            print(ms)
             lumins = lumins[okinds]
             hlrs = hlrs[okinds]
         except UnboundLocalError:
