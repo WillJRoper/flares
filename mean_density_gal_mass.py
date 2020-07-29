@@ -111,10 +111,15 @@ def main():
         z = float(z_str[0] + '.' + z_str[1])
     
         # Load all necessary arrays
-        subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-        subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-        all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', 
-                                  numThreads=8) * 10**10
+        try:
+            subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
+            subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+            all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                      numThreads=8) * 10**10
+        except OSError:
+            continue
+        except KeyError:
+            continue
     
         # Remove particles not in a subgroup
         okinds = np.logical_and(subfind_subgrp_ids != 1073741824, 
