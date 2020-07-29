@@ -84,7 +84,7 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
     return L
 
 
-@nb.jit(nogil=True, parallel=True)
+@nb.njit(nogil=True, parallel=True)
 def make_soft_img(pos, Ndim, i, j, imgrange, ls, smooth):
 
     # Define x and y positions for the gaussians
@@ -470,9 +470,9 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                     gas_mets[id], centd_gas_pos, gas_ms[id], gas_smls[id], lkernel, kbins,
                                     conv, model, F, i, j, f)
 
-                    # Centre on luminosity weighted centre
-                    cent = lumin_weighted_centre(centd_star_pos, ls)
-                    centd_star_pos = centd_star_pos - cent
+                    # # Centre on luminosity weighted centre
+                    # cent = lumin_weighted_centre(centd_star_pos, ls)
+                    # centd_star_pos = centd_star_pos - cent
 
                     # Compute half mass radii
                     try:
@@ -540,8 +540,8 @@ model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
 # filters = FLARE.filters.NIRCam
 # filename = 'ObsWebbLumins_'
-filters = ['FAKE.TH.'+f for f in ['FUV', 'NUV', 'V']]
-filename = "LuminCentRestUV"
+filters = ['FAKE.TH.' + f for f in ['FUV', 'NUV', 'V']]
+filename = "RestUV"
 F = FLARE.filters.add_filters(filters, new_lam=model.lam)
 print(filters)
 
