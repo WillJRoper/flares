@@ -287,10 +287,10 @@ def main():
 
         try:
             cbar = ax.hexbin(ms, gas_den, gridsize=50, mincnt=1, xscale='log', yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.6)
+                             norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.4)
             plot_meidan_stat(ms, gas_den, ax, lab='Gas Median', color='g')
             cbar = ax.hexbin(ms, star_bd, gridsize=50, mincnt=1, xscale='log', yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.6)
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.4)
             plot_meidan_stat(ms, star_bd, ax, lab='Stellar Median', color='r', ls='dashed')
         except ValueError:
             continue
@@ -365,10 +365,10 @@ def main():
 
         try:
             cbar = ax.hexbin(ms, gas_met, gridsize=50, mincnt=1, xscale='log', yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.6)
-            plot_meidan_stat(ms, gas_met, ax, lab='Gas Median', color='r')
+                             norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.4)
+            plot_meidan_stat(ms, gas_met, ax, lab='Gas Median', color='g')
             cbar = ax.hexbin(ms, star_met, gridsize=50, mincnt=1, xscale='log', yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.6)
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.4)
             plot_meidan_stat(ms, star_met, ax, lab='Stellar Median', color='r', ls='dashed')
         except ValueError:
             continue
