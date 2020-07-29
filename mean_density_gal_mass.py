@@ -8,7 +8,9 @@ import matplotlib.gridspec as gridspec
 from scipy.stats import binned_statistic
 from unyt import mh, cm, Gyr, g, Msun, Mpc
 import warnings
+import seaborn as sns
 
+sns.set_style("whitegrid")
 matplotlib.use('Agg')
 warnings.filterwarnings('ignore')
 
@@ -69,7 +71,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
 def main():
     
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 1):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -286,16 +288,16 @@ def main():
         try:
             cbar = ax.hexbin(ms, gas_den, gridsize=50, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.6)
-            plot_meidan_stat(ms, gas_den, ax, lab='Gas Median', color='r')
+            plot_meidan_stat(ms, gas_den, ax, lab='Gas Median', color='g')
             cbar = ax.hexbin(ms, star_bd, gridsize=50, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.6)
-            plot_meidan_stat(ms, star_bd, ax, lab='Stellar Median', color='r')
+            plot_meidan_stat(ms, star_bd, ax, lab='Stellar Median', color='r', ls='dashed')
         except ValueError:
             continue
         except TypeError:
             continue
 
-        ax.text(0.9, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        ax.text(0.9, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
         axlims_x.extend(ax.get_xlim())
@@ -367,13 +369,13 @@ def main():
             plot_meidan_stat(ms, gas_met, ax, lab='Gas Median', color='r')
             cbar = ax.hexbin(ms, star_met, gridsize=50, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.6)
-            plot_meidan_stat(ms, star_met, ax, lab='Stellar Median', color='r')
+            plot_meidan_stat(ms, star_met, ax, lab='Stellar Median', color='r', ls='dashed')
         except ValueError:
             continue
         except TypeError:
             continue
 
-        ax.text(0.9, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        ax.text(0.9, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
         axlims_x.extend(ax.get_xlim())
