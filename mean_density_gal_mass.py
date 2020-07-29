@@ -69,7 +69,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
 def main():
     
     regions = []
-    for reg in range(0, 5):
+    for reg in range(0, 1):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -99,6 +99,8 @@ def main():
             reg_snaps.append((reg, snap))
 
     for reg, snap in reg_snaps:
+
+        print(reg, snap)
 
         path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
     
@@ -282,10 +284,10 @@ def main():
         ms = np.array(gal_ms[snap])
 
         try:
-            cbar = ax.hexbin(ms, gas_den, gridsize=50, mincnt=1, xscale='log', yscale='log', label="Gas",
+            cbar = ax.hexbin(ms, gas_den, gridsize=50, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.6)
             plot_meidan_stat(ms, gas_den, ax, lab='Gas Median', color='r')
-            cbar = ax.hexbin(ms, star_bd, gridsize=50, mincnt=1, xscale='log', yscale='log', label="Stellar",
+            cbar = ax.hexbin(ms, star_bd, gridsize=50, mincnt=1, xscale='log', yscale='log',
                              norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.6)
             plot_meidan_stat(ms, star_bd, ax, lab='Stellar Median', color='r')
         except ValueError:
@@ -361,10 +363,10 @@ def main():
 
         try:
             cbar = ax.hexbin(ms, gas_met, gridsize=50, mincnt=1, xscale='log', yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.6, label="Gas")
+                             norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.6)
             plot_meidan_stat(ms, gas_met, ax, lab='Gas Median', color='r')
             cbar = ax.hexbin(ms, star_met, gridsize=50, mincnt=1, xscale='log', yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.6, label="Stellar")
+                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.6)
             plot_meidan_stat(ms, star_met, ax, lab='Stellar Median', color='r')
         except ValueError:
             continue
