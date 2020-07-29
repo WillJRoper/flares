@@ -84,7 +84,7 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
     return L
 
 
-@nb.njit(nogil=True, parallel=True)
+@nb.jit(nogil=True, parallel=True)
 def make_soft_img(pos, Ndim, i, j, imgrange, ls, smooth):
 
     # Define x and y positions for the gaussians
