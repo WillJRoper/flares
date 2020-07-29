@@ -10,6 +10,7 @@ from matplotlib.colors import LogNorm
 import eagle_IO.eagle_IO as E
 import seaborn as sns
 import h5py
+from unyt import mh, cm, Gyr, g, Msun, Mpc
 matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
@@ -576,7 +577,7 @@ for reg in halos_in_pop:
         ax9.plot(zs, nprogs)
         ax10.plot(zs, ndescs)
         ax11.plot(zs, bhmar)
-        ax12.plot(zs, bd)
+        ax12.plot(zs, np.array(bd) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
 
         ax4.set_xlabel('$z$')
         ax8.set_xlabel('$z$')

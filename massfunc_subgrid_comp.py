@@ -69,8 +69,6 @@ group = "SUBFIND_GROUP"
 # Extarct M_200s
 M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_00/data/', snap,
                       tag, group=group, noH=True, cut_bounds=True)
-# M_200_refDMO = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032_hires/data/', snap,
-#                       "FOF/Group_M_Crit200", group=group, noH=True, cut_bounds=True)
 M_200_ref = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_REF/data/', snap,
                          tag, group=group, noH=True, cut_bounds=True)
 
