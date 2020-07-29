@@ -196,6 +196,14 @@ def main():
                                     numThreads=8)
         gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothedMetallicity', noH=True,
                                          physicalUnits=True, numThreads=8)
+        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', noH=True,
+                               physicalUnits=True, verbose=False, numThreads=8)
+
+        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', noH=True,
+                                  physicalUnits=True, verbose=False, numThreads=8)
+
+        part_ids = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', noH=True,
+                                physicalUnits=True, verbose=False, numThreads=8)
     
         # A copy of this array is needed for the extraction method
         group_part_ids = np.copy(part_ids)
