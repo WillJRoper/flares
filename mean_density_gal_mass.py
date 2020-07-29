@@ -114,7 +114,8 @@ def main():
     
         # Remove particles not in a subgroup
         okinds = np.logical_and(subfind_subgrp_ids != 1073741824, 
-                                np.logical_and(all_gal_ms[:, 4] >= 1e8, all_gal_ms[:, 1] > 0))
+                                np.logical_and(all_gal_ms[:, 4] >= 1e8,
+                                               np.logical_and(all_gal_ms[:, 1] > 0, all_gal_ms[:, 0] > 0)))
         subfind_grp_ids = subfind_grp_ids[okinds]
         subfind_subgrp_ids = subfind_subgrp_ids[okinds]
         all_gal_ms = all_gal_ms[okinds, :]
