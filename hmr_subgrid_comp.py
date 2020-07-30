@@ -103,7 +103,7 @@ ax.loglog(bin_cents, H/interval, label='"AGNdT9')
 ax.loglog(bin_cents, H_ref/interval, linestyle='--', label='REFERENCE')
 
 # Label axes
-ax.set_xlabel(r'$R_{1/2}/ [\mathrm{pkpc$}]')
+ax.set_xlabel(r'$R_{1/2}/ [\mathrm{pkpc$}]$')
 ax.set_ylabel(r'$dN/dM$')
 
 # Get and draw legend
