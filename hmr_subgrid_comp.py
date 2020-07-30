@@ -74,7 +74,7 @@ M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_00/dat
 #                       "FOF/Group_M_Crit200", group=group, noH=True, cut_bounds=True)
 M_200_ref = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_REF/data/', snap,
                          tag, group=group, noH=True, cut_bounds=True)[:, 4] * 1e3
-
+print(M_200.shape, M_200_ref.shape)
 M_200 = M_200[np.where(M_200 != 0.0)]
 M_200_ref = M_200_ref[np.where(M_200_ref != 0.0)]
 
