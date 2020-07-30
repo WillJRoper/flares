@@ -85,18 +85,30 @@ print('Maximums:', M_200.max(), M_200_ref.max())
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
+bins = np.logspace(np.log10(np.min((M_200.min(), M_200_ref.min()))),
+                   np.log10(np.max((M_200.max(), M_200_ref.max()))),
+                   75)
+
+interval = bins[1:] - bins[:-1]
+
+# Histogram the DMLJ halo masses
+H, bins = np.histogram(M_200, bins=bins)
+H_ref, _ = np.histogram(M_200_ref, bins=bins)
+
+# Compute bin centres
+bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
+
 # Plot each histogram
-cbar = ax.hexbin(M_200, M_200_ref, gridsize=100, mincnt=1, xscale='log', yscale='log',
-                 norm=LogNorm(), linewidths=0.2, cmap='viridis', zorder=0)
-ax.loglog((np.min((M_200.min(), M_200_ref.min())), np.max((M_200.min(), M_200_ref.min()))),
-          (np.min((M_200.min(), M_200_ref.min())), np.max((M_200.min(), M_200_ref.min()))),
-          linestyle='dashed', color='k')
+ax.loglog(bin_cents, H/interval, label='"AGNdT9')
+ax.loglog(bin_cents, H_ref/interval, linestyle='--', label='REFERENCE')
 
 # Label axes
-ax.set_xlabel(r'$R_{1/2, \star, AGNdT9}/ [\mathrm{pkpc}]$')
-ax.set_ylabel(r'$R_{1/2, \star, REF}/ [\mathrm{pkpc}]$')
+ax.set_xlabel(r'$M_{\star}/M_\odot$')
+ax.set_ylabel(r'$dN/dM$')
 
-fig.colorbar(cbar)
+# Get and draw legend
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
 
 # Save figure
 fig.savefig('plots/hmr_subgrid_comp' + snap + '.png', bbox_inches='tight')
