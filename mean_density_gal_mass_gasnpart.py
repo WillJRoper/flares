@@ -313,7 +313,7 @@ def main():
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r'$M_{\star}/M_\odot$')
+            ax.set_xlabel(r'$N_{\mathrm{gas}}$')
         if j == 0:
             ax.set_ylabel(r'$<n_H>$ [cm$^{-3}$]')
 
@@ -391,7 +391,7 @@ def main():
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r'$M_{\star}/M_\odot$')
+            ax.set_xlabel(r'$N_{\mathrm{gas}}$')
         if j == 0:
             ax.set_ylabel(r'$Z$')
 
