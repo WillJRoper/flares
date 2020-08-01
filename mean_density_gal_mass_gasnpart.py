@@ -291,18 +291,26 @@ def main():
         star_bd = np.array(gal_mean_bd[snap]) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
         gas_den = np.array(gas_mean_den[snap]) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
         ms = np.array(gal_ms[snap])
+        print(ms)
 
-        try:
-            cbar = ax.hexbin(ms, gas_den, gridsize=50, mincnt=1, xscale='log', yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.4)
-            plot_meidan_stat(ms, gas_den, ax, lab='Gas Median', color='g')
-            cbar = ax.hexbin(ms, star_bd, gridsize=50, mincnt=1, xscale='log', yscale='log',
-                             norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.4)
-            plot_meidan_stat(ms, star_bd, ax, lab='Stellar Median', color='r', ls='dashed')
-        except ValueError:
-            continue
-        except TypeError:
-            continue
+        # try:
+        #     cbar = ax.hexbin(ms, gas_den, gridsize=50, mincnt=1, xscale='log', yscale='log',
+        #                      norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.4)
+        #     plot_meidan_stat(ms, gas_den, ax, lab='Gas Median', color='g')
+        #     cbar = ax.hexbin(ms, star_bd, gridsize=50, mincnt=1, xscale='log', yscale='log',
+        #                      norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.4)
+        #     plot_meidan_stat(ms, star_bd, ax, lab='Stellar Median', color='r', ls='dashed')
+        # except ValueError:
+        #     continue
+        # except TypeError:
+        #     continue
+
+        cbar = ax.hexbin(ms, gas_den, gridsize=50, mincnt=1, xscale='log', yscale='log',
+                         norm=LogNorm(), linewidths=0.2, cmap='plasma', alpha=0.4)
+        plot_meidan_stat(ms, gas_den, ax, lab='Gas Median', color='g')
+        cbar = ax.hexbin(ms, star_bd, gridsize=50, mincnt=1, xscale='log', yscale='log',
+                         norm=LogNorm(), linewidths=0.2, cmap='viridis', alpha=0.4)
+        plot_meidan_stat(ms, star_bd, ax, lab='Stellar Median', color='r', ls='dashed')
 
         ax.text(0.9, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
                 transform=ax.transAxes, horizontalalignment='right', fontsize=8)
