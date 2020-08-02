@@ -116,6 +116,8 @@ def main():
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
             all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                       numThreads=8) * 10**10
+            all_gal_ms1 = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/001kpc',
+                                      numThreads=8) * 10**10
         except OSError:
             continue
         except KeyError:
@@ -129,7 +131,7 @@ def main():
         subfind_subgrp_ids = subfind_subgrp_ids[okinds]
         all_gal_ms = all_gal_ms[okinds, :]
 
-        gal_star_m = np.sum(all_gal_ms, axis=1)
+        gal_star_m = np.sum(all_gal_ms1, axis=1)
     
         # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
         halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
@@ -337,7 +339,7 @@ def main():
     handles, labels = ax9.get_legend_handles_labels()
     ax1.legend(handles, labels)
 
-    fig.savefig('plots/Stellar_gas_density_comp.png', bbox_inches='tight')
+    fig.savefig('plots/Stellar_gas_density_comp_tot.png', bbox_inches='tight')
 
     plt.close(fig)
 
@@ -415,7 +417,7 @@ def main():
     handles, labels = ax9.get_legend_handles_labels()
     ax1.legend(handles, labels)
 
-    fig.savefig('plots/Stellar_gas_metallicity_comp.png', bbox_inches='tight')
+    fig.savefig('plots/Stellar_gas_metallicity_comp_tot.png', bbox_inches='tight')
 
     plt.close(fig)
 
