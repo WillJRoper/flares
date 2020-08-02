@@ -106,10 +106,17 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
     xs_plt = xs_plt[xs_plt > 1e8]
-    
-    cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
-                     linewidths=0.2, cmap='viridis', alpha=0.7)
-    plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='REF', color='r')
+
+    try:
+        cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
+                         linewidths=0.2, cmap='viridis', alpha=0.7)
+        plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='REF', color='r')
+    except OSError:
+        continue
+    except ValueError:
+        continue
+    except OverflowError:
+        continue
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
