@@ -130,9 +130,9 @@ def main():
         subfind_grp_ids = subfind_grp_ids[okinds]
         subfind_subgrp_ids = subfind_subgrp_ids[okinds]
         all_gal_ms = all_gal_ms[okinds, :]
+        all_gal_ms1 = all_gal_ms1[okinds, :]
 
         gal_star_m = np.sum(all_gal_ms1, axis=1)
-        print(gal_star_m)
     
         # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
         halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
@@ -391,7 +391,7 @@ def main():
 
         # Label axes
         if i == 2:
-            ax.set_xlabel(r'$M_{tot}/M_\odot$')
+            ax.set_xlabel(r'$M_{tot, 1 \mathrm{pkpc}}/M_\odot$')
         if j == 0:
             ax.set_ylabel(r'$Z$')
 
