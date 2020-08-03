@@ -71,7 +71,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
 def main():
     
     regions = []
-    for reg in range(0, 1):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -340,7 +340,7 @@ def main():
     handles, labels = ax9.get_legend_handles_labels()
     ax1.legend(handles, labels)
 
-    fig.savefig('plots/Stellar_gas_density_comp_tot.png', bbox_inches='tight')
+    fig.savefig('plots/Stellar_gas_density_comp_1kpc.png', bbox_inches='tight')
 
     plt.close(fig)
 
@@ -418,7 +418,7 @@ def main():
     handles, labels = ax9.get_legend_handles_labels()
     ax1.legend(handles, labels)
 
-    fig.savefig('plots/Stellar_gas_metallicity_comp_tot.png', bbox_inches='tight')
+    fig.savefig('plots/Stellar_gas_metallicity_comp_1kpc.png', bbox_inches='tight')
 
     plt.close(fig)
 
