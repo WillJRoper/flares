@@ -71,7 +71,7 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
 def main():
     
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 1):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -132,6 +132,7 @@ def main():
         all_gal_ms = all_gal_ms[okinds, :]
 
         gal_star_m = np.sum(all_gal_ms1, axis=1)
+        print(gal_star_m)
     
         # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
         halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
