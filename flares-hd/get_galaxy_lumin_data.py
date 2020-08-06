@@ -215,7 +215,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     except ValueError:
         return
     except OSError:
-        continue
+        return
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
