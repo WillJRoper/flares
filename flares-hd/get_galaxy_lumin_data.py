@@ -470,9 +470,9 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                     gas_mets[id], centd_gas_pos, gas_ms[id], gas_smls[id], lkernel, kbins,
                                     conv, model, F, i, j, f)
 
-                    # # Centre on luminosity weighted centre
-                    # cent = lumin_weighted_centre(centd_star_pos, ls)
-                    # centd_star_pos = centd_star_pos - cent
+                    # Centre on luminosity weighted centre
+                    cent = lumin_weighted_centre(centd_star_pos, ls)
+                    centd_star_pos = centd_star_pos - cent
 
                     # Compute half mass radii
                     try:
@@ -541,7 +541,7 @@ model.dust_BC = ('simple', {'slope': -1.0})
 # filters = FLARE.filters.NIRCam
 # filename = 'ObsWebbLumins_'
 filters = ['FAKE.TH.' + f for f in ['FUV', 'NUV', 'V']]
-filename = "RestUV"
+filename = "LuminCentRestUV"
 F = FLARE.filters.add_filters(filters, new_lam=model.lam)
 print(filters)
 
