@@ -205,7 +205,7 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     conv = (u.solMass / u.Mpc ** 2).to(u.solMass / u.pc ** 2)
 
     # Load all necessary arrays
-    print(path)
+    print(path, snap)
     try:
         subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
         subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
