@@ -213,8 +213,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                                 physicalUnits=True, numThreads=8)
         all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)
         all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', numThreads=8) * 10**10
-    except ValueError:
-        return
+    # except ValueError:
+    #     return
     except OSError:
         return
 
