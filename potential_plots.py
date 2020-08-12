@@ -134,7 +134,7 @@ def get_main(path, snap, G):
         for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
             part_halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-        okinds = np.isin(part_halo_ids, star_halo_ids)
+        okinds = np.isin(part_halo_ids, test_gals)
         part_halo_ids = part_halo_ids[okinds]
         part_ids = part_ids[okinds]
         group_part_ids = group_part_ids[okinds]
