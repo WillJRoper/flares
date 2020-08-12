@@ -70,9 +70,10 @@ def get_main(path, snap, G):
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                             physicalUnits=True, numThreads=8)
     all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)
-    all_gal_totms = E.read_array('SUBFIND', path, snap, 'Subhalo/MassType', numThreads=8)
-    all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                              numThreads=8) * 10 ** 10
+    all_gal_totms = E.read_array('SUBFIND', path, snap, 'Subhalo/MassType', noH=True,
+                            physicalUnits=True, numThreads=8) * 10**10
+    all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
+                            physicalUnits=True, numThreads=8) * 10 ** 10
 
     max_ind = np.argmax(all_gal_totms[:, 1])
     dm_mass = all_gal_totms[max_ind, 1] / all_gal_ns[max_ind, 1]
