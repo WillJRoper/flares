@@ -203,6 +203,8 @@ def get_main(path, snap, G):
 
             # Get particles within radius
             okinds = gal_rs <= r
+            print(okinds)
+            print(masses)
             inside_ms = np.sum(masses[okinds])
 
             # Calculate potential
