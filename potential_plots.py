@@ -91,7 +91,7 @@ def get_main(path, snap, G):
     star_halo_ids = np.copy(halo_ids)
 
     # Extract galaxies to test
-    rand_inds = np.choice(np.arange(star_halo_ids.size), 10)
+    rand_inds = np.random.choice(np.arange(star_halo_ids.size), 10)
     test_gals = star_halo_ids[rand_inds]
     test_cops = gal_cops[rand_inds]
     test_masses = all_gal_ms[rand_inds]
