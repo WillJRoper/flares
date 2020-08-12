@@ -102,10 +102,17 @@ def get_data(masslim=1e8, load=False):
 
             for snap, prog_snap in zip(snaps, prog_snaps):
 
-                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+                path = '/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_' + reg + '/data/'1
 
                 # Get particle IDs
-                halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
+                try:
+                    halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
+                except ValueError:
+                    continue
+                except OSError:
+                    continue
+                except KeyError:
+                    continue
 
                 # Get halo IDs and halo data
                 try:
