@@ -74,7 +74,8 @@ def get_main(path, snap, G):
     all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                               numThreads=8) * 10 ** 10
 
-    dm_mass = all_gal_totms[:, 1] / all_gal_ns[:, 1]
+    max_ind = np.argmax(all_gal_totms[:, 1])
+    dm_mass = all_gal_totms[max_ind, 1] / all_gal_ns[max_ind, 1]
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
