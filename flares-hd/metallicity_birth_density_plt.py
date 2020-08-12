@@ -102,7 +102,7 @@ def get_data(masslim=1e8, load=False):
 
             for snap, prog_snap in zip(snaps, prog_snaps):
 
-                path = '/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_' + reg + '/data/'1
+                path = '/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_' + reg + '/data/'
 
                 # Get particle IDs
                 try:
