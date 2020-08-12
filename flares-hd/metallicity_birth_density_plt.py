@@ -99,7 +99,7 @@ def get_data(masslim=1e8, load=False):
             stellar_bd_dict[snap] = {}
 
         for reg in regions:
-            
+
             print(reg)
 
             for snap, prog_snap in zip(snaps, prog_snaps):
