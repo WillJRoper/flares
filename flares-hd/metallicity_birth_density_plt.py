@@ -99,6 +99,8 @@ def get_data(masslim=1e8, load=False):
             stellar_bd_dict[snap] = {}
 
         for reg in regions:
+            
+            print(reg)
 
             for snap, prog_snap in zip(snaps, prog_snaps):
 
@@ -314,4 +316,4 @@ ax9.text(0.975, 0.025, "\n".join([f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" f
 ax3.text(0.975, 0.975, "Contour lines \n linearly spaced", color="k", transform=ax3.transAxes, ha="right", va="top",
          fontsize=fontsize)
 
-fig.savefig('plots/birthdensity_metallicity_redshift.png', bbox_inches='tight')
+fig.savefig('plots/birthdensity_metallicity_redshift_HD.png', bbox_inches='tight')
