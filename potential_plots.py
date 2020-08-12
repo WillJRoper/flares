@@ -160,7 +160,7 @@ def get_main(path, snap, G):
         for id in test_gals:
             mask = halo_part_inds[id]
             all_poss.setdefault(id, []).extend(poss[mask, :])
-            part_ms[id].setdefault(id, []).extend(masses[mask])
+            part_ms.setdefault(id, []).extend(masses[mask])
 
     print('Got particle IDs')
 
