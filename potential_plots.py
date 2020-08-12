@@ -70,8 +70,11 @@ def get_main(path, snap, G):
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
                             physicalUnits=True, numThreads=8)
     all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)
+    all_gal_totms = E.read_array('SUBFIND', path, snap, 'Subhalo/MassType', numThreads=8)
     all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                               numThreads=8) * 10 ** 10
+
+    dm_mass = all_gal_totms[:, 1] / all_gal_ns[:, 1]
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
@@ -112,11 +115,16 @@ def get_main(path, snap, G):
 
     for part_type in [0, 1, 4, 5]:
 
+        print(part_type)
+
         # Get gas particle information
         poss = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
                             physicalUnits=True, numThreads=8) * 1e3
-        masses = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                              physicalUnits=True, numThreads=8) * 10 ** 10
+        if part_type != 1:
+            masses = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Mass', noH=True,
+                                  physicalUnits=True, numThreads=8) * 10 ** 10
+        else:
+            masses = np.full_like(poss, dm_mass)
 
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', noH=True,
                                physicalUnits=True, verbose=False, numThreads=8)
