@@ -194,7 +194,7 @@ def get_main(path, snap, G):
 
         # Get the luminosities
         gal_part_poss = all_poss[id] - means[id]
-        masses = part_ms[id]
+        masses = np.array(part_ms[id])
         total_mass[id] = gal_ms[id]
         gal_rs = calc_3drad(gal_part_poss)
 
@@ -203,8 +203,7 @@ def get_main(path, snap, G):
 
             # Get particles within radius
             okinds = gal_rs <= r
-            print(okinds)
-            print(masses)
+
             inside_ms = np.sum(masses[okinds])
 
             # Calculate potential
