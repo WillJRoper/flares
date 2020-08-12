@@ -221,7 +221,7 @@ def get_main(path, snap, G):
 
         sinds = np.argsort(rs_dict[gal])
 
-        ax.plot(rs_dict[gal][sinds], pot_dict[gal][sinds], label="$\log_{10}(M_{\star}/M_{\odot})=%.2f" % np.log10(m))
+        ax.plot(np.array(rs_dict[gal])[sinds], np.array(pot_dict)[gal][sinds], label="$\log_{10}(M_{\star}/M_{\odot})=%.2f" % np.log10(m))
 
     ax.set_xlabel("$R /$ [pkpc]")
     ax.set_ylabel("$|U| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
