@@ -77,7 +77,9 @@ def get_main(path, snap, G):
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
                             np.logical_and((all_gal_ns[:, 1]) > 0,
                                            np.logical_and(all_gal_ms[:, 4] >= 1e8,
-                                                          all_gal_ms[:, 0] > 0)
+                                                          np.logical_and(all_gal_ns[:, 0] > 0,
+                                                                         all_gal_ns[:, 5] > 0)
+                                                          )
                                            )
                             )
     subfind_grp_ids = subfind_grp_ids[okinds]
