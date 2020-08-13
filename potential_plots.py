@@ -68,7 +68,7 @@ def get_main(path, snap, G):
     subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
     subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
-                            physicalUnits=True, numThreads=8)
+                            physicalUnits=True, numThreads=8) * 1e3
     all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)
     all_gal_totms = E.read_array('SUBFIND', path, snap, 'Subhalo/MassType', noH=True,
                             physicalUnits=True, numThreads=8) * 10**10
@@ -126,7 +126,7 @@ def get_main(path, snap, G):
             masses = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Mass', noH=True,
                                   physicalUnits=True, numThreads=8) * 10 ** 10
         else:
-            masses = np.full_like(poss, dm_mass)
+            masses = np.full(poss.shape[0], dm_mass)
 
         grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', noH=True,
                                physicalUnits=True, verbose=False, numThreads=8)
@@ -188,33 +188,26 @@ def get_main(path, snap, G):
 
     for id in test_gals:
 
-        # Set up results list
-        rs = []
-        pots = []
-
         # Get the luminosities
         gal_part_poss = all_poss[id] - means[id]
         masses = np.array(part_ms[id])
+        print(masses)
         total_mass[id] = gal_ms[id]
         gal_rs = calc_3drad(gal_part_poss)
 
-        # Loop over particles calculating potentials
-        for r, m in zip(gal_rs, masses):
+        sinds = np.argsort(gal_rs)
+        masses = masses[sinds]
+        gal_rs = gal_rs[sinds]
 
-            # Get particles within radius
-            okinds = gal_rs <= r
+        cumal_mass = np.cumsum(masses)
 
-            inside_ms = np.sum(masses[okinds])
+        # Calculate potential
+        print(cumal_mass)
+        pot = calc_pot(cumal_mass, masses, gal_rs, csoft, G)
+        print(pot)
 
-            # Calculate potential
-            print(inside_ms, m, r, csoft, G)
-            pot = calc_pot(inside_ms, m, r, csoft, G)
-            print(pot)
-            rs.append(r)
-            pots.append(pot)
-
-        rs_dict[id] = rs
-        pot_dict[id] = pots
+        rs_dict[id] = gal_rs
+        pot_dict[id] = pot
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
