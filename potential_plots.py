@@ -18,7 +18,7 @@ sns.set_style('whitegrid')
 def plot_median_stat(xs, ys, ax, lab, bins=None, ls='-', func="median"):
 
     if bins == None:
-        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 50)
     else:
         bin = bins
 
@@ -37,7 +37,7 @@ def plot_median_stat(xs, ys, ax, lab, bins=None, ls='-', func="median"):
 def plot_spread_stat(xs, ys, ax, bins=None):
 
     if bins == None:
-        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 50)
     else:
         bin = bins
 
@@ -262,6 +262,8 @@ def get_main(path, snap, G):
         sinds = np.argsort(rs_dict[gal])
         c = cm.plasma(norm(m), bytes=True)
 
+        ax.loglog()
+
         print(m)
         print(np.log10(m))
 
@@ -279,7 +281,7 @@ def get_main(path, snap, G):
 
 G = (const.G.to(u.kpc ** 3 * u.M_sun ** -1 * u.s ** -2)).value
 
-reg = "30"
+reg = "20"
 
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
