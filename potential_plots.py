@@ -268,12 +268,13 @@ def get_main(path, snap, G):
     # normalize item number values to colormap
     norm = ml.colors.LogNorm(vmin=np.log10(np.min(test_masses)), vmax=np.log10(np.max(test_masses)))
 
-    cmap = ml.cm.plasma(norm=norm)
+    jet = plt.get_cmap('plasma')
+    scalarMap = ml.colors.cm.ScalarMappable(norm=norm, cmap=jet)
 
     for gal, m in zip(test_gals, test_masses):
 
         sinds = np.argsort(rs_dict[gal])
-        c = cmap(np.log10(m))
+        c = scalarMap.to_rgba(np.log10(m))
 
         ax.loglog()
 
@@ -284,10 +285,9 @@ def get_main(path, snap, G):
     ax.set_ylabel("$|U| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
 
     # Make an axis for the colorbar on the right side
-    # sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-    # cbar = fig.colorbar(sm)
+    cbar = fig.colorbar(scalarMap)
 
-    # cbar.set_label("$\log_{10}(M_{\star}/M_{\odot})$")
+    cbar.set_label("$\log_{10}(M_{\star}/M_{\odot})$")
 
     fig.savefig("plots/radial_potential_" + reg + "_" + snap + ".png", bbox_inches="tight")
 
