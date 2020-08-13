@@ -287,7 +287,7 @@ def get_main(path, snap, G):
     # sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
     # cbar = fig.colorbar(sm)
 
-    cbar.set_label("$\log_{10}(M_{\star}/M_{\odot})$")
+    # cbar.set_label("$\log_{10}(M_{\star}/M_{\odot})$")
 
     fig.savefig("plots/radial_potential_" + reg + "_" + snap + ".png", bbox_inches="tight")
 
