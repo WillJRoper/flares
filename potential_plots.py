@@ -269,7 +269,7 @@ def get_main(path, snap, G):
     norm = ml.colors.LogNorm(vmin=np.log10(np.min(test_masses)), vmax=np.log10(np.max(test_masses)))
 
     jet = plt.get_cmap('plasma')
-    scalarMap = ml.colors.cm.ScalarMappable(norm=norm, cmap=jet)
+    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
 
     for gal, m in zip(test_gals, test_masses):
 
