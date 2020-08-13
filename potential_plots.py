@@ -90,6 +90,7 @@ def get_main(path, snap, G):
     subfind_grp_ids = subfind_grp_ids[okinds]
     subfind_subgrp_ids = subfind_subgrp_ids[okinds]
     gal_cops = gal_cops[okinds]
+    all_gal_ms = all_gal_ms[okinds]
 
     # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
     halo_ids = np.zeros(subfind_grp_ids.size, dtype=float)
@@ -215,7 +216,7 @@ def get_main(path, snap, G):
     for gal, m in zip(test_gals, test_masses):
 
         sinds = np.argsort(rs_dict[gal])
-
+        print(m)
         print(np.log10(m))
         print(np.array(rs_dict[gal])[sinds])
         print(np.array(pot_dict[gal]))
