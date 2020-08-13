@@ -1,14 +1,57 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-import eagle_IO.eagle_IO as E
 import numba as nb
 import astropy.units as u
 import astropy.constants as const
+import matplotlib as ml
+ml.use('Agg')
+import numpy as np
+from scipy.stats import binned_statistic
+import matplotlib.pyplot as plt
+import eagle_IO.eagle_IO as E
+import seaborn as sns
+from matplotlib import cm
 
 
-matplotlib.use('Agg')
+sns.set_style('whitegrid')
+
+
+def plot_median_stat(xs, ys, ax, lab, color, bins=None, ls='-', func="median"):
+
+    if bins == None:
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+    else:
+        bin = bins
+
+    # Compute binned statistics
+    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic=func, bins=bin)
+
+    # Compute bincentres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+
+    ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls, label=lab)
+
+
+def plot_spread_stat(xs, ys, ax, color, bins=None):
+
+    if bins == None:
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
+    else:
+        bin = bins
+
+    # Compute binned statistics
+    y_stat_16, binedges, bin_ind = binned_statistic(xs, ys, statistic=lambda y: np.percentile(y, 16), bins=bin)
+    y_stat_84, binedges, bin_ind = binned_statistic(xs, ys, statistic=lambda y: np.percentile(y, 84), bins=bin)
+
+    # Compute bincentres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    okinds = np.logical_and(~np.isnan(bin_cents), np.logical_and(~np.isnan(y_stat_16), ~np.isnan(y_stat_84)))
+
+    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], color=color, alpha=0.4)
 
 
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
@@ -192,7 +235,6 @@ def get_main(path, snap, G):
         # Get the luminosities
         gal_part_poss = all_poss[id] - means[id]
         masses = np.array(part_ms[id])
-        print(masses)
         total_mass[id] = gal_ms[id]
         gal_rs = calc_3drad(gal_part_poss)
 
@@ -203,9 +245,7 @@ def get_main(path, snap, G):
         cumal_mass = np.cumsum(masses)
 
         # Calculate potential
-        print(cumal_mass)
         pot = calc_pot(cumal_mass, masses, gal_rs, csoft, G)
-        print(pot)
 
         rs_dict[id] = gal_rs
         pot_dict[id] = pot
@@ -213,15 +253,21 @@ def get_main(path, snap, G):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
+    # Set up colormap
+    # normalize item number values to colormap
+    norm = ml.colors.LogNorm(vmin=np.min(test_masses), vmax=np.max(test_masses))
+
     for gal, m in zip(test_gals, test_masses):
 
         sinds = np.argsort(rs_dict[gal])
+
+        c = cm.plasma(norm(m), bytes=True)
+
         print(m)
         print(np.log10(m))
-        print(np.array(rs_dict[gal])[sinds])
-        print(np.array(pot_dict[gal]))
 
-        ax.plot(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], label="$\log_{10}(M_{\star}/M_{\odot})=%.2f" % np.log10(m))
+        plot_median_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax, lab="$\log_{10}(M_{\star}/M_{\odot})=$%.2f" % np.log10(m), color=c)
+        plot_spread_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax, color=c)
 
     ax.set_xlabel("$R /$ [pkpc]")
     ax.set_ylabel("$|U| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
