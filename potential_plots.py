@@ -31,7 +31,7 @@ def plot_median_stat(xs, ys, ax, color, norm, bins=None, ls='-', func="median"):
 
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
-    im = ax.plot(bin_cents[okinds], y_stat[okinds], linestyle=ls, color=color, norm=norm)
+    im = ax.plot(bin_cents[okinds], y_stat[okinds], linestyle=ls, color=color)
 
     return im
 
@@ -277,15 +277,17 @@ def get_main(path, snap, G):
 
         ax.loglog()
 
-        im = plot_median_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax, norm=norm, color=c)
+        plot_median_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax, norm=norm, color=c)
         # plot_spread_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax)
 
     ax.set_xlabel("$R /$ [pkpc]")
     ax.set_ylabel("$|U| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
 
     # Make an axis for the colorbar on the right side
-    cax = fig.add_axes([0.9, 0.1, 0.03, 0.8])
-    fig.colorbar(im, cax=cax)
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    cbar = fig.colorbar(sm)
+
+    cbar.set_label("$\log_{10}(M_{\star}/M_{\odot})$")
 
     fig.savefig("plots/radial_potential_" + reg + "_" + snap + ".png", bbox_inches="tight")
 
