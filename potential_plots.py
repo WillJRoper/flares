@@ -222,7 +222,7 @@ def get_main(path, snap, G):
         sinds = np.argsort(rs_dict[gal])
 
         print(np.log10(m))
-        print(np.array(rs_dict[gal][sinds]))
+        print(np.array(rs_dict[gal])[sinds])
         print(np.array(pot_dict[gal]))
 
         ax.plot(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], label="$\log_{10}(M_{\star}/M_{\odot})=%.2f" % np.log10(m))
