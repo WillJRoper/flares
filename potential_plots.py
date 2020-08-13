@@ -260,7 +260,7 @@ def get_main(path, snap, G):
     for gal, m in zip(test_gals, test_masses):
 
         sinds = np.argsort(rs_dict[gal])
-
+        print(norm(m))
         c = cm.plasma(norm(m), bytes=True)
 
         print(m)
