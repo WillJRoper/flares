@@ -221,6 +221,11 @@ def get_main(path, snap, G):
 
         sinds = np.argsort(rs_dict[gal])
 
+        print(np.log10(m))
+        print(np.array(rs_dict[gal]))
+        print(np.array(pot_dict[gal]))
+        print(sinds)
+
         ax.plot(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], label="$\log_{10}(M_{\star}/M_{\odot})=%.2f" % np.log10(m))
 
     ax.set_xlabel("$R /$ [pkpc]")
@@ -234,7 +239,7 @@ def get_main(path, snap, G):
 
 G = (const.G.to(u.kpc ** 3 * u.M_sun ** -1 * u.s ** -2)).value
 
-reg = "00"
+reg = "30"
 
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
