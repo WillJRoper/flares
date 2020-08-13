@@ -15,7 +15,7 @@ from matplotlib import cm
 sns.set_style('whitegrid')
 
 
-def plot_median_stat(xs, ys, ax, lab, color, bins=None, ls='-', func="median"):
+def plot_median_stat(xs, ys, ax, lab, bins=None, ls='-', func="median"):
 
     if bins == None:
         bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
@@ -31,10 +31,10 @@ def plot_median_stat(xs, ys, ax, lab, color, bins=None, ls='-', func="median"):
 
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
-    ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls, label=lab)
+    ax.plot(bin_cents[okinds], y_stat[okinds], linestyle=ls, label=lab)
 
 
-def plot_spread_stat(xs, ys, ax, color, bins=None):
+def plot_spread_stat(xs, ys, ax, bins=None):
 
     if bins == None:
         bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
@@ -51,7 +51,7 @@ def plot_spread_stat(xs, ys, ax, color, bins=None):
 
     okinds = np.logical_and(~np.isnan(bin_cents), np.logical_and(~np.isnan(y_stat_16), ~np.isnan(y_stat_84)))
 
-    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], color=color, alpha=0.4)
+    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], alpha=0.4)
 
 
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
@@ -260,14 +260,13 @@ def get_main(path, snap, G):
     for gal, m in zip(test_gals, test_masses):
 
         sinds = np.argsort(rs_dict[gal])
-        print(norm(m))
         c = cm.plasma(norm(m), bytes=True)
 
         print(m)
         print(np.log10(m))
 
-        plot_median_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax, lab="$\log_{10}(M_{\star}/M_{\odot})=$%.2f" % np.log10(m), color=c)
-        plot_spread_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax, color=c)
+        plot_median_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax, lab="$\log_{10}(M_{\star}/M_{\odot})=$%.2f" % np.log10(m))
+        plot_spread_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax)
 
     ax.set_xlabel("$R /$ [pkpc]")
     ax.set_ylabel("$|U| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
