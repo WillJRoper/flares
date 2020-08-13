@@ -268,12 +268,12 @@ def get_main(path, snap, G):
     # normalize item number values to colormap
     norm = ml.colors.LogNorm(vmin=np.log10(np.min(test_masses)), vmax=np.log10(np.max(test_masses)))
 
-    cmap = ml.cm.plasma
+    cmap = ml.cm.plasma(norm=norm)
 
     for gal, m in zip(test_gals, test_masses):
 
         sinds = np.argsort(rs_dict[gal])
-        c = cmap(norm(np.log10(m)), bytes=True)
+        c = cmap(np.log10(m))
 
         ax.loglog()
 
