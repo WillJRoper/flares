@@ -207,7 +207,9 @@ def get_main(path, snap, G):
             inside_ms = np.sum(masses[okinds])
 
             # Calculate potential
+            print(inside_ms, m, r, csoft, G)
             pot = calc_pot(inside_ms, m, r, csoft, G)
+            print(pot)
             rs.append(r)
             pots.append(pot)
 
