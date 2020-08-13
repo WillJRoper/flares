@@ -284,8 +284,8 @@ def get_main(path, snap, G):
     ax.set_ylabel("$|U| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
 
     # Make an axis for the colorbar on the right side
-    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-    cbar = fig.colorbar(sm)
+    # sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    # cbar = fig.colorbar(sm)
 
     cbar.set_label("$\log_{10}(M_{\star}/M_{\odot})$")
 
