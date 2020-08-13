@@ -15,7 +15,7 @@ from matplotlib import cm
 sns.set_style('whitegrid')
 
 
-def plot_median_stat(xs, ys, ax, color, bins=None, ls='-', func="median"):
+def plot_median_stat(xs, ys, ax, color, norm, bins=None, ls='-', func="median"):
 
     if bins == None:
         bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 25)
@@ -31,7 +31,9 @@ def plot_median_stat(xs, ys, ax, color, bins=None, ls='-', func="median"):
 
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
-    ax.plot(bin_cents[okinds], y_stat[okinds], linestyle=ls, color=color)
+    im = ax.plot(bin_cents[okinds], y_stat[okinds], linestyle=ls, color=color, norm=norm)
+
+    return im
 
 
 def plot_spread_stat(xs, ys, ax, bins=None):
@@ -144,12 +146,12 @@ def get_main(path, snap, G):
 
     # Extract galaxies to test
     lowinds = all_gal_ms[:, 4] < 10**9.5
-    low_rand_inds = np.random.choice(np.arange(star_halo_ids[lowinds].size), 5)
+    low_rand_inds = np.random.choice(np.arange(star_halo_ids[lowinds].size), 10)
     low_test_gals = star_halo_ids[lowinds][low_rand_inds]
     low_test_cops = gal_cops[lowinds][low_rand_inds]
     low_test_masses = all_gal_ms[lowinds][low_rand_inds, 4]
     highinds = all_gal_ms[:, 4] > 10**9.5
-    high_rand_inds = np.random.choice(np.arange(star_halo_ids[highinds].size), 5)
+    high_rand_inds = np.random.choice(np.arange(star_halo_ids[highinds].size), 10)
     high_test_gals = star_halo_ids[highinds][high_rand_inds]
     high_test_cops = gal_cops[highinds][high_rand_inds]
     high_test_masses = all_gal_ms[highinds][high_rand_inds, 4]
@@ -275,14 +277,15 @@ def get_main(path, snap, G):
 
         ax.loglog()
 
-        plot_median_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax, color=c)
+        im = plot_median_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax, norm=norm, color=c)
         # plot_spread_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax)
 
     ax.set_xlabel("$R /$ [pkpc]")
     ax.set_ylabel("$|U| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
 
-    cb1 = ml.colorbar.ColorbarBase(ax, cmap=cmap, norm=norm, orientation='horizontal')
-    cb1.set_label('$\log_{10}(M_{\star}/M_{\odot})=$')
+    # Make an axis for the colorbar on the right side
+    cax = fig.add_axes([0.9, 0.1, 0.03, 0.8])
+    fig.colorbar(im, cax=cax)
 
     fig.savefig("plots/radial_potential_" + reg + "_" + snap + ".png", bbox_inches="tight")
 
