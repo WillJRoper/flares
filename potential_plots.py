@@ -143,10 +143,19 @@ def get_main(path, snap, G):
     star_halo_ids = np.copy(halo_ids)
 
     # Extract galaxies to test
-    rand_inds = np.random.choice(np.arange(star_halo_ids.size), 10)
-    test_gals = star_halo_ids[rand_inds]
-    test_cops = gal_cops[rand_inds]
-    test_masses = all_gal_ms[rand_inds, 4]
+    lowinds = all_gal_ms[:, 4] < 10**9.5
+    low_rand_inds = np.random.choice(np.arange(star_halo_ids[lowinds].size), 5)
+    low_test_gals = star_halo_ids[lowinds][low_rand_inds]
+    low_test_cops = gal_cops[lowinds][low_rand_inds]
+    low_test_masses = all_gal_ms[lowinds][low_rand_inds, 4]
+    highinds = all_gal_ms[:, 4] > 10**9.5
+    high_rand_inds = np.random.choice(np.arange(star_halo_ids[highinds].size), 5)
+    high_test_gals = star_halo_ids[highinds][high_rand_inds]
+    high_test_cops = gal_cops[highinds][high_rand_inds]
+    high_test_masses = all_gal_ms[highinds][high_rand_inds, 4]
+    test_gals = np.concatenate((low_test_gals, high_test_gals))
+    test_cops = np.concatenate((low_test_cops, high_test_cops))
+    test_masses = np.concatenate((low_test_masses, high_test_masses))
 
     # Set up dictionaries to store results
     part_ms = {}
