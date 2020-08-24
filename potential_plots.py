@@ -147,7 +147,7 @@ def get_main(path, snap, G):
     # Extract galaxies to test
     test_gals = star_halo_ids
     test_cops = gal_cops
-    test_masses = all_gal_ms
+    test_masses = all_gal_ms[:, 4]
 
     # Set up dictionaries to store results
     part_ms = {}
