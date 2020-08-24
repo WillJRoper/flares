@@ -264,7 +264,7 @@ def get_main(path, snap, G):
 
     # Set up colormap
     # normalize item number values to colormap
-    norm = ml.colors.LogNorm(vmin=np.log10(np.min(test_masses)), vmax=np.log10(np.max(test_masses)))
+    norm = ml.colors.LogNorm(vmin=np.min(test_masses), vmax=np.max(test_masses))
 
     jet = plt.get_cmap('plasma')
     scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
@@ -275,7 +275,7 @@ def get_main(path, snap, G):
     for bin, m in zip(bin_inds, mass_bin_cents):
 
         sinds = np.argsort(rs_dict[bin])
-        c = scalarMap.to_rgba(np.log10(m))
+        c = scalarMap.to_rgba(m)
 
         plot_median_stat(np.array(rs_dict[bin])[sinds], np.array(pot_dict[bin])[sinds], ax, norm=norm, color=c)
         # plot_spread_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax)
