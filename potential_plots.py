@@ -270,9 +270,14 @@ def get_main(path, snap, G):
     mass_bin_wid = mass_bins[1] - mass_bins[0]
     mass_bin_cents = mass_bins[1:] - mass_bin_wid
 
+    print(list(rs_dict.keys()))
+
     for bin, m in enumerate(mass_bin_cents):
 
-        sinds = np.argsort(rs_dict[bin])
+        try:
+            sinds = np.argsort(rs_dict[bin])
+        except KeyError:
+            continue
         c = scalarMap.to_rgba(m)
         print(m, c, bin)
 
@@ -294,7 +299,7 @@ def get_main(path, snap, G):
 
 G = (const.G.to(u.kpc ** 3 * u.M_sun ** -1 * u.s ** -2)).value
 
-reg = "00"
+reg = "20"
 
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
