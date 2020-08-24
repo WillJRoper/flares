@@ -105,9 +105,6 @@ def calc_pot(totM, mg, r, soft, G):
 
 def get_main(snap, G):
 
-    # Define comoving softening length in pkpc
-    csoft = 0.001802390 / 0.6777 / (1 + z) * 1e3
-
     rs_dict = {}
     pot_dict = {}
     total_mass = {}
@@ -125,6 +122,9 @@ def get_main(snap, G):
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
+
+    # Define comoving softening length in pkpc
+    csoft = 0.001802390 / 0.6777 / (1 + z) * 1e3
 
     for reg in regions:
 
