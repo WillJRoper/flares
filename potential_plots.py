@@ -243,6 +243,11 @@ def get_main(path, snap, G):
         total_mass[id] = gal_ms[id]
         gal_rs = calc_3drad(gal_part_poss)
 
+        # Limit to 30pkpc aperture
+        okinds = gal_rs <= 30
+        gal_rs = gal_rs[okinds]
+        masses = masses[okinds]
+
         sinds = np.argsort(gal_rs)
         masses = masses[sinds]
         gal_rs = gal_rs[sinds]
@@ -299,7 +304,7 @@ def get_main(path, snap, G):
 
 G = (const.G.to(u.kpc ** 3 * u.M_sun ** -1 * u.s ** -2)).value
 
-reg = "20"
+reg = "00"
 
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
