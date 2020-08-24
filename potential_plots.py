@@ -232,7 +232,7 @@ def get_main(path, snap, G):
     total_mass = {}
 
     # Calculate bins
-    mass_bins = np.array([10**8.5, 10**9, 10**9.5, 10**10, 10**10.5, 10**15])
+    mass_bins = np.logspace(10**8.5, 10**11.5, 6)
     bin_inds = np.digitize(test_masses, mass_bins)
 
     print(bin_inds)
@@ -276,6 +276,7 @@ def get_main(path, snap, G):
 
         sinds = np.argsort(rs_dict[bin])
         c = scalarMap.to_rgba(m)
+        print(m, c, bin)
 
         plot_median_stat(np.array(rs_dict[bin])[sinds], np.array(pot_dict[bin])[sinds], ax, norm=norm, color=c)
         # plot_spread_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax)
