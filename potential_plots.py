@@ -235,6 +235,8 @@ def get_main(path, snap, G):
     mass_bins = np.array([10**8.5, 10**9, 10**9.5, 10**10, 10**10.5, 10**15])
     bin_inds = np.digitize(test_masses, mass_bins)
 
+    print(bin_inds)
+
     for id, bin in zip(test_gals, bin_inds):
 
         # Get the luminosities
@@ -293,7 +295,7 @@ def get_main(path, snap, G):
 
 G = (const.G.to(u.kpc ** 3 * u.M_sun ** -1 * u.s ** -2)).value
 
-reg = "20"
+reg = "30"
 
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
