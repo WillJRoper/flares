@@ -270,7 +270,7 @@ def get_main(path, snap, G):
     mass_bin_wid = mass_bins[1] - mass_bins[0]
     mass_bin_cents = mass_bins[1:] - mass_bin_wid
 
-    for bin, m in zip(bin_inds, mass_bin_cents):
+    for bin, m in enumerate(mass_bin_cents):
 
         sinds = np.argsort(rs_dict[bin])
         c = scalarMap.to_rgba(m)
