@@ -126,7 +126,7 @@ def get_main(path, snap, G):
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
                             np.logical_and((all_gal_ns[:, 1]) > 0,
-                                           np.logical_and(all_gal_ms[:, 4] >= 1e8,
+                                           np.logical_and(all_gal_ms[:, 4] >= 10**8.5,
                                                           np.logical_and(all_gal_ns[:, 0] > 0,
                                                                          all_gal_ns[:, 5] > 0)
                                                           )
@@ -145,19 +145,9 @@ def get_main(path, snap, G):
     star_halo_ids = np.copy(halo_ids)
 
     # Extract galaxies to test
-    lowinds = all_gal_ms[:, 4] < 10**9.5
-    low_rand_inds = np.random.choice(np.arange(star_halo_ids[lowinds].size), 10)
-    low_test_gals = star_halo_ids[lowinds][low_rand_inds]
-    low_test_cops = gal_cops[lowinds][low_rand_inds]
-    low_test_masses = all_gal_ms[lowinds][low_rand_inds, 4]
-    highinds = all_gal_ms[:, 4] > 10**9.5
-    high_rand_inds = np.random.choice(np.arange(star_halo_ids[highinds].size), 10)
-    high_test_gals = star_halo_ids[highinds][high_rand_inds]
-    high_test_cops = gal_cops[highinds][high_rand_inds]
-    high_test_masses = all_gal_ms[highinds][high_rand_inds, 4]
-    test_gals = np.concatenate((low_test_gals, high_test_gals))
-    test_cops = np.concatenate((low_test_cops, high_test_cops))
-    test_masses = np.concatenate((low_test_masses, high_test_masses))
+    test_gals = star_halo_ids
+    test_cops = gal_cops
+    test_masses = all_gal_ms
 
     # Set up dictionaries to store results
     part_ms = {}
@@ -241,7 +231,11 @@ def get_main(path, snap, G):
     pot_dict = {}
     total_mass = {}
 
-    for id in test_gals:
+    # Calculate bins
+    mass_bins = np.array([10**8.5, 10**9, 10**9.5, 10**10, 10**10.5, 10**15])
+    bin_inds = np.digitize(test_masses, mass_bins)
+
+    for id, bin in zip(test_gals, bin_inds):
 
         # Get the luminosities
         gal_part_poss = all_poss[id] - means[id]
@@ -258,11 +252,13 @@ def get_main(path, snap, G):
         # Calculate potential
         pot = calc_pot(cumal_mass, masses, gal_rs, csoft, G)
 
-        rs_dict[id] = gal_rs
-        pot_dict[id] = pot
+        rs_dict.setdefault(bin, []).extend(gal_rs)
+        pot_dict.setdefault(bin, []).extend(pot)
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
+
+    ax.loglog()
 
     # Set up colormap
     # normalize item number values to colormap
@@ -271,15 +267,18 @@ def get_main(path, snap, G):
     jet = plt.get_cmap('plasma')
     scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
 
-    for gal, m in zip(test_gals, test_masses):
+    mass_bin_wid = mass_bins[1] - mass_bins[0]
+    mass_bin_cents = mass_bins[1:] - mass_bin_wid
 
-        sinds = np.argsort(rs_dict[gal])
+    for bin, m in zip(bin_inds, mass_bin_cents):
+
+        sinds = np.argsort(rs_dict[bin])
         c = scalarMap.to_rgba(np.log10(m))
 
-        ax.loglog()
-
-        plot_median_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax, norm=norm, color=c)
+        plot_median_stat(np.array(rs_dict[bin])[sinds], np.array(pot_dict[bin])[sinds], ax, norm=norm, color=c)
         # plot_spread_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax)
+
+        ax.axvline(csoft, linestyle="--", color='k')
 
     ax.set_xlabel("$R /$ [pkpc]")
     ax.set_ylabel("$|U| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
@@ -294,7 +293,7 @@ def get_main(path, snap, G):
 
 G = (const.G.to(u.kpc ** 3 * u.M_sun ** -1 * u.s ** -2)).value
 
-reg = "00"
+reg = "20"
 
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
