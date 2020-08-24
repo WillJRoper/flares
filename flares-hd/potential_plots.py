@@ -124,11 +124,11 @@ def get_main(snap, G):
     z = float(z_str[0] + '.' + z_str[1])
 
     # Define comoving softening length in pkpc
-    csoft = 0.001802390 / 0.6777 / (1 + z) * 1e3
+    csoft = 0.001802390 / 0.6777 / (1 + z) * 1e3 / 2
 
     for reg in regions:
 
-        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+        path = '/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_' + reg + '/data/'
 
         # Load all necessary arrays
         try:
