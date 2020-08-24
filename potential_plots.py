@@ -224,8 +224,8 @@ def get_main(path, snap, G):
 
     # ======================== Set up images ========================
 
-    # Define comoving softening length in pMpc
-    csoft = 0.001802390 / 0.6777 / (1 + z)
+    # Define comoving softening length in pkpc
+    csoft = 0.001802390 / 0.6777 / (1 + z) * 1e3
 
     rs_dict = {}
     pot_dict = {}
