@@ -232,10 +232,8 @@ def get_main(path, snap, G):
     total_mass = {}
 
     # Calculate bins
-    mass_bins = np.logspace(10**8.5, 10**11.5, 6)
+    mass_bins = np.logspace(8.5, 11.5, 6)
     bin_inds = np.digitize(test_masses, mass_bins)
-
-    print(bin_inds)
 
     for id, bin in zip(test_gals, bin_inds):
 
@@ -264,7 +262,7 @@ def get_main(path, snap, G):
 
     # Set up colormap
     # normalize item number values to colormap
-    norm = ml.colors.LogNorm(vmin=10**8, vmax=10**11.5)
+    norm = ml.colors.LogNorm(vmin=10**8.5, vmax=10**11.5)
 
     jet = plt.get_cmap('plasma')
     scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
