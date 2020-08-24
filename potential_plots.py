@@ -232,7 +232,7 @@ def get_main(path, snap, G):
     total_mass = {}
 
     # Calculate bins
-    mass_bins = np.logspace(8, 11.5, 8)
+    mass_bins = np.logspace(8, 11.5, 15)
     bin_inds = np.digitize(test_masses, mass_bins)
 
     print(test_gals.size)
