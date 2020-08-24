@@ -264,7 +264,7 @@ def get_main(path, snap, G):
 
     # Set up colormap
     # normalize item number values to colormap
-    norm = ml.colors.LogNorm(vmin=np.min(test_masses), vmax=np.max(test_masses))
+    norm = ml.colors.LogNorm(vmin=10**8, vmax=10**11.5)
 
     jet = plt.get_cmap('plasma')
     scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
@@ -283,7 +283,7 @@ def get_main(path, snap, G):
         ax.axvline(csoft, linestyle="--", color='k')
 
     ax.set_xlabel("$R /$ [pkpc]")
-    ax.set_ylabel("$|U| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
+    ax.set_ylabel("$|U(<R)| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
 
     # Make an axis for the colorbar on the right side
     cbar = fig.colorbar(scalarMap)
