@@ -280,7 +280,7 @@ def get_main(path, snap, G):
         plot_median_stat(np.array(rs_dict[bin])[sinds], np.array(pot_dict[bin])[sinds], ax, norm=norm, color=c)
         # plot_spread_stat(np.array(rs_dict[gal])[sinds], np.array(pot_dict[gal])[sinds], ax)
 
-        ax.axvline(csoft, linestyle="--", color='k')
+    ax.axvline(csoft, linestyle="--", color='k')
 
     ax.set_xlabel("$R /$ [pkpc]")
     ax.set_ylabel("$|U(<R)| / [\mathrm{M}_{\odot} \ \mathrm{pkpc}^2 \ \mathrm{s}^{-2}]$")
@@ -295,7 +295,7 @@ def get_main(path, snap, G):
 
 G = (const.G.to(u.kpc ** 3 * u.M_sun ** -1 * u.s ** -2)).value
 
-reg = "30"
+reg = "00"
 
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
