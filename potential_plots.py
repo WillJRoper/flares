@@ -299,7 +299,7 @@ def get_main(path, snap, G):
     # Make an axis for the colorbar on the right side
     cbar = fig.colorbar(scalarMap)
 
-    cbar.set_label("$\log_{10}(M_{\star}/M_{\odot})$")
+    cbar.set_label("$M_{\star}/M_{\odot}$")
 
     fig.savefig("plots/radial_potential_" + reg + "_" + snap + ".png", bbox_inches="tight")
 
