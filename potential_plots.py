@@ -126,7 +126,7 @@ def get_main(path, snap, G):
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
                             np.logical_and((all_gal_ns[:, 1]) > 0,
-                                           np.logical_and(all_gal_ms[:, 4] >= 10**8.5,
+                                           np.logical_and(all_gal_ms[:, 4] >= 10**8,
                                                           np.logical_and(all_gal_ns[:, 0] > 0,
                                                                          all_gal_ns[:, 5] > 0)
                                                           )
@@ -232,8 +232,10 @@ def get_main(path, snap, G):
     total_mass = {}
 
     # Calculate bins
-    mass_bins = np.logspace(8.5, 11.5, 6)
+    mass_bins = np.logspace(8, 11.5, 8)
     bin_inds = np.digitize(test_masses, mass_bins)
+
+    print(test_gals.size)
 
     for id, bin in zip(test_gals, bin_inds):
 
@@ -243,10 +245,10 @@ def get_main(path, snap, G):
         total_mass[id] = gal_ms[id]
         gal_rs = calc_3drad(gal_part_poss)
 
-        # Limit to 30pkpc aperture
-        okinds = gal_rs <= 30
-        gal_rs = gal_rs[okinds]
-        masses = masses[okinds]
+        # # Limit to 30pkpc aperture
+        # okinds = gal_rs <= 30
+        # gal_rs = gal_rs[okinds]
+        # masses = masses[okinds]
 
         sinds = np.argsort(gal_rs)
         masses = masses[sinds]
@@ -267,7 +269,7 @@ def get_main(path, snap, G):
 
     # Set up colormap
     # normalize item number values to colormap
-    norm = ml.colors.LogNorm(vmin=10**8.5, vmax=10**11.5)
+    norm = ml.colors.LogNorm(vmin=10**8, vmax=10**11.5)
 
     jet = plt.get_cmap('plasma')
     scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
