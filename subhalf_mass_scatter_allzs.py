@@ -63,7 +63,7 @@ for reg in regions:
         print(reg, snap)
 
         # path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
-        path = '/cosma7/data/dp004/FLARES/FLARES-1/FLARES_00_highFBlim/data/'
+        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_highFBlim/data/'
         try:
             half_mass_rads_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                                           numThreads=8)[:, 4] * 1e3)
