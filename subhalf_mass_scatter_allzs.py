@@ -63,7 +63,7 @@ for reg in regions:
         print(reg, snap)
 
         # path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
-        path = '/cosma7/data/dp004/FLARES/FLARES-1/FLARES_00_instantFB/data/'
+        path = '/cosma7/data/dp004/FLARES/FLARES-1/FLARES_00_highFBlim/data/'
         try:
             half_mass_rads_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                                           numThreads=8)[:, 4] * 1e3)
@@ -145,7 +145,7 @@ ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=F
 
 # fig.savefig('plots/HalfMassRadius_all_snaps.png',
 #             bbox_inches='tight')
-fig.savefig('plots/HalfMassRadius_all_snaps_instaFB.png',
+fig.savefig('plots/HalfMassRadius_all_snaps_highFBlim.png',
             bbox_inches='tight')
 
 plt.close(fig)

@@ -292,9 +292,7 @@ def get_main(snap, G):
     scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
 
     mass_bin_wid = mass_bins[1] - mass_bins[0]
-    mass_bin_cents = mass_bins[1:] - mass_bin_wid
-
-    print(list(rs_dict.keys()))
+    mass_bin_cents = mass_bins[1:] - (mass_bin_wid / 2)
 
     for bin, m in enumerate(mass_bin_cents):
 
