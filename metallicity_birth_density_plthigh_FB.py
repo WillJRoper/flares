@@ -102,7 +102,7 @@ def get_data(masslim=1e8, load=False):
 
             for snap, prog_snap in zip(snaps, prog_snaps):
 
-                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_medFBlim/data/'
+                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_highFBlim/data/'
 
                 # Get particle IDs
                 halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
@@ -170,7 +170,7 @@ stellar_bd_dict, stellar_met_dict = get_data(masslim=10**9, load=False)
 
 # EAGLE parameters
 parameters = {"f_th,min": 0.3,
-              "f_th,max": 6,
+              "f_th,max": 10,
               "n_Z": 1.0,
               "n_n": 1.0,
               "Z_pivot": 0.1 * 0.012,
@@ -225,7 +225,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     ax.loglog()
 
-    mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_th_grid, vmin=0.3, vmax=6)
+    mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins, f_th_grid, vmin=0.3, vmax=10)
 
     if i == 0 and j == 0:
 
@@ -307,4 +307,4 @@ ax9.text(0.975, 0.025, "\n".join([f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" f
 ax3.text(0.975, 0.975, "Contour lines \n linearly spaced", color="k", transform=ax3.transAxes, ha="right", va="top",
          fontsize=fontsize)
 
-fig.savefig('plots/birthdensity_metallicity_redshift_medFBlim.png', bbox_inches='tight')
+fig.savefig('plots/birthdensity_metallicity_redshift_highFBlim.png', bbox_inches='tight')
