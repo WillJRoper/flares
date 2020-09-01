@@ -102,7 +102,7 @@ def get_data(masslim=1e8, load=False):
 
             for snap, prog_snap in zip(snaps, prog_snaps):
 
-                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_highFBlim/data/'
+                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_medFBlim/data/'
 
                 # Get particle IDs
                 halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
