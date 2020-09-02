@@ -16,7 +16,7 @@ sns.set_style('whitegrid')
 
 
 regions = []
-for reg in range(0, 1):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -62,8 +62,8 @@ for reg in regions:
 
         print(reg, snap)
 
-        # path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
-        path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_medFBlim/data/'
+        path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
+        # path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_medFBlim/data/'
         try:
             half_mass_rads_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                                           numThreads=8)[:, 4] * 1e3)
@@ -85,6 +85,8 @@ ax6 = fig.add_subplot(gs[1, 2])
 ax7 = fig.add_subplot(gs[2, 0])
 ax8 = fig.add_subplot(gs[2, 1])
 ax9 = fig.add_subplot(gs[2, 2])
+
+running_total = 0
 
 for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps,
                             [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]):
@@ -109,6 +111,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                          linewidths=0.2, cmap='viridis', alpha=0.7)
         plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='REF', color='r')
+
+        print(snap, xs_plt[xs_plt > 1e11].size)
+        running_total += xs_plt[xs_plt > 1e11].size
     except ValueError:
         continue
 
@@ -148,7 +153,9 @@ ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=F
 
 # fig.savefig('plots/HalfMassRadius_all_snaps.png',
 #             bbox_inches='tight')
-fig.savefig('plots/HalfMassRadius_all_snaps_medFBlim.png',
+fig.savefig('plots/HalfMassRadius_all_snaps.png',
             bbox_inches='tight')
 
 plt.close(fig)
+
+print("In total", running_total, "galaxies with mass greater than 10^11")
