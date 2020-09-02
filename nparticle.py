@@ -33,7 +33,6 @@ for reg in regions:
         print(reg, snap)
 
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
-        # path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_medFBlim/data/'
         try:
             part_sum = 0
             for part_type in [0, 1, 4, 5]:

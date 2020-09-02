@@ -107,10 +107,17 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
     xs_plt = xs_plt[xs_plt > 1e8]
 
+    fig1 = plt.figure()
+    ax10 = fig1.add_subplot(111)
+
     try:
         cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                          linewidths=0.2, cmap='viridis', alpha=0.7)
         plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='REF', color='r')
+
+        cbar1 = ax10.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
+                         linewidths=0.2, cmap='viridis', alpha=0.7)
+        plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax10, lab='REF', color='r')
 
         print(snap, xs_plt[xs_plt > 1e11].size)
         running_total += xs_plt[xs_plt > 1e11].size
@@ -128,6 +135,11 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         ax.set_xlabel(r'$M_{\star}/M_\odot$')
     if j == 0:
         ax.set_ylabel('$R_{1/2,*}/\epsilon$')
+    ax10.set_xlabel(r'$M_{\star}/M_\odot$')
+    ax10.set_ylabel('$R_{1/2,*}/\epsilon$')
+
+    fig1.savefig('plots/HalfMassRadius_' + snap + '.png',
+                bbox_inches='tight')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
