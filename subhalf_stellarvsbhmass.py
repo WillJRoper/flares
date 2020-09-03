@@ -67,12 +67,14 @@ for reg in regions:
         try:
             hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                numThreads=8) * 1e3
-            ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/001kpc',
-                              noH=True, numThreads=8) * 10**10 * 0.6777
+            ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                              noH=True, numThreads=8) * 10**10
+            bhm = E.read_array('SUBFIND', path, snap, 'Subhalo/BlackHoleMass',
+                               noH=True, numThreads=8) * 10**10
 
             okinds = ms[:, 1] > 0
-            hmr = hmr[okinds, 4]
-            ms = ms[okinds, 5]
+            hmr = hmr[okinds, 0]
+            ms = bhm[okinds]
 
             half_mass_rads_dict[snap].extend(hmr)
             xaxis_dict[snap].extend(ms)
