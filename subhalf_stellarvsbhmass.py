@@ -66,12 +66,12 @@ for reg in regions:
         # path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_medFBlim/data/'
         try:
             hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                          numThreads=8) * 1e3
+                               numThreads=8) * 1e3
             ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/001kpc',
-                              noH=True, numThreads=8) * 10**10
+                              noH=True, numThreads=8) * 10**10 * 0.6777
 
             okinds = ms[:, 1] > 0
-            hmr = hmr[okinds, 0]
+            hmr = hmr[okinds, 4]
             ms = ms[okinds, 5]
 
             half_mass_rads_dict[snap].extend(hmr)
@@ -141,10 +141,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     # Label axes
     if i == 2:
-        ax.set_xlabel(r'$M_{\mathrm{BH}}/M_\odot$')
+        ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
     if j == 0:
         ax.set_ylabel('$R_{1/2,*}/\epsilon$')
-    ax10.set_xlabel(r'$M_{\mathrm{BH}}/M_\odot$')
+    ax10.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
     ax10.set_ylabel('$R_{1/2,*}/\epsilon$')
 
     ax.yaxis.get_ticklocs(minor=True)
