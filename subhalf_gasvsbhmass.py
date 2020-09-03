@@ -111,8 +111,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     
     xs_plt = xs[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
-    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
-    xs_plt = xs_plt[xs_plt > 1e8]
+    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 0]
+    xs_plt = xs_plt[xs_plt > 0]
 
     fig1 = plt.figure()
     ax10 = fig1.add_subplot(111)
@@ -129,6 +129,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         print(snap, xs_plt[xs_plt > 1e11].size)
         running_total += xs_plt[xs_plt > 1e11].size
     except ValueError:
+        continue
+    except OverflowError:
         continue
 
     ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),

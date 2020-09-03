@@ -15,6 +15,8 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 
+master_path = "/cosma7/data/dp004/dc-payy1/my_files/flares_pipeline/data/flares.hdf5"
+
 regions = []
 for reg in range(0, 40):
 
