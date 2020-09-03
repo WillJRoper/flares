@@ -73,7 +73,7 @@ for reg in regions:
                                noH=True, numThreads=8) * 10**10
 
             okinds = ms[:, 1] > 0
-            hmr = hmr[okinds, 0]
+            hmr = hmr[okinds, 4]
             ms = bhm[okinds]
 
             half_mass_rads_dict[snap].extend(hmr)
@@ -143,10 +143,10 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
     # Label axes
     if i == 2:
-        ax.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
+        ax.set_xlabel(r'$M_{\mathrm{BH}}/M_\odot$')
     if j == 0:
         ax.set_ylabel('$R_{1/2,*}/\epsilon$')
-    ax10.set_xlabel(r'$M_{\mathrm{\star}}/M_\odot$')
+    ax10.set_xlabel(r'$M_{\mathrm{BH}}/M_\odot$')
     ax10.set_ylabel('$R_{1/2,*}/\epsilon$')
 
     ax.yaxis.get_ticklocs(minor=True)
@@ -155,7 +155,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     ax.xaxis.get_ticklocs(minor=True)
     ax.minorticks_on()
 
-    fig1.savefig('plots/GasHalfMassRadius_BHMass' + snap + '.png',
+    fig1.savefig('plots/StellarHalfMassRadius_BHMass' + snap + '.png',
                 bbox_inches='tight')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
@@ -182,7 +182,7 @@ ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=F
 
 # fig.savefig('plots/HalfMassRadius_all_snaps.png',
 #             bbox_inches='tight')
-fig.savefig('plots/GasHalfMassRadius_BHMass_all_snaps.png',
+fig.savefig('plots/StellarHalfMassRadius_BHMass_all_snaps.png',
             bbox_inches='tight')
 
 plt.close(fig)
