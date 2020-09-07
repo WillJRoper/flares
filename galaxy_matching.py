@@ -65,7 +65,7 @@ tree = cKDTree(cops2)
 # Define the phase space vectors and phase tree
 print(cops2.shape)
 print(vs2.shape)
-print(vs2.shape/3, vs2.shape/5)
+print(vs2.shape[0]/3, vs2.shape[0]/5)
 phases = np.concatenate((cops2 / np.std(cops2), vs2 / np.std(vs2)), axis=1)
 print(phases)
 ptree = cKDTree(phases)
