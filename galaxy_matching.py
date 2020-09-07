@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import astropy.units as u
+import astropy.constants as const
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
 from scipy.stats import binned_statistic
@@ -13,14 +14,26 @@ import pickle
 import itertools
 matplotlib.use("Agg")
 
+
 sns.set_style("whitegrid")
 
-
 snap = "010_z005p000"
+z_str = snap.split('z')[1].split('p')
+redshift = float(z_str[0] + '.' + z_str[1])
 reg = "26"
 
 path1 = "/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_" + reg + "/data/"
 path2 = "/cosma7/data/dp004/FLARES/FLARES-1/G-EAGLE_" + reg + "/data/"
+
+# Define the gravitational constant
+G = (const.G.to(u.km ** 3 * u.M_sun ** -1 * u.s ** -2)).value
+
+# Compute the mean density
+mean_den = 2520**3 * 8.01 * 10**10 * u.M_sun / 3.2 ** 3 / u.Gpc ** 3 * (1 + redshift) ** 3
+mean_den = mean_den.to(u.M_sun / u.km ** 3)
+
+# Define the velocity space linking length
+vlinkl_indp = (np.sqrt(G / 2) * (4 * np.pi * 200 * mean_den / 3) ** (1 / 6) * (1 + redshift) ** 0.5).value
 
 print("Matching on...")
 print(path1)
@@ -33,6 +46,8 @@ ms1 = E.read_array("SUBFIND", path1, snap, "Subhalo/ApertureMeasurements/Mass/03
 cops1 = E.read_array("SUBFIND", path1, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
 vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Velocity", physicalUnits=True,
+                    noH=True, numThreads=8)
+ns1 = E.read_array("SUBFIND", path1, snap, "Subhalo/SubLength", physicalUnits=True,
                     noH=True, numThreads=8)
 
 # Get the data for the high resolution
@@ -53,24 +68,19 @@ res_ms_1 = []
 res_ms_2 = []
 for ind, cop in enumerate(cops1):
 
-    # ===================== Matching on COP and Velocity =====================
+    # ===================== Matching on phase =====================
+
+    # Define the phase space linking length
+    vlinkl = vlinkl_indp * (8.01 * 10**10)**(1 / 3) * ns1[ind] ** (1 / 3)
+    phases = np.concatenate((cops2 / 0.003, vs2 / vlinkl), axis=1)
+    ptree = cKDTree(phases)
 
     # Find the 5 nearest neighbours
-    ds, inds = tree.query(cop, k=10)
+    ds, inds = ptree.query(phases[ind], k=1)
 
-    # Build velocity tree for these particles
-    vtree = cKDTree(vs2[inds])
-
-    # Find the nearest neighbour in velocity space
-    dvs, vinds = vtree.query(vs1[ind], k=5)
-
-    nn_ms = ms2[inds[vinds]]
-    nn_max = ms1[ind]
-    nn_ind = np.argmin(np.abs(nn_ms - nn_max))
-
-    res_hmr_2.append(hmrs2[inds[nn_ind]])
+    res_hmr_2.append(hmrs2[inds])
     res_hmr_1.append(hmrs1[ind])
-    res_ms_2.append(ms2[inds[nn_ind]])
+    res_ms_2.append(ms2[inds])
     res_ms_1.append(ms1[ind])
 
     # # ===================== Matching on COP and Velocity =====================
