@@ -58,9 +58,16 @@ cops2 = E.read_array("SUBFIND", path2, snap, "Subhalo/CentreOfPotential", physic
                     noH=True, numThreads=8)
 vs2 = E.read_array("SUBFIND", path1, snap, "Subhalo/Velocity", physicalUnits=True,
                     noH=True, numThreads=8)
-print(vs2)
+
 # Build the tree
 tree = cKDTree(cops2)
+
+# Define the phase space vectors and phase tree
+print(cops2.shape)
+print(vs2.shape)
+phases = np.concatenate((cops2 / np.std(cops2), vs2 / np.std(vs2)), axis=1)
+print(phases)
+ptree = cKDTree(phases)
 
 res_hmr_1 = []
 res_hmr_2 = []
@@ -69,11 +76,6 @@ res_ms_2 = []
 for ind, cop in enumerate(cops1):
 
     # ===================== Matching on phase =====================
-
-    # Define the phase space linking length
-    vlinkl = vlinkl_indp * (8.01 * 10**10)**(1 / 3) * ns1[ind] ** (1 / 3)
-    phases = np.concatenate((cops2 / 0.003, vs2 / vlinkl), axis=1)
-    ptree = cKDTree(phases)
 
     # Find the 5 nearest neighbours
     ds, inds = ptree.query(phases[ind], k=1)
