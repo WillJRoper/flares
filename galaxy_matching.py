@@ -54,9 +54,9 @@ for ind, cop in enumerate(cops1):
     # Find the 5 nearest neighbours
     ds, inds = tree.query(cop, k=5)
 
-    # nn_ms = ms2[inds]
-    # nn_max = ms1[ind]
-    # nn_ind = np.argmin(np.abs(nn_ms - nn_max))
+    nn_ms = ms2[inds]
+    nn_max = ms1[ind]
+    nn_ind = np.argmin(np.abs(nn_ms - nn_max))
 
     res_hmr_2.append(hmrs2[inds[nn_ind]])
     res_hmr_1.append(hmrs1[ind])
@@ -94,7 +94,7 @@ ax1.set_ylabel(r"$R_{1/2, hi} / [pkpc]$")
 ax2.set_xlabel(r"$M_{\star, std} / M_\odot$")
 ax2.set_ylabel(r"$M_{\star, hi} / M_\odot$")
 
-fig.savefig("plots/res_galaxy_match_cop_only.png", bbox_inches="tight")
+fig.savefig("plots/res_galaxy_match_cop+mass.png", bbox_inches="tight")
 
 
 
