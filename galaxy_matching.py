@@ -147,7 +147,7 @@ for ind, cop in enumerate(cops1):
     # res_ms_2.append(ms2[inds[nn_ind]])
     # res_ms_1.append(ms1[ind])
 
-    # ===================== Matching on COP and Total Mass =====================
+    # ===================== Matching on COP and Total Mass and weight =====================
 
     # Find the 5 nearest neighbours
     ds, inds = tree.query(cop, k=5)

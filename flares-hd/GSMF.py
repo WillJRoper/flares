@@ -67,9 +67,9 @@ snap = '010_z005p000'
 group = "SUBFIND"
 
 # Extarct M_200s
-M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_00/data/', snap,
+M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_26/data/', snap,
                       tag, group=group, noH=True, cut_bounds=True)[:, 4]
-M_200_ref = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/FLARES_00_REF/data/', snap,
+M_200_ref = get_mass_data("/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_26/data/", snap,
                          tag, group=group, noH=True, cut_bounds=True)[:, 4]
 
 M_200 = M_200[np.where(M_200 != 0.0)] * 10**10
@@ -108,4 +108,4 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
 # Save figure
-fig.savefig('plots/GSMF_subgrid_comp' + snap + '.png', bbox_inches='tight')
+fig.savefig('plots/GSMF_comp' + snap + '.png', bbox_inches='tight')
