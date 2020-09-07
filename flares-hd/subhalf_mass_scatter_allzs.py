@@ -106,9 +106,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     
     xs_plt = xs[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
-    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
-    xs_plt = xs_plt[xs_plt > 1e8]
-
+    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8 / 8]
+    xs_plt = xs_plt[xs_plt > 1e8 / 8]
     try:
         cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                          linewidths=0.2, cmap='viridis', alpha=0.7)
@@ -133,8 +132,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
-    ax.set_xlim(10**8, 10**11.25)
-    # ax.set_ylim(10**-1.2, 10**2.2)
+    ax.set_xlim(np.min(axlims_x), np.max(axlims_x))
+    ax.set_ylim(np.min(axlims_y), np.max(axlims_y))
 
     for spine in ax.spines.values():
         spine.set_edgecolor('k')
