@@ -53,19 +53,26 @@ res_ms_1 = []
 res_ms_2 = []
 for ind, cop in enumerate(cops1):
 
+    # ===================== Matching on COP and Velocity =====================
+
     # Find the 5 nearest neighbours
     ds, inds = tree.query(cop, k=50)
 
-    # # Build velocity tree for these particles
-    # vtree = cKDTree(vs2[inds])
-    #
+    # Build velocity tree for these particles
+    vtree = cKDTree(vs2[inds])
+
     # Find the nearest neighbour in velocity space
-    # dvs, vind = vtree.query(vs1[ind])
-    
-    # res_hmr_2.append(hmrs2[inds[vind]])
-    # res_hmr_1.append(hmrs1[ind])
-    # res_ms_2.append(ms2[inds[vind]])
-    # res_ms_1.append(ms1[ind])
+    dvs, vind = vtree.query(vs1[ind])
+
+    res_hmr_2.append(hmrs2[inds[vind]])
+    res_hmr_1.append(hmrs1[ind])
+    res_ms_2.append(ms2[inds[vind]])
+    res_ms_1.append(ms1[ind])
+
+    # ===================== Matching on COP and Mass =====================
+
+    # # Find the 5 nearest neighbours
+    # ds, inds = tree.query(cop, k=5)
 
     # nn_ms = ms2[inds]
     # nn_max = ms1[ind]
@@ -76,10 +83,15 @@ for ind, cop in enumerate(cops1):
     # res_ms_2.append(ms2[inds[nn_ind]])
     # res_ms_1.append(ms1[ind])
 
-    res_hmr_2.append(hmrs2[inds])
-    res_hmr_1.append(hmrs1[ind])
-    res_ms_2.append(ms2[inds])
-    res_ms_1.append(ms1[ind])
+    # ===================== Matching only on COP =====================
+
+    # # Find the 5 nearest neighbours
+    # ds, inds = tree.query(cop, k=1)
+
+    # res_hmr_2.append(hmrs2[inds])
+    # res_hmr_1.append(hmrs1[ind])
+    # res_ms_2.append(ms2[inds])
+    # res_ms_1.append(ms1[ind])
 
 res_hmr_2 = np.array(res_hmr_2)
 res_hmr_1 = np.array(res_hmr_1)
@@ -111,7 +123,7 @@ ax1.set_ylabel(r"$R_{1/2, hi} / [pkpc]$")
 ax2.set_xlabel(r"$M_{\star, std} / M_\odot$")
 ax2.set_ylabel(r"$M_{\star, hi} / M_\odot$")
 
-fig.savefig("plots/res_galaxy_match_cop_only.png", bbox_inches="tight")
+fig.savefig("plots/res_galaxy_match_cop+vel.png", bbox_inches="tight")
 
 
 
