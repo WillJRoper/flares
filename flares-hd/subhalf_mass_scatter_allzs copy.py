@@ -110,10 +110,9 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     xs_plt = xs_plt[xs_plt > 1e8]
 
     try:
-        cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
+        cbar = ax.hexbin(xs_plt, half_mass_rads_plt / soft, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                          linewidths=0.2, cmap='viridis', alpha=0.7)
-        ax.axhline(soft)
-        plot_meidan_stat(xs_plt, half_mass_rads_plt, ax, lab='REF', color='r')
+        plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='REF', color='r')
     except ValueError:
         continue
     except OverflowError:
@@ -129,7 +128,7 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     if i == 2:
         ax.set_xlabel(r'$M_{\star}/M_\odot$')
     if j == 0:
-        ax.set_ylabel('$R_{1/2,*}/[pkpc]$')
+        ax.set_ylabel('$R_{1/2,*}/\epsilon$')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
@@ -153,7 +152,8 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-fig.savefig('plots/HalfMassRadius_all_snaps_HD.png', bbox_inches='tight')
+fig.savefig('plots/HalfMassRadius_all_snaps_HD.png',
+            bbox_inches='tight')
 # fig.savefig('plots/HalfMassRadius_all_snaps_instaFB.png',
 #             bbox_inches='tight')
 
