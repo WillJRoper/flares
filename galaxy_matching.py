@@ -56,13 +56,29 @@ for ind, cop in enumerate(cops1):
     # ===================== Matching on COP and Velocity =====================
 
     # # Find the 5 nearest neighbours
-    # ds, inds = tree.query(cop, k=50)
+    # ds, inds = tree.query(cop, k=10)
     #
     # # Build velocity tree for these particles
     # vtree = cKDTree(vs2[inds])
     #
     # # Find the nearest neighbour in velocity space
-    # dvs, vind = vtree.query(vs1[ind])
+    # dvs, vind = vtree.query(vs1[ind], k=1)
+    #
+    # res_hmr_2.append(hmrs2[inds[vind]])
+    # res_hmr_1.append(hmrs1[ind])
+    # res_ms_2.append(ms2[inds[vind]])
+    # res_ms_1.append(ms1[ind])
+
+    # ===================== Matching on COP and Velocity =====================
+
+    # # Find the 5 nearest neighbours
+    # ds, inds = tree.query(cop, k=10)
+    #
+    # # Build velocity tree for these particles
+    # vtree = cKDTree(vs2[inds])
+    #
+    # # Find the nearest neighbour in velocity space
+    # dvs, vind = vtree.query(vs1[ind], k=1)
     #
     # res_hmr_2.append(hmrs2[inds[vind]])
     # res_hmr_1.append(hmrs1[ind])
