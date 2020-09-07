@@ -96,8 +96,8 @@ H_ref, _ = np.histogram(M_200_ref, bins=bins)
 bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
 
 # Plot each histogram
-ax.loglog(bin_cents, H/interval, label='AGNdT9')
-ax.loglog(bin_cents, H_ref/interval, linestyle='--', label='REFERENCE')
+ax.loglog(bin_cents, H/interval, label='FLARES-1:26')
+ax.loglog(bin_cents, H_ref/interval, linestyle='--', label='FLARES-HD:26')
 
 # Label axes
 ax.set_xlabel(r'$M_{\star}/M_\odot$')
