@@ -33,6 +33,7 @@ print(path2)
 hmrs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/HalfMassRad", noH=True, numThreads=8) * 1e3
 ms1 = E.read_array("SUBFIND", path1, snap, "Subhalo/ApertureMeasurements/Mass/030kpc",
                   noH=True, numThreads=8)[:, 4] * 10**10
+totms1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Mass", noH=True, numThreads=8)[:, 4] * 10**10
 cops1 = E.read_array("SUBFIND", path1, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
 vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Velocity", physicalUnits=True,
@@ -42,6 +43,7 @@ vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Velocity", physicalUnits=Tru
 hmrs2 = E.read_array("SUBFIND", path2, snap, "Subhalo/HalfMassRad", noH=True, numThreads=8) * 1e3
 ms2 = E.read_array("SUBFIND", path2, snap, "Subhalo/ApertureMeasurements/Mass/030kpc",
                   noH=True, numThreads=8)[:, 4] * 10**10
+totms2 = E.read_array("SUBFIND", path2, snap, "Subhalo/Mass", noH=True, numThreads=8)[:, 4] * 10**10
 cops2 = E.read_array("SUBFIND", path2, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
 vs2 = E.read_array("SUBFIND", path2, snap, "Subhalo/Velocity", physicalUnits=True,
@@ -51,8 +53,8 @@ vs2 = E.read_array("SUBFIND", path2, snap, "Subhalo/Velocity", physicalUnits=Tru
 tree = cKDTree(cops2)
 
 # Define the phase space vectors and phase tree
-phases1 = np.concatenate((cops1 / 0.003, vs1 / np.std(vs1)), axis=1)
-phases2 = np.concatenate((cops2 / 0.003, vs2 / np.std(vs2)), axis=1)
+phases1 = np.concatenate((cops1 / 0.0001, vs1 / np.std(vs1)), axis=1)
+phases2 = np.concatenate((cops2 / 0.0001, vs2 / np.std(vs2)), axis=1)
 print(phases1)
 print(phases2)
 ptree = cKDTree(phases2)
@@ -73,14 +75,14 @@ for ind, cop in enumerate(cops1):
     # res_ms_2.append(ms2[inds])
     # res_ms_1.append(ms1[ind])
 
-    # ===================== Matching on phase and mass =====================
+    # ===================== Matching on phase and total mass =====================
 
     # Find the 5 nearest neighbours
     ds, inds = ptree.query(phases1[ind], k=5)
 
-    nn_ms = ms2[inds]
-    nn_max = ms1[ind]
-    nn_ind = np.argmin(np.abs(nn_ms - nn_max))
+    nn_ms = totms2[inds]
+    nn_max = totms1[ind]
+    nn_ind = np.argmin(np.abs(nn_ms - nn_max)*ds)
 
     res_hmr_2.append(hmrs2[inds[nn_ind]])
     res_hmr_1.append(hmrs1[ind])
@@ -103,13 +105,13 @@ for ind, cop in enumerate(cops1):
     # res_ms_2.append(ms2[inds[vind]])
     # res_ms_1.append(ms1[ind])
 
-    # ===================== Matching on COP and Mass =====================
+    # ===================== Matching on COP and Total Mass =====================
 
     # # Find the 5 nearest neighbours
     # ds, inds = tree.query(cop, k=5)
 
-    # nn_ms = ms2[inds]
-    # nn_max = ms1[ind]
+    # nn_ms = totms2[inds]
+    # nn_max = totms1[ind]
     # nn_ind = np.argmin(np.abs(nn_ms - nn_max))
     #
     # res_hmr_2.append(hmrs2[inds[nn_ind]])
@@ -157,7 +159,7 @@ ax1.set_ylabel(r"$R_{1/2, hi} / [pkpc]$")
 ax2.set_xlabel(r"$M_{\star, std} / M_\odot$")
 ax2.set_ylabel(r"$M_{\star, hi} / M_\odot$")
 
-fig.savefig("plots/res_galaxy_match_phase+mass.png", bbox_inches="tight")
+fig.savefig("plots/res_galaxy_match_phase+mass+weight.png", bbox_inches="tight")
 
 
 
