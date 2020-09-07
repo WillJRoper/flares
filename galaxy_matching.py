@@ -33,7 +33,7 @@ print(path2)
 hmrs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/HalfMassRad", noH=True, numThreads=8) * 1e3
 ms1 = E.read_array("SUBFIND", path1, snap, "Subhalo/ApertureMeasurements/Mass/030kpc",
                   noH=True, numThreads=8)[:, 4] * 10**10
-totms1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Mass", noH=True, numThreads=8)[:, 4] * 10**10
+totms1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Mass", noH=True, numThreads=8) * 10**10
 cops1 = E.read_array("SUBFIND", path1, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
 vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Velocity", physicalUnits=True,
@@ -43,7 +43,7 @@ vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Velocity", physicalUnits=Tru
 hmrs2 = E.read_array("SUBFIND", path2, snap, "Subhalo/HalfMassRad", noH=True, numThreads=8) * 1e3
 ms2 = E.read_array("SUBFIND", path2, snap, "Subhalo/ApertureMeasurements/Mass/030kpc",
                   noH=True, numThreads=8)[:, 4] * 10**10
-totms2 = E.read_array("SUBFIND", path2, snap, "Subhalo/Mass", noH=True, numThreads=8)[:, 4] * 10**10
+totms2 = E.read_array("SUBFIND", path2, snap, "Subhalo/Mass", noH=True, numThreads=8) * 10**10
 cops2 = E.read_array("SUBFIND", path2, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
 vs2 = E.read_array("SUBFIND", path2, snap, "Subhalo/Velocity", physicalUnits=True,
