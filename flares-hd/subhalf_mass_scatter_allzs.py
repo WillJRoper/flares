@@ -65,10 +65,18 @@ for reg in regions:
         path = '/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_' + reg + '/data/'
         # path = '/cosma7/data/dp004/FLARES/FLARES-1/FLARES_00_instantFB/data/'
         try:
-            half_mass_rads_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                          numThreads=8)[:, 4] * 1e3)
-            xaxis_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                                 noH=True, numThreads=8)[:, 4] * 10**10)
+            hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True, numThreads=8)[:, 4] * 1e3
+            ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                              noH=True, numThreads=8)[:, 4] * 10**10
+            ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLength', noH=True, numThreads=8)
+
+            okinds = ns[:, 4] > 100
+            hmr = hmr[okinds]
+            ms = ms[okinds]
+            
+            half_mass_rads_dict[snap].extend(hmr)
+            xaxis_dict[snap].extend(ms)
+
         except OSError:
             print("WWWWHHHHAAAA")
             continue
@@ -106,8 +114,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     
     xs_plt = xs[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
-    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8 / 8]
-    xs_plt = xs_plt[xs_plt > 1e8 / 8]
+    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 0]
+    xs_plt = xs_plt[xs_plt > 0]
     try:
         cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                          linewidths=0.2, cmap='viridis', alpha=0.7)
@@ -132,8 +140,8 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
-    ax.set_xlim(np.min(axlims_x) - 0.1, np.max(axlims_x) + 0.1)
-    ax.set_ylim(np.min(axlims_y) - 0.1, np.max(axlims_y) + 0.1)
+    ax.set_xlim(np.min(axlims_x) - 0.1 * np.min(axlims_x), np.max(axlims_x) + 0.1 * np.max(axlims_x))
+    ax.set_ylim(np.min(axlims_y) - 0.1 * np.min(axlims_y), np.max(axlims_y) + 0.1 * np.max(axlims_y))
 
     for spine in ax.spines.values():
         spine.set_edgecolor('k')
