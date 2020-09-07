@@ -56,8 +56,13 @@ for ind, cop in enumerate(cops1):
 
     res_hmr_2.append(hmrs2[inds])
     res_hmr_1.append(hmrs1[ind])
-    res_hmr_2.append(ms2[inds])
-    res_hmr_1.append(ms1[ind])
+    res_ms_2.append(ms2[inds])
+    res_ms_1.append(ms1[ind])
+
+res_hmr_2 = np.array(res_hmr_2)
+res_hmr_1 = np.array(res_hmr_1)
+res_ms_2 = np.array(res_ms_2)
+res_ms_1 = np.array(res_ms_1)
 
 fig = plt.figure()
 ax1 = fig.add_subplot(121)
@@ -67,6 +72,9 @@ cbar = ax1.hexbin(res_hmr_1, res_hmr_2, gridsize=50, mincnt=1, xscale="log", ysc
                  linewidths=0.2, cmap="viridis", alpha=0.7)
 cbar = ax2.hexbin(res_ms_1, res_ms_2, gridsize=50, mincnt=1, xscale="log", yscale="log", norm=LogNorm(),
                  linewidths=0.2, cmap="viridis", alpha=0.7)
+
+ax1.plot([res_hmr_1.min(), res_hmr_1.max()], [res_hmr_1.min(), res_hmr_1.max()])
+ax2.plot([res_ms_1.min(), res_ms_1.max()], [res_ms_1.min(), res_ms_1.max()])
 
 ax1.set_xlabel(r"$R_{1/2, std} / [pkpc]$")
 ax1.set_ylabel(r"$R_{1/2, hi} / [pkpc]$")
