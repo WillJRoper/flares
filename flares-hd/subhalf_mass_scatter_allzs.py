@@ -72,6 +72,7 @@ for reg in regions:
         except OSError:
             continue
         except ValueError:
+            print("WWWWHHHHAAAA")
             continue
 
 # Set up plot
