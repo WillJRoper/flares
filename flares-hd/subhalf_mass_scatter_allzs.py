@@ -148,9 +148,9 @@ ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, l
 ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
-# fig.savefig('plots/HalfMassRadius_all_snaps.png',
-#             bbox_inches='tight')
-fig.savefig('plots/HalfMassRadius_all_snaps_instaFB.png',
+fig.savefig('plots/HalfMassRadius_all_snaps_HD.png',
             bbox_inches='tight')
+# fig.savefig('plots/HalfMassRadius_all_snaps_instaFB.png',
+#             bbox_inches='tight')
 
 plt.close(fig)
