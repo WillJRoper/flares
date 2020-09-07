@@ -54,10 +54,10 @@ for ind, cop in enumerate(cops1):
     # Find the nearest neighbour
     ds, inds = tree.query(cop, k=1)
 
-    res_hmr_2.extend(hmrs2[inds])
-    res_hmr_1.extend(hmrs1[ind])
-    res_hmr_2.extend(ms2[inds])
-    res_hmr_1.extend(ms1[ind])
+    res_hmr_2.append(hmrs2[inds])
+    res_hmr_1.append(hmrs1[ind])
+    res_hmr_2.append(ms2[inds])
+    res_hmr_1.append(ms1[ind])
 
 fig = plt.figure()
 ax1 = fig.add_subplot(121)
