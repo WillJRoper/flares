@@ -51,12 +51,16 @@ for ind, cop in enumerate(cops1):
 
     print(ind)
 
-    # Find the nearest neighbour
-    ds, inds = tree.query(cop, k=1)
+    # Find the 5 nearest neighbours
+    ds, inds = tree.query(cop, k=5)
 
-    res_hmr_2.append(hmrs2[inds])
+    nn_ms = ms2[inds]
+    nn_max = ms1[ind]
+    nn_ind = np.argmin(np.abs(nn_ms - nn_max))
+
+    res_hmr_2.append(hmrs2[inds[nn_ind]])
     res_hmr_1.append(hmrs1[ind])
-    res_ms_2.append(ms2[inds])
+    res_ms_2.append(ms2[inds[nn_ind]])
     res_ms_1.append(ms1[ind])
 
 res_hmr_2 = np.array(res_hmr_2)
@@ -87,8 +91,8 @@ ax2.plot([res_ms_1.min(), res_ms_1.max()], [res_ms_1.min(), res_ms_1.max()])
 
 ax1.set_xlabel(r"$R_{1/2, std} / [pkpc]$")
 ax1.set_ylabel(r"$R_{1/2, hi} / [pkpc]$")
-ax1.set_xlabel(r"$M_{\star, std} / M_\odot$")
-ax1.set_ylabel(r"$M_{\star, hi} / M_\odot$")
+ax2.set_xlabel(r"$M_{\star, std} / M_\odot$")
+ax2.set_ylabel(r"$M_{\star, hi} / M_\odot$")
 
 fig.savefig("plots/res_galaxy_match.png", bbox_inches="tight")
 
