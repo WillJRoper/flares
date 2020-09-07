@@ -153,7 +153,7 @@ ax1.set_ylabel(r"$R_{1/2, hi} / [pkpc]$")
 ax2.set_xlabel(r"$M_{\star, std} / M_\odot$")
 ax2.set_ylabel(r"$M_{\star, hi} / M_\odot$")
 
-fig.savefig("plots/res_galaxy_match_cop+vel+mass.png", bbox_inches="tight")
+fig.savefig("plots/res_galaxy_match_phase.png", bbox_inches="tight")
 
 
 
