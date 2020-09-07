@@ -69,8 +69,8 @@ tree = cKDTree(cops2)
 # Define the phase space vectors and phase tree
 phases1 = np.concatenate((cops1 / 0.0001, vs1 / np.std(vs1)), axis=1)
 phases2 = np.concatenate((cops2 / 0.0001, vs2 / np.std(vs2)), axis=1)
-print(phases1)
-print(phases2)
+print(phases1.shape)
+print(phases2.shape)
 ptree = cKDTree(phases2)
 
 res_hmr_1 = []
@@ -89,14 +89,28 @@ for ind, cop in enumerate(cops1):
     # res_ms_2.append(ms2[inds])
     # res_ms_1.append(ms1[ind])
 
-    # ===================== Matching on phase and total mass =====================
+    # # ===================== Matching on phase and total mass =====================
+    #
+    # # Find the 5 nearest neighbours
+    # ds, inds = ptree.query(phases1[ind], k=5)
+    #
+    # nn_ms = totms2[inds]
+    # nn_max = totms1[ind]
+    # nn_ind = np.argmin(np.abs(nn_ms - nn_max))
+    #
+    # res_hmr_2.append(hmrs2[inds[nn_ind]])
+    # res_hmr_1.append(hmrs1[ind])
+    # res_ms_2.append(ms2[inds[nn_ind]])
+    # res_ms_1.append(ms1[ind])
+
+    # ===================== Matching on phase and total mass and weight =====================
 
     # Find the 5 nearest neighbours
     ds, inds = ptree.query(phases1[ind], k=5)
 
     nn_ms = totms2[inds]
     nn_max = totms1[ind]
-    nn_ind = np.argmin(np.abs(nn_ms - nn_max))
+    nn_ind = np.argmin(np.abs(nn_ms - nn_max) * ds)
 
     res_hmr_2.append(hmrs2[inds[nn_ind]])
     res_hmr_1.append(hmrs1[ind])
@@ -173,7 +187,7 @@ ax1.set_ylabel(r"$R_{1/2, hi} / [pkpc]$")
 ax2.set_xlabel(r"$M_{\star, std} / M_\odot$")
 ax2.set_ylabel(r"$M_{\star, hi} / M_\odot$")
 
-fig.savefig("plots/res_galaxy_match_phase+mass.png", bbox_inches="tight")
+fig.savefig("plots/res_galaxy_match_phase+mass+weight.png", bbox_inches="tight")
 
 
 
