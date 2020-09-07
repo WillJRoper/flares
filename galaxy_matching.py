@@ -45,7 +45,7 @@ ms1 = E.read_array("SUBFIND", path1, snap, "Subhalo/ApertureMeasurements/Mass/03
                   noH=True, numThreads=8)[:, 4] * 10**10
 cops1 = E.read_array("SUBFIND", path1, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
-vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Velocity", physicalUnits=True,
+vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/StellarVelDisp", physicalUnits=True,
                     noH=True, numThreads=8)
 ns1 = E.read_array("SUBFIND", path1, snap, "Subhalo/SubLength", physicalUnits=True,
                     noH=True, numThreads=8)
@@ -56,7 +56,7 @@ ms2 = E.read_array("SUBFIND", path2, snap, "Subhalo/ApertureMeasurements/Mass/03
                   noH=True, numThreads=8)[:, 4] * 10**10
 cops2 = E.read_array("SUBFIND", path2, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
-vs2 = E.read_array("SUBFIND", path1, snap, "Subhalo/Velocity", physicalUnits=True,
+vs2 = E.read_array("SUBFIND", path1, snap, "Subhalo/StellarVelDisp", physicalUnits=True,
                     noH=True, numThreads=8)
 
 # Build the tree
@@ -65,7 +65,6 @@ tree = cKDTree(cops2)
 # Define the phase space vectors and phase tree
 print(cops2.shape)
 print(vs2.shape)
-print(vs2.shape[0]/3, vs2.shape[0]/5)
 phases = np.concatenate((cops2 / np.std(cops2), vs2 / np.std(vs2)), axis=1)
 print(phases)
 ptree = cKDTree(phases)
