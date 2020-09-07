@@ -116,11 +116,19 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 0]
     xs_plt = xs_plt[xs_plt > 0]
+
+    fig1 = plt.figure()
+    ax10 = fig1.add_subplot(111)
+
     try:
         cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                          linewidths=0.2, cmap='viridis', alpha=0.7)
         ax.axhline(soft)
         plot_meidan_stat(xs_plt, half_mass_rads_plt, ax, lab='REF', color='r')
+
+        cbar1 = ax10.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
+                         linewidths=0.2, cmap='viridis', alpha=0.7)
+        plot_meidan_stat(xs_plt, half_mass_rads_plt, ax10, lab='REF', color='r')
     except ValueError:
         continue
     except OverflowError:
@@ -137,6 +145,12 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
         ax.set_xlabel(r'$M_{\star}/M_\odot$')
     if j == 0:
         ax.set_ylabel('$R_{1/2,*}/$ [pkpc]')
+
+    ax10.set_xlabel(r'$M_{\star}/M_\odot$')
+    ax10.set_ylabel('$R_{1/2,*}/\epsilon$')
+
+    fig1.savefig('plots/HalfMassRadius_' + snap + '_HD.png',
+                bbox_inches='tight')
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]:
 
