@@ -64,6 +64,15 @@ res_hmr_1 = np.array(res_hmr_1)
 res_ms_2 = np.array(res_ms_2)
 res_ms_1 = np.array(res_ms_1)
 
+okinds = np.logical_and(res_hmr_2 > 0, res_hmr_1 > 0)
+res_hmr_1 = res_hmr_1[okinds]
+res_hmr_2 = res_hmr_2[okinds]
+
+okinds = np.logical_and(res_ms_2 > 0, res_ms_1 > 0)
+res_ms_1 = res_ms_1[okinds]
+res_ms_2 = res_ms_2[okinds]
+
+
 fig = plt.figure()
 ax1 = fig.add_subplot(121)
 ax2 = fig.add_subplot(122)
