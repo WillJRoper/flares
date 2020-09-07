@@ -17,7 +17,7 @@ sns.set_style("whitegrid")
 
 
 snap = "010_z005p000"
-reg = "24"
+reg = "26"
 
 path1 = "/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_" + reg + "/data/"
 path2 = "/cosma7/data/dp004/FLARES/FLARES-1/G-EAGLE_" + reg + "/data/"
