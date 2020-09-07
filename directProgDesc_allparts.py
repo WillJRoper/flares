@@ -523,16 +523,30 @@ def part_type_contribution(path, snap, prog_snap, desc_snap, part_type, nprogs, 
     return prog_mass_conts, desc_mass_conts, prog_masses_final, desc_masses_final, halo_mass
 
 
+def get_int_sim_ids(simhaloID):
+
+    grp = int(simhaloID)
+    subgrp = str(simhaloID).split(".")[1]
+    if len(subgrp) != 5:
+        pad = 5 - len(subgrp)
+        for i in range(pad):
+            subgrp += "0"
+
+    return int(grp), int(subgrp)
+
+
 def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/', part_types=(0, 1, 4, 5)):
 
     # Get the graph links based on the dark matter
-    results_tup = partDirectProgDesc(snap, prog_snap,desc_snap, path)
+    results_tup = partDirectProgDesc(snap, prog_snap, desc_snap, path)
     results, part_ids, part_inds = results_tup
 
     # Set up arrays to store host results
     nhalo = len(results.keys())
     index_haloids = np.arange(nhalo, dtype=int)
     sim_haloids = np.full(nhalo, -2, dtype=float)
+    sim_grp_haloids = np.full(nhalo, -2, dtype=float)
+    sim_subgrp_haloids = np.full(nhalo, -2, dtype=float)
     halo_nparts = np.full(nhalo, -2, dtype=int)
     nprogs = np.full(nhalo, -2, dtype=int)
     ndescs = np.full(nhalo, -2, dtype=int)
@@ -541,12 +555,19 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
     progs = []
     descs = []
+    progs_grp = []
+    descs_grp = []
+    progs_subgrp = []
+    descs_subgrp = []
     prog_mass_conts = []
     desc_mass_conts = []
 
     for num, simhaloID in enumerate(results.keys()):
 
         sim_haloids[num] = simhaloID
+        grp, subgrp = get_int_sim_ids(simhaloID)
+        sim_grp_haloids[num] = grp
+        sim_subgrp_haloids[num] = subgrp
 
         haloID = num
 
@@ -554,16 +575,23 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
          ndesc, desc_haloids, desc_mass_contribution, current_halo_pids) = results[simhaloID]
 
         sim_prog_haloids = []
+        sim_prog_grpids = []
+        sim_prog_subgrpids = []
         prog_mass_cont = []
         for p, pcont in zip(prog_haloids, prog_mass_contribution):
             if str(p).split('.')[1] == str(2**30):
                 continue
             elif p < 0:
                 continue
+            pgrp, psubgrp = get_int_sim_ids(p)
             sim_prog_haloids.append(p)
+            sim_prog_grpids.append(pgrp)
+            sim_prog_subgrpids.append(psubgrp)
             prog_mass_cont.append(pcont)
 
         sim_prog_haloids = np.array(sim_prog_haloids)
+        sim_prog_grpids = np.array(sim_prog_grpids)
+        sim_prog_subgrpids = np.array(sim_prog_subgrpids)
         prog_mass_contribution = np.array(prog_mass_cont)
         nprog = sim_prog_haloids.size
 
@@ -571,16 +599,23 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
             print("sizes", sim_prog_haloids.size, np.unique(sim_prog_haloids).size)
         
         sim_desc_haloids = []
+        sim_desc_grpids = []
+        sim_desc_subgrpids = []
         desc_mass_cont = []
         for d, dcont in zip(desc_haloids, desc_mass_contribution):
             if str(d).split('.')[1] == str(2**30):
                 continue
             elif d < 0:
                 continue
+            dgrp, dsubgrp = get_int_sim_ids(d)
             sim_desc_haloids.append(d)
+            sim_desc_grpids.append(dgrp)
+            sim_desc_subgrpids.append(dsubgrp)
             desc_mass_cont.append(dcont)
 
         sim_desc_haloids = np.array(sim_desc_haloids)
+        sim_desc_grpids = np.array(sim_desc_grpids)
+        sim_desc_subgrpids = np.array(sim_desc_subgrpids)
         desc_mass_contribution = np.array(desc_mass_cont)
         ndesc = sim_desc_haloids.size
 
@@ -592,6 +627,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         if nprog > 0:
             prog_start_index[haloID] = len(progs)
             progs.extend(sim_prog_haloids)
+            progs_grp.extend(sim_prog_grpids)
+            progs_subgrp.extend(sim_prog_subgrpids)
             prog_mass_conts.extend(prog_mass_contribution)
         else:
             prog_start_index[haloID] = 2**30
@@ -599,12 +636,18 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
         if ndesc > 0:
             desc_start_index[haloID] = len(descs)
             descs.extend(sim_desc_haloids)
+            descs_grp.extend(sim_desc_grpids)
+            descs_subgrp.extend(sim_desc_subgrpids)
             desc_mass_conts.extend(desc_mass_contribution)
         else:
             desc_start_index[haloID] = 2**30
 
     progs = np.array(progs)
     descs = np.array(descs)
+    progs_grp = np.array(progs_grp)
+    descs_grp = np.array(descs_grp)
+    progs_subgrp = np.array(progs_subgrp)
+    descs_subgrp = np.array(descs_subgrp)
     prog_mass_conts = np.array(prog_mass_conts)
     desc_mass_conts = np.array(desc_mass_conts)
 
@@ -613,6 +656,8 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
     hdf.create_dataset('MEGA_halo_IDs', shape=index_haloids.shape, dtype=int, data=index_haloids, compression='gzip')
     hdf.create_dataset('SUBFIND_halo_IDs', shape=sim_haloids.shape, dtype=float, data=sim_haloids, compression='gzip')
+    hdf.create_dataset('SUBFIND_Group_IDs', shape=sim_grp_haloids.shape, dtype=int, data=sim_grp_haloids, compression='gzip')
+    hdf.create_dataset('SUBFIND_SubGroup_IDs', shape=sim_subgrp_haloids.shape, dtype=int, data=sim_subgrp_haloids, compression='gzip')
     hdf.create_dataset('nProgs', shape=nprogs.shape, dtype=int, data=nprogs, compression='gzip')
     hdf.create_dataset('nDescs', shape=ndescs.shape, dtype=int, data=ndescs, compression='gzip')
     hdf.create_dataset('nParts', shape=halo_nparts.shape, dtype=int, data=halo_nparts, compression='gzip')
@@ -623,6 +668,10 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
 
     hdf.create_dataset('prog_halo_ids', shape=progs.shape, dtype=float, data=progs, compression='gzip')
     hdf.create_dataset('desc_halo_ids', shape=descs.shape, dtype=float, data=descs, compression='gzip')
+    hdf.create_dataset('prog_group_ids', shape=progs_grp.shape, dtype=int, data=progs_grp, compression='gzip')
+    hdf.create_dataset('desc_group_ids', shape=descs_grp.shape, dtype=int, data=descs_grp, compression='gzip')
+    hdf.create_dataset('prog_subgroup_ids', shape=progs_subgrp.shape, dtype=int, data=progs_subgrp, compression='gzip')
+    hdf.create_dataset('desc_subgroup_ids', shape=descs_subgrp.shape, dtype=int, data=descs_subgrp, compression='gzip')
     hdf.create_dataset('prog_npart_contribution', shape=prog_mass_conts.shape, dtype=float, data=prog_mass_conts,
                        compression='gzip')
     hdf.create_dataset('desc_npart_contribution', shape=desc_mass_conts.shape, dtype=float, data=desc_mass_conts,
@@ -650,7 +699,7 @@ def mainDirectProgDesc(snap, prog_snap, desc_snap, path, savepath='MergerGraphs/
                            data=prog_dm_masses, compression='gzip')
         hdf.create_dataset('desc_dm_masses', shape=desc_dm_masses.shape, dtype=float,
                            data=desc_dm_masses, compression='gzip')
-        hdf.create_dataset('Star_Masses', shape=masses.shape, dtype=float,
+        hdf.create_dataset('DM_Masses', shape=masses.shape, dtype=float,
                            data=masses, compression='gzip')
 
         hdf.close()
