@@ -25,16 +25,6 @@ reg = "26"
 path1 = "/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_" + reg + "/data/"
 path2 = "/cosma7/data/dp004/FLARES/FLARES-1/G-EAGLE_" + reg + "/data/"
 
-# Define the gravitational constant
-G = (const.G.to(u.km ** 3 * u.M_sun ** -1 * u.s ** -2)).value
-
-# Compute the mean density
-mean_den = 2520**3 * 8.01 * 10**10 * u.M_sun / 3.2 ** 3 / u.Gpc ** 3 * (1 + redshift) ** 3
-mean_den = mean_den.to(u.M_sun / u.km ** 3)
-
-# Define the velocity space linking length
-vlinkl_indp = (np.sqrt(G / 2) * (4 * np.pi * 200 * mean_den / 3) ** (1 / 6) * (1 + redshift) ** 0.5).value
-
 print("Matching on...")
 print(path1)
 print(path2)
@@ -45,7 +35,7 @@ ms1 = E.read_array("SUBFIND", path1, snap, "Subhalo/ApertureMeasurements/Mass/03
                   noH=True, numThreads=8)[:, 4] * 10**10
 cops1 = E.read_array("SUBFIND", path1, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
-vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Vmax", physicalUnits=True,
+vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Velocity", physicalUnits=True,
                     noH=True, numThreads=8)
 
 # Get the data for the high resolution
@@ -54,7 +44,7 @@ ms2 = E.read_array("SUBFIND", path2, snap, "Subhalo/ApertureMeasurements/Mass/03
                   noH=True, numThreads=8)[:, 4] * 10**10
 cops2 = E.read_array("SUBFIND", path2, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
-vs2 = E.read_array("SUBFIND", path1, snap, "Subhalo/Vmax", physicalUnits=True,
+vs2 = E.read_array("SUBFIND", path2, snap, "Subhalo/Velocity", physicalUnits=True,
                     noH=True, numThreads=8)
 
 # Build the tree
