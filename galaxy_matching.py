@@ -43,7 +43,7 @@ cops2 = E.read_array("SUBFIND", path2, snap, "Subhalo/CentreOfPotential", physic
                     noH=True, numThreads=8)
 vs2 = E.read_array("SUBFIND", path1, snap, "Subhalo/Velocity", physicalUnits=True,
                     noH=True, numThreads=8)
-
+print(vs2)
 # Build the tree
 tree = cKDTree(cops2)
 
@@ -75,7 +75,7 @@ for ind, cop in enumerate(cops1):
 
     # # ===================== Matching on COP and Velocity =====================
     #
-    # # Find the 5 nearest neighbours
+    # # Find the 10 nearest neighbours
     # ds, inds = tree.query(cop, k=10)
     #
     # # Build velocity tree for these particles
