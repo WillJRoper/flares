@@ -16,7 +16,7 @@ sns.set_style('whitegrid')
 
 
 regions = []
-for reg in range(0, 40):
+for reg in range(24, 40):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -64,12 +64,17 @@ for reg in regions:
 
         path = '/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_' + reg + '/data/'
         # path = '/cosma7/data/dp004/FLARES/FLARES-1/FLARES_00_instantFB/data/'
+        half_mass_rads_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                                      numThreads=8)[:, 4] * 1e3)
+        xaxis_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                             noH=True, numThreads=8)[:, 4] * 10 ** 10)
         try:
             half_mass_rads_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                                           numThreads=8)[:, 4] * 1e3)
             xaxis_dict[snap].extend(E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                                  noH=True, numThreads=8)[:, 4] * 10**10)
         except OSError:
+            print("WWWWHHHHAAAA")
             continue
         except ValueError:
             print("WWWWHHHHAAAA")
