@@ -45,9 +45,7 @@ ms1 = E.read_array("SUBFIND", path1, snap, "Subhalo/ApertureMeasurements/Mass/03
                   noH=True, numThreads=8)[:, 4] * 10**10
 cops1 = E.read_array("SUBFIND", path1, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
-vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/StellarVelDisp", physicalUnits=True,
-                    noH=True, numThreads=8)
-ns1 = E.read_array("SUBFIND", path1, snap, "Subhalo/SubLength", physicalUnits=True,
+vs1 = E.read_array("SUBFIND", path1, snap, "Subhalo/Vmax", physicalUnits=True,
                     noH=True, numThreads=8)
 
 # Get the data for the high resolution
@@ -56,7 +54,7 @@ ms2 = E.read_array("SUBFIND", path2, snap, "Subhalo/ApertureMeasurements/Mass/03
                   noH=True, numThreads=8)[:, 4] * 10**10
 cops2 = E.read_array("SUBFIND", path2, snap, "Subhalo/CentreOfPotential", physicalUnits=True,
                     noH=True, numThreads=8)
-vs2 = E.read_array("SUBFIND", path1, snap, "Subhalo/StellarVelDisp", physicalUnits=True,
+vs2 = E.read_array("SUBFIND", path1, snap, "Subhalo/Vmax", physicalUnits=True,
                     noH=True, numThreads=8)
 
 # Build the tree
