@@ -46,29 +46,32 @@ def get_attrs_datasets(fileType, path, tag):
 
     for file in files:
 
+        # Initialise lists to store data that needs to be extracted
+        attr_keys = []
+        dset_keys = []
+
         with h5py.File(file, 'r') as hf:
 
             # Get attributes
             root_attrs = list(hf.attrs.keys())
             header_attrs = list(hf['Header'].attrs.keys())
 
+            attr_keys.extend(root_attrs)
+            attr_keys.extend(header_attrs)
+
             # Get datasets
             root_datasets = list(hf.keys())
             header_datasets = list(hf['Header'].keys())
 
-            print("----------------------------------")
-            print(file)
-            print(root_attrs)
-            print(header_attrs)
-            print(root_datasets)
-            print(header_datasets)
-
             for key in root_datasets:
-                print(key)
                 root_key_datasets = list(hf[key].keys())
-                root_key_attrs_datasets = list(hf[key].attrs.keys())
-                print(root_key_datasets)
-                print(root_key_attrs_datasets)
+                for key1 in root_key_datasets:
+                    dset_keys.append(key + "/" + key1)
+
+        print("----------------------------------")
+        print(file)
+        print(attr_keys)
+        print(dset_keys)
 
 
 path = "/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_26/data/"
