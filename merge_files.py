@@ -64,15 +64,13 @@ def get_attrs_datasets(fileType, path, tag):
             root_datasets = list(hf.keys())
             header_datasets = list(hf['Header'].keys())
 
-            print(root_datasets)
-
             for key in root_datasets:
                 root_key_datasets = list(hf[key].keys())
                 for key1 in root_key_datasets:
                     dset_keys.append(key + "/" + key1)
                 root_key_attrs_datasets = list(hf[key].attrs.keys())
                 for key1 in root_key_attrs_datasets:
-                    dset_keys.append((key, key1))
+                    group_attr_keys.append((key, key1))
 
         print("----------------------------------")
         print(file)
