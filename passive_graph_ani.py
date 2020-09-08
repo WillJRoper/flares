@@ -34,7 +34,7 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
     cop = gal_cops[np.logical_and(subfind_grp_ids == grp, subfind_subgrp_ids == subgrp)]
 
     # Set up figure
-    fig = plt.figure(figsize=(6, 6))
+    fig = plt.figure(figsize=(4, 3))
     gs = gridspec.GridSpec(3, 4)
     gs.update(wspace=0.0, hspace=0.0)
     ax1 = fig.add_subplot(gs[0, 0])
