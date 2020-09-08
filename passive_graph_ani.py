@@ -99,7 +99,7 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
             lab_horz = right_side - scale / 2
             axes[row][ipart_type].plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.75)
             axes[row][ipart_type].text(lab_horz, lab_vert, str(int(scale)) + ' ckpc', horizontalalignment='center',
-                              fontsize=4, color='w')
+                                       fontsize=4, color='w')
 
     all_parts_poss = np.array(all_parts_poss)
     all_parts_poss_gal = np.array(all_parts_poss_gal)
@@ -125,9 +125,9 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
         vert = width - (width * 0.25)
         lab_vert = vert + (width * 0.1) * 5 / 8
         lab_horz = right_side - scale / 2
-        axes[row][ipart_type].plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.75)
-        axes[row][ipart_type].text(lab_horz, lab_vert, str(int(scale)) + ' ckpc', horizontalalignment='center',
-                                   fontsize=4, color='w')
+        axes[row][3].plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.75)
+        axes[row][3].text(lab_horz, lab_vert, str(int(scale)) + ' ckpc', horizontalalignment='center',
+                          fontsize=4, color='w')
 
     axes = np.array(axes).flatten()
     for ax in axes:
@@ -145,10 +145,10 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
     # cbar1.outline.set_linewidth(0.05)
     # cbar1.ax.tick_params(axis='x', length=1, width=0.2, pad=0.01, labelsize=2, color='w', labelcolor='w')
 
-    ax1.set_title("Gas")
-    ax2.set_title("Dark Matter")
-    ax3.set_title("Stellar")
-    ax4.set_title("All")
+    ax1.set_title("Gas", fontsize=6)
+    ax2.set_title("Dark Matter", fontsize=6)
+    ax3.set_title("Stellar", fontsize=6)
+    ax4.set_title("All", fontsize=6)
 
     fig.savefig('plots/passive_animation/passive_ani_' + str(grps[0]) + '_' + str(subgrps[0]) + '_%03d.png' % num,
                 bbox_inches='tight', dpi=600)
