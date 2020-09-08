@@ -98,18 +98,18 @@ for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, g
             axes[row][ipart_type].imshow(np.log10(H), extent=(-width, width, -width, width),
                                          cmap='Greys_r')
 
-            H, _, _ = np.histogram2d(gal_poss[:, i], gal_poss[:, j], bins=int(width / soft),
-                                                       range=((-width, width), (-width, width)))
-
-            axes[row][ipart_type].imshow(np.log10(H), extent=(-width, width, -width, width),
-                                         cmap='viridis')
-
             if secgrp != None:
                 H, _, _ = np.histogram2d(secgal_poss[:, i], secgal_poss[:, j], bins=int(width / soft),
                                                            range=((-width, width), (-width, width)))
 
                 axes[row][ipart_type].imshow(np.log10(H), extent=(-width, width, -width, width),
                                              cmap='plasma')
+
+            H, _, _ = np.histogram2d(gal_poss[:, i], gal_poss[:, j], bins=int(width / soft),
+                                                       range=((-width, width), (-width, width)))
+
+            axes[row][ipart_type].imshow(np.log10(H), extent=(-width, width, -width, width),
+                                         cmap='viridis')
 
             # Draw scale line
             right_side = width - (width * 0.25)
@@ -134,18 +134,18 @@ for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, g
         axes[row][3].imshow(np.log10(H), extent=(-width, width, -width, width),
                                      cmap='Greys_r')
 
-        H, _, _ = np.histogram2d(all_parts_poss_gal[:, i], all_parts_poss_gal[:, j], bins=int(width / soft),
-                                                   range=((-width, width), (-width, width)))
-
-        axes[row][3].imshow(np.log10(H), extent=(-width, width, -width, width),
-                                     cmap='viridis')
-
         if secgrp != None:
             H, _, _ = np.histogram2d(all_parts_poss_secgal[:, i], all_parts_poss_secgal[:, j], bins=int(width / soft),
                                      range=((-width, width), (-width, width)))
 
             axes[row][3].imshow(np.log10(H), extent=(-width, width, -width, width),
                                          cmap='plasma')
+
+        H, _, _ = np.histogram2d(all_parts_poss_gal[:, i], all_parts_poss_gal[:, j], bins=int(width / soft),
+                                                   range=((-width, width), (-width, width)))
+
+        axes[row][3].imshow(np.log10(H), extent=(-width, width, -width, width),
+                                     cmap='viridis')
 
         # Draw scale line
         right_side = width - (width * 0.25)
