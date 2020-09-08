@@ -16,6 +16,8 @@ snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000',
          '009_z006p000', '010_z005p000']
 grps = [23, 30, 2, 5, 8, 3]
 subgrps = [0, 0, 1, 1, 1, 9]
+sec_grps = [None, 30, 2, 5, 8, 3]
+sec_subgrps = [None, 1, 0, 0, 0, 1]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
 # Set up images
@@ -23,7 +25,7 @@ width = 750
 soft = 0.001802390 / 0.6777 * 1e3
 scale = 50
 
-for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
+for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, grps, subgrps, sec_grps, sec_subgrps):
 
     # Load all necessary arrays
     subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
@@ -51,6 +53,7 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
     ax12 = fig.add_subplot(gs[2, 3])
 
     all_parts_poss_gal = []
+    all_parts_poss_secgal = []
     all_parts_poss = []
 
     axes = [[ax1, ax2, ax3, ax4], [ax5, ax6, ax7, ax8], [ax9, ax10, ax11, ax12]]
@@ -73,8 +76,14 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
         okinds = np.logical_and(grp_ids == grp, subgrp_ids == subgrp)
         gal_poss = all_poss[okinds, :]
 
+        if secgrp != None:
+            okinds = np.logical_and(grp_ids == secgrp, subgrp_ids == secsubgrp)
+            secgal_poss = all_poss[okinds, :]
+            all_parts_poss_secgal.extend(secgal_poss)
+
         all_parts_poss.extend(img_poss)
         all_parts_poss_gal.extend(gal_poss)
+
 
         for row, (i, j) in enumerate(((0, 1), (1, 2), (0, 2))):
 
@@ -82,15 +91,22 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
                                                        range=((-width, width), (-width, width)))
 
             axes[row][ipart_type].imshow(np.zeros_like(H), extent=(-width, width, -width, width),
-                                         cmap='plasma')
+                                         cmap='Greys_r')
             axes[row][ipart_type].imshow(np.log10(H), extent=(-width, width, -width, width),
-                                         cmap='plasma')
+                                         cmap='Greys_r')
 
             H, _, _ = np.histogram2d(gal_poss[:, i], gal_poss[:, j], bins=int(width / soft),
                                                        range=((-width, width), (-width, width)))
 
             axes[row][ipart_type].imshow(np.log10(H), extent=(-width, width, -width, width),
                                          cmap='viridis')
+
+            if secgrp != None:
+                H, _, _ = np.histogram2d(secgal_poss[:, i], secgal_poss[:, j], bins=int(width / soft),
+                                                           range=((-width, width), (-width, width)))
+
+                axes[row][ipart_type].imshow(np.log10(H), extent=(-width, width, -width, width),
+                                             cmap='plasma')
 
             # Draw scale line
             right_side = width - (width * 0.25)
@@ -103,6 +119,7 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
 
     all_parts_poss = np.array(all_parts_poss)
     all_parts_poss_gal = np.array(all_parts_poss_gal)
+    all_parts_poss_secgal = np.array(all_parts_poss_secgal)
 
     for row, (i, j) in enumerate(((0, 1), (1, 2), (0, 2))):
 
@@ -110,15 +127,22 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
                                                    range=((-width, width), (-width, width)))
 
         axes[row][3].imshow(np.zeros_like(H), extent=(-width, width, -width, width),
-                                     cmap='plasma')
+                                     cmap='Greys_r')
         axes[row][3].imshow(np.log10(H), extent=(-width, width, -width, width),
-                                     cmap='plasma')
+                                     cmap='Greys_r')
 
         H, _, _ = np.histogram2d(all_parts_poss_gal[:, i], all_parts_poss_gal[:, j], bins=int(width / soft),
                                                    range=((-width, width), (-width, width)))
 
         axes[row][3].imshow(np.log10(H), extent=(-width, width, -width, width),
                                      cmap='viridis')
+
+        if secgrp != None:
+            H, _, _ = np.histogram2d(all_parts_poss_secgal[:, i], all_parts_poss_secgal[:, j], bins=int(width / soft),
+                                     range=((-width, width), (-width, width)))
+
+            axes[row][3].imshow(np.log10(H), extent=(-width, width, -width, width),
+                                         cmap='plasma')
 
         # Draw scale line
         right_side = width - (width * 0.25)
