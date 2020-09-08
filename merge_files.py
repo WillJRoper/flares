@@ -94,7 +94,6 @@ def get_attrs_datasets(fileType, path, tag):
             attr_keys.extend(root_attrs)
 
             attr_keys.extend(root_attrs)
-            attr_keys.extend(header_attrs)
 
             # Get datasets
             root_groups = list(hf.keys())
