@@ -36,7 +36,7 @@ def get_files(fileType, path, tag):
     return files
 
 
-def get_datasets(fileType, path, tag):
+# def get_datasets(fileType, path, tag):
 
 
 def get_attrs_datasets(fileType, path, tag):
