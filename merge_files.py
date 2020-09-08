@@ -90,8 +90,11 @@ def get_attrs_datasets(fileType, path, tag):
 
             # Get attributes
             root_attrs = list(hf.attrs.keys())
+            root_attrs = list(hf['Header'].attrs.keys())
 
             attr_keys.extend(root_attrs)
+
+            attr_keys.extend(header_attrs)
 
             # Get datasets
             root_groups = list(hf.keys())
