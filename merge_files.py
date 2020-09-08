@@ -36,7 +36,42 @@ def get_files(fileType, path, tag):
     return files
 
 
-# def get_datasets(fileType, path, tag):
+def read_dset_hdf5(f, dataset):
+    with h5py.File(f, 'r') as hf:
+        dat = np.array(hf.get(dataset))
+        if dat.ndim == 0:
+            return np.array([])
+
+    return dat
+
+
+def read_attr_hdf5(f, attr_keys):
+    """
+
+    Args:
+        ftype (str)
+        directory (str)
+        tag (str)
+        dataset (str)
+    """
+
+    file_num = []
+    value = []
+
+    num = f.split(".")[-2]
+
+    with h5py.File(f, 'r') as hf:
+        for key in attr_keys:
+            dat = hf[key[0]].attrs[key[1]]
+            value.append(dat)
+            file_num.append(num)
+
+    return file_num, attr_keys, value
+
+
+def read_multi(file, attr_keys, group_attr_keys, dset_keys):
+
+
 
 
 def get_attrs_datasets(fileType, path, tag):
@@ -46,29 +81,35 @@ def get_attrs_datasets(fileType, path, tag):
 
     for file in files:
 
+        # Initialise lists to store data that needs to be extracted
+        attr_keys = []
+        group_attr_keys = []
+        dset_keys = []
+
         with h5py.File(file, 'r') as hf:
 
             # Get attributes
             root_attrs = list(hf.attrs.keys())
-            header_attrs = list(hf['Header'].attrs.keys())
+
+            attr_keys.extend(root_attrs)
 
             # Get datasets
-            root_datasets = list(hf.keys())
+            root_groups = list(hf.keys())
             header_datasets = list(hf['Header'].keys())
 
-            print("----------------------------------")
-            print(file)
-            print(root_attrs)
-            print(header_attrs)
-            print(root_datasets)
-            print(header_datasets)
-
-            for key in root_datasets:
-                print(key)
+            for key in root_groups:
                 root_key_datasets = list(hf[key].keys())
+                for key1 in root_key_datasets:
+                    dset_keys.append(key + "/" + key1)
                 root_key_attrs_datasets = list(hf[key].attrs.keys())
-                print(root_key_datasets)
-                print(root_key_attrs_datasets)
+                for key1 in root_key_attrs_datasets:
+                    group_attr_keys.append((key, key1))
+
+        print("----------------------------------")
+        print(file)
+        print(attr_keys)
+        print(group_attr_keys)
+        print(dset_keys)
 
 
 path = "/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_26/data/"
