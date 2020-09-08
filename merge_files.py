@@ -63,6 +63,11 @@ def get_attrs_datasets(fileType, path, tag):
         print(root_datasets)
         print(header_datasets)
 
+        for key in root_datasets:
+            root_key_datasets = list(hf[key].keys())
+            print(key)
+            print(root_key_datasets)
+
 
 path = "/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_26/data/"
 tag = "010_z005p000"
