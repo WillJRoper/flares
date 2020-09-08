@@ -19,7 +19,7 @@ subgrps = [0, 0, 1, 1, 1, 9]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
 # Set up images
-width = 300
+width = 400
 soft = 0.001802390 / 0.6777 * 1e3
 scale = 10
 
@@ -60,10 +60,10 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
         all_poss = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
                                 numThreads=8) * 1e3 - cop
 
-        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', noH=True,
-                               physicalUnits=True, verbose=False, numThreads=8)
-        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', noH=True,
-                                  physicalUnits=True, verbose=False, numThreads=8)
+        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber',
+                               verbose=False, numThreads=8)
+        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber',
+                                  verbose=False, numThreads=8)
 
         okinds = np.logical_and(np.abs(all_poss[:, 0]) < width / 2,
                                 np.logical_and(np.abs(all_poss[:, 1]) < width / 2,
