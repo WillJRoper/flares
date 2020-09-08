@@ -70,7 +70,7 @@ def get_attrs_datasets(fileType, path, tag):
                 root_key_datasets = list(hf[key].keys())
                 for key1 in root_key_datasets:
                     dset_keys.append(key + "/" + key1)
-                root_key_attrs_datasets = list(hf[key].attr.keys())
+                root_key_attrs_datasets = list(hf[key].attrs.keys())
                 for key1 in root_key_attrs_datasets:
                     dset_keys.append((key, key1))
 
