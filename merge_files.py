@@ -48,6 +48,7 @@ def get_attrs_datasets(fileType, path, tag):
 
         # Initialise lists to store data that needs to be extracted
         attr_keys = []
+        group_attr_keys = []
         dset_keys = []
 
         with h5py.File(file, 'r') as hf:
@@ -69,10 +70,14 @@ def get_attrs_datasets(fileType, path, tag):
                 root_key_datasets = list(hf[key].keys())
                 for key1 in root_key_datasets:
                     dset_keys.append(key + "/" + key1)
+                root_key_attrs_datasets = list(hf[key].attr.keys())
+                for key1 in root_key_attrs_datasets:
+                    dset_keys.append((key, key1))
 
         print("----------------------------------")
         print(file)
         print(attr_keys)
+        print(group_attr_keys)
         print(dset_keys)
 
 
