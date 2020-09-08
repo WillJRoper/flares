@@ -19,7 +19,7 @@ subgrps = [0, 0, 1, 1, 1, 9]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
 # Set up images
-width = 250
+width = 500
 soft = 0.001802390 / 0.6777 * 1e3
 scale = 50
 
