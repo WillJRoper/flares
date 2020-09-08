@@ -94,12 +94,12 @@ for num, snap, grp, subgrp in zip(range(len(snaps)), snaps, grps, subgrps):
 
             # Draw scale line
             right_side = width - (width * 0.25)
-            vert = width - (width * 0.175)
+            vert = width - (width * 0.25)
             lab_vert = vert + (width * 0.1) * 5 / 8
             lab_horz = right_side - scale / 2
             axes[row][ipart_type].plot([right_side - scale, right_side], [vert, vert], color='w', linewidth=0.75)
             axes[row][ipart_type].text(lab_horz, lab_vert, str(int(scale)) + ' ckpc', horizontalalignment='center',
-                              fontsize=5, color='w')
+                              fontsize=4, color='w')
 
     all_parts_poss = np.array(all_parts_poss)
     all_parts_poss_gal = np.array(all_parts_poss_gal)
