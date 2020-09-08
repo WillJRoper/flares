@@ -27,6 +27,9 @@ scale = 50
 
 for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, grps, subgrps, sec_grps, sec_subgrps):
 
+    z_str = snap.split('z')[1].split('p')
+    z = float(z_str[0] + '.' + z_str[1])
+
     # Load all necessary arrays
     subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
     subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
@@ -158,6 +161,8 @@ for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, g
         # Remove ticks
         ax.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False,
                         labeltop=False, labelright=False, labelbottom=False)
+        ax.text(0.1, 0.1, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+                transform=ax.transAxes, horizontalalignment='right', fontsize=8)
     # # Add colorbars
     # cax1 = inset_axes(ax1, width="50%", height="3%", loc='lower left')
     # cbar1 = fig.colorbar(im1, cax=cax1, orientation="horizontal")
