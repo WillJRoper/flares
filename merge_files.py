@@ -191,4 +191,4 @@ path = "/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_26/data/"
 tag = "010_z005p000"
 fileType = "SUBFIND"
 
-get_attrs_datasets(fileType, path, tag)
+read_multi(fileType, path, tag, numThreads=8)
