@@ -46,6 +46,8 @@ for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, g
     # Get cop
     cop = gal_cops[np.logical_and(subfind_grp_ids == grp, subfind_subgrp_ids == subgrp)]
 
+    print(cop)
+
     # Set up figure
     fig = plt.figure(figsize=(4, 3))
     gs = gridspec.GridSpec(3, 4)
