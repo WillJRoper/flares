@@ -46,10 +46,12 @@ for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, g
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8) * 1e3
 
     # Get cop
-    if subgrp != None:
+    if num == 0:
         cop = gal_cops[np.logical_and(subfind_grp_ids == grp, subfind_subgrp_ids == subgrp)]
+    if subgrp != None:
+        current_cop = gal_cops[np.logical_and(subfind_grp_ids == grp, subfind_subgrp_ids == subgrp)]
 
-    print(cop)
+    print(current_cop)
 
     # Set up figure
     fig = plt.figure(figsize=(4, 3))
