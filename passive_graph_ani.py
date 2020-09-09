@@ -21,11 +21,12 @@ sns.set_style("white")
 # path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
 reg = "00"
-snaps = ['009_z006p000', '010_z005p000']
-grps = [211, 2811]
-subgrps = [0, 0]
-sec_grps = [None, None]
-sec_subgrps = [None, None]
+snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000',
+         '009_z006p000', '010_z005p000']
+grps = [211, 2811, None, None, None, None]
+subgrps = [0, 0, None, None, None, None]
+sec_grps = [None, None, None, None, None, None]
+sec_subgrps = [None, None, None, None, None, None]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
 # Set up images
@@ -44,7 +45,8 @@ for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, g
     gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True, numThreads=8) * 1e3
 
     # Get cop
-    cop = gal_cops[np.logical_and(subfind_grp_ids == grp, subfind_subgrp_ids == subgrp)]
+    if subgrp != None:
+        cop = gal_cops[np.logical_and(subfind_grp_ids == grp, subfind_subgrp_ids == subgrp)]
 
     print(cop)
 
@@ -86,8 +88,10 @@ for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, g
                                                np.abs(all_poss[:, 2]) < width))
         img_poss = all_poss[okinds, :]
 
-        okinds = np.logical_and(grp_ids == grp, subgrp_ids == subgrp)
-        gal_poss = all_poss[okinds, :]
+        if subgrp != None:
+            okinds = np.logical_and(grp_ids == grp, subgrp_ids == subgrp)
+            gal_poss = all_poss[okinds, :]
+            all_parts_poss_gal.extend(gal_poss)
 
         if secgrp != None:
             okinds = np.logical_and(grp_ids == secgrp, subgrp_ids == secsubgrp)
@@ -95,7 +99,6 @@ for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, g
             all_parts_poss_secgal.extend(secgal_poss)
 
         all_parts_poss.extend(img_poss)
-        all_parts_poss_gal.extend(gal_poss)
 
 
         for row, (i, j) in enumerate(((0, 1), (1, 2), (0, 2))):
@@ -114,12 +117,12 @@ for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, g
 
                 axes[row][ipart_type].imshow(np.log10(H), extent=(-width, width, -width, width),
                                              cmap='plasma')
+            if subgrp != None:
+                H, _, _ = np.histogram2d(gal_poss[:, i], gal_poss[:, j], bins=int(width / soft),
+                                                           range=((-width, width), (-width, width)))
 
-            H, _, _ = np.histogram2d(gal_poss[:, i], gal_poss[:, j], bins=int(width / soft),
-                                                       range=((-width, width), (-width, width)))
-
-            axes[row][ipart_type].imshow(np.log10(H), extent=(-width, width, -width, width),
-                                         cmap='viridis')
+                axes[row][ipart_type].imshow(np.log10(H), extent=(-width, width, -width, width),
+                                             cmap='viridis')
 
             # Draw scale line
             right_side = width - (width * 0.25)
@@ -150,12 +153,12 @@ for num, snap, grp, subgrp, secgrp, secsubgrp in zip(range(len(snaps)), snaps, g
 
             axes[row][3].imshow(np.log10(H), extent=(-width, width, -width, width),
                                          cmap='plasma')
+        if subgrp != None:
+            H, _, _ = np.histogram2d(all_parts_poss_gal[:, i], all_parts_poss_gal[:, j], bins=int(width / soft),
+                                                       range=((-width, width), (-width, width)))
 
-        H, _, _ = np.histogram2d(all_parts_poss_gal[:, i], all_parts_poss_gal[:, j], bins=int(width / soft),
-                                                   range=((-width, width), (-width, width)))
-
-        axes[row][3].imshow(np.log10(H), extent=(-width, width, -width, width),
-                                     cmap='viridis')
+            axes[row][3].imshow(np.log10(H), extent=(-width, width, -width, width),
+                                         cmap='viridis')
 
         # Draw scale line
         right_side = width - (width * 0.25)
