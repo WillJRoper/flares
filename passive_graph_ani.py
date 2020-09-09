@@ -21,7 +21,7 @@ sns.set_style("white")
 # path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
 reg = "00"
-snaps = ['005_z010p000', '006_z009p000']
+snaps = ['009_z006p000', '010_z005p000']
 grps = [211, 2811]
 subgrps = [0, 0]
 sec_grps = [None, None]
