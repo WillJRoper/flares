@@ -3,7 +3,6 @@ import glob
 import re
 import timeit
 from functools import partial
-
 import h5py
 import numpy as np
 import schwimmbad
@@ -36,16 +35,7 @@ def get_files(fileType, path, tag):
     return files
 
 
-def read_dset_hdf5(f, dataset):
-    with h5py.File(f, 'r') as hf:
-        dat = np.array(hf.get(dataset))
-        if dat.ndim == 0:
-            return np.array([])
-
-    return dat
-
-
-def read_attr_hdf5(f, attr_keys):
+def read_groupdset_hdf5(f, key):
     """
 
     Args:
@@ -55,29 +45,117 @@ def read_attr_hdf5(f, attr_keys):
         dataset (str)
     """
 
-    file_num = []
-    value = []
+    num = f.split(".")[-2]
+
+    with h5py.File(f, 'r') as hf:
+        dat = hf[key][...]
+        value = dat
+        file_num = num
+        attr_key = key
+
+    return file_num, attr_key, value
+
+
+def read_attr_hdf5(f, key):
+    """
+
+    Args:
+        ftype (str)
+        directory (str)
+        tag (str)
+        dataset (str)
+    """
 
     num = f.split(".")[-2]
 
     with h5py.File(f, 'r') as hf:
-        for key in attr_keys:
-            dat = hf[key[0]].attrs[key[1]]
-            value.append(dat)
-            file_num.append(num)
+        dat = hf[key[0]].attrs[key[1]]
+        value = dat
+        file_num = num
+        attr_key = key
 
-    return file_num, attr_keys, value
-
-
-def read_multi(file, attr_keys, group_attr_keys, dset_keys):
+    return file_num, attr_key, value
 
 
+def read_rootattr_hdf5(f, key):
+    """
 
+    Args:
+        ftype (str)
+        directory (str)
+        tag (str)
+        dataset (str)
+    """
+
+    num = f.split(".")[-2]
+
+    with h5py.File(f, 'r') as hf:
+        dat = hf.attrs[key]
+        value = dat
+        file_num = num
+        attr_key = key
+
+    return file_num, attr_key, value
+
+
+def read_multi(fileType, path, tag, numThreads=8):
+
+    start = timeit.default_timer()
+
+    results = {}
+
+    key_dict, files = get_attrs_datasets(fileType, path, tag)
+
+    for key in key_dict["groupattr"]:
+
+        if numThreads == 1:
+            pool = schwimmbad.SerialPool()
+        elif numThreads == -1:
+            pool = schwimmbad.MultiPool()
+        else:
+            pool = schwimmbad.MultiPool(processes=numThreads)
+
+        lg = partial(read_attr_hdf5, key=key)
+        dat = list(pool.map(lg, files))
+        pool.close()
+        results[key] = dat
+
+    for key in key_dict["rootattr"]:
+
+        if numThreads == 1:
+            pool = schwimmbad.SerialPool()
+        elif numThreads == -1:
+            pool = schwimmbad.MultiPool()
+        else:
+            pool = schwimmbad.MultiPool(processes=numThreads)
+
+        lg = partial(read_rootattr_hdf5, key=key)
+        dat = list(pool.map(lg, files))
+        pool.close()
+        results[key] = dat
+
+    for key in key_dict["groupdset"]:
+
+        if numThreads == 1:
+            pool = schwimmbad.SerialPool()
+        elif numThreads == -1:
+            pool = schwimmbad.MultiPool()
+        else:
+            pool = schwimmbad.MultiPool(processes=numThreads)
+
+        lg = partial(read_attr_hdf5, key=key)
+        dat = list(pool.map(lg, files))
+        pool.close()
+        results[key] = dat
+
+    print(results)
 
 def get_attrs_datasets(fileType, path, tag):
 
     # Get all the files
     files = get_files(fileType, path, tag)
+
+    keys_dict = {}
 
     for file in files:
 
@@ -90,15 +168,11 @@ def get_attrs_datasets(fileType, path, tag):
 
             # Get attributes
             root_attrs = list(hf.attrs.keys())
-            root_attrs = list(hf['Header'].attrs.keys())
 
             attr_keys.extend(root_attrs)
 
-            attr_keys.extend(header_attrs)
-
             # Get datasets
             root_groups = list(hf.keys())
-            header_datasets = list(hf['Header'].keys())
 
             for key in root_groups:
                 root_key_datasets = list(hf[key].keys())
@@ -108,11 +182,9 @@ def get_attrs_datasets(fileType, path, tag):
                 for key1 in root_key_attrs_datasets:
                     group_attr_keys.append((key, key1))
 
-        print("----------------------------------")
-        print(file)
-        print(attr_keys)
-        print(group_attr_keys)
-        print(dset_keys)
+        keys_dict[file] = {"rootattr": attr_keys, "groupattr": group_attr_keys, "groupdset": dset_keys}
+
+    return keys_dict, files
 
 
 path = "/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_26/data/"
