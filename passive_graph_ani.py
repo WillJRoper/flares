@@ -24,7 +24,7 @@ reg = "00"
 snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000',
          '009_z006p000', '010_z005p000']
 snaps.reverse()
-grps = [211, 2811, None, None, None, None]
+grps = [211, 129, None, None, None, None]
 subgrps = [0, 0, None, None, None, None]
 sec_grps = [None, None, None, None, None, None]
 sec_subgrps = [None, None, None, None, None, None]
