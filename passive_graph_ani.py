@@ -11,13 +11,21 @@ import seaborn as sns
 
 sns.set_style("white")
 
+# reg = "00"
+# snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000',
+#          '009_z006p000', '010_z005p000']
+# grps = [23, 30, 2, 5, 8, 3]
+# subgrps = [0, 0, 1, 1, 1, 9]
+# sec_grps = [None, 30, 2, 5, 8, 3]
+# sec_subgrps = [None, 1, 0, 0, 0, 1]
+# path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
+
 reg = "00"
-snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000',
-         '009_z006p000', '010_z005p000']
-grps = [23, 30, 2, 5, 8, 3]
-subgrps = [0, 0, 1, 1, 1, 9]
-sec_grps = [None, 30, 2, 5, 8, 3]
-sec_subgrps = [None, 1, 0, 0, 0, 1]
+snaps = ['005_z010p000', '006_z009p000']
+grps = [211, 2811]
+subgrps = [0, 0]
+sec_grps = [None, None]
+sec_subgrps = [None, None]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
 # Set up images
