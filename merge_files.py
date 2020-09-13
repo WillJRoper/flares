@@ -112,7 +112,7 @@ def read_multi(fileType, path, tag, numThreads=8):
     if "groupattr" in key_dict:
         for key in key_dict["groupattr"]:
 
-            print(key)
+            print("Processing...", key)
 
             if numThreads == 1:
                 pool = schwimmbad.SerialPool()
@@ -129,7 +129,7 @@ def read_multi(fileType, path, tag, numThreads=8):
     if "rootattr" in key_dict:
         for key in key_dict["rootattr"]:
 
-            print(key)
+            print("Processing...", key)
 
             if numThreads == 1:
                 pool = schwimmbad.SerialPool()
@@ -146,7 +146,7 @@ def read_multi(fileType, path, tag, numThreads=8):
     if "groupdset" in key_dict:
         for key in key_dict["groupdset"]:
 
-            print(key)
+            print("Processing...", key)
 
             if numThreads == 1:
                 pool = schwimmbad.SerialPool()
@@ -155,7 +155,7 @@ def read_multi(fileType, path, tag, numThreads=8):
             else:
                 pool = schwimmbad.MultiPool(processes=numThreads)
 
-            lg = partial(read_attr_hdf5, key=key)
+            lg = partial(read_groupdset_hdf5, key=key)
             dat = list(pool.map(lg, files))
             pool.close()
             results[key] = dat
