@@ -112,6 +112,8 @@ def read_multi(fileType, path, tag, numThreads=8):
     if "groupattr" in key_dict:
         for key in key_dict["groupattr"]:
 
+            print(key)
+
             if numThreads == 1:
                 pool = schwimmbad.SerialPool()
             elif numThreads == -1:
@@ -127,6 +129,8 @@ def read_multi(fileType, path, tag, numThreads=8):
     if "rootattr" in key_dict:
         for key in key_dict["rootattr"]:
 
+            print(key)
+
             if numThreads == 1:
                 pool = schwimmbad.SerialPool()
             elif numThreads == -1:
@@ -141,6 +145,8 @@ def read_multi(fileType, path, tag, numThreads=8):
 
     if "groupdset" in key_dict:
         for key in key_dict["groupdset"]:
+
+            print(key)
 
             if numThreads == 1:
                 pool = schwimmbad.SerialPool()
