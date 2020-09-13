@@ -189,24 +189,20 @@ def get_attrs_datasets(fileType, path, tag):
                 for key1 in root_key_attrs_datasets:
                     group_attr_keys.append((key, key1))
 
-        if len(attr_keys) > 1:
-            keys_dict["rootattr"].extend(attr_keys)
-        else:
-            keys_dict["rootattr"].append(attr_keys)
+        for key in attr_keys:
+            if key in keys_dict["rootattr"]:
+                continue
+            keys_dict["rootattr"].append(key)
 
-        if len(group_attr_keys) > 1:
-            keys_dict["groupattr"].extend(group_attr_keys)
-        else:
-            keys_dict["groupattr"].append(group_attr_keys)
+        for key in group_attr_keys:
+            if key in keys_dict["groupattr"]:
+                continue
+            keys_dict["groupattr"].append(key)
 
-        if len(dset_keys) > 1:
-            keys_dict["groupdset"].extend(dset_keys)
-        else:
-            keys_dict["groupdset"].append(dset_keys)
-
-    keys_dict["rootattr"] = set(keys_dict["rootattr"])
-    keys_dict["groupattr"] = set(keys_dict["groupattr"])
-    keys_dict["groupdset"] = set(keys_dict["groupdset"])
+        for key in dset_keys:
+            if key in keys_dict["groupdset"]:
+                continue
+            keys_dict["groupdset"].append(key)
 
     print(keys_dict)
     print("There are", len(keys_dict["rootattr"]) + len(keys_dict["groupattr"]) + len(keys_dict["groupdset"]),
