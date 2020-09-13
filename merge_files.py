@@ -208,6 +208,7 @@ def get_attrs_datasets(fileType, path, tag):
     keys_dict["groupattr"] = np.unique(keys_dict["groupattr"])
     keys_dict["groupdset"] = np.unique(keys_dict["groupdset"])
 
+    print(keys_dict)
     print("There are", len(keys_dict["rootattr"]) + len(keys_dict["groupattr"]) + len(keys_dict["groupdset"]),
           "keys to extract")
 
