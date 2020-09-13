@@ -51,7 +51,10 @@ def read_groupdset_hdf5(f, key):
     num = f.split(".")[-2]
 
     with h5py.File(f, 'r') as hf:
-        dat = hf[key][...]
+        try:
+            dat = hf[key][...]
+        except AttributeError:
+            dat = hf[key]
         value = dat
         file_num = num
         attr_key = key
