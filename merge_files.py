@@ -31,9 +31,9 @@ def get_files(fileType, path, tag):
         ValueError("Type of files not supported")
 
     if len(files) > 0:
-        print("There are", len(files), "of the form", files[0])
+        print("There are", len(files), "files of the form", files[0].split(".")[0] + ".*.hdf5")
     else:
-        print("There are", len(files))
+        print("There are", len(files), "files")
 
     return files
 
@@ -162,7 +162,7 @@ def get_attrs_datasets(fileType, path, tag):
     # Get all the files
     files = get_files(fileType, path, tag)
 
-    keys_dict = {}
+    keys_dict = {"rootattr": set(), "groupattr": set(), "groupdset": set()}
 
     for file in files:
 
@@ -189,7 +189,9 @@ def get_attrs_datasets(fileType, path, tag):
                 for key1 in root_key_attrs_datasets:
                     group_attr_keys.append((key, key1))
 
-        keys_dict[file] = {"rootattr": attr_keys, "groupattr": group_attr_keys, "groupdset": dset_keys}
+        keys_dict["rootattr"].update(attr_keys)
+        keys_dict["groupattr"].update(group_attr_keys)
+        keys_dict["groupdset"].update(dset_keys)
 
     return keys_dict, files
 
