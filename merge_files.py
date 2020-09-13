@@ -30,7 +30,10 @@ def get_files(fileType, path, tag):
         files = []
         ValueError("Type of files not supported")
 
-    print("There are", len(files), "of the form", files[0])
+    if len(files) > 0:
+        print("There are", len(files), "of the form", files[0])
+    else:
+        print("There are", len(files))
 
     return files
 
