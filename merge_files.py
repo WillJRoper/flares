@@ -54,7 +54,7 @@ def read_groupdset_hdf5(f, key):
         try:
             dat = hf[key][...]
         except AttributeError:
-            dat = hf[key]
+            print(key, num)
         value = dat
         file_num = num
         attr_key = key
