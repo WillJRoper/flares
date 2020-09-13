@@ -109,47 +109,50 @@ def read_multi(fileType, path, tag, numThreads=8):
 
     key_dict, files = get_attrs_datasets(fileType, path, tag)
 
-    for key in key_dict["groupattr"]:
+    if "groupattr" in key_dict:
+        for key in key_dict["groupattr"]:
 
-        if numThreads == 1:
-            pool = schwimmbad.SerialPool()
-        elif numThreads == -1:
-            pool = schwimmbad.MultiPool()
-        else:
-            pool = schwimmbad.MultiPool(processes=numThreads)
+            if numThreads == 1:
+                pool = schwimmbad.SerialPool()
+            elif numThreads == -1:
+                pool = schwimmbad.MultiPool()
+            else:
+                pool = schwimmbad.MultiPool(processes=numThreads)
 
-        lg = partial(read_attr_hdf5, key=key)
-        dat = list(pool.map(lg, files))
-        pool.close()
-        results[key] = dat
+            lg = partial(read_attr_hdf5, key=key)
+            dat = list(pool.map(lg, files))
+            pool.close()
+            results[key] = dat
 
-    for key in key_dict["rootattr"]:
+    if "rootattr" in key_dict:
+        for key in key_dict["rootattr"]:
 
-        if numThreads == 1:
-            pool = schwimmbad.SerialPool()
-        elif numThreads == -1:
-            pool = schwimmbad.MultiPool()
-        else:
-            pool = schwimmbad.MultiPool(processes=numThreads)
+            if numThreads == 1:
+                pool = schwimmbad.SerialPool()
+            elif numThreads == -1:
+                pool = schwimmbad.MultiPool()
+            else:
+                pool = schwimmbad.MultiPool(processes=numThreads)
 
-        lg = partial(read_rootattr_hdf5, key=key)
-        dat = list(pool.map(lg, files))
-        pool.close()
-        results[key] = dat
+            lg = partial(read_rootattr_hdf5, key=key)
+            dat = list(pool.map(lg, files))
+            pool.close()
+            results[key] = dat
 
-    for key in key_dict["groupdset"]:
+    if "groupdset" in key_dict:
+        for key in key_dict["groupdset"]:
 
-        if numThreads == 1:
-            pool = schwimmbad.SerialPool()
-        elif numThreads == -1:
-            pool = schwimmbad.MultiPool()
-        else:
-            pool = schwimmbad.MultiPool(processes=numThreads)
+            if numThreads == 1:
+                pool = schwimmbad.SerialPool()
+            elif numThreads == -1:
+                pool = schwimmbad.MultiPool()
+            else:
+                pool = schwimmbad.MultiPool(processes=numThreads)
 
-        lg = partial(read_attr_hdf5, key=key)
-        dat = list(pool.map(lg, files))
-        pool.close()
-        results[key] = dat
+            lg = partial(read_attr_hdf5, key=key)
+            dat = list(pool.map(lg, files))
+            pool.close()
+            results[key] = dat
 
     print(results)
 
@@ -191,7 +194,7 @@ def get_attrs_datasets(fileType, path, tag):
     return keys_dict, files
 
 
-path = "/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_26/data/"
+path = "/cosma7/data/dp004/FLARES/FLARES-HD/FLARES_HR_24/data/"
 tag = "010_z005p000"
 fileType = "SUBFIND"
 
