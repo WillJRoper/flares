@@ -162,7 +162,7 @@ def get_attrs_datasets(fileType, path, tag):
     # Get all the files
     files = get_files(fileType, path, tag)
 
-    keys_dict = {"rootattr": set(), "groupattr": set(), "groupdset": set()}
+    keys_dict = {"rootattr": [], "groupattr": [], "groupdset": []}
 
     for file in files:
 
@@ -189,14 +189,27 @@ def get_attrs_datasets(fileType, path, tag):
                 for key1 in root_key_attrs_datasets:
                     group_attr_keys.append((key, key1))
 
-        print(attr_keys, group_attr_keys, dset_keys)
-
         if len(attr_keys) > 1:
-            keys_dict["rootattr"].update(attr_keys)
+            keys_dict["rootattr"].extend(attr_keys)
         else:
-            keys_dict["rootattr"].update([attr_keys])
-        keys_dict["groupattr"].update(group_attr_keys)
-        keys_dict["groupdset"].update(dset_keys)
+            keys_dict["rootattr"].append(attr_keys)
+
+        if len(group_attr_keys) > 1:
+            keys_dict["groupattr"].extend(group_attr_keys)
+        else:
+            keys_dict["groupattr"].append(group_attr_keys)
+
+        if len(dset_keys) > 1:
+            keys_dict["groupdset"].extend(dset_keys)
+        else:
+            keys_dict["groupdset"].append(dset_keys)
+
+    keys_dict["rootattr"] = np.unique(keys_dict["rootattr"])
+    keys_dict["groupattr"] = np.unique(keys_dict["groupattr"])
+    keys_dict["groupdset"] = np.unique(keys_dict["groupdset"])
+
+    print("There are", len(keys_dict["rootattr"]) + len(keys_dict["groupattr"]) + len(keys_dict["groupdset"]),
+          "keys to extract")
 
     return keys_dict, files
 
