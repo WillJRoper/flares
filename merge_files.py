@@ -189,9 +189,9 @@ def get_attrs_datasets(fileType, path, tag):
                 for key1 in root_key_attrs_datasets:
                     group_attr_keys.append((key, key1))
 
-        keys_dict["rootattr"].update(attr_keys)
-        keys_dict["groupattr"].update(group_attr_keys)
-        keys_dict["groupdset"].update(dset_keys)
+        keys_dict["rootattr"].update((attr_keys))
+        keys_dict["groupattr"].update((group_attr_keys))
+        keys_dict["groupdset"].update((dset_keys))
 
     return keys_dict, files
 
