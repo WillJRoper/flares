@@ -204,9 +204,9 @@ def get_attrs_datasets(fileType, path, tag):
         else:
             keys_dict["groupdset"].append(dset_keys)
 
-    keys_dict["rootattr"] = np.unique(keys_dict["rootattr"])
-    keys_dict["groupattr"] = np.unique(keys_dict["groupattr"])
-    keys_dict["groupdset"] = np.unique(keys_dict["groupdset"])
+    keys_dict["rootattr"] = set(keys_dict["rootattr"])
+    keys_dict["groupattr"] = set(keys_dict["groupattr"])
+    keys_dict["groupdset"] = set(keys_dict["groupdset"])
 
     print(keys_dict)
     print("There are", len(keys_dict["rootattr"]) + len(keys_dict["groupattr"]) + len(keys_dict["groupdset"]),
