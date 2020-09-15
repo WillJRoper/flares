@@ -600,7 +600,7 @@ for reg in halos_in_pop:
         ax4.set_ylabel('SFR / $[M_\odot/\mathrm{Gyr}]$')
         ax5.set_ylabel('$R_{1/2, \mathrm{dm}} / \mathrm{pkpc}$')
         ax6.set_ylabel('$R_{1/2} / \mathrm{pkpc}$')
-        ax7.set_ylabel('$\Delta R_{\hostCOP} / \mathrm{pkpc}$')
+        ax7.set_ylabel('$\Delta R_{hostCOP} / \mathrm{pkpc}$')
         ax8.set_ylabel('|Total Energy| / $[???]$')
         ax9.set_ylabel('$N_{\mathrm{dprog}}$')
         ax10.set_ylabel('$N_{\mathrm{ddesc}}$')
