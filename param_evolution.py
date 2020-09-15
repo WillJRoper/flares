@@ -396,7 +396,7 @@ for reg in regions:
             subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
             subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-            grp_cops[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupCentreOfPotential', numThreads=8,
+            grp_cops[snap][reg] = E.read_array('SUBFIND', path, snap, 'FOF/GroupCentreOfPotential', numThreads=8,
                                    noH=True, physicalUnits=True) * 1e3
             cops[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', numThreads=8,
                                noH=True, physicalUnits=True) * 1e3
@@ -472,7 +472,6 @@ count = 0
 for reg in regions:
 
     try:
-        print(gal_star_ms['011_z004p770'][reg])
         halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][gal_star_ms['011_z004p770'][reg] >= mthresh]
         count += len(halos_in_pop[reg])
     except KeyError:
