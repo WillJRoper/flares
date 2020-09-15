@@ -313,7 +313,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
 
 
 regions = []
-for reg in range(0, 2):
+for reg in range(0, 1):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -321,7 +321,7 @@ for reg in range(0, 2):
         regions.append(str(reg))
 
 gregions = []
-for reg in range(0, 2):
+for reg in range(0, 1):
 
     if reg < 10:
         gregions.append('0' + str(reg))
@@ -549,8 +549,8 @@ for reg in halos_in_pop:
                 dm_ms.append(gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 energy.append(gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp])
-                cent_dist.append(np.sqrt(grp_cops[snap][reg][int(str(grp).split(".")[0])]**2
-                                         - cops[snap][reg][halo_ids_dict[snap][reg] == grp]**2))
+                cent_dist.append(np.sqrt(np.sum(grp_cops[snap][reg][int(str(grp).split(".")[0])]**2
+                                         - cops[snap][reg][halo_ids_dict[snap][reg] == grp]**2)))
                 nprogs.append(nprogs_dict[snap])
                 ndescs.append(ndescs_dict[snap])
                 bhmar.append(gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp])
