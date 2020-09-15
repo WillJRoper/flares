@@ -527,7 +527,7 @@ for reg in halos_in_pop:
         dm_hmr = []
         gas_hmr = []
         star_hmr = []
-        cent_dist = []
+        cent_sat = []
         energy = []
         zs = []
         bhmar = []
@@ -549,8 +549,7 @@ for reg in halos_in_pop:
                 dm_ms.append(gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 energy.append(gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp])
-                cent_dist.append(np.sqrt(np.sum(grp_cops[snap][reg][int(str(grp).split(".")[0])]**2
-                                         - cops[snap][reg][halo_ids_dict[snap][reg] == grp]**2)))
+                cent_sat.append(int(str(grp).split(".")[1]) == 0)
                 nprogs.append(nprogs_dict[snap])
                 ndescs.append(ndescs_dict[snap])
                 bhmar.append(gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp])
@@ -573,7 +572,8 @@ for reg in halos_in_pop:
         ax10 = fig.add_subplot(gs[1, 2])
         ax11 = fig.add_subplot(gs[2, 2])
         ax12 = fig.add_subplot(gs[3, 2])
-        print(cent_dist)
+
+        cent_sat = np.int32(np.logical_not(cent_sat))
 
         ax1.plot(zs, dm_ms)
         ax2.plot(zs, gas_ms)
@@ -584,7 +584,7 @@ for reg in halos_in_pop:
         ax6.plot(zs, soft, linestyle='--', color='k')
         ax6.plot(zs, gas_hmr, label="Gas")
         ax6.plot(zs, star_hmr, label="Stellar")
-        ax7.plot(zs, cent_dist)
+        ax7.plot(zs, cent_sat)
         ax8.plot(zs, np.abs(energy))
         ax9.plot(zs, nprogs)
         ax10.plot(zs, ndescs)
@@ -601,7 +601,7 @@ for reg in halos_in_pop:
         ax4.set_ylabel('SFR / $[M_\odot/\mathrm{Gyr}]$')
         ax5.set_ylabel('$R_{1/2, \mathrm{dm}} / \mathrm{pkpc}$')
         ax6.set_ylabel('$R_{1/2} / \mathrm{pkpc}$')
-        ax7.set_ylabel('$\Delta R_{hostCOP} / \mathrm{pkpc}$')
+        ax7.set_ylabel('Central ?')
         ax8.set_ylabel('|Total Energy| / $[???]$')
         ax9.set_ylabel('$N_{\mathrm{dprog}}$')
         ax10.set_ylabel('$N_{\mathrm{ddesc}}$')
