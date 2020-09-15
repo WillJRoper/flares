@@ -545,7 +545,7 @@ for reg in halos_in_pop:
                 sfrs.append(gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp])
                 gas_ms.append(gal_gas_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 star_ms.append(gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
-                bh_ms.append(gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
+                bh_ms.append(gal_bh_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 gas_hmr.append(gal_gas_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 star_hmr .append(gal_star_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_ms.append(gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
@@ -603,7 +603,7 @@ for reg in halos_in_pop:
         ax4.set_ylabel('$M_{\mathrm{BH}} / M_\odot$')
         ax5.set_ylabel('SFR / $[M_\odot/\mathrm{Gyr}]$')
         ax6.set_ylabel('$R_{1/2} / \mathrm{pkpc}$')
-        ax7.set_ylabel('Central ?')
+        ax7.set_ylabel('Central?')
         ax8.set_ylabel('|Total Energy| / $[???]$')
         ax9.set_ylabel('$N_{\mathrm{dprog}}$')
         ax10.set_ylabel('$N_{\mathrm{ddesc}}$')
@@ -613,7 +613,7 @@ for reg in halos_in_pop:
         ax1.set_ylim(10**6.5, 10**12.5)
         ax2.set_ylim(10 ** 6.5, 10 ** 12.5)
         ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
-        ax5.set_ylim(10 ** -1, 10 ** 1.9)
+        # ax5.set_ylim(10 ** -1, 10 ** 1.9)
         ax6.set_ylim(10 ** -1, 10 ** 1.9)
         ax7.set_ylim(-0.3, 1.3)
 
@@ -646,8 +646,6 @@ for reg in halos_in_pop:
         # cax = fig.colorbar(cbar, ax=ax)
         # cax.ax.set_ylabel(r'$N$')
 
-        handles, labels = ax5.get_legend_handles_labels()
-        ax5.legend(handles, labels)
         handles, labels = ax6.get_legend_handles_labels()
         ax6.legend(handles, labels)
 
