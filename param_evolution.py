@@ -344,7 +344,7 @@ halo_ids_dict = {}
 # stellar_a_dict = {}
 # starmass_dict = {}
 # halo_id_part_inds = {}
-grp_cops = {}
+gal_bh_ms = {}
 cops = {}
 gal_gas_hmrs = {}
 gal_star_hmrs = {}
@@ -364,7 +364,7 @@ for snap in snaps:
     # halo_id_part_inds[snap] = {}
     halo_ids_dict[snap] = {}
     # halo_ms_dict[snap] = {}
-    grp_cops[snap] = {}
+    gal_bh_ms[snap] = {}
     cops[snap] = {}
     gal_gas_hmrs[snap] = {}
     gal_star_hmrs[snap] = {}
@@ -396,7 +396,7 @@ for reg in regions:
             subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
             subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-            grp_cops[snap][reg] = E.read_array('SUBFIND', path, snap, 'FOF/GroupCentreOfPotential', numThreads=8,
+            gal_bh_ms[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/BlackHoleMass', numThreads=8,
                                    noH=True, physicalUnits=True) * 1e3
             cops[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', numThreads=8,
                                noH=True, physicalUnits=True) * 1e3
@@ -528,6 +528,7 @@ for reg in halos_in_pop:
         gas_hmr = []
         star_hmr = []
         cent_sat = []
+        bh_ms = []
         energy = []
         zs = []
         bhmar = []
@@ -544,6 +545,7 @@ for reg in halos_in_pop:
                 sfrs.append(gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp])
                 gas_ms.append(gal_gas_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 star_ms.append(gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
+                bh_ms.append(gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 gas_hmr.append(gal_gas_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 star_hmr .append(gal_star_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_ms.append(gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
@@ -573,12 +575,13 @@ for reg in halos_in_pop:
         ax11 = fig.add_subplot(gs[2, 2])
         ax12 = fig.add_subplot(gs[3, 2])
 
-        cent_sat = np.int32(np.logical_not(cent_sat))
+        cent_sat = np.int32(cent_sat)
 
         ax1.plot(zs, dm_ms)
         ax2.plot(zs, gas_ms)
         ax3.plot(zs, star_ms)
-        ax4.plot(zs, sfrs)
+        ax4.plot(zs, bh_ms)
+        ax5.plot(zs, sfrs)
         ax6.plot(zs, soft, linestyle='--', color='k', label='soft')
         ax6.plot(zs, dm_hmr, label='Galaxy')
         ax6.plot(zs, gas_hmr, label="Gas")
@@ -594,11 +597,11 @@ for reg in halos_in_pop:
         ax8.set_xlabel('$z$')
         ax12.set_xlabel('$z$')
 
-        ax1.set_ylabel('$M_{\mathrm{dm}} / M_\odot$')
-        ax2.set_ylabel('$M_{\mathrm{gas}} / M_\odot$')
+        ax1.set_ylabel('$M_{\mathrm{DM}} / M_\odot$')
+        ax2.set_ylabel('$M_{\mathrm{Gas}} / M_\odot$')
         ax3.set_ylabel('$M_{\star} / M_\odot$')
-        ax4.set_ylabel('SFR / $[M_\odot/\mathrm{Gyr}]$')
-        ax5.set_ylabel('$R_{1/2, \mathrm{dm}} / \mathrm{pkpc}$')
+        ax4.set_ylabel('$M_{\mathrm{BH}} / M_\odot$')
+        ax5.set_ylabel('SFR / $[M_\odot/\mathrm{Gyr}]$')
         ax6.set_ylabel('$R_{1/2} / \mathrm{pkpc}$')
         ax7.set_ylabel('Central ?')
         ax8.set_ylabel('|Total Energy| / $[???]$')
@@ -612,7 +615,7 @@ for reg in halos_in_pop:
         ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
         ax5.set_ylim(10 ** -1, 10 ** 1.9)
         ax6.set_ylim(10 ** -1, 10 ** 1.9)
-        ax7.set_ylim(-0.5, 1.5)
+        ax7.set_ylim(-0.3, 1.3)
 
         ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
         ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
