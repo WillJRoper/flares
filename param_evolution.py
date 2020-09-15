@@ -336,7 +336,7 @@ gsnaps = reversed(snaps)
 csoft = 0.001802390 / 0.6777 * 1e3
 
 # Define thresholds for roots
-mthresh = 10**9.5
+mthresh = 10**10
 rthresh = csoft / (1 + 4.77)
 
 halo_ids_dict = {}
@@ -344,6 +344,8 @@ halo_ids_dict = {}
 # stellar_a_dict = {}
 # starmass_dict = {}
 # halo_id_part_inds = {}
+grp_cops = {}
+cops = {}
 gal_gas_hmrs = {}
 gal_star_hmrs = {}
 gal_dm_hmrs = {}
@@ -362,6 +364,8 @@ for snap in snaps:
     # halo_id_part_inds[snap] = {}
     halo_ids_dict[snap] = {}
     # halo_ms_dict[snap] = {}
+    grp_cops[snap] = {}
+    cops[snap] = {}
     gal_gas_hmrs[snap] = {}
     gal_star_hmrs[snap] = {}
     gal_dm_hmrs[snap] = {}
@@ -392,6 +396,10 @@ for reg in regions:
             subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
             subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
+            grp_cops[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupCentreOfPotential', numThreads=8,
+                                   noH=True, physicalUnits=True) * 1e3
+            cops[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', numThreads=8,
+                               noH=True, physicalUnits=True) * 1e3
             gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
                                   numThreads=8) * 10 ** 10
             gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
@@ -464,7 +472,8 @@ count = 0
 for reg in regions:
 
     try:
-        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][np.logical_and(gal_star_ms['011_z004p770'][reg] >= mthresh, gal_star_hmrs[snap][reg] < rthresh)]
+        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][np.logical_and(gal_star_ms['011_z004p770'][reg] >= mthresh,
+                                                                              gal_star_hmrs['011_z004p770'][reg] < rthresh)]
         count += len(halos_in_pop[reg])
     except KeyError:
         continue
@@ -519,6 +528,7 @@ for reg in halos_in_pop:
         dm_hmr = []
         gas_hmr = []
         star_hmr = []
+        cent_dist = []
         energy = []
         zs = []
         bhmar = []
@@ -540,6 +550,8 @@ for reg in halos_in_pop:
                 dm_ms.append(gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 energy.append(gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp])
+                cent_dist.append(np.sqrt(grp_cops[snap][reg][halo_ids_dict[snap][reg] == grp]**2
+                                         - cops[snap][reg][halo_ids_dict[snap][reg] == grp]**2))
                 nprogs.append(nprogs_dict[snap])
                 ndescs.append(ndescs_dict[snap])
                 bhmar.append(gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp])
@@ -570,9 +582,9 @@ for reg in halos_in_pop:
         ax5.plot(zs, soft, linestyle='--', color='k', label='soft')
         ax5.plot(zs, dm_hmr, label='Galaxy')
         ax6.plot(zs, soft, linestyle='--', color='k')
-        ax6.plot(zs, gas_hmr)
-        ax7.plot(zs, soft, linestyle='--', color='k')
-        ax7.plot(zs, star_hmr)
+        ax6.plot(zs, gas_hmr, label="Gas")
+        ax6.plot(zs, star_hmr, label="Stellar")
+        ax7.plot(zs, cent_dist)
         ax8.plot(zs, np.abs(energy))
         ax9.plot(zs, nprogs)
         ax10.plot(zs, ndescs)
@@ -588,8 +600,8 @@ for reg in halos_in_pop:
         ax3.set_ylabel('$M_{\star} / M_\odot$')
         ax4.set_ylabel('SFR / $[M_\odot/\mathrm{Gyr}]$')
         ax5.set_ylabel('$R_{1/2, \mathrm{dm}} / \mathrm{pkpc}$')
-        ax6.set_ylabel('$R_{1/2, \mathrm{gas}} / \mathrm{pkpc}$')
-        ax7.set_ylabel('$R_{1/2, \star} / \mathrm{pkpc}$')
+        ax6.set_ylabel('$R_{1/2} / \mathrm{pkpc}$')
+        ax7.set_ylabel('$\Delta R_{\hostCOP} / \mathrm{pkpc}$')
         ax8.set_ylabel('|Total Energy| / $[???]$')
         ax9.set_ylabel('$N_{\mathrm{dprog}}$')
         ax10.set_ylabel('$N_{\mathrm{ddesc}}$')
