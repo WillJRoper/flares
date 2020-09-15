@@ -573,6 +573,7 @@ for reg in halos_in_pop:
         ax10 = fig.add_subplot(gs[1, 2])
         ax11 = fig.add_subplot(gs[2, 2])
         ax12 = fig.add_subplot(gs[3, 2])
+        print(cent_dist)
 
         ax1.plot(zs, dm_ms)
         ax2.plot(zs, gas_ms)
@@ -612,7 +613,7 @@ for reg in halos_in_pop:
         ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
         ax5.set_ylim(10 ** -1, 10 ** 1.9)
         ax6.set_ylim(10 ** -1, 10 ** 1.9)
-        ax7.set_ylim(10 ** -1, 10 ** 1.9)
+        # ax7.set_ylim(10 ** -1, 10 ** 1.9)
 
         ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
         ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
@@ -645,6 +646,8 @@ for reg in halos_in_pop:
 
         handles, labels = ax5.get_legend_handles_labels()
         ax5.legend(handles, labels)
+        handles, labels = ax6.get_legend_handles_labels()
+        ax6.legend(handles, labels)
 
         fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
 
