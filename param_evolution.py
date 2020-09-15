@@ -10,6 +10,7 @@ from matplotlib.colors import LogNorm
 import eagle_IO.eagle_IO as E
 import seaborn as sns
 import h5py
+import os
 from unyt import mh, cm, Gyr, g, Msun, Mpc
 matplotlib.use('Agg')
 
@@ -313,7 +314,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
 
 
 regions = []
-for reg in range(0, 1):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -380,6 +381,11 @@ for snap in snaps:
 
 for reg in regions:
 
+    try:
+        os.mkdir('plots/Evolution/' + reg)
+    except OSError:
+        pass
+
     for snap in snaps:
 
         print(reg, snap)
@@ -397,7 +403,7 @@ for reg in regions:
             subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
             gal_bh_ms[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/BlackHoleMass', numThreads=8,
-                                   noH=True, physicalUnits=True) * 1e3
+                                                noH=True, physicalUnits=True)  * 10 ** 10
             cops[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', numThreads=8,
                                noH=True, physicalUnits=True) * 1e3
             gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', noH=True,
@@ -405,7 +411,7 @@ for reg in regions:
             gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                    numThreads=8) * 1e3
             gal_sfr[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/StarFormationRate', noH=True,
-                                   numThreads=8) * 10 ** 10
+                                   numThreads=8)
             gal_energy[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/TotalEnergy', noH=True,
                                               numThreads=8)
             gal_bhmar[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/BlackHoleMassAccretionRate', noH=True,
@@ -649,6 +655,6 @@ for reg in halos_in_pop:
         handles, labels = ax6.get_legend_handles_labels()
         ax6.legend(handles, labels)
 
-        fig.savefig(f'plots/Evolution/Param_evolution_{reg}_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
+        fig.savefig(f'plots/Evolution/{reg}/Param_evolution_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
 
         plt.close(fig)
