@@ -472,6 +472,7 @@ count = 0
 for reg in regions:
 
     try:
+        print(gal_star_ms['011_z004p770'][reg])
         halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][gal_star_ms['011_z004p770'][reg] >= mthresh]
         count += len(halos_in_pop[reg])
     except KeyError:
