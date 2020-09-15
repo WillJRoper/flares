@@ -549,7 +549,7 @@ for reg in halos_in_pop:
                 dm_ms.append(gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 energy.append(gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp])
-                cent_dist.append(np.sqrt(grp_cops[snap][reg][int(grp.split(".")[0])]**2
+                cent_dist.append(np.sqrt(grp_cops[snap][reg][int(str(grp).split(".")[0])]**2
                                          - cops[snap][reg][halo_ids_dict[snap][reg] == grp]**2))
                 nprogs.append(nprogs_dict[snap])
                 ndescs.append(ndescs_dict[snap])
