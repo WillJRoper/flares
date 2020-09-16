@@ -50,12 +50,12 @@ for reg in regions:
 
         path = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_' + reg + '/data/'
         try:
-            subgrps_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+            subgrps_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', noH=True,
                                                           numThreads=8)
-            half_mass_rads_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                          numThreads=8)[:, 4] * 1e3
-            xaxis_dict[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                 numThreads=8)[:, 0] * 1e3
+            hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                                          numThreads=8) * 1e3
+            half_mass_rads_dict[snap][reg] = hmrs[:, 4]
+            xaxis_dict[snap][reg] = hmrs[:, 0]
             ms[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                                  noH=True, numThreads=8)[:, 4] * 10**10
         except OSError:
