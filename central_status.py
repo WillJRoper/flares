@@ -74,7 +74,7 @@ for reg in regions:
             ghmrs.append(gal_hmrs[ind, 1])
 
 
-fig = plt.figure(figsize=(6, 6))
+fig = plt.figure(figsize=(6, 8))
 gs = gridspec.GridSpec(1, 2)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
