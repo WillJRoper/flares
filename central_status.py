@@ -85,9 +85,9 @@ ax1 = fig.add_subplot(gs[0, 0])
 ax2 = fig.add_subplot(gs[0, 1])
 
 im1 = ax1.hexbin(shmrs, ghmrs, C=np.array(np.array(subgrps) == 0, dtype=int), gridsize=100, mincnt=1, cmap="coolwarm",
-                 vmin=0, vmax=1, linewidths=0.2, reduce_C_function=np.median, xscale='log', yscale='log')
+                 vmin=0, vmax=1, linewidths=0.2, reduce_C_function=np.mean, xscale='log', yscale='log')
 im2 = ax2.hexbin(shmrs, ghmrs, C=dists, gridsize=100, mincnt=1, cmap="plasma", linewidths=0.2, norm=LogNorm(),
-                 reduce_C_function=np.mean, xscale='log', yscale='log')
+                 reduce_C_function=np.median, xscale='log', yscale='log')
 
 ax1.set_xlabel('$R_{1/2,*}/ [\mathrm{pkpc}]$')
 ax2.set_xlabel('$R_{1/2,*}/ [\mathrm{pkpc}]$')
