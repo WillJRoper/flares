@@ -97,6 +97,12 @@ cax = divider.append_axes('top', size='5%', pad=0.05)
 cbar2 = fig.colorbar(im2, cax=cax, orientation='horizontal')
 cbar1.set_label('Central?')
 cbar2.set_label('$\Delta D_{\mathrm{Group}-\mathrm{Galaxy}}$')
+cbar1.ax.xaxis.set_ticks_position('top')
+cbar1.ax.xaxis.set_label_position('top')
+cbar2.ax.xaxis.set_ticks_position('top')
+cbar2.ax.xaxis.set_label_position('top')
+
+ax2.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
 fig.savefig("plots/central_status.png", bbox_inches="tight")
 
