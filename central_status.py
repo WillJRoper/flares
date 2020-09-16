@@ -53,6 +53,7 @@ for reg in regions:
                                     noH=True, physicalUnits=True) * 1e3
             ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                               noH=True, numThreads=8)[:, 4] * 10**10
+            print(grp_coms.shape, coms.shape)
         except ValueError:
             continue
         except KeyError:
@@ -82,7 +83,7 @@ ax2 = fig.add_subplot(gs[0, 1])
 
 im1 = ax1.hexbin(shmrs, ghmrs, C=np.array(np.array(subgrps) == 0, dtype=int), gridsize=100, mincnt=1, cmap="coolwarm",
                  vmin=0, vmax=1, linewidths=0.2, reduce_C_function=np.mean, xscale='log', yscale='log')
-im2 = ax2.hexbin(shmrs, ghmrs, C=dists, gridsize=100, mincnt=1, cmap="plasma", linewidths=0.2,
+im2 = ax2.hexbin(shmrs, ghmrs, C=dists, gridsize=100, mincnt=1, cmap="plasma", linewidths=0.2, norm=LogNorm(),
                  reduce_C_function=np.mean, xscale='log', yscale='log')
 
 ax1.set_xlabel('$R_{1/2,*}/ [\mathrm{pkpc}]$')
@@ -95,7 +96,7 @@ cbar1 = fig.colorbar(im1, cax=cax, orientation='horizontal')
 divider = make_axes_locatable(ax2)
 cax = divider.append_axes('top', size='5%', pad=0.05)
 cbar2 = fig.colorbar(im2, cax=cax, orientation='horizontal')
-cbar2.set_label('$\Delta D_{\mathrm{Group}-\mathrm{Galaxy}}$')
+cbar2.set_label('$\Delta D_{\mathrm{Group}-\mathrm{Galaxy}} /$ [pkpc]')
 cbar1.ax.xaxis.set_ticks_position('top')
 cbar1.ax.xaxis.set_label_position('top')
 cbar2.ax.xaxis.set_ticks_position('top')
