@@ -49,7 +49,7 @@ for reg in regions:
                                     noH=True, physicalUnits=True) * 1e3
             coms = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfMass', numThreads=8,
                                 noH=True, physicalUnits=True) * 1e3
-            grp_coms = E.read_array('SUBFIND', path, snap, 'FOF/GroupCentreOfPotential', numThreads=8,
+            grp_coms = E.read_array('FOF', path, snap, 'FOF/CentreOfMass', numThreads=8,
                                     noH=True, physicalUnits=True) * 1e3
             ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                               noH=True, numThreads=8)[:, 4] * 10**10
