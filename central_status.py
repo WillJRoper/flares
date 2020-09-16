@@ -79,10 +79,7 @@ gs = gridspec.GridSpec(1, 2)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
 ax2 = fig.add_subplot(gs[0, 1])
-print(shmrs)
-print(ghmrs)
-print(np.array(np.array(subgrps) == 0, dtype=int))
-print(dists)
+
 im1 = ax1.hexbin(shmrs, ghmrs, C=np.array(np.array(subgrps) == 0, dtype=int), gridsize=100, mincnt=1, cmap="coolwarm",
                  vmin=0, vmax=1, linewidths=0.2, reduce_C_function=np.mean, xscale='log', yscale='log')
 im2 = ax2.hexbin(shmrs, ghmrs, C=dists, gridsize=100, mincnt=1, cmap="plasma", linewidths=0.2,
@@ -101,7 +98,7 @@ cbar2 = fig.colorbar(im2, cax=cax, orientation='horizontal')
 cbar1.set_label('Central?')
 cbar2.set_label('$\Delta D_{\mathrm{Group}-\mathrm{Galaxy}}$')
 
-fig.savefig("central_status.png", bbox_inches="tight")
+fig.savefig("plots/central_status.png", bbox_inches="tight")
 
 
 
