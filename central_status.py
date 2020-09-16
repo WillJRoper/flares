@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import matplotlib.gridspec as gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from scipy.spatial import cKDTree
 import astropy.units as u
 import astropy.constants as cons
 from astropy.cosmology import Planck13 as cosmo
@@ -53,7 +54,6 @@ for reg in regions:
                                     noH=True, physicalUnits=True) * 1e3
             ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                               noH=True, numThreads=8)[:, 4] * 10**10
-            print(grp_coms.shape, coms.shape)
         except ValueError:
             continue
         except KeyError:
@@ -61,16 +61,19 @@ for reg in regions:
         except OSError:
             continue
 
+        tree = cKDTree(grp_coms)
+
         for (ind, grp), subgrp in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
 
             if ms[ind] < 1e9:
                 continue
 
-            grpcom = grp_coms[grp, :]
             com = coms[ind, :]
 
+            d, i = tree.query(com, k=1)
+
             subgrps.append(subgrp)
-            dists.append(np.sqrt(np.sum((grpcom - com)**2)))
+            dists.append(d)
             shmrs.append(gal_hmrs[ind, 4])
             ghmrs.append(gal_hmrs[ind, 1])
 
