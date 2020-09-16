@@ -53,7 +53,7 @@ for reg in regions:
             grp_coms = E.read_array('FOF', path, snap, 'FOF/CentreOfMass', numThreads=8,
                                     noH=True, physicalUnits=True) * 1e3
             ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                              noH=True, numThreads=8)[:, 4] * 10**10
+                              noH=True, numThreads=8) * 10**10
         except ValueError:
             continue
         except KeyError:
@@ -65,7 +65,7 @@ for reg in regions:
 
         for (ind, grp), subgrp in zip(enumerate(subfind_grp_ids), subfind_subgrp_ids):
 
-            if ms[ind] < 1e9:
+            if ms[ind, 4] < 1e9 or ms[ind, 1] == 0 or ms[ind, 0] == 0:
                 continue
 
             com = coms[ind, :]
