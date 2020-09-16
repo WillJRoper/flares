@@ -121,9 +121,9 @@ ax2 = fig.add_subplot(gs[0, 1])
 
 okinds = np.array(subgrps) != 0
 
-im1 = ax1.hexbin(shmrs[okinds], ghmrs[okinds], C=np.array(np.array(subgrps)[okinds] == 0, dtype=int), gridsize=100, mincnt=1, cmap="coolwarm",
+im1 = ax1.hexbin(np.array(shmrs)[okinds], np.array(ghmrs)[okinds], C=np.array(np.array(subgrps)[okinds] == 0, dtype=int), gridsize=100, mincnt=1, cmap="coolwarm",
                  vmin=0, vmax=1, linewidths=0.2, reduce_C_function=np.mean, xscale='log', yscale='log')
-im2 = ax2.hexbin(shmrs[okinds], ghmrs[okinds], C=dists[okinds], gridsize=100, mincnt=1, cmap="plasma", linewidths=0.2, norm=LogNorm(),
+im2 = ax2.hexbin(np.array(shmrs)[okinds], np.array(ghmrs)[okinds], C=np.array(dists)[okinds], gridsize=100, mincnt=1, cmap="plasma", linewidths=0.2, norm=LogNorm(),
                  reduce_C_function=np.median, xscale='log', yscale='log')
 
 ax1.set_xlabel('$R_{1/2,*}/ [\mathrm{pkpc}]$')
@@ -158,9 +158,9 @@ ax2 = fig.add_subplot(gs[0, 1])
 
 okinds = np.array(subgrps) == 0
 
-im1 = ax1.hexbin(shmrs[okinds], ghmrs[okinds], C=np.array(np.array(subgrps)[okinds] == 0, dtype=int), gridsize=100, mincnt=1, cmap="coolwarm",
+im1 = ax1.hexbin(np.array(shmrs)[okinds], np.array(ghmrs)[okinds], C=np.array(np.array(subgrps)[okinds] == 0, dtype=int), gridsize=100, mincnt=1, cmap="coolwarm",
                  vmin=0, vmax=1, linewidths=0.2, reduce_C_function=np.mean, xscale='log', yscale='log')
-im2 = ax2.hexbin(shmrs[okinds], ghmrs[okinds], C=dists[okinds], gridsize=100, mincnt=1, cmap="plasma", linewidths=0.2, norm=LogNorm(),
+im2 = ax2.hexbin(np.array(shmrs)[okinds], np.array(ghmrs)[okinds], C=np.array(dists)[okinds], gridsize=100, mincnt=1, cmap="plasma", linewidths=0.2, norm=LogNorm(),
                  reduce_C_function=np.median, xscale='log', yscale='log')
 
 ax1.set_xlabel('$R_{1/2,*}/ [\mathrm{pkpc}]$')
