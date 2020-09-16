@@ -74,7 +74,7 @@ for reg in regions:
             ghmrs.append(gal_hmrs[ind, 1])
 
 
-fig = plt.figure(figsize=(6, 8))
+fig = plt.figure(figsize=(8, 6))
 gs = gridspec.GridSpec(1, 2)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
@@ -95,7 +95,6 @@ cbar1 = fig.colorbar(im1, cax=cax, orientation='horizontal')
 divider = make_axes_locatable(ax2)
 cax = divider.append_axes('top', size='5%', pad=0.05)
 cbar2 = fig.colorbar(im2, cax=cax, orientation='horizontal')
-cbar1.set_label('Central?')
 cbar2.set_label('$\Delta D_{\mathrm{Group}-\mathrm{Galaxy}}$')
 cbar1.ax.xaxis.set_ticks_position('top')
 cbar1.ax.xaxis.set_label_position('top')
