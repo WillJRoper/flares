@@ -74,7 +74,7 @@ for reg in regions:
             ghmrs.append(gal_hmrs[ind, 1])
 
 
-fig = plt.figure()
+fig = plt.figure(figsize=(6, 6))
 gs = gridspec.GridSpec(1, 2)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
@@ -101,6 +101,8 @@ cbar1.ax.xaxis.set_ticks_position('top')
 cbar1.ax.xaxis.set_label_position('top')
 cbar2.ax.xaxis.set_ticks_position('top')
 cbar2.ax.xaxis.set_label_position('top')
+cbar1.set_ticks([0.25, 0.75])
+cbar1.set_ticklabels(["Satellite", "Central"])
 
 ax2.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
