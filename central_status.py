@@ -65,8 +65,8 @@ for reg in regions:
             if ms[ind] < 1e9:
                 continue
 
-            grpcom = grp_coms[grp]
-            com = coms[ind]
+            grpcom = grp_coms[grp, :]
+            com = coms[ind, :]
 
             subgrps.append(subgrp)
             dists.append(np.sqrt(np.sum((grpcom - com)**2)))
@@ -79,7 +79,8 @@ gs = gridspec.GridSpec(1, 2)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
 ax2 = fig.add_subplot(gs[0, 1])
-
+print(shmrs, ghmrs, np.array(subgrps == 0))
+print(shmrs, ghmrs, dists)
 im1 = ax1.hexbin(shmrs, ghmrs, C=np.array(subgrps == 0, dtype=int), gridsize=100, mincnt=1, cmap="coolwarm",
                  vmin=0, vmax=1, linewidths=0.2, reduce_C_function=np.mean, xscale='log', yscale='log')
 im2 = ax2.hexbin(shmrs, ghmrs, C=dists, gridsize=100, mincnt=1, cmap="plasma", linewidths=0.2,
