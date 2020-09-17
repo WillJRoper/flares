@@ -411,7 +411,7 @@ for reg in regions:
             gal_hmr = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                    numThreads=8) * 1e3
             gal_sfr[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/StarFormationRate', noH=True,
-                                   numThreads=8)
+                                   numThreads=8) / gal_ms[:, 4] * 10**9
             gal_energy[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/TotalEnergy', noH=True,
                                               numThreads=8)
             gal_bhmar[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/BlackHoleMassAccretionRate', noH=True,
@@ -607,7 +607,7 @@ for reg in halos_in_pop:
         ax2.set_ylabel('$M_{\mathrm{Gas}} / M_\odot$')
         ax3.set_ylabel('$M_{\star} / M_\odot$')
         ax4.set_ylabel('$M_{\mathrm{BH}} / M_\odot$')
-        ax5.set_ylabel('SFR / $[M_\odot/\mathrm{Gyr}]$')
+        ax5.set_ylabel('sSFR / $[\mathrm{Gyr}^{-1}]$')
         ax6.set_ylabel('$R_{1/2} / \mathrm{pkpc}$')
         ax7.set_ylabel('Central?')
         ax8.set_ylabel('|Total Energy| / $[???]$')
