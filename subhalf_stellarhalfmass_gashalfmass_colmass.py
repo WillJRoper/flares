@@ -31,15 +31,15 @@ axlims_y = []
 # Define comoving softening length in kpc
 csoft = 0.001802390/0.677*1e3
 
-half_mass_rads_dict = {}
-xaxis_dict = {}
+hmr_star_dict = {}
+hmr_gas_dict = {}
 subgrps_dict = {}
 ms = {}
 for snap in snaps:
 
-    half_mass_rads_dict[snap] = {}
+    hmr_star_dict[snap] = {}
     subgrps_dict[snap] = {}
-    xaxis_dict[snap] = {}
+    hmr_gas_dict[snap] = {}
     ms[snap] = {}
 
 for reg in regions:
@@ -54,8 +54,8 @@ for reg in regions:
                                                           numThreads=8)
             hmrs = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
                                                           numThreads=8) * 1e3
-            half_mass_rads_dict[snap][reg] = hmrs[:, 4]
-            xaxis_dict[snap][reg] = hmrs[:, 0]
+            hmr_star_dict[snap][reg] = hmrs[:, 4]
+            hmr_gas_dict[snap][reg] = hmrs[:, 0]
             ms[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
                                                  noH=True, numThreads=8)[:, 4] * 10**10
         except OSError:
@@ -85,24 +85,24 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    xs = np.concatenate(list(xaxis_dict[snap].values()))
-    half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
+    hmr_gas = np.concatenate(list(hmr_gas_dict[snap].values()))
+    hmr_star_plt = np.concatenate(list(hmr_star_dict[snap].values()))
     m = np.concatenate(list(ms[snap].values()))
     sgrps = np.concatenate(list(subgrps_dict[snap].values()))
 
-    okinds = np.logical_and(m > 1e9, np.logical_and(half_mass_rads_plt > 0, np.logical_and(xs > 0, sgrps > 0)))
-    half_mass_rads_plt = half_mass_rads_plt[okinds]
-    xs_plt = xs[okinds]
+    okinds = np.logical_and(m > 1e9, np.logical_and(hmr_star_plt > 0, np.logical_and(hmr_gas > 0, sgrps > 0)))
+    hmr_star_plt = hmr_star_plt[okinds]
+    hmr_gas_plt = hmr_gas[okinds]
     m = m[okinds]
 
     try:
-        im = ax.hexbin(half_mass_rads_plt / (csoft / (1 + z)), xs_plt / (csoft / (1 + z)), C=m, gridsize=100,
-                       mincnt=1, xscale='log', yscale='log', norm=norm, linewidths=0.2, cmap='viridis',
+        im = ax.hexbin(hmr_star_plt / (csoft / (1 + z)), hmr_gas_plt / (csoft / (1 + z)), C=m, gridsize=100,
+                       mincnt=1, hmr_gascale='log', yscale='log', norm=norm, linewidths=0.2, cmap='viridis',
                        reduce_C_function=np.mean)
     except ValueError:
         continue
 
-    ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+    ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(bohmr_gastyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
     axlims_x.extend(ax.get_xlim())
@@ -163,24 +163,24 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    xs = np.concatenate(list(xaxis_dict[snap].values()))
-    half_mass_rads_plt = np.concatenate(list(half_mass_rads_dict[snap].values()))
+    hmr_gas = np.concatenate(list(hmr_gas_dict[snap].values()))
+    hmr_star_plt = np.concatenate(list(hmr_star_dict[snap].values()))
     m = np.concatenate(list(ms[snap].values()))
     sgrps = np.concatenate(list(subgrps_dict[snap].values()))
 
-    okinds = np.logical_and(m > 1e9, np.logical_and(half_mass_rads_plt > 0, np.logical_and(xs > 0, sgrps == 0)))
-    half_mass_rads_plt = half_mass_rads_plt[okinds]
-    xs_plt = xs[okinds]
+    okinds = np.logical_and(m > 1e9, np.logical_and(hmr_star_plt > 0, np.logical_and(hmr_gas > 0, sgrps == 0)))
+    hmr_star_plt = hmr_star_plt[okinds]
+    hmr_gas_plt = hmr_gas[okinds]
     m = m[okinds]
 
     try:
-        im = ax.hexbin(half_mass_rads_plt / (csoft / (1 + z)), xs_plt / (csoft / (1 + z)), C=m, gridsize=100,
-                       mincnt=1, xscale='log', yscale='log', norm=norm, linewidths=0.2, cmap='viridis',
+        im = ax.hexbin(hmr_star_plt / (csoft / (1 + z)), hmr_gas_plt / (csoft / (1 + z)), C=m, gridsize=100,
+                       mincnt=1, hmr_gascale='log', yscale='log', norm=norm, linewidths=0.2, cmap='viridis',
                        reduce_C_function=np.mean)
     except ValueError:
         continue
 
-    ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+    ax.text(0.8, 0.9, f'$z={z}$', bbox=dict(bohmr_gastyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
             transform=ax.transAxes, horizontalalignment='right', fontsize=8)
 
     axlims_x.extend(ax.get_xlim())
