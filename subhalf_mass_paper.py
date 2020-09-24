@@ -18,7 +18,7 @@ sns.set_style('whitegrid')
 master_path = "/cosma7/data/dp004/dc-payy1/my_files/flares_pipeline/data/flares.hdf5"
 
 regions = []
-for reg in range(0, 40):
+for reg in range(0, 1):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -37,7 +37,27 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
     if bins == None:
         bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
     else:
-        bin = bins
+        zs = np.float64(xs)
+
+        uniz = np.unique(zs)
+        bin_wids = uniz[1:] - uniz[:-1]
+        low_bins = uniz[:-1] - (bin_wids / 2)
+        high_bins = uniz[:-1] + (bin_wids / 2)
+        low_bins = list(low_bins)
+        high_bins = list(high_bins)
+        low_bins.append(high_bins[-1])
+        high_bins.append(uniz[-1] + 1)
+        low_bins = np.array(low_bins)
+        high_bins = np.array(high_bins)
+
+        bin = np.zeros(uniz.size + 1)
+        bin[:-1] = low_bins
+        bin[1:] = high_bins
+
+        print(zs)
+        print(ys)
+        print(len(zs))
+        print(len(ys))
 
     # Compute binned statistics
     y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median', bins=bin)
@@ -49,6 +69,42 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
     ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls, label=lab)
+    
+
+def plot_spread_stat(zs, ys, ax, color):
+
+    zs = np.float64(zs)
+
+    uniz = np.unique(zs)
+    bin_wids = uniz[1:] - uniz[:-1]
+    low_bins = uniz[:-1] - (bin_wids / 2)
+    high_bins = uniz[:-1] + (bin_wids / 2)
+    low_bins = list(low_bins)
+    high_bins = list(high_bins)
+    low_bins.append(high_bins[-1])
+    high_bins.append(uniz[-1] + 1)
+    low_bins = np.array(low_bins)
+    high_bins = np.array(high_bins)
+
+    bin = np.zeros(uniz.size + 1)
+    bin[:-1] = low_bins
+    bin[1:] = high_bins
+
+    print(zs)
+    print(ys)
+    print(len(zs))
+    print(len(ys))
+
+    # Compute binned statistics
+    y_stat_16, binedges, bin_ind = binned_statistic(zs, ys, statistic=lambda y: np.percentile(y, 16), bins=bin)
+    y_stat_84, binedges, bin_ind = binned_statistic(zs, ys, statistic=lambda y: np.percentile(y, 84), bins=bin)
+
+    # Compute bincentres
+    bin_cents = uniz
+
+    okinds = np.logical_and(~np.isnan(bin_cents), np.logical_and(~np.isnan(y_stat_16), ~np.isnan(y_stat_84)))
+
+    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], alpha=0.8, color=color)
 
 
 half_mass_rads_dict = {}
@@ -73,6 +129,15 @@ for reg in regions:
                                                  noH=True, numThreads=8)[:, 4] * 10**10)
         except OSError:
             continue
+
+evo_zs_hm = []
+evo_hmrs_hm = []
+eagle_evo_zs_hm = []
+eagle_evo_hmrs_hm = []
+evo_zs_lm = []
+evo_hmrs_lm = []
+eagle_evo_zs_lm = []
+eagle_evo_hmrs_lm = []
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
@@ -109,13 +174,20 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
     xs_plt = xs_plt[xs_plt > 1e8]
 
+    evo_hmr = half_mass_rads_plt[xs_plt > 1e9]
+    evo_zs_hm.extend(np.full_like(evo_hmr, z))
+    evo_hmrs_hm.extend(evo_hmr)
+    evo_hmr = half_mass_rads_plt[xs_plt < 1e9]
+    evo_zs_lm.extend(np.full_like(evo_hmr, z))
+    evo_hmrs_lm.extend(evo_hmr)
+
     fig1 = plt.figure()
     ax10 = fig1.add_subplot(111)
 
     try:
         cbar = ax.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                          linewidths=0.2, cmap='viridis', alpha=0.7)
-        plot_meidan_stat(xs_plt, half_mass_rads_plt / soft, ax, lab='REF', color='r')
+        plot_meidan_stat(xs_plt, half_mass_rads_plt, ax, lab='REF', color='r')
 
         cbar1 = ax10.hexbin(xs_plt, half_mass_rads_plt, gridsize=100, mincnt=1, xscale='log', yscale='log', norm=LogNorm(),
                          linewidths=0.2, cmap='viridis', alpha=0.7)
@@ -173,3 +245,66 @@ fig.savefig('plots/HalfMassRadius_all_snaps.png',
 plt.close(fig)
 
 print("In total", running_total, "galaxies with mass greater than 10^11")
+
+snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
+         '013_z002p478', '017_z001p487', '018_z001p259',
+         '019_z001p004', '020_z000p865', '024_z000p366']
+path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
+axlims_x = []
+axlims_y = []
+
+half_mass_rads_dict = {}
+xaxis_dict = {}
+
+for snap in snaps:
+
+    print(snap)
+
+    half_mass_rads_dict[snap] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                                  numThreads=8)[:, 4] * 1e3
+    xaxis_dict[snap] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                         noH=True, numThreads=8)[:, 4] * 10**10
+
+for snap in snaps:
+
+    z_str = snap.split('z')[1].split('p')
+    z = float(z_str[0] + '.' + z_str[1])
+
+    xs = np.array(xaxis_dict[snap])
+    half_mass_rads_plt = np.array(half_mass_rads_dict[snap])
+
+    xs_plt = xs[half_mass_rads_plt > 0]
+    half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
+    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
+    xs_plt = xs_plt[xs_plt > 1e8]
+
+    evo_hmr = half_mass_rads_plt[xs_plt > 1e9]
+    eagle_evo_zs_hm.extend(np.full_like(evo_hmr, z))
+    eagle_evo_hmrs_hm.extend(evo_hmr)
+    evo_hmr = half_mass_rads_plt[xs_plt < 1e9]
+    eagle_evo_zs_lm.extend(np.full_like(evo_hmr, z))
+    eagle_evo_hmrs_lm.extend(evo_hmr)
+
+bins = np.array([0, 0.5, 1, ])
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+plot_meidan_stat(evo_zs_lm, evo_hmrs_lm, ax, lab='FLARES-LM', color='orangered', bins=1)
+plot_spread_stat(evo_zs_lm, evo_hmrs_lm, ax, color='orangered')
+plot_meidan_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, lab='EAGLE-LM', color='darkorange', bins=1)
+plot_spread_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, color='darkorange')
+
+plot_meidan_stat(evo_zs_hm, evo_hmrs_hm, ax, lab='FLARES-HM', color='cornflowerblue', bins=1)
+plot_spread_stat(evo_zs_hm, evo_hmrs_hm, ax, color='cornflowerblue')
+plot_meidan_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, lab='EAGLE-HM', color='blueviolet', bins=1)
+plot_spread_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, color='blueviolet')
+
+ax.set_xlabel("$z$")
+ax.set_ylabel('$R_{1/2,*}/ [pkpc]$')
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
+
+fig.savefig("plots/HalfMassRadius_z_evolution.png", bbox_inches="tight")
+
