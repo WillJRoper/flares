@@ -8,8 +8,7 @@ import matplotlib.gridspec as gridspec
 from scipy.stats import binned_statistic
 import eagle_IO.eagle_IO as E
 import seaborn as sns
-import pickle
-import itertools
+from astropy.cosmology import Planck13 as cosmo
 matplotlib.use('Agg')
 
 sns.set_style('whitegrid')
@@ -312,4 +311,27 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
 fig.savefig("plots/DMHalfMassRadius_z_evolution.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+plot_meidan_stat(cosmo.age(eagle_evo_zs_lm).value, eagle_evo_hmrs_lm, ax, lab='EAGLE-LM', color='darkorange', bins=1, ls="--")
+plot_spread_stat(cosmo.age(eagle_evo_zs_lm).value, eagle_evo_hmrs_lm, ax, color='darkorange')
+plot_meidan_stat(cosmo.age(eagle_evo_zs_hm).value, eagle_evo_hmrs_hm, ax, lab='EAGLE-HM', color='blueviolet', bins=1, ls="--")
+plot_spread_stat(cosmo.age(eagle_evo_zs_hm).value, eagle_evo_hmrs_hm, ax, color='blueviolet')
+
+plot_meidan_stat(cosmo.age(evo_zs_lm).value, evo_hmrs_lm, ax, lab='FLARES-LM', color='orangered', bins=1)
+plot_spread_stat(cosmo.age(evo_zs_lm).value, evo_hmrs_lm, ax, color='orangered')
+plot_meidan_stat(cosmo.age(evo_zs_hm).value, evo_hmrs_hm, ax, lab='FLARES-HM', color='royalblue', bins=1)
+plot_spread_stat(cosmo.age(evo_zs_hm).value, evo_hmrs_hm, ax, color='royalblue')
+
+ax.set_xlabel("$t/[\mathrm{Gyr}]$")
+ax.set_ylabel('$R_{1/2,\mathrm{dm}}/ [\mathrm{pkpc}]$')
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
+
+fig.savefig("plots/DMHalfMassRadius_z_evolution_age.png", bbox_inches="tight")
 
