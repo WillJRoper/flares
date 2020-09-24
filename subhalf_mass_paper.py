@@ -18,7 +18,7 @@ sns.set_style('whitegrid')
 master_path = "/cosma7/data/dp004/dc-payy1/my_files/flares_pipeline/data/flares.hdf5"
 
 regions = []
-for reg in range(0, 1):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -84,11 +84,6 @@ def plot_spread_stat(zs, ys, ax, color):
     bin = np.zeros(uniz.size + 1)
     bin[:-1] = low_bins
     bin[1:] = high_bins
-
-    print(zs)
-    print(ys)
-    print(len(zs))
-    print(len(ys))
 
     # Compute binned statistics
     y_stat_16, binedges, bin_ind = binned_statistic(zs, ys, statistic=lambda y: np.percentile(y, 16), bins=bin)
@@ -285,7 +280,6 @@ ax = fig.add_subplot(111)
 
 plot_meidan_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, lab='EAGLE-LM', color='darkorange', bins=1)
 plot_spread_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, color='darkorange')
-
 plot_meidan_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, lab='EAGLE-HM', color='blueviolet', bins=1)
 plot_spread_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, color='blueviolet')
 
@@ -295,7 +289,7 @@ plot_meidan_stat(evo_zs_hm, evo_hmrs_hm, ax, lab='FLARES-HM', color='cornflowerb
 plot_spread_stat(evo_zs_hm, evo_hmrs_hm, ax, color='cornflowerblue')
 
 ax.set_xlabel("$z$")
-ax.set_ylabel('$R_{1/2,*}/ [pkpc]$')
+ax.set_ylabel('$R_{1/2,*}/ [\mathrm{pkpc}]$')
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
