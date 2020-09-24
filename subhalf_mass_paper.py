@@ -94,7 +94,7 @@ def plot_spread_stat(zs, ys, ax, color):
 
     okinds = np.logical_and(~np.isnan(bin_cents), np.logical_and(~np.isnan(y_stat_16), ~np.isnan(y_stat_84)))
 
-    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], alpha=0.5, color=color)
+    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], alpha=0.3, color=color)
 
 
 half_mass_rads_dict = {}
@@ -278,15 +278,15 @@ for snap in snaps:
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-plot_meidan_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, lab='EAGLE-LM', color='darkorange', bins=1)
+plot_meidan_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, lab='EAGLE-LM', color='darkorange', bins=1, ls="--")
 plot_spread_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, color='darkorange')
-plot_meidan_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, lab='EAGLE-HM', color='blueviolet', bins=1)
+plot_meidan_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, lab='EAGLE-HM', color='blueviolet', bins=1, ls="--")
 plot_spread_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, color='blueviolet')
 
 plot_meidan_stat(evo_zs_lm, evo_hmrs_lm, ax, lab='FLARES-LM', color='orangered', bins=1)
 plot_spread_stat(evo_zs_lm, evo_hmrs_lm, ax, color='orangered')
-plot_meidan_stat(evo_zs_hm, evo_hmrs_hm, ax, lab='FLARES-HM', color='cornflowerblue', bins=1)
-plot_spread_stat(evo_zs_hm, evo_hmrs_hm, ax, color='cornflowerblue')
+plot_meidan_stat(evo_zs_hm, evo_hmrs_hm, ax, lab='FLARES-HM', color='royalblue', bins=1)
+plot_spread_stat(evo_zs_hm, evo_hmrs_hm, ax, color='royalblue')
 
 ax.set_xlabel("$z$")
 ax.set_ylabel('$R_{1/2,*}/ [\mathrm{pkpc}]$')
