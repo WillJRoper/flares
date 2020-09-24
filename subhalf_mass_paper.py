@@ -18,7 +18,7 @@ sns.set_style('whitegrid')
 master_path = "/cosma7/data/dp004/dc-payy1/my_files/flares_pipeline/data/flares.hdf5"
 
 regions = []
-for reg in range(10, 40):
+for reg in range(0, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -28,6 +28,8 @@ for reg in range(10, 40):
 snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
          '006_z009p000', '007_z008p000', '008_z007p000',
          '009_z006p000', '010_z005p000', '011_z004p770']
+all_snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 axlims_x = []
 axlims_y = []
 
@@ -99,14 +101,14 @@ def plot_spread_stat(zs, ys, ax, color):
 
 half_mass_rads_dict = {}
 xaxis_dict = {}
-for snap in snaps:
+for snap in all_snaps:
 
     half_mass_rads_dict[snap] = []
     xaxis_dict[snap] = []
 
 for reg in regions:
 
-    for snap in snaps:
+    for snap in all_snaps:
 
         print(reg, snap)
 
@@ -163,13 +165,6 @@ for ax, snap, (i, j) in zip([ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9], snaps
     half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
     half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
     xs_plt = xs_plt[xs_plt > 1e8]
-
-    evo_hmr = half_mass_rads_plt[xs_plt > 1e9]
-    evo_zs_hm.extend(np.full_like(evo_hmr, z))
-    evo_hmrs_hm.extend(evo_hmr)
-    evo_hmr = half_mass_rads_plt[xs_plt < 1e9]
-    evo_zs_lm.extend(np.full_like(evo_hmr, z))
-    evo_hmrs_lm.extend(evo_hmr)
 
     fig1 = plt.figure()
     ax10 = fig1.add_subplot(111)
@@ -236,9 +231,31 @@ plt.close(fig)
 
 print("In total", running_total, "galaxies with mass greater than 10^11")
 
-snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
-         '013_z002p478', '017_z001p487', '018_z001p259',
-         '019_z001p004', '020_z000p865', '024_z000p366']
+for snap in all_snaps:
+
+    z_str = snap.split('z')[1].split('p')
+    z = float(z_str[0] + '.' + z_str[1])
+
+    xs = np.array(xaxis_dict[snap])
+    half_mass_rads_plt = np.array(half_mass_rads_dict[snap])
+
+    xs_plt = xs[half_mass_rads_plt > 0]
+    half_mass_rads_plt = half_mass_rads_plt[half_mass_rads_plt > 0]
+    half_mass_rads_plt = half_mass_rads_plt[xs_plt > 1e8]
+    xs_plt = xs_plt[xs_plt > 1e8]
+
+    evo_hmr = half_mass_rads_plt[xs_plt > 1e9]
+    evo_zs_hm.extend(np.full_like(evo_hmr, z))
+    evo_hmrs_hm.extend(evo_hmr)
+    evo_hmr = half_mass_rads_plt[xs_plt < 1e9]
+    evo_zs_lm.extend(np.full_like(evo_hmr, z))
+    evo_hmrs_lm.extend(evo_hmr)
+
+snaps = ['000_z020p000', '003_z008p988', '006_z005p971', '009_z004p485', '012_z003p017', '015_z002p012',
+         '018_z001p259', '021_z000p736', '024_z000p366', '027_z000p101', '001_z015p132', '004_z008p075',
+         '007_z005p487', '010_z003p984', '013_z002p478', '016_z001p737', '019_z001p004', '022_z000p615',
+         '025_z000p271', '028_z000p000', '002_z009p993', '005_z007p050', '008_z005p037', '011_z003p528',
+         '014_z002p237', '017_z001p487', '020_z000p865', '023_z000p503', '026_z000p183']
 path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0050N0752/PE/AGNdT9/data/'
 axlims_x = []
 axlims_y = []
@@ -294,5 +311,5 @@ ax.set_ylabel('$R_{1/2,*}/ [\mathrm{pkpc}]$')
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/HalfMassRadius_z_evolution_no_overdense.png", bbox_inches="tight")
+fig.savefig("plots/HalfMassRadius_z_evolution.png", bbox_inches="tight")
 
