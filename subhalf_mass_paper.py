@@ -292,8 +292,8 @@ for snap in snaps:
     eagle_evo_hmrs_lm.extend(evo_hmr)
 
 fig = plt.figure()
-ax = fig.add_subplot(111)
-ax2 = ax.twiny()
+ax2 = fig.add_subplot(111)
+ax = ax2.twiny()
 
 plot_meidan_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, lab='EAGLE-LM', color='darkorange', bins=1, ls="--")
 plot_spread_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, color='darkorange')
@@ -321,11 +321,9 @@ for sp in ax2.spines.values():
     sp.set_visible(False)
 ax2.spines["bottom"].set_visible(True)
 
-all_zs = np.unique(np.concatenate((eagle_evo_zs_hm, evo_zs_hm, eagle_evo_zs_lm, evo_zs_lm)))
-
-ax2.set_xticks(all_zs)
-ax2.set_xticklabels(cosmo.age(all_zs).value)
-ax2.set_xlabel(r"$t/[\mathrm{Gyr}]$")
+ax2.set_xticks([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+ax2.set_xticklabels(np.log10(cosmo.age([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]).value))
+ax2.set_xlabel(r"$\log_{10}(t/[\mathrm{Gyr}])$")
 
 ax.set_xlabel("$z$")
 ax.set_ylabel('$R_{1/2,*}/ [\mathrm{pkpc}]$')
