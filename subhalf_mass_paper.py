@@ -239,7 +239,7 @@ print("In total", running_total, "galaxies with mass greater than 10^11")
 snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
          '013_z002p478', '017_z001p487', '018_z001p259',
          '019_z001p004', '020_z000p865', '024_z000p366']
-path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
+path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0050N0752/PE/AGNdT9/data/'
 axlims_x = []
 axlims_y = []
 
