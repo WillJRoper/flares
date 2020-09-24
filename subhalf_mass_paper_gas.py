@@ -317,6 +317,8 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
+ax.loglog()
+
 plot_meidan_stat(cosmo.age(eagle_evo_zs_lm).value, eagle_evo_hmrs_lm, ax, lab='EAGLE-LM', color='darkorange', bins=1, ls="--")
 plot_spread_stat(cosmo.age(eagle_evo_zs_lm).value, eagle_evo_hmrs_lm, ax, color='darkorange')
 plot_meidan_stat(cosmo.age(eagle_evo_zs_hm).value, eagle_evo_hmrs_hm, ax, lab='EAGLE-HM', color='blueviolet', bins=1, ls="--")
