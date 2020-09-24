@@ -18,7 +18,7 @@ sns.set_style('whitegrid')
 master_path = "/cosma7/data/dp004/dc-payy1/my_files/flares_pipeline/data/flares.hdf5"
 
 regions = []
-for reg in range(0, 40):
+for reg in range(10, 40):
 
     if reg < 10:
         regions.append('000' + str(reg))
@@ -294,5 +294,5 @@ ax.set_ylabel('$R_{1/2,*}/ [\mathrm{pkpc}]$')
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/HalfMassRadius_z_evolution.png", bbox_inches="tight")
+fig.savefig("plots/HalfMassRadius_z_evolution_no_overdense.png", bbox_inches="tight")
 
