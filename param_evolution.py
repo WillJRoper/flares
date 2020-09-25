@@ -567,7 +567,7 @@ for reg in halos_in_pop:
                 bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
                 haloids.append(grp)
 
-        if all(sfrs > 0.1):
+        if all(np.array(sfrs) > 0.1):
             continue
 
         print("====================", reg, "====================")
