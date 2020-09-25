@@ -36,8 +36,8 @@ sns.set_style("white")
 #          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 # grps = [329, 65, 12, 15, 10, 1, 3, 13, 5, 3, 3, 3]
 # subgrps = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1]
-# sec_grps = [None, None, None, None, None, None]
-# sec_subgrps = [None, None, None, None, None, None]
+# sec_grps = [None, None, None, None, None, None, None, None, None, None, None, None]
+# sec_subgrps = [None, None, None, None, None, None, None, None, None, None, None, None]
 # path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
 # Passive galaxy with drop in black hole mass
@@ -46,8 +46,8 @@ snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z0
          '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
 grps = [7, 10, 9, 16, 22, 27, 15, 16, 27, 61, 87, 87]
 subgrps = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-sec_grps = [None, None, None, None, None, None]
-sec_subgrps = [None, None, None, None, None, None]
+sec_grps = [None, None, None, None, None, None, None, None, None, None, None, None]
+sec_subgrps = [None, None, None, None, None, None, None, None, None, None, None, None]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
 # Set up images
