@@ -20,15 +20,25 @@ sns.set_style("white")
 # sec_subgrps = [None, 1, 0, 0, 0, 1]
 # path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
 
-reg = "00"
-snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000',
-         '009_z006p000', '010_z005p000']
-snaps.reverse()
-grps = [211, 129, None, None, None, None]
-subgrps = [0, 0, None, None, None, None]
+# reg = "00"
+# snaps = ['005_z010p000', '006_z009p000', '007_z008p000', '008_z007p000',
+#          '009_z006p000', '010_z005p000']
+# snaps.reverse()
+# grps = [211, 129, None, None, None, None]
+# subgrps = [0, 0, None, None, None, None]
+# sec_grps = [None, None, None, None, None, None]
+# sec_subgrps = [None, None, None, None, None, None]
+# path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
+
+reg = "05"
+snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+grps = [329, 65, 12, 15, 10, 1, 3, 13, 5, 3, 3, 3]
+subgrps = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1]
 sec_grps = [None, None, None, None, None, None]
 sec_subgrps = [None, None, None, None, None, None]
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data/'
+
 
 # Set up images
 width = 750
