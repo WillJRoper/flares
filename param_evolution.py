@@ -314,7 +314,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
 
 
 regions = []
-for reg in range(0, 40):
+for reg in range(3, 6):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -322,7 +322,7 @@ for reg in range(0, 40):
         regions.append(str(reg))
 
 gregions = []
-for reg in range(0, 1):
+for reg in range(3, 6):
 
     if reg < 10:
         gregions.append('0' + str(reg))
@@ -543,6 +543,7 @@ for reg in halos_in_pop:
         vel_disp = []
         soft = []
         bd = []
+        haloids = []
         for snap in graph:
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
@@ -564,6 +565,14 @@ for reg in halos_in_pop:
                 vel_disp.append(gal_veldisp[snap][reg][halo_ids_dict[snap][reg] == grp])
                 soft.append(csoft / (1 + z))
                 bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
+                haloids.append(grp)
+
+        if all(sfrs > 0.1):
+            continue
+
+        print("====================", reg, "====================")
+        print(haloids)
+        print(zs)
 
         fig = plt.figure(figsize=(12, 12))
         gs = gridspec.GridSpec(ncols=3, nrows=4)
