@@ -605,7 +605,7 @@ for reg in halos_in_pop:
         energy = np.zeros(len(graph))
         zs = np.zeros(len(graph))
         all_zs = []
-        bhmar = []
+        bhmar = np.zeros(len(graph))
         nprogs = np.zeros(len(graph))
         ndescs = np.zeros(len(graph))
         soft = np.zeros(len(graph))
@@ -648,7 +648,7 @@ for reg in halos_in_pop:
                 nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == grp]][0]
                 cont[ind] += np.sum(get_linked_halo_data(data_dict['prog_cont'][snap], start_ind, nprog))
 
-                bhmar.append(gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp][0])
+                bhmar += gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp][0]
                 soft[ind] = csoft / (1 + z)
                 bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp][0])
                 haloids[ind] += grp
@@ -750,7 +750,8 @@ for reg in halos_in_pop:
         ax8.plot(zs, np.abs(energy))
         ax9.plot(zs, nprogs)
         ax10.plot(zs, ndescs)
-        plot_spread_stat(np.array(all_zs), np.array(bhmar), ax11, color="dodgerblue")
+        ax11.plot(zs, bhmar)
+        print(bd)
         plot_spread_stat(np.array(all_zs), np.array(bd) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, ax12,
                          color="red")
 
