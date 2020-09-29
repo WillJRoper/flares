@@ -707,9 +707,6 @@ for reg in halos_in_pop:
                 haloids_mb.append(grp)
                 nbh_mb.append(len(bh_id_dict[snap][reg][bh_id_dict[snap][reg] == grp]))
 
-        if all(np.array(sfrs)[np.array(zs, dtype=float) <= 5] > 0.1):
-            continue
-
         print("====================", reg, "====================")
         print(haloids)
         print(zs)
