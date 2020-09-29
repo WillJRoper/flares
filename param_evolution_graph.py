@@ -631,9 +631,9 @@ for reg in halos_in_pop:
                 bh_ms_100[ind] += gal_bh_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp][0]
                 dm_ms_100[ind] += gal_dm_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp][0]
 
-                gas_hmr.append(gal_gas_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
-                star_hmr.append(gal_star_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
-                dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
+                gas_hmr.append(gal_gas_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp][0])
+                star_hmr.append(gal_star_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp][0])
+                dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp][0])
                 
                 energy[ind] += gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp][0]
 
@@ -646,7 +646,7 @@ for reg in halos_in_pop:
 
                 bhmar[ind] += gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp][0]
                 soft[ind] = csoft / (1 + z)
-                bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
+                bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp][0])
                 haloids[ind] += grp
                 nbh[ind] += len(bh_id_dict[snap][reg][bh_id_dict[snap][reg] == grp])
                 
@@ -740,26 +740,27 @@ for reg in halos_in_pop:
         ax3.plot(zs, nbh)
         ax4.plot(zs, cont)
         ax5.plot(zs, sfrs)
+        print(sfrs)
         ax6.plot(zs, soft, linestyle='--', color='k', label='soft')
         print(np.array(all_zs), np.array(dm_hmr))
-        # plot_spread_stat(np.array(all_zs), np.array(dm_hmr), ax6)
-        # plot_spread_stat(np.array(all_zs), np.array(gas_hmr), ax6)
-        # plot_spread_stat(np.array(all_zs), np.array(star_hmr), ax6)
+        plot_spread_stat(np.array(all_zs), np.array(dm_hmr), ax6)
+        plot_spread_stat(np.array(all_zs), np.array(gas_hmr), ax6)
+        plot_spread_stat(np.array(all_zs), np.array(star_hmr), ax6)
         ax7.plot(zs, ngen)
         ax8.plot(zs, np.abs(energy))
         ax9.plot(zs, nprogs)
         ax10.plot(zs, ndescs)
         ax11.plot(zs, bhmar)
-        # plot_spread_stat(np.array(all_zs), np.array(bd) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, ax12)
+        plot_spread_stat(np.array(all_zs), np.array(bd) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, ax12)
 
         ax1.plot(zs_mb, dm_ms_mb, linestyle="dotted")
         ax1.plot(zs_mb, gas_ms_mb, linestyle="dotted")
         ax1.plot(zs_mb, star_ms_mb, linestyle="dotted")
         ax1.plot(zs_mb, bh_ms_mb, label="Black Hole", linestyle="dotted")
         ax2.plot(zs_mb, dm_ms_100_mb, label="Main branch", linestyle="dotted")
-        ax2.plot(zs_mb, gas_ms_100_mb)
-        ax2.plot(zs_mb, star_ms_100_mb)
-        ax2.plot(zs_mb, bh_ms_100_mb)
+        ax2.plot(zs_mb, gas_ms_100_mb, linestyle="dotted")
+        ax2.plot(zs_mb, star_ms_100_mb, linestyle="dotted")
+        ax2.plot(zs_mb, bh_ms_100_mb, linestyle="dotted")
         ax3.plot(zs_mb, nbh_mb, linestyle="dotted")
         ax4.plot(zs_mb, cont_mb, linestyle="dotted")
         ax5.plot(zs_mb, sfrs_mb, linestyle="dotted")
@@ -782,19 +783,19 @@ for reg in halos_in_pop:
         ax4.set_ylabel('$N_{\mathrm{part_cont}}$')
         ax5.set_ylabel('sSFR / $[\mathrm{Gyr}^{-1}]$')
         ax6.set_ylabel('$R_{1/2} / \mathrm{pkpc}$')
-        ax7.set_ylabel('N_{\mathrm{gen}}')
+        ax7.set_ylabel('$N_{\mathrm{gen}}$')
         ax8.set_ylabel('|Total Energy| / $[???]$')
         ax9.set_ylabel('$N_{\mathrm{dprog}}$')
         ax10.set_ylabel('$N_{\mathrm{ddesc}}$')
         ax11.set_ylabel('$\dot{M_{BH}} / [M_\odot / \mathrm{Gyr}]$')
         ax12.set_ylabel(r'$<\rho_{birth}> /$ [$n_H$ cm$^{-3}$]')
 
-        ax1.set_ylim(10**5.5, 10**14.5)
+        ax1.set_ylim(10**5.5, 10**15.5)
         ax2.set_ylim(10 ** 5.5, 10 ** 13)
         # ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
         # ax5.set_ylim(10 ** -1, 10 ** 1.9)
         ax6.set_ylim(10 ** -1, 10 ** 1.9)
-        ax7.set_ylim(-0.3, 1.3)
+        # ax7.set_ylim(-0.3, 1.3)
 
         ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
         ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
@@ -826,11 +827,11 @@ for reg in halos_in_pop:
         # cax.ax.set_ylabel(r'$N$')
 
         handles, labels = ax6.get_legend_handles_labels()
-        ax6.legend(handles, labels)
+        ax6.legend(handles, labels, ncol=2)
         handles, labels = ax1.get_legend_handles_labels()
-        ax1.legend(handles, labels)
+        ax1.legend(handles, labels, ncol=2)
         handles, labels = ax2.get_legend_handles_labels()
-        ax2.legend(handles, labels)
+        ax2.legend(handles, labels, ncol=2)
 
         fig.savefig(f'plots/Evolution/{reg}/Param_evolution_Graph_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
 
