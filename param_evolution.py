@@ -608,6 +608,7 @@ for reg in halos_in_pop:
                 soft.append(csoft / (1 + z))
                 bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
                 haloids.append(grp)
+                print(bh_id_dict[snap][reg][bh_id_dict[snap][reg] == grp])
                 nbh.append(len(bh_id_dict[snap][reg][bh_id_dict[snap][reg] == grp]))
 
         if all(np.array(sfrs) > 0.1):
@@ -674,8 +675,8 @@ for reg in halos_in_pop:
         ax11.set_ylabel('$\dot{M_{BH}} / [M_\odot / \mathrm{Gyr}]$')
         ax12.set_ylabel(r'$<\rho_{birth}> /$ [$n_H$ cm$^{-3}$]')
 
-        ax1.set_ylim(10**5, 10**13)
-        ax2.set_ylim(10 ** 5, 10 ** 13)
+        ax1.set_ylim(1*10**6, 10**13.5)
+        ax2.set_ylim(1*10 ** 6, 10 ** 13)
         # ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
         # ax5.set_ylim(10 ** -1, 10 ** 1.9)
         ax6.set_ylim(10 ** -1, 10 ** 1.9)
@@ -714,8 +715,8 @@ for reg in halos_in_pop:
         ax6.legend(handles, labels)
         handles, labels = ax1.get_legend_handles_labels()
         ax1.legend(handles, labels)
-        handles, labels = ax2.get_legend_handles_labels()
-        ax2.legend(handles, labels)
+        # handles, labels = ax2.get_legend_handles_labels()
+        # ax2.legend(handles, labels)
 
         fig.savefig(f'plots/Evolution/{reg}/Param_evolution_{str(root).split(".")[0]}p{str(root).split(".")[1]}.png')
 
