@@ -742,7 +742,6 @@ for reg in halos_in_pop:
         ax5.plot(zs, sfrs)
         print(sfrs)
         ax6.plot(zs, soft, linestyle='--', color='k', label='soft')
-        print(np.array(all_zs), np.array(dm_hmr))
         plot_spread_stat(np.array(all_zs), np.array(dm_hmr), ax6)
         plot_spread_stat(np.array(all_zs), np.array(gas_hmr), ax6)
         plot_spread_stat(np.array(all_zs), np.array(star_hmr), ax6)
