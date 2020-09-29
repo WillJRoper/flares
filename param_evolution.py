@@ -314,7 +314,7 @@ def calc_srf(z, a_born, mass, t_bin=100):
 
 
 regions = []
-for reg in range(0, 1):
+for reg in range(3, 6):
 
     if reg < 10:
         regions.append('0' + str(reg))
@@ -610,7 +610,7 @@ for reg in halos_in_pop:
                 haloids.append(grp)
                 nbh.append(len(bh_id_dict[snap][reg][bh_id_dict[snap][reg] == grp]))
 
-        if all(np.array(sfrs) > 0.1):
+        if all(np.array(sfrs[0:2]) > 0.1):
             continue
 
         print("====================", reg, "====================")
