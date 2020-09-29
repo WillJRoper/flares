@@ -283,10 +283,11 @@ def forest_worker(z0halo, data_dict):
 
     # Get the forest with this halo at it's root
     forest_dict = get_graph(z0halo, data_dict)
+    graph_dict, nprogs, ndescs = get_main_branch(z0halo, data_dict)
 
     print('Halo ' + str(z0halo) + '\'s Forest extracted...')
 
-    return forest_dict
+    return forest_dict, graph_dict, nprogs, ndescs
 
 
 def calc_srf(z, a_born, mass, t_bin=100):
@@ -548,7 +549,7 @@ for reg in halos_in_pop:
 
     for root in halos_in_pop[reg]:
         print("Building graph For", reg, root)
-        graph = forest_worker(root, data_dict)
+        graph, mainbranch, _, _ = forest_worker(root, data_dict)
         print("Plotting graph")
         sfrs = np.zeros(len(graph))
         gas_ms = np.zeros(len(graph))
@@ -574,9 +575,11 @@ for reg in halos_in_pop:
         haloids = np.zeros(len(graph))
         nbh = np.zeros(len(graph))
         cont = np.zeros(len(graph))
+        ngen = np.zeros(len(graph))
         for ind, snap in enumerate(graph):
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
+            ngen[ind] = len(graph[snap])
             for grp in graph[snap]:
                 zs[ind] = z
                 sfrs[ind] += gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp]
@@ -609,8 +612,68 @@ for reg in halos_in_pop:
                 bd[ind] += gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp]
                 haloids[ind] += grp
                 nbh[ind] += len(bh_id_dict[snap][reg][bh_id_dict[snap][reg] == grp])
+                
+        sfrs_mb = []
+        gas_ms_mb = []
+        star_ms_mb = []
+        dm_ms_mb = []
+        bh_ms_mb = []
+        gas_ms_100_mb = []
+        star_ms_100_mb = []
+        dm_ms_100_mb = []
+        bh_ms_100_mb = []
+        dm_hmr_mb = []
+        gas_hmr_mb = []
+        star_hmr_mb = []
+        cent_sat_mb = []
+        energy_mb = []
+        zs_mb = []
+        bhmar_mb = []
+        nprogs_mb = []
+        ndescs_mb = []
+        vel_disp_mb = []
+        soft_mb = []
+        bd_mb = []
+        haloids_mb = []
+        nbh_mb = []
+        cont_mb = []
+        for snap in graph:
+            z_str = snap.split('z')[1].split('p')
+            z = float(z_str[0] + '.' + z_str[1])
+            for grp in graph[snap]:
+                zs.append(z)
+                sfrs.append(gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp])
+                gas_ms.append(gal_gas_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
+                star_ms.append(gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
+                bh_ms.append(gal_bh_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
 
-        if all(np.array(sfrs[np.array(zs) <= 5]) > 0.1):
+                gas_ms_100.append(gal_gas_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
+                star_ms_100.append(gal_star_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
+                bh_ms_100.append(gal_bh_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
+                dm_ms_100.append(gal_dm_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
+
+                gas_hmr.append(gal_gas_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
+                star_hmr .append(gal_star_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
+                dm_ms.append(gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
+                dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
+                energy.append(gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp])
+                cent_sat.append(int(str(grp).split(".")[1]) == 0)
+
+                nprogs.append(nprogs_dict[snap])
+                ndescs.append(ndescs_dict[snap])
+                start_ind = \
+                data_dict['prog_start_index'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == grp]][0]
+                nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == grp]][0]
+                cont.append(np.sum(get_linked_halo_data(data_dict['prog_cont'][snap], start_ind, nprog)))
+
+                bhmar.append(gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp])
+                vel_disp.append(gal_veldisp[snap][reg][halo_ids_dict[snap][reg] == grp])
+                soft.append(csoft / (1 + z))
+                bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
+                haloids.append(grp)
+                nbh.append(len(bh_id_dict[snap][reg][bh_id_dict[snap][reg] == grp]))
+
+        if all(np.array(sfrs)[np.array(zs, dtype=float) <= 5] > 0.1):
             continue
 
         print("====================", reg, "====================")
