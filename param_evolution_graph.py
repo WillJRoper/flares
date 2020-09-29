@@ -34,7 +34,7 @@ def get_linked_halo_data(all_linked_halos, start_ind, nlinked_halos):
     return all_linked_halos[start_ind: start_ind + nlinked_halos]
 
 
-def plot_spread_stat(zs, ys, ax, color):
+def plot_spread_stat(zs, ys, ax):
 
     zs = np.float64(zs)
 
@@ -62,7 +62,7 @@ def plot_spread_stat(zs, ys, ax, color):
 
     okinds = np.logical_and(~np.isnan(bin_cents), np.logical_and(~np.isnan(y_stat_16), ~np.isnan(y_stat_84)))
 
-    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], alpha=0.3, color=color)
+    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], alpha=0.3)
 
 
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
@@ -739,24 +739,23 @@ for reg in halos_in_pop:
         ax5.plot(zs, sfrs)
         ax6.plot(zs, soft, linestyle='--', color='k', label='soft')
         plot_spread_stat(np.array(all_zs), np.array(dm_hmr), ax6)
-        ax6.plot(zs, dm_hmr, label='Galaxy')
-        ax6.plot(zs, gas_hmr, label="Gas")
-        ax6.plot(zs, star_hmr, label="Stellar")
+        plot_spread_stat(np.array(all_zs), np.array(gas_hmr), ax6)
+        plot_spread_stat(np.array(all_zs), np.array(star_hmr), ax6)
         ax7.plot(zs, ngen)
         ax8.plot(zs, np.abs(energy))
         ax9.plot(zs, nprogs)
         ax10.plot(zs, ndescs)
         ax11.plot(zs, bhmar)
-        ax12.plot(zs, np.array(bd) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
+        plot_spread_stat(np.array(all_zs), np.array(bd) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, ax12)
 
         ax1.plot(zs, dm_ms_mb, linestyle="dotted")
         ax1.plot(zs, gas_ms_mb, linestyle="dotted")
         ax1.plot(zs, star_ms_mb, linestyle="dotted")
-        ax1.plot(zs, bh_ms, label="Black Hole", linestyle="dotted")
-        ax2.plot(zs, dm_ms_100, label="Main branch", linestyle="dotted")
-        ax2.plot(zs, gas_ms_100)
-        ax2.plot(zs, star_ms_100)
-        ax2.plot(zs, bh_ms_100)
+        ax1.plot(zs, bh_ms_mb, label="Black Hole", linestyle="dotted")
+        ax2.plot(zs, dm_ms_100_mb, label="Main branch", linestyle="dotted")
+        ax2.plot(zs, gas_ms_100_mb)
+        ax2.plot(zs, star_ms_100_mb)
+        ax2.plot(zs, bh_ms_100_mb)
         ax3.plot(zs, nbh_mb, linestyle="dotted")
         ax4.plot(zs, cont_mb, linestyle="dotted")
         ax5.plot(zs, sfrs_mb, linestyle="dotted")
@@ -786,8 +785,8 @@ for reg in halos_in_pop:
         ax11.set_ylabel('$\dot{M_{BH}} / [M_\odot / \mathrm{Gyr}]$')
         ax12.set_ylabel(r'$<\rho_{birth}> /$ [$n_H$ cm$^{-3}$]')
 
-        ax1.set_ylim(1*10**6, 10**13.5)
-        ax2.set_ylim(1*10 ** 6, 10 ** 13)
+        ax1.set_ylim(10**5.5, 10**14)
+        ax2.set_ylim(10 ** 5.5, 10 ** 13)
         # ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
         # ax5.set_ylim(10 ** -1, 10 ** 1.9)
         ax6.set_ylim(10 ** -1, 10 ** 1.9)
