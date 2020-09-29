@@ -619,7 +619,7 @@ for reg in halos_in_pop:
             z = float(z_str[0] + '.' + z_str[1])
             ngen[ind] = len(graph[snap])
             for grp in graph[snap]:
-                if gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp] < 1e9:
+                if gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp][0] < 1e9:
                     continue
                 zs[ind] = z
                 all_zs.append(z)
