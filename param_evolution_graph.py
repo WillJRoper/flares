@@ -54,8 +54,10 @@ def plot_spread_stat(zs, ys, ax, color):
     bin[1:] = high_bins
 
     # Compute binned statistics
-    y_stat_16, binedges, bin_ind = binned_statistic(zs, ys, statistic=lambda y: np.percentile(y, 16), bins=bin)
-    y_stat_84, binedges, bin_ind = binned_statistic(zs, ys, statistic=lambda y: np.percentile(y, 84), bins=bin)
+    y_stat_16, binedges, bin_ind = binned_statistic(zs[~np.isnan(ys)], ys[~np.isnan(ys)],
+                                                    statistic=lambda y: np.percentile(y, 16), bins=bin)
+    y_stat_84, binedges, bin_ind = binned_statistic(zs[~np.isnan(ys)], ys[~np.isnan(ys)],
+                                                    statistic=lambda y: np.percentile(y, 84), bins=bin)
 
     # Compute bincentres
     bin_cents = uniz
