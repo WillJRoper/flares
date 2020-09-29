@@ -729,8 +729,6 @@ for reg in halos_in_pop:
         ax11 = fig.add_subplot(gs[2, 2])
         ax12 = fig.add_subplot(gs[3, 2])
 
-        cent_sat = np.int32(cent_sat)
-
         ax1.plot(zs, dm_ms, label="Dark Matter")
         ax1.plot(zs, gas_ms, label="Gas")
         ax1.plot(zs, star_ms, label="Stellar")
