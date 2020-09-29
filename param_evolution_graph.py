@@ -743,7 +743,7 @@ for reg in halos_in_pop:
         ax4.plot(zs, cont)
         ax5.plot(zs, sfrs)
         print(sfrs)
-        ax6.plot(zs, soft, linestyle='--', color='k', label='soft')
+        ax6.plot(zs, soft, linestyle='--', color='k', label='Softening')
         plot_spread_stat(np.array(all_zs), np.array(dm_hmr), ax6, color="dimgray")
         plot_spread_stat(np.array(all_zs), np.array(gas_hmr), ax6, color="limegreen")
         plot_spread_stat(np.array(all_zs), np.array(star_hmr), ax6, color="red")
@@ -835,7 +835,7 @@ for reg in halos_in_pop:
         handles, labels = ax6.get_legend_handles_labels()
         ax6.legend(handles, labels)
         handles, labels = ax1.get_legend_handles_labels()
-        ax1.legend(handles, labels, ncol=2)
+        ax1.legend(handles, labels, ncol=2, fontsize=6)
         handles, labels = ax2.get_legend_handles_labels()
         ax2.legend(handles, labels, ncol=2)
 
