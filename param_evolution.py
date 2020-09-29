@@ -586,7 +586,7 @@ for reg in halos_in_pop:
 
                 gas_ms_100.append(gal_gas_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
                 star_ms_100.append(gal_star_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
-                print(len(gal_bh_ms_100), np.unique(halo_ids_dict[snap][reg] == grp))
+                print(gal_bh_ms_100, halo_ids_dict[snap][reg] == grp)
                 bh_ms_100.append(gal_bh_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_ms_100.append(gal_dm_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
 
