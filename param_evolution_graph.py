@@ -683,6 +683,8 @@ for reg in halos_in_pop:
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
             for grp in mainbranch[snap]:
+                if gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp][0] < 1e9:
+                    continue
                 zs_mb.append(z)
                 sfrs_mb.append(gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp])
                 gas_ms_mb.append(gal_gas_ms[snap][reg][halo_ids_dict[snap][reg] == grp])
@@ -837,7 +839,7 @@ for reg in halos_in_pop:
         handles, labels = ax6.get_legend_handles_labels()
         ax6.legend(handles, labels)
         handles, labels = ax1.get_legend_handles_labels()
-        ax1.legend(handles, labels, ncol=2, fontsize=10)
+        ax1.legend(handles, labels, ncol=2, fontsize=8)
         handles, labels = ax2.get_legend_handles_labels()
         ax2.legend(handles, labels, ncol=2)
 
