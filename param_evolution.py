@@ -608,7 +608,7 @@ for reg in halos_in_pop:
                 soft.append(csoft / (1 + z))
                 bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
                 haloids.append(grp)
-                nbh.append(len(bh_id_dict[snap][reg] == grp))
+                nbh.append(len(bh_id_dict[bh_id_dict[snap][reg] == grp]))
 
         if all(np.array(sfrs) > 0.1):
             continue
@@ -664,7 +664,7 @@ for reg in halos_in_pop:
         ax1.set_ylabel('$M_{30} / M_\odot$')
         ax2.set_ylabel('$M_{100} / M_\odot$')
         ax3.set_ylabel('$N_{BH}$')
-        ax4.set_ylabel('$M_{\star, \mathrm{pcont}} / M_\odot$')
+        ax4.set_ylabel('$N_{\mathrm{part_cont}}$')
         ax5.set_ylabel('sSFR / $[\mathrm{Gyr}^{-1}]$')
         ax6.set_ylabel('$R_{1/2} / \mathrm{pkpc}$')
         ax7.set_ylabel('Central?')
@@ -674,9 +674,9 @@ for reg in halos_in_pop:
         ax11.set_ylabel('$\dot{M_{BH}} / [M_\odot / \mathrm{Gyr}]$')
         ax12.set_ylabel(r'$<\rho_{birth}> /$ [$n_H$ cm$^{-3}$]')
 
-        ax1.set_ylim(10**6.5, 10**12.5)
-        ax2.set_ylim(10 ** 6.5, 10 ** 12.5)
-        ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
+        ax1.set_ylim(10**5, 10**13)
+        ax2.set_ylim(10 ** 5, 10 ** 13)
+        # ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
         # ax5.set_ylim(10 ** -1, 10 ** 1.9)
         ax6.set_ylim(10 ** -1, 10 ** 1.9)
         ax7.set_ylim(-0.3, 1.3)
@@ -693,7 +693,7 @@ for reg in halos_in_pop:
 
         ax1.set_yscale('log')
         ax2.set_yscale('log')
-        ax3.set_yscale('log')
+        # ax3.set_yscale('log')
         ax4.set_yscale('log')
         ax5.set_yscale('log')
         ax6.set_yscale('log')
