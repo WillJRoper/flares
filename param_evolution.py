@@ -408,8 +408,8 @@ for reg in regions:
             part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', numThreads=8)
             grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
             subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
-            bh_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', numThreads=8)
-            bh_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', numThreads=8)
+            bh_grp_ids = E.read_array('PARTDATA', path, snap, 'PartType5/GroupNumber', numThreads=8)
+            bh_subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType5/SubGroupNumber', numThreads=8)
             subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
             subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
             gal_bh_ms[snap][reg] = E.read_array('SUBFIND', path, snap, 'Subhalo/BlackHoleMass', numThreads=8,
