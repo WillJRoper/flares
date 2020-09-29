@@ -62,7 +62,7 @@ def plot_spread_stat(zs, ys, ax, color):
 
     okinds = np.logical_and(~np.isnan(bin_cents), np.logical_and(~np.isnan(y_stat_16), ~np.isnan(y_stat_84)))
 
-    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], alpha=0.3, color)
+    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], alpha=0.3, color=color)
 
 
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
