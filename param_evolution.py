@@ -608,7 +608,6 @@ for reg in halos_in_pop:
                 soft.append(csoft / (1 + z))
                 bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
                 haloids.append(grp)
-                print(bh_id_dict[snap][reg][bh_id_dict[snap][reg] == grp])
                 nbh.append(len(bh_id_dict[snap][reg][bh_id_dict[snap][reg] == grp]))
 
         if all(np.array(sfrs) > 0.1):
