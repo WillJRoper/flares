@@ -619,7 +619,8 @@ for reg in halos_in_pop:
             for grp in graph[snap]:
                 zs[ind] = z
                 all_zs.append(z)
-                if not np.isnan(gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp][0]):
+                if not np.isnan(gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp][0]) \
+                        and gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp][0] < 10**20:
                     sfrs[ind] += gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp][0]
                 
                 gas_ms[ind] += gal_gas_ms[snap][reg][halo_ids_dict[snap][reg] == grp][0]
