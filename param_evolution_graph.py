@@ -34,7 +34,7 @@ def get_linked_halo_data(all_linked_halos, start_ind, nlinked_halos):
     return all_linked_halos[start_ind: start_ind + nlinked_halos]
 
 
-def plot_spread_stat(zs, ys, ax):
+def plot_spread_stat(zs, ys, ax, color):
 
     zs = np.float64(zs)
 
@@ -62,7 +62,7 @@ def plot_spread_stat(zs, ys, ax):
 
     okinds = np.logical_and(~np.isnan(bin_cents), np.logical_and(~np.isnan(y_stat_16), ~np.isnan(y_stat_84)))
 
-    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], alpha=0.3)
+    ax.fill_between(bin_cents[okinds], y_stat_16[okinds], y_stat_84[okinds], alpha=0.3, color)
 
 
 def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
@@ -730,22 +730,22 @@ for reg in halos_in_pop:
         ax11 = fig.add_subplot(gs[2, 2])
         ax12 = fig.add_subplot(gs[3, 2])
 
-        ax1.plot(zs, dm_ms, label="Dark Matter")
-        ax1.plot(zs, gas_ms, label="Gas")
-        ax1.plot(zs, star_ms, label="Stellar")
-        ax1.plot(zs, bh_ms, label="Black Hole")
-        ax2.plot(zs, dm_ms_100, label="Graph")
-        ax2.plot(zs, gas_ms_100)
-        ax2.plot(zs, star_ms_100)
-        ax2.plot(zs, bh_ms_100)
+        ax1.plot(zs, dm_ms, label="Dark Matter", color="dimgray")
+        ax1.plot(zs, gas_ms, label="Gas", color="limegreen")
+        ax1.plot(zs, star_ms, label="Stellar", color="red")
+        ax1.plot(zs, bh_ms, label="Black Hole", color="dodgerblue")
+        ax2.plot(zs, dm_ms_100, label="Graph", color="dimgray")
+        ax2.plot(zs, gas_ms_100, color="limegreen")
+        ax2.plot(zs, star_ms_100, color="red")
+        ax2.plot(zs, bh_ms_100, color="dodgerblue")
         ax3.plot(zs, nbh)
         ax4.plot(zs, cont)
         ax5.plot(zs, sfrs)
         print(sfrs)
         ax6.plot(zs, soft, linestyle='--', color='k', label='soft')
-        plot_spread_stat(np.array(all_zs), np.array(dm_hmr), ax6)
-        plot_spread_stat(np.array(all_zs), np.array(gas_hmr), ax6)
-        plot_spread_stat(np.array(all_zs), np.array(star_hmr), ax6)
+        plot_spread_stat(np.array(all_zs), np.array(dm_hmr), ax6, color="dimgray")
+        plot_spread_stat(np.array(all_zs), np.array(gas_hmr), ax6, color="limegreen")
+        plot_spread_stat(np.array(all_zs), np.array(star_hmr), ax6, color="red")
         ax7.plot(zs, ngen)
         ax8.plot(zs, np.abs(energy))
         ax9.plot(zs, nprogs)
@@ -753,20 +753,20 @@ for reg in halos_in_pop:
         plot_spread_stat(np.array(all_zs), np.array(bhmar), ax11)
         plot_spread_stat(np.array(all_zs), np.array(bd) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, ax12)
 
-        ax1.plot(zs_mb, dm_ms_mb, linestyle="dotted")
-        ax1.plot(zs_mb, gas_ms_mb, linestyle="dotted")
-        ax1.plot(zs_mb, star_ms_mb, linestyle="dotted")
-        ax1.plot(zs_mb, bh_ms_mb, label="Black Hole", linestyle="dotted")
-        ax2.plot(zs_mb, dm_ms_100_mb, label="Main branch", linestyle="dotted")
-        ax2.plot(zs_mb, gas_ms_100_mb, linestyle="dotted")
-        ax2.plot(zs_mb, star_ms_100_mb, linestyle="dotted")
-        ax2.plot(zs_mb, bh_ms_100_mb, linestyle="dotted")
+        ax1.plot(zs_mb, dm_ms_mb, linestyle="dotted", color="dimgray")
+        ax1.plot(zs_mb, gas_ms_mb, linestyle="dotted", color="limegreen")
+        ax1.plot(zs_mb, star_ms_mb, linestyle="dotted", color="red")
+        ax1.plot(zs_mb, bh_ms_mb, label="Black Hole", linestyle="dotted", color="dodgerblue")
+        ax2.plot(zs_mb, dm_ms_100_mb, label="Main branch", linestyle="dotted", color="dimgray")
+        ax2.plot(zs_mb, gas_ms_100_mb, linestyle="dotted", color="limegreen")
+        ax2.plot(zs_mb, star_ms_100_mb, linestyle="dotted", color="red")
+        ax2.plot(zs_mb, bh_ms_100_mb, linestyle="dotted", color="dodgerblue")
         ax3.plot(zs_mb, nbh_mb, linestyle="dotted")
         ax4.plot(zs_mb, cont_mb, linestyle="dotted")
         ax5.plot(zs_mb, sfrs_mb, linestyle="dotted")
-        ax6.plot(zs_mb, dm_hmr_mb, linestyle="dotted")
-        ax6.plot(zs_mb, gas_hmr_mb, linestyle="dotted")
-        ax6.plot(zs_mb, star_hmr_mb, linestyle="dotted")
+        ax6.plot(zs_mb, dm_hmr_mb, linestyle="dotted", color="dimgray")
+        ax6.plot(zs_mb, gas_hmr_mb, linestyle="dotted", color="limegreen")
+        ax6.plot(zs_mb, star_hmr_mb, linestyle="dotted", color="red")
         ax8.plot(zs_mb, np.abs(energy_mb), linestyle="dotted")
         ax9.plot(zs_mb, nprogs_mb, linestyle="dotted")
         ax10.plot(zs_mb, ndescs_mb, linestyle="dotted")
@@ -791,7 +791,9 @@ for reg in halos_in_pop:
         ax12.set_ylabel(r'$<\rho_{birth}> /$ [$n_H$ cm$^{-3}$]')
 
         ax1.set_ylim(10**5.5, 10**15.5)
-        ax2.set_ylim(10 ** 5.5, 10 ** 13)
+        ax1.set_xlim(4, 16)
+        ax2.set_ylim(10 ** 5.5, 10 ** 14.5)
+        ax2.set_xlim(4, 16)
         # ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
         # ax5.set_ylim(10 ** -1, 10 ** 1.9)
         ax6.set_ylim(10 ** -1, 10 ** 1.9)
