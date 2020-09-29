@@ -767,7 +767,7 @@ for reg in halos_in_pop:
         ax8.plot(zs_mb, np.abs(energy_mb), linestyle="dotted")
         ax9.plot(zs_mb, nprogs_mb, linestyle="dotted")
         ax10.plot(zs_mb, ndescs_mb, linestyle="dotted")
-        ax11.plot(zs_mb, bhmar_mb, linestyle="dotted")
+        ax11.plot(zs_mb, bhmar_mb, linestyle="dotted", color="dodgerblue")
         ax12.plot(zs_mb, np.array(bd_mb) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, linestyle="dotted")
 
         ax4.set_xlabel('$z$')
