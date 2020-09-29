@@ -836,7 +836,7 @@ for reg in halos_in_pop:
         handles, labels = ax6.get_legend_handles_labels()
         ax6.legend(handles, labels)
         handles, labels = ax1.get_legend_handles_labels()
-        ax1.legend(handles, labels, ncol=2, fontsize=6)
+        ax1.legend(handles, labels, ncol=2, fontsize=10)
         handles, labels = ax2.get_legend_handles_labels()
         ax2.legend(handles, labels, ncol=2)
 
