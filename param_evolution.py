@@ -684,8 +684,8 @@ for reg in halos_in_pop:
         ax11.set_ylabel('$\dot{M_{BH}} / [M_\odot / \mathrm{Gyr}]$')
         ax12.set_ylabel(r'$<\rho_{birth}> /$ [$n_H$ cm$^{-3}$]')
 
-        ax1.set_ylim(10**5, 10**14.5)
-        ax2.set_ylim(10**5, 10**13)
+        ax1.set_ylim(10**5.1, 10**14.5)
+        ax2.set_ylim(10**5.1, 10**13)
         # ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
         # ax5.set_ylim(10 ** -1, 10 ** 1.9)
         ax6.set_ylim(10 ** -1, 10 ** 1.9)

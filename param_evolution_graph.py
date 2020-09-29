@@ -539,9 +539,8 @@ count = 0
 for reg in regions:
 
     try:
-        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][np.logical_and(
-            np.logical_or(gal_sfr['011_z004p770'][reg] <= 0.15, gal_sfr['010_z005p000'][reg] <= 0.15),
-            gal_star_ms['011_z004p770'][reg] >= mthresh)]
+        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][np.logical_and(gal_sfr['011_z004p770'][reg] <= 0.15,
+                                                                              gal_star_ms['011_z004p770'][reg] >= mthresh)]
         count += len(halos_in_pop[reg])
     except KeyError:
         continue
@@ -792,9 +791,9 @@ for reg in halos_in_pop:
         ax11.set_ylabel('$\dot{M_{BH}} / [M_\odot / \mathrm{Gyr}]$')
         ax12.set_ylabel(r'$<\rho_{birth}> /$ [$n_H$ cm$^{-3}$]')
 
-        ax1.set_ylim(10**5, 10**16.5)
+        ax1.set_ylim(10**5.1, 10**16.5)
         ax1.set_xlim(4, 17)
-        ax2.set_ylim(10 ** 5, 10 ** 14.5)
+        ax2.set_ylim(10 ** 5.1, 10 ** 14.5)
         ax2.set_xlim(4, 17)
         # ax3.set_ylim(10 ** 6.5, 10 ** 12.5)
         # ax5.set_ylim(10 ** -1, 10 ** 1.9)
