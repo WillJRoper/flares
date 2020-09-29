@@ -533,7 +533,7 @@ count = 0
 for reg in regions:
 
     try:
-        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][gal_star_ms['011_z004p770'][reg] >= mthresh]
+        halos_in_pop[reg] = halo_ids_dict['011_z004p770'][reg][gal_sfr['011_z004p770'][reg] <= 0.15]
         count += len(halos_in_pop[reg])
     except KeyError:
         continue
@@ -641,7 +641,7 @@ for reg in halos_in_pop:
 
                 bhmar[ind] += gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp]
                 soft[ind] = csoft / (1 + z)
-                bd[ind].append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
+                bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
                 haloids[ind] += grp
                 nbh[ind] += len(bh_id_dict[snap][reg][bh_id_dict[snap][reg] == grp])
                 
