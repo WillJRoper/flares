@@ -617,11 +617,12 @@ for reg in halos_in_pop:
         for ind, snap in enumerate(graph):
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
-            ngen[ind] = len(graph[snap])
+            ngen[ind] = len(
+                [grp for grp in graph[snap] if gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp][0] > 1e9])
+            zs[ind] = z
             for grp in graph[snap]:
                 if gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp][0] < 1e9:
                     continue
-                zs[ind] = z
                 all_zs.append(z)
                 if not np.isnan(gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp][0]) \
                         and gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp][0] < 10**20:
