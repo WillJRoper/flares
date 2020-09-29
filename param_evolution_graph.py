@@ -476,7 +476,11 @@ for reg in regions:
             gal_star_ms_100[snap][reg] = gal_ms_100[:, 4]
             gal_bh_ms_100[snap][reg] = gal_ms_100[:, 5]
 
-        except:
+        except ValueError:
+            continue
+        except KeyError:
+            continue
+        except OSError:
             continue
 
         # A copy of this array is needed for the extraction method
@@ -615,23 +619,23 @@ for reg in halos_in_pop:
             for grp in graph[snap]:
                 zs[ind] = z
                 all_zs.append(z)
-                sfrs[ind] += gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp]
+                sfrs[ind] += gal_sfr[snap][reg][halo_ids_dict[snap][reg] == grp][0]
                 
-                gas_ms[ind] += gal_gas_ms[snap][reg][halo_ids_dict[snap][reg] == grp]
-                star_ms[ind] += gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp]
-                bh_ms[ind] += gal_bh_ms[snap][reg][halo_ids_dict[snap][reg] == grp]
-                dm_ms[ind] += gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp]
+                gas_ms[ind] += gal_gas_ms[snap][reg][halo_ids_dict[snap][reg] == grp][0]
+                star_ms[ind] += gal_star_ms[snap][reg][halo_ids_dict[snap][reg] == grp][0]
+                bh_ms[ind] += gal_bh_ms[snap][reg][halo_ids_dict[snap][reg] == grp][0]
+                dm_ms[ind] += gal_dm_ms[snap][reg][halo_ids_dict[snap][reg] == grp][0]
 
-                gas_ms_100[ind] += gal_gas_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp]
-                star_ms_100[ind] += gal_star_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp]
-                bh_ms_100[ind] += gal_bh_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp]
-                dm_ms_100[ind] += gal_dm_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp]
+                gas_ms_100[ind] += gal_gas_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp][0]
+                star_ms_100[ind] += gal_star_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp][0]
+                bh_ms_100[ind] += gal_bh_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp][0]
+                dm_ms_100[ind] += gal_dm_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp][0]
 
                 gas_hmr.append(gal_gas_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 star_hmr.append(gal_star_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_hmr.append(gal_dm_hmrs[snap][reg][halo_ids_dict[snap][reg] == grp])
                 
-                energy[ind] += gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp]
+                energy[ind] += gal_energy[snap][reg][halo_ids_dict[snap][reg] == grp][0]
 
                 nprogs[ind] += data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == grp]][0]
                 ndescs[ind] += data_dict['ndescs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == grp]][0]
@@ -640,7 +644,7 @@ for reg in halos_in_pop:
                 nprog = data_dict['nprogs'][snap][data_dict['mega'][snap][data_dict['sim'][snap] == grp]][0]
                 cont[ind] += np.sum(get_linked_halo_data(data_dict['prog_cont'][snap], start_ind, nprog))
 
-                bhmar[ind] += gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp]
+                bhmar[ind] += gal_bhmar[snap][reg][halo_ids_dict[snap][reg] == grp][0]
                 soft[ind] = csoft / (1 + z)
                 bd.append(gal_birthden[snap][reg][halo_ids_dict[snap][reg] == grp])
                 haloids[ind] += grp
