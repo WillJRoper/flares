@@ -441,7 +441,7 @@ for reg in regions:
             gal_dm_ms_100[snap][reg] = gal_ms_100[:, 1]
             gal_gas_ms_100[snap][reg] = gal_ms_100[:, 0]
             gal_star_ms_100[snap][reg] = gal_ms_100[:, 4]
-            gal_bh_ms_100[snap] = gal_ms_100[:, 5]
+            gal_bh_ms_100[snap][reg] = gal_ms_100[:, 5]
 
         except:
             continue
@@ -586,7 +586,6 @@ for reg in halos_in_pop:
 
                 gas_ms_100.append(gal_gas_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
                 star_ms_100.append(gal_star_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
-                print(gal_bh_ms_100, halo_ids_dict[snap][reg] == grp)
                 bh_ms_100.append(gal_bh_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
                 dm_ms_100.append(gal_dm_ms_100[snap][reg][halo_ids_dict[snap][reg] == grp])
 
