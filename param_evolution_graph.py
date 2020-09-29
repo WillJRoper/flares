@@ -749,7 +749,8 @@ for reg in halos_in_pop:
         ax9.plot(zs, nprogs)
         ax10.plot(zs, ndescs)
         plot_spread_stat(np.array(all_zs), np.array(bhmar), ax11, color="dodgerblue")
-        plot_spread_stat(np.array(all_zs), np.array(bd) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, ax12)
+        plot_spread_stat(np.array(all_zs), np.array(bd) * (10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, ax12,
+                         color="red")
 
         ax1.plot(zs_mb, dm_ms_mb, linestyle="dotted", color="dimgray")
         ax1.plot(zs_mb, gas_ms_mb, linestyle="dotted", color="limegreen")
