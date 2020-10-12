@@ -209,8 +209,9 @@ def get_data(masslim=1e8, load=False):
                                        'PartType4/Metallicity', noH=True,
                                        physicalUnits=True, numThreads=8)
                 gal_aborn = E.read_array('PARTDATA', path, snap,
-                                         'PartType4/StellarFormationTime', noH=True,
-                                         physicalUnits=True, numThreads=8)
+                                         'PartType4/StellarFormationTime',
+                                         noH=True, physicalUnits=True,
+                                         numThreads=8)
                 gal_coords = E.read_array('PARTDATA', path, snap,
                                           'PartType4/Coordinates',
                                           noH=True, physicalUnits=True,
@@ -242,6 +243,7 @@ def get_data(masslim=1e8, load=False):
                 # Add stars from these galaxies
                 part_inds = list(halo_part_inds[halo])
                 pos = gal_coords[part_inds, :] - cop
+                print(cop, pos)
                 rs = np.linalg.norm(pos, axis=1)
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
