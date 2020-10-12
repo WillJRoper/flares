@@ -293,9 +293,9 @@ plot_spread_stat(zs, stellar_met, ax, color='orangered')
 plot_meidan_stat(zs_inside, stellar_met_inside, ax, lab='$R\leq R_{1/2}$',
                  color='royalblue', bins=1)
 plot_spread_stat(zs_inside, stellar_met_inside, ax, color='royalblue')
-plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='$R > R_{1/2}$',
-                 color='limegreen', bins=1)
-plot_spread_stat(zs_outside, stellar_met_outside, ax, color='limegreen')
+# plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='$R > R_{1/2}$',
+#                  color='limegreen', bins=1)
+# plot_spread_stat(zs_outside, stellar_met_outside, ax, color='limegreen')
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<Z>$")
