@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import astropy.units as u
 import astropy.constants as const
-import eagle_IO as E
+import eagle_IO.eagle_IO as E
 import seaborn as sns
 from flares import flares
 matplotlib.use('Agg')
@@ -12,33 +12,33 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 
-def get_mass_data(path, snap, tag, group="SUBFIND_GROUP", noH=True, cut_bounds=True):
+def get_mass_data(path, snap, tag, group="SUBFIND", noH=True, cut_bounds=True):
 
     # Extract mass data
-    M_dat = E.read_array(group, path, snap, tag, noH=noH)
+    M_dat = E.read_array(group, path, snap, tag, noH=noH)[:, 4]
 
-    # # If boundaries to be eliminated
-    # if cut_bounds:
-    #     centre, radius, mindist = flares.spherical_region(path, snap)
-    #     R_cop = E.read_array("SUBFIND", path, snap, "FOF/GroupCentreOfPotential", noH=noH)
-    #
-    #     # Get the radius of each group
-    #     R_cop -= centre
-    #     radii = np.linalg.norm(R_cop, axis=1)
-    #     M_dat = M_dat[np.where(radii < 14 / 0.677700)]
+    # If boundaries to be eliminated
+    if cut_bounds:
+        centre, radius, mindist = flares.spherical_region(path, snap)
+        R_cop = E.read_array("SUBFIND", path, snap, "FOF/GroupCentreOfPotential", noH=noH)
+
+        # Get the radius of each group
+        R_cop -= centre
+        radii = np.linalg.norm(R_cop, axis=1)
+        M_dat = M_dat[np.where(radii < 14 / 0.677700)]
 
     return M_dat
 
 
 # Extarct M_200s
-tag = "Subhalo/Stars/Mass"
+tag = "Subhalo/ApertureMeasurements/Mass/030kpc"
 snap = '010_z005p000'
 group = "SUBFIND"
-M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_00/data/', snap,
+M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_24/data/', snap,
                       tag, group=group, noH=True, cut_bounds=False)
 # M_200_hrDMO = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032_hires/data/', snap,
 #                       tag, group=group, noH=True, cut_bounds=False)
-M_200_hr = get_mass_data('/cosma7/data/dp004/dc-payy1/G-EAGLE/GEAGLE_00_SMthresh/data/', snap,
+M_200_hr = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-HD/FLARES_HR_24/data/', snap,
                          tag, group=group, noH=True, cut_bounds=False)
 
 M_200 = M_200[np.where(M_200 != 0.0)] * 10**10
@@ -75,8 +75,8 @@ bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
 #bin_cents2 = bin_cents[np.where(H_hr != 0)]
 
 # Plot each histogram
-ax.loglog(bin_cents, H/interval, label='Particle')
-ax.loglog(bin_cents, H_hr/interval, linestyle='--', label='Smoothed')
+ax.loglog(bin_cents, H/interval, label='Standard')
+ax.loglog(bin_cents, H_hr/interval, linestyle='--', label='High Resolution')
 
 # ax.set_xlim(10**7.5, None)
 # ax.set_ylim(None, 10**-5.5)
@@ -90,4 +90,4 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
 # Save figure
-fig.savefig('plots/GSMF_res_comp_' + snap + 'Smoothed.png', bbox_inches='tight')
+fig.savefig('plots/GSMF_res_comp_' + snap + '.png', bbox_inches='tight')
