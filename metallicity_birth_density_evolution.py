@@ -198,7 +198,7 @@ def get_data(masslim=1e8, load=False):
                 gal_hmr = E.read_array('SUBFIND', path, snap,
                                        'Subhalo/HalfMassRad',
                                        noH=True, physicalUnits=True,
-                                       numThreads=8)[:, 4] * 1e3
+                                       numThreads=8)[:, 4]
                 gal_cop = E.read_array('SUBFIND', path, snap,
                                        'Subhalo/CentreOfPotential',
                                        noH=True, physicalUnits=True,
@@ -216,7 +216,7 @@ def get_data(masslim=1e8, load=False):
                 gal_coords = E.read_array('PARTDATA', path, snap,
                                           'PartType4/Coordinates',
                                           noH=True, physicalUnits=True,
-                                          numThreads=8) * 1e3
+                                          numThreads=8)
             except ValueError:
                 continue
             except OSError:
