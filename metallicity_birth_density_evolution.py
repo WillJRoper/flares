@@ -236,7 +236,7 @@ def get_data(masslim=1e8, eagle=False):
                                           noH=True, physicalUnits=True,
                                           numThreads=8)
 
-                ages = calc_ages(z, gal_aborn)
+                gal_ages = calc_ages(z, gal_aborn)
 
             except ValueError:
                 continue
@@ -263,6 +263,7 @@ def get_data(masslim=1e8, eagle=False):
                 rs = np.linalg.norm(pos, axis=1)
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
+                ages = gal_ages[part_inds]
                 stellar_bd.append(np.mean(parts_bd[ages < 100]))
                 stellar_met.append(np.mean(parts_met[ages < 100]))
                 stellar_bd_inside.append(np.mean(parts_bd[np.logical_and(ages < 100,
