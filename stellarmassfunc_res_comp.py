@@ -17,16 +17,16 @@ def get_mass_data(path, snap, tag, group="SUBFIND", noH=True, cut_bounds=True):
     # Extract mass data
     M_dat = E.read_array(group, path, snap, tag, noH=noH, numThreads=8)[:, 4]
 
-    # # If boundaries to be eliminated
-    # if cut_bounds:
-    #     centre, radius, mindist = flares.spherical_region(path, snap)
-    #     R_cop = E.read_array("SUBFIND", path, snap, "FOF/GroupCentreOfPotential",
-    #                          noH=noH, numThreads=8)
-    #
-    #     # Get the radius of each group
-    #     R_cop -= centre
-    #     radii = np.linalg.norm(R_cop, axis=1)
-    #     M_dat = M_dat[np.where(radii < 14 / 0.677700)]
+    # If boundaries to be eliminated
+    if cut_bounds:
+        centre, radius, mindist = flares.spherical_region(path, snap)
+        R_cop = E.read_array("SUBFIND", path, snap, "Subhalo/CentreOfPotential",
+                             noH=noH, numThreads=8)
+
+        # Get the radius of each group
+        R_cop -= centre
+        radii = np.linalg.norm(R_cop, axis=1)
+        M_dat = M_dat[np.where(radii < 14 / 0.677700)]
 
     return M_dat
 
@@ -73,6 +73,9 @@ interval = bins[1:] - bins[:-1]
 # Histogram the DMLJ halo masses
 H, bins = np.histogram(M_200, bins=bins)
 H_hr, _ = np.histogram(M_200_hr, bins=bins)
+
+H_cumsum = np.cumsum(H[])
+H_hr_cumsum = np.cumsum(H_hr)
 
 # Remove zeros for plotting
 #H = H[np.where(H != 0)]
