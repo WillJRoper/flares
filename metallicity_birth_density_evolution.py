@@ -201,7 +201,8 @@ def get_data(masslim=1e8, load=False):
                                        numThreads=8)[:, 4] * 1e3
                 gal_cop = E.read_array('SUBFIND', path, snap,
                                        'Subhalo/CentreOfPotential',
-                                       noH=True, numThreads=8) * 1e3
+                                       noH=True, physicalUnits=True,
+                                       numThreads=8)
                 gal_bd = E.read_array('PARTDATA', path, snap,
                                       'PartType4/BirthDensity', noH=True,
                                         physicalUnits=True, numThreads=8)
