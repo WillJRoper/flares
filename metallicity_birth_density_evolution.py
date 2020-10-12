@@ -11,7 +11,7 @@ import eagle_IO.eagle_IO as E
 from scipy.stats import binned_statistic
 import seaborn as sns
 
-sns.set_style("Whitegrid")
+sns.set_style("whitegrid")
 
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
