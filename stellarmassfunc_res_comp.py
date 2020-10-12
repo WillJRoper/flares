@@ -40,14 +40,14 @@ snaps = ['010_z005p000', ]
 
 M_200 = []
 M_200_hr = []
-
-for snap in snaps:
-    M_200.extend(get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_23/data/', snap,
-                               tag, group=group, noH=True, cut_bounds=False))
-    # M_200_hrDMO = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032_hires/data/', snap,
-    #                       tag, group=group, noH=True, cut_bounds=False)
-    M_200_hr.extend(get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-HD/FLARES_HR_24/data/', snap,
-                                  tag, group=group, noH=True, cut_bounds=False))
+for reg in regions:
+    for snap in snaps:
+        M_200.extend(get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_24/data/', snap,
+                                   tag, group=group, noH=True, cut_bounds=False))
+        # M_200_hrDMO = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032_hires/data/', snap,
+        #                       tag, group=group, noH=True, cut_bounds=False)
+        M_200_hr.extend(get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-HD/FLARES_HR_24/data/', snap,
+                                      tag, group=group, noH=True, cut_bounds=False))
 
 M_200 = np.array(M_200)
 M_200_hr = np.array(M_200_hr)
