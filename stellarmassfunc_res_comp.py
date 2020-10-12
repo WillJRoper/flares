@@ -74,8 +74,8 @@ interval = bins[1:] - bins[:-1]
 H, bins = np.histogram(M_200, bins=bins)
 H_hr, _ = np.histogram(M_200_hr, bins=bins)
 
-# H_cumsum = np.cumsum(H[])
-# H_hr_cumsum = np.cumsum(H_hr)
+H_cumsum = np.cumsum(H[::-1])
+H_hr_cumsum = np.cumsum(H_hr[::-1])
 
 # Remove zeros for plotting
 #H = H[np.where(H != 0)]
@@ -85,6 +85,7 @@ H_hr, _ = np.histogram(M_200_hr, bins=bins)
 
 # Compute bin centres
 bin_cents = bins[1:] - ((bins[1] - bins[0]) / 2)
+bin_cents_cumsum = bin_cents[::-1]
 #bin_cents1 = bin_cents[np.where(H != 0)]
 #bin_cents2 = bin_cents[np.where(H_hr != 0)]
 
@@ -105,3 +106,28 @@ ax.legend(handles, labels)
 
 # Save figure
 fig.savefig('plots/GSMF_res_comp_' + snap + '.png', bbox_inches='tight')
+
+plt.close(fig)
+
+# Set up plot
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+# Plot each histogram
+ax.loglog(bin_cents_cumsum, H_cumsum/interval, label='Standard')
+ax.loglog(bin_cents, H_hr_cumsum/interval, linestyle='--', label='High Resolution')
+
+# ax.set_xlim(10**7.5, None)
+# ax.set_ylim(None, 10**-5.5)
+
+# Label axes
+ax.set_xlabel(r'$M_{\star}/M_\odot$')
+ax.set_ylabel(r'$dN(>M)/dM$')
+
+# Get and draw legend
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
+
+# Save figure
+fig.savefig('plots/GSMF_res_comp_' + snap + 'cumulative.png',
+            bbox_inches='tight')
