@@ -74,8 +74,8 @@ interval = bins[1:] - bins[:-1]
 H, bins = np.histogram(M_200, bins=bins)
 H_hr, _ = np.histogram(M_200_hr, bins=bins)
 
-H_cumsum = np.cumsum(H[])
-H_hr_cumsum = np.cumsum(H_hr)
+# H_cumsum = np.cumsum(H[])
+# H_hr_cumsum = np.cumsum(H_hr)
 
 # Remove zeros for plotting
 #H = H[np.where(H != 0)]
