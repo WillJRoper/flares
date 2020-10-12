@@ -139,7 +139,7 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
 def get_data(masslim=1e8, eagle=False):
 
     if eagle:
-        regions = [1, ]
+        regions = ["EAGLE", ]
     else:
         regions = []
         for reg in range(0, 1):
@@ -308,12 +308,12 @@ eagle_zs, eagle_zs_inside, eagle_zs_outside \
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-plot_meidan_stat(zs, stellar_bd, ax, lab='Eagle: Total', color='orangered', bins=1, ls="--")
-plot_spread_stat(zs, stellar_bd, ax, color='orangered')
-plot_meidan_stat(zs_inside, stellar_bd_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=1, ls="--")
-plot_spread_stat(zs_inside, stellar_bd_inside, ax, color='royalblue')
-plot_meidan_stat(zs_outside, stellar_bd_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=1, ls="--")
-plot_spread_stat(zs_outside, stellar_bd_outside, ax, color='limegreen')
+plot_meidan_stat(eagle_zs, eagle_stellar_bd, ax, lab='Eagle: Total', color='orangered', bins=1, ls="--")
+plot_spread_stat(eagle_zs, eagle_stellar_bd, ax, color='orangered')
+plot_meidan_stat(eagle_zs_inside, eagle_stellar_bd_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=1, ls="--")
+plot_spread_stat(eagle_zs_inside, eagle_stellar_bd_inside, ax, color='royalblue')
+plot_meidan_stat(eagle_zs_outside, eagle_stellar_bd_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=1, ls="--")
+plot_spread_stat(eagle_zs_outside, eagle_stellar_bd_outside, ax, color='limegreen')
 
 plot_meidan_stat(zs, stellar_bd, ax, lab='FLARES: Total', color='orangered', bins=1)
 plot_spread_stat(zs, stellar_bd, ax, color='orangered')
@@ -337,12 +337,12 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-plot_meidan_stat(zs, stellar_met, ax, lab='Eagle: Total', color='orangered', bins=1, ls="--")
-plot_spread_stat(zs, stellar_met, ax, color='orangered')
-plot_meidan_stat(zs_inside, stellar_met_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=1, ls="--")
-plot_spread_stat(zs_inside, stellar_met_inside, ax, color='royalblue')
-plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=1, ls="--")
-plot_spread_stat(zs_outside, stellar_met_outside, ax, color='limegreen')
+plot_meidan_stat(eagle_zs, eagle_stellar_met, ax, lab='Eagle: Total', color='orangered', bins=1, ls="--")
+plot_spread_stat(eagle_zs, eagle_stellar_met, ax, color='orangered')
+plot_meidan_stat(eagle_zs_inside, eagle_stellar_met_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=1, ls="--")
+plot_spread_stat(eagle_zs_inside, eagle_stellar_met_inside, ax, color='royalblue')
+plot_meidan_stat(eagle_zs_outside, eagle_stellar_met_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=1, ls="--")
+plot_spread_stat(eagle_zs_outside, eagle_stellar_met_outside, ax, color='limegreen')
 
 plot_meidan_stat(zs, stellar_met, ax, lab='Total', color='orangered', bins=1)
 plot_spread_stat(zs, stellar_met, ax, color='orangered')
