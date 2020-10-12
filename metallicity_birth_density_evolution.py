@@ -246,6 +246,7 @@ def get_data(masslim=1e8, load=False):
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
+                print(np.min(rs), np.max(rs), np.mean(parts_bd), np.mean(parts_met))
                 stellar_bd.append(np.mean(parts_bd[(1 / parts_aborn) - 1 < prog_z]))
                 stellar_met.append(np.mean(parts_met[(1 / parts_aborn) - 1 < prog_z]))
                 stellar_bd_inside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,
