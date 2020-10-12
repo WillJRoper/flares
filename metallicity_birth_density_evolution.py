@@ -139,19 +139,21 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
 def get_data(masslim=1e8, load=False):
 
     regions = []
-    for reg in range(0, 1):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
             regions.append(str(reg))
 
     # Define snapshots
-    snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
-             '006_z009p000', '007_z008p000', '008_z007p000',
-             '009_z006p000', '010_z005p000', '011_z004p770']
-    prog_snaps = ['002_z013p000', '003_z012p000', '004_z011p000',
-                  '005_z010p000', '006_z009p000', '007_z008p000',
-                  '008_z007p000', '009_z006p000', '010_z005p000']
+    snaps = ['001_z014p000', '002_z013p000', '003_z012p000',
+             '004_z011p000', '005_z010p000',
+             '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000',
+             '010_z005p000', '011_z004p770']
+    prog_snaps = ['000_z015p000', '001_z014p000', '002_z013p000',
+                  '003_z012p000', '004_z011p000', '005_z010p000',
+                  '006_z009p000', '007_z008p000', '008_z007p000',
+                  '009_z006p000', '010_z005p000']
 
     stellar_met = []
     stellar_bd = []
@@ -170,7 +172,14 @@ def get_data(masslim=1e8, load=False):
             path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
             # Get particle IDs
-            halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
+            try:
+                halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
+            except ValueError:
+                continue
+            except OSError:
+                continue
+            except KeyError:
+                continue
 
             # Get halo IDs and halo data
             try:
@@ -240,14 +249,9 @@ def get_data(masslim=1e8, load=False):
            stellar_bd_outside, stellar_met_outside, \
            zs, zs_inside, zs_outside
 
-
-snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
-         '006_z009p000', '007_z008p000', '008_z007p000',
-         '009_z006p000', '010_z005p000', '011_z004p770']
-
 stellar_bd, stellar_met, stellar_bd_inside, stellar_met_inside, \
 stellar_bd_outside, stellar_met_outside, zs, zs_inside, zs_outside \
-    = get_data(masslim=10**9.5, load=False)
+    = get_data(masslim=10**9, load=False)
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -284,10 +288,10 @@ ax = fig.add_subplot(111)
 
 plot_meidan_stat(zs, stellar_met, ax, lab='Total', color='orangered', bins=1)
 plot_spread_stat(zs, stellar_met, ax, color='orangered')
-plot_meidan_stat(zs_inside, stellar_met_inside, ax, lab='R\leq R_{1/2}',
+plot_meidan_stat(zs_inside, stellar_met_inside, ax, lab='$R\leq R_{1/2}$',
                  color='royalblue', bins=1)
 plot_spread_stat(zs_inside, stellar_met_inside, ax, color='royalblue')
-plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='R > R_{1/2}',
+plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='$R > R_{1/2}$',
                  color='limegreen', bins=1)
 plot_spread_stat(zs_outside, stellar_met_outside, ax, color='limegreen')
 
