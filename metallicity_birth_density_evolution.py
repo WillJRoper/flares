@@ -9,9 +9,9 @@ import numpy as np
 import pickle
 import eagle_IO.eagle_IO as E
 from scipy.stats import binned_statistic
-import matplotlib.gridspec as gridspec
-from unyt import mh, cm, Gyr, g, Msun, Mpc
-from matplotlib.colors import LogNorm
+import seaborn as sns
+
+sns.set_style("Whitegrid")
 
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
@@ -190,7 +190,7 @@ def get_data(masslim=1e8, load=False):
                 gal_coords = E.read_array('PARTDATA', path, snap,
                                           'PartType4/Coordinates',
                                           noH=True,
-                                          physicalUnits=True, numThreads=8)
+                                          physicalUnits=True, numThreads=8) * 1e3
             except ValueError:
                 continue
             except OSError:
@@ -259,13 +259,13 @@ ax = fig.add_subplot(111)
 
 plot_meidan_stat(zs, stellar_bd, ax, lab='Total', color='orangered', bins=1)
 plot_spread_stat(zs, stellar_bd, ax, color='orangered')
-plot_meidan_stat(zs_inside, stellar_bd_inside, ax, lab='R\leq R_{1/2}', color='royalblue', bins=1)
+plot_meidan_stat(zs_inside, stellar_bd_inside, ax, lab='$R\leq R_{1/2}$', color='royalblue', bins=1)
 plot_spread_stat(zs_inside, stellar_bd_inside, ax, color='royalblue')
-plot_meidan_stat(zs_outside, stellar_bd_outside, ax, lab='R > R_{1/2}', color='limegreen', bins=1)
+plot_meidan_stat(zs_outside, stellar_bd_outside, ax, lab='$R > R_{1/2}$', color='limegreen', bins=1)
 plot_spread_stat(zs_outside, stellar_bd_outside, ax, color='limegreen')
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"<\rho_{\mathrm{birth}}> / [cm$^{-3}$]")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
