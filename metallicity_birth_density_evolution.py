@@ -230,16 +230,16 @@ def get_data(masslim=1e8, load=False):
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
-                stellar_bd.append(np.mean(parts_bd[(1 / parts_aborn) - 1 < prog_z]))
-                stellar_met.append(np.mean(parts_met[(1 / parts_aborn) - 1 < prog_z]))
-                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,
-                                                                 rs <= hmr)]))
-                stellar_met_inside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 < prog_z,
-                                                                   rs <= hmr)]))
+                stellar_bd.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,
+                                                                 rs <= 1)]))
+                stellar_met.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 < prog_z,
+                                                                 rs <= 1)]))
+                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,np.logical_and(rs > 1, rs <= 10))]))
+                stellar_met_inside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 < prog_z,np.logical_and(rs > 1, rs <= 10))]))
                 stellar_bd_outside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,
-                                                                  rs > hmr)]))
+                                                                  rs > 10)]))
                 stellar_met_outside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 < prog_z,
-                                                                    rs > hmr)]))
+                                                                    rs > 10)]))
                 zs.append(z)
                 zs_inside.append(z)
                 zs_outside.append(z)
