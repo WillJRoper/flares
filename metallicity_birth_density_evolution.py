@@ -136,24 +136,49 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
     return halo_part_inds
 
 
-def get_data(masslim=1e8, load=False):
+def get_data(masslim=1e8, eagle=False):
 
-    regions = []
-    for reg in range(0, 1):
-        if reg < 10:
-            regions.append('0' + str(reg))
-        else:
-            regions.append(str(reg))
+    if eagle:
+        regions = [1, ]
+    else:
+        regions = []
+        for reg in range(0, 1):
+            if reg < 10:
+                regions.append('0' + str(reg))
+            else:
+                regions.append(str(reg))
 
     # Define snapshots
-    snaps = ['001_z014p000', '002_z013p000', '003_z012p000',
-             '004_z011p000', '005_z010p000',
-             '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000',
-             '010_z005p000', '011_z004p770']
-    prog_snaps = ['000_z015p000', '001_z014p000', '002_z013p000',
-                  '003_z012p000', '004_z011p000', '005_z010p000',
-                  '006_z009p000', '007_z008p000', '008_z007p000',
-                  '009_z006p000', '010_z005p000']
+    if eagle:
+        snaps = ['003_z008p988', '006_z005p971',
+                 '009_z004p485', '012_z003p017', '015_z002p012',
+                 '018_z001p259', '021_z000p736', '024_z000p366',
+                 '027_z000p101', '001_z015p132', '004_z008p075',
+                 '007_z005p487', '010_z003p984', '013_z002p478',
+                 '016_z001p737', '019_z001p004', '022_z000p615',
+                 '025_z000p271', '028_z000p000', '002_z009p993',
+                 '005_z007p050', '008_z005p037', '011_z003p528',
+                 '014_z002p237', '017_z001p487', '020_z000p865',
+                 '023_z000p503', '026_z000p183']
+        prog_snaps = ['000_z020p000', '003_z008p988', '006_z005p971',
+                      '009_z004p485', '012_z003p017', '015_z002p012',
+                      '018_z001p259', '021_z000p736', '024_z000p366',
+                      '027_z000p101', '001_z015p132', '004_z008p075',
+                      '007_z005p487', '010_z003p984', '013_z002p478',
+                      '016_z001p737', '019_z001p004', '022_z000p615',
+                      '025_z000p271', '028_z000p000', '002_z009p993',
+                      '005_z007p050', '008_z005p037', '011_z003p528',
+                      '014_z002p237', '017_z001p487', '020_z000p865',
+                      '023_z000p503']
+    else:
+        snaps = ['001_z014p000', '002_z013p000', '003_z012p000',
+                 '004_z011p000', '005_z010p000',
+                 '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000',
+                 '010_z005p000', '011_z004p770']
+        prog_snaps = ['000_z015p000', '001_z014p000', '002_z013p000',
+                      '003_z012p000', '004_z011p000', '005_z010p000',
+                      '006_z009p000', '007_z008p000', '008_z007p000',
+                      '009_z006p000', '010_z005p000']
 
     stellar_met = []
     stellar_bd = []
@@ -168,8 +193,11 @@ def get_data(masslim=1e8, load=False):
     for reg in regions:
 
         for snap, prog_snap in zip(snaps, prog_snaps):
-
-            path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+            
+            if eagle:
+                path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0050N0752/PE/AGNdT9/data/'
+            else:
+                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
 
             # Get particle IDs
             try:
@@ -244,12 +272,10 @@ def get_data(masslim=1e8, load=False):
                 # Add stars from these galaxies
                 part_inds = list(halo_part_inds[halo])
                 pos = gal_coords[part_inds, :] - cop
-                print(cop, pos)
                 rs = np.linalg.norm(pos, axis=1)
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
-                print(np.min(rs), np.max(rs), np.mean(parts_bd), np.mean(parts_met))
                 stellar_bd.append(np.mean(parts_bd[(1 / parts_aborn) - 1 < prog_z]))
                 stellar_met.append(np.mean(parts_met[(1 / parts_aborn) - 1 < prog_z]))
                 stellar_bd_inside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,
@@ -271,21 +297,29 @@ def get_data(masslim=1e8, load=False):
 
 stellar_bd, stellar_met, stellar_bd_inside, stellar_met_inside, \
 stellar_bd_outside, stellar_met_outside, zs, zs_inside, zs_outside \
-    = get_data(masslim=10**9, load=False)
+    = get_data(masslim=10**9)
+
+eagle_stellar_bd, eagle_stellar_met, \
+eagle_stellar_bd_inside, eagle_stellar_met_inside, \
+eagle_stellar_bd_outside, eagle_stellar_met_outside, \
+eagle_zs, eagle_zs_inside, eagle_zs_outside \
+    = get_data(masslim=10**9, eagle=True)
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-# plot_meidan_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, lab='EAGLE-LM', color='darkorange', bins=1, ls="--")
-# plot_spread_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, color='darkorange')
-# plot_meidan_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, lab='EAGLE-HM', color='blueviolet', bins=1, ls="--")
-# plot_spread_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, color='blueviolet')
-
-plot_meidan_stat(zs, stellar_bd, ax, lab='Total', color='orangered', bins=1)
+plot_meidan_stat(zs, stellar_bd, ax, lab='Eagle: Total', color='orangered', bins=1, ls="--")
 plot_spread_stat(zs, stellar_bd, ax, color='orangered')
-plot_meidan_stat(zs_inside, stellar_bd_inside, ax, lab='$R\leq R_{1/2}$', color='royalblue', bins=1)
+plot_meidan_stat(zs_inside, stellar_bd_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=1, ls="--")
 plot_spread_stat(zs_inside, stellar_bd_inside, ax, color='royalblue')
-plot_meidan_stat(zs_outside, stellar_bd_outside, ax, lab='$R > R_{1/2}$', color='limegreen', bins=1)
+plot_meidan_stat(zs_outside, stellar_bd_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=1, ls="--")
+plot_spread_stat(zs_outside, stellar_bd_outside, ax, color='limegreen')
+
+plot_meidan_stat(zs, stellar_bd, ax, lab='FLARES: Total', color='orangered', bins=1)
+plot_spread_stat(zs, stellar_bd, ax, color='orangered')
+plot_meidan_stat(zs_inside, stellar_bd_inside, ax, lab='FLARES: $R\leq R_{1/2}$', color='royalblue', bins=1)
+plot_spread_stat(zs_inside, stellar_bd_inside, ax, color='royalblue')
+plot_meidan_stat(zs_outside, stellar_bd_outside, ax, lab='FLARES: $R > R_{1/2}$', color='limegreen', bins=1)
 plot_spread_stat(zs_outside, stellar_bd_outside, ax, color='limegreen')
 
 ax.set_xlabel("$z$")
@@ -294,6 +328,8 @@ ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
+ax.set_yscale("log")
+
 fig.savefig("plots/stellarbd_z_evolution.png", bbox_inches="tight")
 
 plt.close(fig)
@@ -301,10 +337,12 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-# plot_meidan_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, lab='EAGLE-LM', color='darkorange', bins=1, ls="--")
-# plot_spread_stat(eagle_evo_zs_lm, eagle_evo_hmrs_lm, ax, color='darkorange')
-# plot_meidan_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, lab='EAGLE-HM', color='blueviolet', bins=1, ls="--")
-# plot_spread_stat(eagle_evo_zs_hm, eagle_evo_hmrs_hm, ax, color='blueviolet')
+plot_meidan_stat(zs, stellar_met, ax, lab='Eagle: Total', color='orangered', bins=1, ls="--")
+plot_spread_stat(zs, stellar_met, ax, color='orangered')
+plot_meidan_stat(zs_inside, stellar_met_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=1, ls="--")
+plot_spread_stat(zs_inside, stellar_met_inside, ax, color='royalblue')
+plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=1, ls="--")
+plot_spread_stat(zs_outside, stellar_met_outside, ax, color='limegreen')
 
 plot_meidan_stat(zs, stellar_met, ax, lab='Total', color='orangered', bins=1)
 plot_spread_stat(zs, stellar_met, ax, color='orangered')
