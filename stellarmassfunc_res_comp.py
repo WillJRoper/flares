@@ -114,15 +114,15 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 # Plot each histogram
-ax.loglog(bin_cents_cumsum, H_cumsum/interval, label='Standard')
-ax.loglog(bin_cents, H_hr_cumsum/interval, linestyle='--', label='High Resolution')
+ax.loglog(bin_cents_cumsum, H_cumsum, label='Standard')
+ax.loglog(bin_cents_cumsum, H_hr_cumsum, linestyle='--', label='High Resolution')
 
 # ax.set_xlim(10**7.5, None)
 # ax.set_ylim(None, 10**-5.5)
 
 # Label axes
 ax.set_xlabel(r'$M_{\star}/M_\odot$')
-ax.set_ylabel(r'$dN(>M)/dM$')
+ax.set_ylabel(r'$N(<M)$')
 
 # Get and draw legend
 handles, labels = ax.get_legend_handles_labels()
