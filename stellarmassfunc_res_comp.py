@@ -15,17 +15,18 @@ sns.set_style('whitegrid')
 def get_mass_data(path, snap, tag, group="SUBFIND", noH=True, cut_bounds=True):
 
     # Extract mass data
-    M_dat = E.read_array(group, path, snap, tag, noH=noH)[:, 4]
+    M_dat = E.read_array(group, path, snap, tag, noH=noH, numThreads=8)[:, 4]
 
-    # If boundaries to be eliminated
-    if cut_bounds:
-        centre, radius, mindist = flares.spherical_region(path, snap)
-        R_cop = E.read_array("SUBFIND", path, snap, "FOF/GroupCentreOfPotential", noH=noH)
-
-        # Get the radius of each group
-        R_cop -= centre
-        radii = np.linalg.norm(R_cop, axis=1)
-        M_dat = M_dat[np.where(radii < 14 / 0.677700)]
+    # # If boundaries to be eliminated
+    # if cut_bounds:
+    #     centre, radius, mindist = flares.spherical_region(path, snap)
+    #     R_cop = E.read_array("SUBFIND", path, snap, "FOF/GroupCentreOfPotential",
+    #                          noH=noH, numThreads=8)
+    #
+    #     # Get the radius of each group
+    #     R_cop -= centre
+    #     radii = np.linalg.norm(R_cop, axis=1)
+    #     M_dat = M_dat[np.where(radii < 14 / 0.677700)]
 
     return M_dat
 
@@ -34,12 +35,24 @@ def get_mass_data(path, snap, tag, group="SUBFIND", noH=True, cut_bounds=True):
 tag = "Subhalo/ApertureMeasurements/Mass/030kpc"
 snap = '010_z005p000'
 group = "SUBFIND"
-M_200 = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_24/data/', snap,
-                      tag, group=group, noH=True, cut_bounds=False)
-# M_200_hrDMO = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032_hires/data/', snap,
-#                       tag, group=group, noH=True, cut_bounds=False)
-M_200_hr = get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-HD/FLARES_HR_24/data/', snap,
-                         tag, group=group, noH=True, cut_bounds=False)
+
+snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
+         '004_z011p000', '005_z010p000', '006_z009p000', '007_z008p000',
+         '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+
+M_200 = []
+M_200_hr = []
+
+for snap in snaps:
+    M_200.extend(get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_24/data/', snap,
+                               tag, group=group, noH=True, cut_bounds=False))
+    # M_200_hrDMO = get_mass_data('/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0032_hires/data/', snap,
+    #                       tag, group=group, noH=True, cut_bounds=False)
+    M_200_hr.extend(get_mass_data('/cosma/home/dp004/dc-rope1/FLARES/FLARES-HD/FLARES_HR_24/data/', snap,
+                                  tag, group=group, noH=True, cut_bounds=False))
+
+M_200 = np.array(M_200)
+M_200_hr = np.array(M_200_hr)
 
 M_200 = M_200[np.where(M_200 != 0.0)] * 10**10
 M_200_hr = M_200_hr[np.where(M_200_hr != 0.0)] * 10**10
