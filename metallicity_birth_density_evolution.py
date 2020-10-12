@@ -139,7 +139,7 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
 def get_data(masslim=1e8, load=False):
 
     regions = []
-    for reg in range(0, 1):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -181,27 +181,38 @@ def get_data(masslim=1e8, load=False):
             except KeyError:
                 continue
 
-            print(reg, snap)
-
             # Get halo IDs and halo data
             try:
-                subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-                grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-                gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                      noH=True, physicalUnits=True, numThreads=8)[:, 4] * 10**10
-                gal_hmr =  E.read_array('SUBFIND', path, snap,
-                                        'Subhalo/HalfMassRad',
-                                        noH=True, numThreads=8)[:, 4] * 1e3
-                gal_bd = E.read_array('PARTDATA', path, snap, 'PartType4/BirthDensity', noH=True,
+                subgrp_ids = E.read_array('SUBFIND', path, snap,
+                                          'Subhalo/SubGroupNumber',
+                                          numThreads=8)
+                grp_ids = E.read_array('SUBFIND', path, snap,
+                                       'Subhalo/GroupNumber',
+                                       numThreads=8)
+                gal_ms = E.read_array('SUBFIND', path, snap,
+                                      'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                      noH=True, physicalUnits=True,
+                                      numThreads=8)[:, 4] * 10**10
+                gal_hmr = E.read_array('SUBFIND', path, snap,
+                                       'Subhalo/HalfMassRad',
+                                       noH=True, physicalUnits=True,
+                                       numThreads=8)[:, 4] * 1e3
+                gal_cop = E.read_array('SUBFIND', path, snap,
+                                       'Subhalo/CentreOfPotential',
+                                       noH=True, numThreads=8) * 1e3
+                gal_bd = E.read_array('PARTDATA', path, snap,
+                                      'PartType4/BirthDensity', noH=True,
                                         physicalUnits=True, numThreads=8)
-                gal_met = E.read_array('PARTDATA', path, snap, 'PartType4/Metallicity', noH=True,
+                gal_met = E.read_array('PARTDATA', path, snap,
+                                       'PartType4/Metallicity', noH=True,
                                        physicalUnits=True, numThreads=8)
-                gal_aborn = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
+                gal_aborn = E.read_array('PARTDATA', path, snap,
+                                         'PartType4/StellarFormationTime', noH=True,
                                          physicalUnits=True, numThreads=8)
                 gal_coords = E.read_array('PARTDATA', path, snap,
                                           'PartType4/Coordinates',
-                                          noH=True,
-                                          physicalUnits=True, numThreads=8) * 1e3
+                                          noH=True, physicalUnits=True,
+                                          numThreads=8) * 1e3
             except ValueError:
                 continue
             except OSError:
@@ -219,29 +230,30 @@ def get_data(masslim=1e8, load=False):
             grp_ids = grp_ids[okinds]
             subgrp_ids = subgrp_ids[okinds]
             gal_hmr = gal_hmr[okinds]
+            gal_cop = gal_cop[okinds]
             halo_ids = np.zeros(grp_ids.size, dtype=float)
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                 halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-            for halo, hmr in zip(halo_ids, gal_hmr):
+            for halo, hmr, cop in zip(halo_ids, gal_hmr, gal_cop):
 
                 # Add stars from these galaxies
                 part_inds = list(halo_part_inds[halo])
-                pos = gal_coords[part_inds, :]
+                pos = gal_coords[part_inds, :] - cop
                 rs = np.linalg.norm(pos, axis=1)
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
-                stellar_bd.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,
-                                                                 rs <= 1)]))
-                stellar_met.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 < prog_z,
-                                                                 rs <= 1)]))
-                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,np.logical_and(rs > 1, rs <= 10))]))
-                stellar_met_inside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 < prog_z,np.logical_and(rs > 1, rs <= 10))]))
+                stellar_bd.append(np.mean(parts_bd[(1 / parts_aborn) - 1 < prog_z]))
+                stellar_met.append(np.mean(parts_met[(1 / parts_aborn) - 1 < prog_z]))
+                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,
+                                                                 rs <= hmr)]))
+                stellar_met_inside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 < prog_z,
+                                                                   rs <= hmr)]))
                 stellar_bd_outside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,
-                                                                  rs > 10)]))
+                                                                  rs > hmr)]))
                 stellar_met_outside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 < prog_z,
-                                                                    rs > 10)]))
+                                                                    rs > hmr)]))
                 zs.append(z)
                 zs_inside.append(z)
                 zs_outside.append(z)
@@ -293,9 +305,9 @@ plot_spread_stat(zs, stellar_met, ax, color='orangered')
 plot_meidan_stat(zs_inside, stellar_met_inside, ax, lab='$R\leq R_{1/2}$',
                  color='royalblue', bins=1)
 plot_spread_stat(zs_inside, stellar_met_inside, ax, color='royalblue')
-# plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='$R > R_{1/2}$',
-#                  color='limegreen', bins=1)
-# plot_spread_stat(zs_outside, stellar_met_outside, ax, color='limegreen')
+plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='$R > R_{1/2}$',
+                 color='limegreen', bins=1)
+plot_spread_stat(zs_outside, stellar_met_outside, ax, color='limegreen')
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<Z>$")
