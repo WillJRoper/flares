@@ -9,6 +9,7 @@ import numpy as np
 import pickle
 import eagle_IO.eagle_IO as E
 from scipy.stats import binned_statistic
+from utilities import calc_ages
 import seaborn as sns
 
 sns.set_style("whitegrid")
@@ -160,25 +161,11 @@ def get_data(masslim=1e8, eagle=False):
                  '005_z007p050', '008_z005p037', '011_z003p528',
                  '014_z002p237', '017_z001p487', '020_z000p865',
                  '023_z000p503', '026_z000p183']
-        prog_snaps = ['000_z020p000', '003_z008p988', '006_z005p971',
-                      '009_z004p485', '012_z003p017', '015_z002p012',
-                      '018_z001p259', '021_z000p736', '024_z000p366',
-                      '027_z000p101', '001_z015p132', '004_z008p075',
-                      '007_z005p487', '010_z003p984', '013_z002p478',
-                      '016_z001p737', '019_z001p004', '022_z000p615',
-                      '025_z000p271', '028_z000p000', '002_z009p993',
-                      '005_z007p050', '008_z005p037', '011_z003p528',
-                      '014_z002p237', '017_z001p487', '020_z000p865',
-                      '023_z000p503']
     else:
         snaps = ['001_z014p000', '002_z013p000', '003_z012p000',
                  '004_z011p000', '005_z010p000',
                  '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000',
                  '010_z005p000', '011_z004p770']
-        prog_snaps = ['000_z015p000', '001_z014p000', '002_z013p000',
-                      '003_z012p000', '004_z011p000', '005_z010p000',
-                      '006_z009p000', '007_z008p000', '008_z007p000',
-                      '009_z006p000', '010_z005p000']
 
     stellar_met = []
     stellar_bd = []
@@ -192,7 +179,7 @@ def get_data(masslim=1e8, eagle=False):
 
     for reg in regions:
 
-        for snap, prog_snap in zip(snaps, prog_snaps):
+        for snap in snaps:
             
             if eagle:
                 path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0050N0752/PE/AGNdT9/data/'
@@ -210,6 +197,9 @@ def get_data(masslim=1e8, eagle=False):
                 continue
 
             print(reg, snap)
+
+            z_str = snap.split('z')[1].split('p')
+            z = float(z_str[0] + '.' + z_str[1])
 
             # Get halo IDs and halo data
             try:
@@ -245,17 +235,15 @@ def get_data(masslim=1e8, eagle=False):
                                           'PartType4/Coordinates',
                                           noH=True, physicalUnits=True,
                                           numThreads=8)
+
+                ages = calc_ages(z, gal_aborn)
+
             except ValueError:
                 continue
             except OSError:
                 continue
             except KeyError:
                 continue
-
-            z_str = snap.split('z')[1].split('p')
-            z = float(z_str[0] + '.' + z_str[1])
-            z_str = prog_snap.split('z')[1].split('p')
-            prog_z = float(z_str[0] + '.' + z_str[1])
 
             # Remove particles not associated to a subgroup
             okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > masslim)
@@ -275,16 +263,15 @@ def get_data(masslim=1e8, eagle=False):
                 rs = np.linalg.norm(pos, axis=1)
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
-                parts_aborn = gal_aborn[part_inds]
-                stellar_bd.append(np.mean(parts_bd[(1 / parts_aborn) - 1 < prog_z]))
-                stellar_met.append(np.mean(parts_met[(1 / parts_aborn) - 1 < prog_z]))
-                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,
+                stellar_bd.append(np.mean(parts_bd[ages < 100]))
+                stellar_met.append(np.mean(parts_met[ages < 100]))
+                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and(ages < 100,
                                                                  rs <= hmr)]))
-                stellar_met_inside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 < prog_z,
+                stellar_met_inside.append(np.mean(parts_met[np.logical_and(ages < 100,
                                                                    rs <= hmr)]))
-                stellar_bd_outside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 < prog_z,
+                stellar_bd_outside.append(np.mean(parts_bd[np.logical_and(ages < 100,
                                                                   rs > hmr)]))
-                stellar_met_outside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 < prog_z,
+                stellar_met_outside.append(np.mean(parts_met[np.logical_and(ages < 100,
                                                                     rs > hmr)]))
                 zs.append(z)
                 zs_inside.append(z)
