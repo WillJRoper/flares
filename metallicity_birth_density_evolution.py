@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pickle
 import eagle_IO.eagle_IO as E
+from scipy.stats import binned_statistic
 import matplotlib.gridspec as gridspec
 from unyt import mh, cm, Gyr, g, Msun, Mpc
 from matplotlib.colors import LogNorm
