@@ -21,7 +21,7 @@ def calc_ages(z, a_born):
     z_borns = 1 / a_born - 1
 
     # Convert to time in Gyrs
-    t = cosmo.age(z)
+    t = cosmo.age(z).value
     t_born = np.zeros(len(a_born))
     for ind, z_born in enumerate(z_borns):
         t_born[ind] = cosmo.age(z_born).value
