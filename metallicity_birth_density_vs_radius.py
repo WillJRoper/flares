@@ -316,7 +316,7 @@ stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_me
 
 eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**9, eagle=True)
 
-stellar_bd_all = (np.concatenate((stellar_bd, eagle_stellar_bd)) * 10**10 * Msun / Mpc ** 3).to(Msun / cm ** 3).value
+stellar_bd_all = (np.concatenate((stellar_bd, eagle_stellar_bd)) * 10**10 / u.Mpc ** 3).to(1 / u.cm ** 3).value
 stellar_met_all = np.concatenate((stellar_met, eagle_stellar_met))
 stellar_formr_all = np.concatenate((stellar_form_radius,
                                     eagle_stellar_form_radius))
@@ -325,7 +325,7 @@ hmrs_all = np.concatenate((hmrs, eagle_hmrs))
 
 current_radius_all = np.concatenate((stellar_current_radius,
                                      eagle_stellar_current_radius))
-current_stellar_bd_all = (np.concatenate((stellar_bd_current, eagle_stellar_bd_current)) * 10**10 * Msun / Mpc ** 3).to(Msun / cm ** 3).value
+current_stellar_bd_all = (np.concatenate((stellar_bd_current, eagle_stellar_bd_current)) * 10**10 / u.Mpc ** 3).to(1 / u.cm ** 3).value
 current_stellar_met_all = np.concatenate((stellar_met_current, eagle_stellar_met_current))
 
 fig = plt.figure()
@@ -367,7 +367,7 @@ ax2 = fig.add_subplot(gs[1, 0])
 ax3 = fig.add_subplot(gs[0, 1])
 ax4 = fig.add_subplot(gs[1, 1])
 
-ax1.hexbin(stellar_current_radius, (stellar_bd_current * 10**10 * Msun / Mpc ** 3).to(Msun / cm ** 3).value, gridsize=100, mincnt=1,
+ax1.hexbin(stellar_current_radius, (stellar_bd_current * 10**10 / u.Mpc ** 3).to(1 / u.cm ** 3).value, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
@@ -379,7 +379,7 @@ ax2.hexbin(stellar_current_radius, stellar_met_current, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
-ax3.hexbin(eagle_stellar_current_radius, (eagle_stellar_bd_current * 10**10 * Msun / Mpc ** 3).to(Msun / cm ** 3).value, gridsize=100, mincnt=1,
+ax3.hexbin(eagle_stellar_current_radius, (eagle_stellar_bd_current * 10**10 / u.Mpc ** 3).to(1 / u.cm ** 3).value, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
