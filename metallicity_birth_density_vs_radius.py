@@ -12,7 +12,7 @@ import matplotlib.gridspec as gridspec
 import eagle_IO.eagle_IO as E
 from scipy.stats import binned_statistic
 from astropy.cosmology import Planck13 as cosmo
-from unyt import mh, cm, Gyr, g, Msun, Mpc
+import astropy.units as u
 import seaborn as sns
 
 sns.set_style("whitegrid")
