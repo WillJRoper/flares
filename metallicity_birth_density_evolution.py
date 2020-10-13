@@ -9,10 +9,26 @@ import numpy as np
 import pickle
 import eagle_IO.eagle_IO as E
 from scipy.stats import binned_statistic
-from utilities import calc_ages
+from astropy.cosmology import Planck13 as cosmo
 import seaborn as sns
 
 sns.set_style("whitegrid")
+
+def calc_ages(z, a_born):
+
+    # Convert scale factor into redshift
+    z_borns = 1 / a_born - 1
+
+    # Convert to time in Gyrs
+    t = cosmo.age(z)
+    t_born = np.zeros(len(a_born))
+    for ind, z_born in enumerate(z_borns):
+        t_born[ind] = cosmo.age(z_born)
+
+    # Calculate the VR
+    ages = (t - t_born)
+
+    return ages.value
 
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
@@ -262,15 +278,15 @@ def get_data(masslim=1e8, eagle=False):
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
                 ages = calc_ages(z, gal_aborn[part_inds])
-                stellar_bd.append(np.mean(parts_bd[ages < 100]))
-                stellar_met.append(np.mean(parts_met[ages < 100]))
-                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and(ages < 100,
+                stellar_bd.append(np.mean(parts_bd[ages < 0.1]))
+                stellar_met.append(np.mean(parts_met[ages < 0.1]))
+                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and(ages < 0.1,
                                                                  rs <= hmr)]))
-                stellar_met_inside.append(np.mean(parts_met[np.logical_and(ages < 100,
+                stellar_met_inside.append(np.mean(parts_met[np.logical_and(ages < 0.1,
                                                                    rs <= hmr)]))
-                stellar_bd_outside.append(np.mean(parts_bd[np.logical_and(ages < 100,
+                stellar_bd_outside.append(np.mean(parts_bd[np.logical_and(ages < 0.1,
                                                                   rs > hmr)]))
-                stellar_met_outside.append(np.mean(parts_met[np.logical_and(ages < 100,
+                stellar_met_outside.append(np.mean(parts_met[np.logical_and(ages < 0.1,
                                                                     rs > hmr)]))
                 zs.append(z)
                 zs_inside.append(z)
