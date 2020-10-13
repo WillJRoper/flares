@@ -298,15 +298,15 @@ def get_data(masslim=1e8, eagle=False):
 
                 okinds = (1 / parts_aborn) - 1 < z_prog
 
-                stellar_form_radius.extend(rs[okinds])
+                stellar_form_radius.extend(rs[okinds] / hmr)
                 hmrs.extend(np.full(len(parts_met[okinds]), hmr))
-                stellar_bd.append(np.mean(parts_bd[okinds]))
-                stellar_met.append(np.mean(parts_met[okinds]))
+                stellar_bd.append(parts_bd[okinds])
+                stellar_met.append(parts_met[okinds])
 
                 if snap == '011_z004p770' or snap == '028_z000p000':
                     stellar_bd_current.extend(parts_bd)
                     stellar_met_current.extend(parts_met)
-                    stellar_current_radius.extend(rs)
+                    stellar_current_radius.extend(rs / hmr)
 
                 zs.extend(np.full(len(parts_met[okinds]), z))
 
