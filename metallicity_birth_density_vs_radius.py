@@ -335,6 +335,8 @@ ax1 = fig.add_subplot(gs[0, 0])
 ax2 = fig.add_subplot(gs[1, 0])
 ax3 = fig.add_subplot(gs[2, 0])
 
+print(stellar_formr_all, stellar_bd_all)
+
 ax1.hexbin(stellar_formr_all, stellar_bd_all, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
