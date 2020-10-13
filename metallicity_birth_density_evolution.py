@@ -29,7 +29,7 @@ def calc_ages(z, a_born):
     # Calculate the VR
     ages = (t - t_born)
 
-    return ages.value
+    return ages
 
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
