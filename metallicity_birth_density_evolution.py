@@ -160,7 +160,7 @@ def get_data(masslim=1e8, eagle=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 40):
+        for reg in range(0, 1):
             if reg < 10:
                 regions.append('0' + str(reg))
             else:
