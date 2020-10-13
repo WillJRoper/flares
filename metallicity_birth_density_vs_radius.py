@@ -300,8 +300,8 @@ def get_data(masslim=1e8, eagle=False):
 
                 stellar_form_radius.extend(rs[okinds] / hmr)
                 hmrs.extend(np.full(len(parts_met[okinds]), hmr))
-                stellar_bd.append(parts_bd[okinds])
-                stellar_met.append(parts_met[okinds])
+                stellar_bd.extend(parts_bd[okinds])
+                stellar_met.extend(parts_met[okinds])
 
                 if snap == '011_z004p770' or snap == '028_z000p000':
                     stellar_bd_current.extend(parts_bd)
@@ -316,7 +316,7 @@ stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_me
 
 eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**9, eagle=True)
 
-stellar_bd_all = np.concatenate((stellar_bd, eagle_stellar_bd)) * 10**10 * 3.24078e-25**3
+stellar_bd_all = np.concatenate((stellar_bd, eagle_stellar_bd)) * 10**10
 stellar_met_all = np.concatenate((stellar_met, eagle_stellar_met))
 stellar_formr_all = np.concatenate((stellar_form_radius,
                                     eagle_stellar_form_radius))
@@ -325,7 +325,7 @@ hmrs_all = np.concatenate((hmrs, eagle_hmrs))
 
 current_radius_all = np.concatenate((stellar_current_radius,
                                      eagle_stellar_current_radius))
-current_stellar_bd_all = np.concatenate((stellar_bd_current, eagle_stellar_bd_current)) * 10**10 * 3.24078e-25**3
+current_stellar_bd_all = np.concatenate((stellar_bd_current, eagle_stellar_bd_current)) * 10**10
 current_stellar_met_all = np.concatenate((stellar_met_current, eagle_stellar_met_current))
 
 fig = plt.figure()
@@ -334,8 +334,6 @@ gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
 ax2 = fig.add_subplot(gs[1, 0])
 ax3 = fig.add_subplot(gs[2, 0])
-
-print(stellar_formr_all, stellar_bd_all)
 
 ax1.hexbin(stellar_formr_all, stellar_bd_all, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
@@ -349,7 +347,7 @@ ax3.hexbin(stellar_formr_all, zs_all, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
-ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ cm$^{-3}$]")
+ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax2.set_ylabel(r"$Z$")
 ax3.set_ylabel("$z_{\mathrm{form}$")
 ax3.set_xlabel("$R/R_{1/2}$")
@@ -369,7 +367,7 @@ ax2 = fig.add_subplot(gs[1, 0])
 ax3 = fig.add_subplot(gs[0, 1])
 ax4 = fig.add_subplot(gs[1, 1])
 
-ax1.hexbin(stellar_current_radius, stellar_bd_current * 10**10 * 3.24078e-25**3, gridsize=100, mincnt=1,
+ax1.hexbin(stellar_current_radius, stellar_bd_current * 10**10, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
@@ -381,7 +379,7 @@ ax2.hexbin(stellar_current_radius, stellar_met_current, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
-ax3.hexbin(eagle_stellar_current_radius, eagle_stellar_bd_current * 10**10 * 3.24078e-25**3, gridsize=100, mincnt=1,
+ax3.hexbin(eagle_stellar_current_radius, eagle_stellar_bd_current * 10**10, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
@@ -393,7 +391,7 @@ ax4.hexbin(eagle_stellar_current_radius, eagle_stellar_met_current, gridsize=100
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
-ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ cm$^{-3}$]")
+ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax2.set_ylabel(r"$Z$")
 ax2.set_xlabel("$R/R_{1/2}$")
 ax4.set_xlabel("$R/R_{1/2}$")
@@ -485,7 +483,7 @@ ax.plot(sf_threshold_density, metal_mass_fraction_bins, linestyle="dashed", labe
 
 
 # Label axes
-ax.set_xlabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ cm$^{-3}$]")
+ax.set_xlabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax.set_ylabel(r"$Z$")
 
 legend = ax.legend(markerfirst=True, loc="lower left", fontsize=8)
