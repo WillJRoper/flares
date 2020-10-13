@@ -14,6 +14,7 @@ import seaborn as sns
 
 sns.set_style("whitegrid")
 
+
 def calc_ages(z, a_born):
 
     # Convert scale factor into redshift
@@ -23,7 +24,7 @@ def calc_ages(z, a_born):
     t = cosmo.age(z)
     t_born = np.zeros(len(a_born))
     for ind, z_born in enumerate(z_borns):
-        t_born[ind] = cosmo.age(z_born)
+        t_born[ind] = cosmo.age(z_born).value
 
     # Calculate the VR
     ages = (t - t_born)
