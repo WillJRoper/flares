@@ -508,9 +508,9 @@ except:
 
 
 ax.text(0.975, 0.025, "\n".join([f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" for k, v in parameters.items()]),
-         color="k", transform=ax9.transAxes, ha="right", va="bottom", fontsize=fontsize)
+         color="k", transform=ax.transAxes, ha="right", va="bottom", fontsize=fontsize)
 
-ax.text(0.975, 0.975, "Contour lines \n linearly spaced", color="k", transform=ax3.transAxes, ha="right", va="top",
+ax.text(0.975, 0.975, "Contour lines \n linearly spaced", color="k", transform=ax.transAxes, ha="right", va="top",
          fontsize=fontsize)
 
 fig.savefig('plots/birthdensity_metallicity_EAGLE+FLARES.png', bbox_inches='tight')
