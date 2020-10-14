@@ -293,9 +293,9 @@ def get_data(masslim=1e8, eagle=False):
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
-
-                z100Myr = z_at_value(cosmo.age, (cosmo.age(z).value - 0.1) * u.Myr)
                 print(cosmo.age, cosmo.age(z).value - 0.1)
+                z100Myr = z_at_value(cosmo.age, (cosmo.age(z).value - 0.1) * u.Myr)
+
                 stellar_bd.append(np.mean(parts_bd[(1 / parts_aborn) - 1 >= z100Myr]))
                 stellar_met.append(np.mean(parts_met[(1 / parts_aborn) - 1 >= z100Myr]))
                 stellar_bd_inside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 >= z100Myr,
