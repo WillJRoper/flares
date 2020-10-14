@@ -171,14 +171,16 @@ def get_data(masslim=1e8, eagle=False):
 
     # Define snapshots
     if eagle:
-        pre_snaps = ['003_z008p988', '006_z005p971', '009_z004p485',
-                     '012_z003p017', '015_z002p012', '018_z001p259',
-                     '021_z000p736', '027_z000p101', '001_z015p132',
-                     '004_z008p075', '007_z005p487', '010_z003p984',
-                     '013_z002p478', '019_z001p004', '028_z000p000',
-                     '002_z009p993', '005_z007p050', '008_z005p037',
-                     '011_z003p528', '017_z001p487', '020_z000p865',
-                     '023_z000p503']
+        pre_snaps = ['000_z020p000', '003_z008p988', '006_z005p971',
+                     '009_z004p485', '012_z003p017', '015_z002p012',
+                     '018_z001p259', '021_z000p736', '024_z000p366',
+                     '027_z000p101', '001_z015p132', '004_z008p075',
+                     '007_z005p487', '010_z003p984', '013_z002p478',
+                     '016_z001p737', '019_z001p004', '022_z000p615',
+                     '025_z000p271', '028_z000p000', '002_z009p993',
+                     '005_z007p050', '008_z005p037', '011_z003p528',
+                     '014_z002p237', '017_z001p487', '020_z000p865',
+                     '023_z000p503', '026_z000p183']
 
         snaps = np.zeros(29, dtype=object)
         for s in pre_snaps:
@@ -308,7 +310,8 @@ def get_data(masslim=1e8, eagle=False):
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
 
-                okinds = (1 / parts_aborn) - 1 < z_prog
+                okinds = np.logical_and((1 / parts_aborn) - 1 < z_prog,
+                                        rs < 30)
 
                 stellar_form_radius.extend(rs[okinds])
                 hmrs.extend(np.full(len(parts_met[okinds]), hmr))
@@ -432,10 +435,14 @@ ax3 = fig.add_subplot(gs[2, 0])
 ax1.hexbin(stellar_formr_all, stellar_bd_all, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
+plot_meidan_stat(stellar_formr_all, stellar_bd_all, ax1, lab='Median',
+                 color='darkorange', bins=1, ls="..")
 
 ax2.hexbin(stellar_formr_all, stellar_met_all, gridsize=100, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
+plot_meidan_stat(stellar_formr_all, stellar_met_all, ax2, lab='Median',
+                 color='darkorange', bins=1, ls="..")
 
 ax3.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
            xscale='log', norm=LogNorm(),
@@ -480,7 +487,7 @@ star_formation_parameters = {"threshold_Z0": 0.002,
 number_of_bins = 128
 
 # Constants; these could be put in the parameter file but are rarely changed.
-birth_density_bins = np.logspace(-3, 6.8, number_of_bins)
+birth_density_bins = np.logspace(14, 22, number_of_bins)
 metal_mass_fraction_bins = np.logspace(-5.9, 0, number_of_bins)
 
 # Now need to make background grid of f_th.
