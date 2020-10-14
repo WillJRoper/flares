@@ -317,7 +317,7 @@ eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_
 bd_lims = []
 met_lims = []
 
-fig = plt.figure()
+fig = plt.figure(figsize=(6, 6))
 gs = gridspec.GridSpec(nrows=2, ncols=2)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
@@ -394,7 +394,7 @@ del stellar_bd, eagle_stellar_bd, stellar_met, eagle_stellar_met, \
     stellar_bd_current, eagle_stellar_bd_current, stellar_met_current, \
     eagle_stellar_met_current
 
-fig = plt.figure()
+fig = plt.figure(figsize=(9, 5))
 gs = gridspec.GridSpec(nrows=3, ncols=1)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
