@@ -13,6 +13,7 @@ import eagle_IO.eagle_IO as E
 from scipy.stats import binned_statistic
 from astropy.cosmology import Planck13 as cosmo
 import astropy.units as u
+from unyt import mh, cm, Gyr, g, Msun, Mpc
 import seaborn as sns
 
 sns.set_style("whitegrid")
@@ -436,20 +437,20 @@ ax1.hexbin(stellar_formr_all, stellar_bd_all, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 plot_meidan_stat(stellar_formr_all, stellar_bd_all, ax1, lab='Median',
-                 color='darkorange', bins=1, ls="dotted")
+                 color='darkorange', bins=None, ls="dotted")
 
 ax2.hexbin(stellar_formr_all, stellar_met_all, gridsize=100, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 plot_meidan_stat(stellar_formr_all, stellar_met_all, ax2, lab='Median',
-                 color='darkorange', bins=1, ls="dotted")
+                 color='darkorange', bins=None, ls="dotted")
 
 ax3.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
-ax3.plot(z_soft, softs, linestyle="--", color="k", label="Softening")
+ax3.plot(softs, z_soft, linestyle="--", color="k", label="Softening")
 plot_meidan_stat(stellar_formr_all, zs_all, ax3, lab='Median',
-                 color='darkorange', bins=1, ls="dotted")
+                 color='darkorange', bins=None, ls="dotted")
 
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax2.set_ylabel(r"$Z$")
@@ -487,7 +488,7 @@ star_formation_parameters = {"threshold_Z0": 0.002,
 number_of_bins = 128
 
 # Constants; these could be put in the parameter file but are rarely changed.
-birth_density_bins = np.logspace(14, 22, number_of_bins)
+birth_density_bins = np.logspace(-3, 6.8, number_of_bins)
 metal_mass_fraction_bins = np.logspace(-5.9, 0, number_of_bins)
 
 # Now need to make background grid of f_th.
@@ -517,7 +518,7 @@ cbar1.ax.set_xlabel(r'$f_{th}$', labelpad=1.5, fontsize=9)
 cbar1.ax.xaxis.set_label_position('top')
 cbar1.ax.tick_params(axis='x', labelsize=8)
 
-H, _, _ = np.histogram2d(stellar_bd_all, stellar_met_all,
+H, _, _ = np.histogram2d((stellar_bd_all * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, stellar_met_all,
                          bins=[birth_density_bins, metal_mass_fraction_bins])
 
 ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
@@ -530,7 +531,7 @@ ax.plot(sf_threshold_density, metal_mass_fraction_bins, linestyle="dashed", labe
 
 
 # Label axes
-ax.set_xlabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
+ax.set_xlabel(r"$\rho_{\mathrm{birth}}$ / [$n_H$ cm$^{-3}$]")
 ax.set_ylabel(r"$Z$")
 
 legend = ax.legend(markerfirst=True, loc="lower left", fontsize=8)
