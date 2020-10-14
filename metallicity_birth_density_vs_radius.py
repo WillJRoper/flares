@@ -340,7 +340,7 @@ ax1.hexbin(stellar_formr_all, stellar_bd_all, gridsize=100, mincnt=1,
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
 ax2.hexbin(stellar_formr_all, stellar_met_all, gridsize=100, mincnt=1,
-           xscale='log', yscale='log', norm=LogNorm(),
+           xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
 ax3.hexbin(stellar_formr_all, zs_all, gridsize=100, mincnt=1,
@@ -376,7 +376,7 @@ ax1.text(0.8, 0.9, "FLARES",
         transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
 
 ax2.hexbin(stellar_current_radius, stellar_met_current, gridsize=100, mincnt=1,
-           xscale='log', yscale='log', norm=LogNorm(),
+           xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
 ax3.hexbin(eagle_stellar_current_radius, eagle_stellar_bd_current * 10**10, gridsize=100, mincnt=1,
@@ -388,7 +388,7 @@ ax3.text(0.8, 0.9, "EAGLE",
         transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
 
 ax4.hexbin(eagle_stellar_current_radius, eagle_stellar_met_current, gridsize=100, mincnt=1,
-           xscale='log', yscale='log', norm=LogNorm(),
+           xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
