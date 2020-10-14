@@ -285,7 +285,7 @@ def get_data(masslim=1e8, eagle=False):
             except KeyError:
 
                 print(reg, snap, "No data")
-                
+
                 continue
 
             # Remove particles not associated to a subgroup
@@ -315,7 +315,7 @@ def get_data(masslim=1e8, eagle=False):
                 stellar_bd.extend(parts_bd[okinds])
                 stellar_met.extend(parts_met[okinds])
 
-                if snap == '011_z004p770' or snap == '028_z000p000':
+                if snap == '011_z004p770' or snap == '027_z000p101':
                     stellar_bd_current.extend(parts_bd)
                     stellar_met_current.extend(parts_met)
                     stellar_current_radius.extend(rs)
