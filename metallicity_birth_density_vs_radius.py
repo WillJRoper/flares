@@ -437,7 +437,7 @@ ax2.hexbin(stellar_formr_all, stellar_met_all, gridsize=100, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
-ax3.hexbin(stellar_formr_all, zs_all, gridsize=100, mincnt=1,
+ax3.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 ax3.plot(z_soft, softs, linestyle="--", color="k", label="Softening")
