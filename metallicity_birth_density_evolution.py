@@ -11,6 +11,7 @@ import eagle_IO.eagle_IO as E
 from scipy.stats import binned_statistic
 from astropy.cosmology import Planck13 as cosmo
 from astropy.cosmology import z_at_value
+import astropy.units as u
 import seaborn as sns
 
 sns.set_style("whitegrid")
@@ -293,7 +294,7 @@ def get_data(masslim=1e8, eagle=False):
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
 
-                z100Myr = z_at_value(cosmo.age, cosmo.age(z).value - 0.1)
+                z100Myr = z_at_value(cosmo.age, (cosmo.age(z).value - 0.1) * u.Myr)
 
                 stellar_bd.append(np.mean(parts_bd[(1 / parts_aborn) - 1 >= z100Myr]))
                 stellar_met.append(np.mean(parts_met[(1 / parts_aborn) - 1 >= z100Myr]))
