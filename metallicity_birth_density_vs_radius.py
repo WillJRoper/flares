@@ -350,7 +350,7 @@ ax1.text(0.8, 0.9, "FLARES",
 ax2.hexbin(stellar_current_radius, stellar_met_current, gridsize=100, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
-print(eagle_stellar_current_radius, eagle_stellar_bd_current * 10**10)
+
 ax3.hexbin(eagle_stellar_current_radius, eagle_stellar_bd_current * 10**10, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
@@ -385,6 +385,10 @@ ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=F
 ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
                 labelright=False, labelbottom=False)
 ax4.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+
+for ax in [ax1, ax2, ax3, ax4]:
+    for spine in ax.spines.values():
+        spine.set_edgecolor('k')
 
 fig.savefig("plots/stellar_formation_radius_afterevo.png", bbox_inches="tight")
 
@@ -431,6 +435,14 @@ ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax2.set_ylabel(r"$Z$")
 ax3.set_ylabel("$z_{\mathrm{form}}$")
 ax3.set_xlabel("$R / [\mathrm{pkpc}]$")
+
+# Remove axis labels
+ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+
+for ax in [ax1, ax2, ax3]:
+    for spine in ax.spines.values():
+        spine.set_edgecolor('k')
 
 fig.savefig("plots/stellar_formation_radius.png", bbox_inches="tight")
 
