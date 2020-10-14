@@ -336,7 +336,7 @@ ax1.text(0.8, 0.9, "FLARES",
 ax2.hexbin(stellar_current_radius, stellar_met_current, gridsize=100, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
-
+print(eagle_stellar_current_radius, eagle_stellar_bd_current * 10**10)
 ax3.hexbin(eagle_stellar_current_radius, eagle_stellar_bd_current * 10**10, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
