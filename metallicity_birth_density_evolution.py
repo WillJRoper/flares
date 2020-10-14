@@ -284,7 +284,7 @@ def get_data(masslim=1e8, eagle=False):
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                 halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-            print(cosmo.age, cosmo.age(z).value - 0.1)
+            print(cosmo.age(z), cosmo.age(z).value - 0.1)
 
             for halo, hmr, cop in zip(halo_ids, gal_hmr, gal_cop):
 
