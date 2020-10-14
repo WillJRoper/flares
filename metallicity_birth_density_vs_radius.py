@@ -314,46 +314,6 @@ stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_me
 
 eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**9.5, eagle=True)
 
-stellar_bd_all = np.concatenate((stellar_bd, eagle_stellar_bd)) * 10**10
-stellar_met_all = np.concatenate((stellar_met, eagle_stellar_met))
-stellar_formr_all = np.concatenate((stellar_form_radius,
-                                    eagle_stellar_form_radius))
-zs_all = np.concatenate((zs, eagle_zs))
-hmrs_all = np.concatenate((hmrs, eagle_hmrs))
-
-current_radius_all = np.concatenate((stellar_current_radius,
-                                     eagle_stellar_current_radius))
-current_stellar_bd_all = np.concatenate((stellar_bd_current, eagle_stellar_bd_current)) * 10**10
-current_stellar_met_all = np.concatenate((stellar_met_current, eagle_stellar_met_current))
-
-fig = plt.figure()
-gs = gridspec.GridSpec(nrows=3, ncols=1)
-gs.update(wspace=0.0, hspace=0.0)
-ax1 = fig.add_subplot(gs[0, 0])
-ax2 = fig.add_subplot(gs[1, 0])
-ax3 = fig.add_subplot(gs[2, 0])
-
-ax1.hexbin(stellar_formr_all, stellar_bd_all, gridsize=100, mincnt=1,
-           xscale='log', yscale='log', norm=LogNorm(),
-           linewidths=0.2, cmap='viridis', alpha=0.7)
-
-ax2.hexbin(stellar_formr_all, stellar_met_all, gridsize=100, mincnt=1,
-           xscale='log', norm=LogNorm(),
-           linewidths=0.2, cmap='viridis', alpha=0.7)
-
-ax3.hexbin(stellar_formr_all, zs_all, gridsize=100, mincnt=1,
-           xscale='log', yscale='log', norm=LogNorm(),
-           linewidths=0.2, cmap='viridis', alpha=0.7)
-
-ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
-ax2.set_ylabel(r"$Z$")
-ax3.set_ylabel("$z_{\mathrm{form}}$")
-ax3.set_xlabel("$R/R_{1/2}$")
-
-fig.savefig("plots/stellar_formation_radius.png", bbox_inches="tight")
-
-plt.close(fig)
-
 bd_lims = []
 met_lims = []
 
@@ -406,19 +366,59 @@ ax4.set_ylim(np.min(met_lims), np.max(met_lims))
 
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
-ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                labelright=False, labelbottom=False)
+# ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+#                 labelright=False, labelbottom=False)
 ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
                 labelright=False, labelbottom=False)
-ax4.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
-ax5.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                labelright=False, labelbottom=False)
-ax6.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                labelright=False, labelbottom=False)
-ax8.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
-ax9.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+ax4.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
 
 fig.savefig("plots/stellar_formation_radius_afterevo.png", bbox_inches="tight")
+
+plt.close(fig)
+
+stellar_bd_all = np.concatenate((stellar_bd, eagle_stellar_bd)) * 10**10
+stellar_met_all = np.concatenate((stellar_met, eagle_stellar_met))
+stellar_formr_all = np.concatenate((stellar_form_radius,
+                                    eagle_stellar_form_radius))
+zs_all = np.concatenate((zs, eagle_zs))
+hmrs_all = np.concatenate((hmrs, eagle_hmrs))
+
+current_radius_all = np.concatenate((stellar_current_radius,
+                                     eagle_stellar_current_radius))
+current_stellar_bd_all = np.concatenate((stellar_bd_current, eagle_stellar_bd_current)) * 10**10
+current_stellar_met_all = np.concatenate((stellar_met_current, eagle_stellar_met_current))
+
+del stellar_bd, eagle_stellar_bd, stellar_met, eagle_stellar_met, \
+    stellar_form_radius, eagle_stellar_form_radius, zs, eagle_zs, hmrs, \
+    eagle_hmrs, stellar_current_radius, eagle_stellar_current_radius, \
+    stellar_bd_current, eagle_stellar_bd_current, stellar_met_current, \
+    eagle_stellar_met_current
+
+fig = plt.figure()
+gs = gridspec.GridSpec(nrows=3, ncols=1)
+gs.update(wspace=0.0, hspace=0.0)
+ax1 = fig.add_subplot(gs[0, 0])
+ax2 = fig.add_subplot(gs[1, 0])
+ax3 = fig.add_subplot(gs[2, 0])
+
+ax1.hexbin(stellar_formr_all, stellar_bd_all, gridsize=100, mincnt=1,
+           xscale='log', yscale='log', norm=LogNorm(),
+           linewidths=0.2, cmap='viridis', alpha=0.7)
+
+ax2.hexbin(stellar_formr_all, stellar_met_all, gridsize=100, mincnt=1,
+           xscale='log', norm=LogNorm(),
+           linewidths=0.2, cmap='viridis', alpha=0.7)
+
+ax3.hexbin(stellar_formr_all, zs_all, gridsize=100, mincnt=1,
+           xscale='log', yscale='log', norm=LogNorm(),
+           linewidths=0.2, cmap='viridis', alpha=0.7)
+
+ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
+ax2.set_ylabel(r"$Z$")
+ax3.set_ylabel("$z_{\mathrm{form}}$")
+ax3.set_xlabel("$R/R_{1/2}$")
+
+fig.savefig("plots/stellar_formation_radius.png", bbox_inches="tight")
 
 plt.close(fig)
 
