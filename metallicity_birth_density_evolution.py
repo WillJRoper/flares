@@ -284,8 +284,6 @@ def get_data(masslim=1e8, eagle=False):
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                 halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-            print(cosmo.age(z), cosmo.age(z).value - 0.1)
-
             for halo, hmr, cop in zip(halo_ids, gal_hmr, gal_cop):
 
                 # Add stars from these galaxies
@@ -296,7 +294,7 @@ def get_data(masslim=1e8, eagle=False):
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
 
-                z100Myr = z_at_value(cosmo.age, (cosmo.age(z).value - 0.1) * u.Myr)
+                z100Myr = z_at_value(cosmo.age, (cosmo.age(z).value - 0.1) * u.Gyr)
 
                 stellar_bd.append(np.mean(parts_bd[(1 / parts_aborn) - 1 >= z100Myr]))
                 stellar_met.append(np.mean(parts_met[(1 / parts_aborn) - 1 >= z100Myr]))
