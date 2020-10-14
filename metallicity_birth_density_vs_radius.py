@@ -303,7 +303,7 @@ def get_data(masslim=1e8, eagle=False):
                 # Add stars from these galaxies
                 part_inds = list(halo_part_inds[halo])
                 pos = gal_coords[part_inds, :] - cop
-                rs = np.linalg.norm(pos, axis=1)
+                rs = np.linalg.norm(pos, axis=1) * 10**3
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
@@ -424,7 +424,7 @@ ax2.hexbin(stellar_formr_all, stellar_met_all, gridsize=100, mincnt=1,
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
 ax3.hexbin(stellar_formr_all, zs_all, gridsize=100, mincnt=1,
-           xscale='log', yscale='log', norm=LogNorm(),
+           xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
