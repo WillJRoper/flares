@@ -310,9 +310,9 @@ def get_data(masslim=1e8, eagle=False):
 
     return stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs
 
-stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs = get_data(masslim=10**9)
+stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs = get_data(masslim=10**9.5)
 
-eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**9, eagle=True)
+eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**9.5, eagle=True)
 
 stellar_bd_all = np.concatenate((stellar_bd, eagle_stellar_bd)) * 10**10
 stellar_met_all = np.concatenate((stellar_met, eagle_stellar_met))

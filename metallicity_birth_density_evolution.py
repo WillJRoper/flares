@@ -10,6 +10,7 @@ import pickle
 import eagle_IO.eagle_IO as E
 from scipy.stats import binned_statistic
 from astropy.cosmology import Planck13 as cosmo
+from astropy.cosmology import z_at_value
 import seaborn as sns
 
 sns.set_style("whitegrid")
@@ -278,16 +279,19 @@ def get_data(masslim=1e8, eagle=False):
                 rs = np.linalg.norm(pos, axis=1)
                 parts_bd = gal_bd[part_inds]
                 parts_met = gal_met[part_inds]
-                ages = calc_ages(z, gal_aborn[part_inds])
-                stellar_bd.append(np.mean(parts_bd[ages < 0.1]))
-                stellar_met.append(np.mean(parts_met[ages < 0.1]))
-                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and(ages < 0.1,
+                parts_aborn = gal_aborn[part_inds]
+
+                z100Myr = z_at_value(cosmo.age, cosmo.age(z) - 0.1)
+
+                stellar_bd.append(np.mean(parts_bd[(1 / parts_aborn) - 1 >= z100Myr]))
+                stellar_met.append(np.mean(parts_met[(1 / parts_aborn) - 1 >= z100Myr]))
+                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 >= z100Myr,
                                                                  rs <= hmr)]))
-                stellar_met_inside.append(np.mean(parts_met[np.logical_and(ages < 0.1,
+                stellar_met_inside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 >= z100Myr,
                                                                    rs <= hmr)]))
-                stellar_bd_outside.append(np.mean(parts_bd[np.logical_and(ages < 0.1,
+                stellar_bd_outside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 >= z100Myr,
                                                                   rs > hmr)]))
-                stellar_met_outside.append(np.mean(parts_met[np.logical_and(ages < 0.1,
+                stellar_met_outside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 >= z100Myr,
                                                                     rs > hmr)]))
                 zs.append(z)
                 zs_inside.append(z)
