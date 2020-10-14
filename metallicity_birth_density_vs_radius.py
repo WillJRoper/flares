@@ -296,7 +296,7 @@ def get_data(masslim=1e8, eagle=False):
 
                 okinds = (1 / parts_aborn) - 1 < z_prog
 
-                stellar_form_radius.extend(rs[okinds] / hmr)
+                stellar_form_radius.extend(rs[okinds])
                 hmrs.extend(np.full(len(parts_met[okinds]), hmr))
                 stellar_bd.extend(parts_bd[okinds])
                 stellar_met.extend(parts_met[okinds])
@@ -304,15 +304,15 @@ def get_data(masslim=1e8, eagle=False):
                 if snap == '011_z004p770' or snap == '028_z000p000':
                     stellar_bd_current.extend(parts_bd)
                     stellar_met_current.extend(parts_met)
-                    stellar_current_radius.extend(rs / hmr)
+                    stellar_current_radius.extend(rs)
 
                 zs.extend(np.full(len(parts_met[okinds]), z))
 
-    return stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs
+    return np.array(stellar_bd), np.array(stellar_met), np.array(stellar_form_radius), np.array(zs), np.array(stellar_bd_current), np.array(stellar_met_current), np.array(stellar_current_radius), np.array(hmrs)
 
-stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs = get_data(masslim=10**9.5)
+stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs = get_data(masslim=10**10)
 
-eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**9.5, eagle=True)
+eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**10, eagle=True)
 
 bd_lims = []
 met_lims = []
@@ -351,8 +351,8 @@ ax4.hexbin(eagle_stellar_current_radius, eagle_stellar_met_current, gridsize=100
 
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax2.set_ylabel(r"$Z$")
-ax2.set_xlabel("$R/R_{1/2}$")
-ax4.set_xlabel("$R/R_{1/2}$")
+ax2.set_xlabel("$R / [\mathrm{pkpc}]$")
+ax4.set_xlabel("$R / [\mathrm{pkpc}]$")
 
 bd_lims.extend(ax1.get_ylim())
 bd_lims.extend(ax3.get_ylim())
@@ -394,7 +394,7 @@ del stellar_bd, eagle_stellar_bd, stellar_met, eagle_stellar_met, \
     stellar_bd_current, eagle_stellar_bd_current, stellar_met_current, \
     eagle_stellar_met_current
 
-fig = plt.figure(figsize=(9, 5))
+fig = plt.figure(figsize=(5, 9))
 gs = gridspec.GridSpec(nrows=3, ncols=1)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
@@ -416,7 +416,7 @@ ax3.hexbin(stellar_formr_all, zs_all, gridsize=100, mincnt=1,
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax2.set_ylabel(r"$Z$")
 ax3.set_ylabel("$z_{\mathrm{form}}$")
-ax3.set_xlabel("$R/R_{1/2}$")
+ax3.set_xlabel("$R / [\mathrm{pkpc}]$")
 
 fig.savefig("plots/stellar_formation_radius.png", bbox_inches="tight")
 
