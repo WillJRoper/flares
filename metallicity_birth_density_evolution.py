@@ -169,7 +169,7 @@ def get_data(masslim=1e8, eagle=False):
 
     # Define snapshots
     if eagle:
-        snaps = ['003_z008p988', '006_z005p971',
+        pre_snaps = ['003_z008p988', '006_z005p971',
                  '009_z004p485', '012_z003p017', '015_z002p012',
                  '018_z001p259', '021_z000p736', '024_z000p366',
                  '027_z000p101', '001_z015p132', '004_z008p075',
@@ -179,6 +179,13 @@ def get_data(masslim=1e8, eagle=False):
                  '005_z007p050', '008_z005p037', '011_z003p528',
                  '014_z002p237', '017_z001p487', '020_z000p865',
                  '023_z000p503', '026_z000p183']
+
+        snaps = np.zeros(29, dtype=object)
+        for s in pre_snaps:
+            ind = int(s.split('_')[0])
+            snaps[ind] = s
+
+        snaps = list(snaps)
     else:
         snaps = ['001_z014p000', '002_z013p000', '003_z012p000',
                  '004_z011p000', '005_z010p000',
@@ -208,10 +215,13 @@ def get_data(masslim=1e8, eagle=False):
             try:
                 halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
             except ValueError:
+                print(reg, snap, "No data")
                 continue
             except OSError:
+                print(reg, snap, "No data")
                 continue
             except KeyError:
+                print(reg, snap, "No data")
                 continue
 
             print(reg, snap)
@@ -253,12 +263,14 @@ def get_data(masslim=1e8, eagle=False):
                                           'PartType4/Coordinates',
                                           noH=True, physicalUnits=True,
                                           numThreads=8)
-
             except ValueError:
+                print(reg, snap, "No data")
                 continue
             except OSError:
+                print(reg, snap, "No data")
                 continue
             except KeyError:
+                print(reg, snap, "No data")
                 continue
 
             # Remove particles not associated to a subgroup
