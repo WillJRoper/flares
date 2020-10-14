@@ -349,7 +349,7 @@ ax3.hexbin(stellar_formr_all, zs_all, gridsize=100, mincnt=1,
 
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax2.set_ylabel(r"$Z$")
-ax3.set_ylabel("$z_{\mathrm{form}$")
+ax3.set_ylabel("$z_{\mathrm{form}}$")
 ax3.set_xlabel("$R/R_{1/2}$")
 
 fig.savefig("plots/stellar_formation_radius.png", bbox_inches="tight")
