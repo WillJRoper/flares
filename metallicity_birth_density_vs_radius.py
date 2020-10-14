@@ -219,10 +219,13 @@ def get_data(masslim=1e8, eagle=False):
             try:
                 halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
             except ValueError:
+                print(reg, snap, "No data")
                 continue
             except OSError:
+                print(reg, snap, "No data")
                 continue
             except KeyError:
+                print(reg, snap, "No data")
                 continue
 
             print(reg, snap)
@@ -268,10 +271,21 @@ def get_data(masslim=1e8, eagle=False):
                                           numThreads=8)
 
             except ValueError:
+
+                print(reg, snap, "No data")
+
                 continue
+
             except OSError:
+
+                print(reg, snap, "No data")
+
                 continue
+
             except KeyError:
+
+                print(reg, snap, "No data")
+                
                 continue
 
             # Remove particles not associated to a subgroup
