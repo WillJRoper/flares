@@ -331,6 +331,16 @@ eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_
 bd_lims = []
 met_lims = []
 
+softs = []
+z_soft = []
+for z in np.linspace(0, 9, 100):
+    if z <= 2.8:
+        soft = 0.000474390 / 0.6777 * 1e3
+    else:
+        soft = 0.001802390 / (0.6777 * (1 + z)) * 1e3
+    softs.append(soft)
+    z_soft.append(z)
+
 fig = plt.figure(figsize=(6, 6))
 gs = gridspec.GridSpec(nrows=2, ncols=2)
 gs.update(wspace=0.0, hspace=0.0)
@@ -430,6 +440,9 @@ ax2.hexbin(stellar_formr_all, stellar_met_all, gridsize=100, mincnt=1,
 ax3.hexbin(stellar_formr_all, zs_all, gridsize=100, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
+ax3.plot(z_soft, softs, linestyle="--", color="k", label="Softening")
+plot_meidan_stat(stellar_formr_all, zs_all, ax3, lab='Median',
+                 color='darkorange', bins=1, ls="..")
 
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax2.set_ylabel(r"$Z$")
@@ -443,6 +456,9 @@ ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=F
 for ax in [ax1, ax2, ax3]:
     for spine in ax.spines.values():
         spine.set_edgecolor('k')
+
+handles, labels = ax3.get_legend_handles_labels()
+ax3.legend(handles, labels)
 
 fig.savefig("plots/stellar_formation_radius.png", bbox_inches="tight")
 
