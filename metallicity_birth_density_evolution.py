@@ -348,13 +348,22 @@ ax = fig.add_subplot(111)
 ax.hexbin(zs_all, stellar_met_all, gridsize=100, mincnt=1,
           norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.5)
 
-plot_meidan_stat(eagle_zs, eagle_stellar_met, ax, lab='Eagle: Total', color='orangered', bins=None, ls="--")
-plot_meidan_stat(eagle_zs_inside, eagle_stellar_met_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=None, ls="--")
-plot_meidan_stat(eagle_zs_outside, eagle_stellar_met_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=None, ls="--")
+plot_meidan_stat(np.array(eagle_zs), np.array(eagle_stellar_met), ax,
+                 lab='Eagle: Total', color='orangered', bins=None, ls="--")
+plot_meidan_stat(np.array(eagle_zs_inside), np.array(eagle_stellar_met_inside),
+                 ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue',
+                 bins=None, ls="--")
+plot_meidan_stat(np.array(eagle_zs_outside),
+                 np.array(eagle_stellar_met_outside),
+                 ax, lab='Eagle: $R > R_{1/2}$', color='limegreen',
+                 bins=None, ls="--")
 
-plot_meidan_stat(zs, stellar_met, ax, lab='FLARES: Total', color='orangered', bins=None)
-plot_meidan_stat(zs_inside, stellar_met_inside, ax, lab='FLARES: $R\leq R_{1/2}$', color='royalblue', bins=None)
-plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='FLARES: $R > R_{1/2}$', color='limegreen', bins=None)
+plot_meidan_stat(np.array(zs), np.array(stellar_met), ax, lab='FLARES: Total',
+                 color='orangered', bins=None)
+plot_meidan_stat(np.array(zs_inside), np.array(stellar_met_inside), ax,
+                 lab='FLARES: $R\leq R_{1/2}$', color='royalblue', bins=None)
+plot_meidan_stat(np.array(zs_outside), np.array(stellar_met_outside), ax,
+                 lab='FLARES: $R > R_{1/2}$', color='limegreen', bins=None)
 
 
 ax.set_xlabel("$z$")
