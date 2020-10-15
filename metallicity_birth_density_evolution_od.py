@@ -192,6 +192,12 @@ def get_data(eagle=False, ref=False):
                 print(reg, snap, "No data")
                 continue
 
+            okinds = parts_subgroup == 2**30
+            parts_subgroup = parts_subgroup[okinds]
+            parts_bd = parts_bd[okinds]
+            parts_met = parts_met[okinds]
+            parts_aborn = parts_aborn[okinds]
+            
             part_sub_mass = gal_ms[parts_subgroup]
 
             okinds = part_sub_mass > 10**9
