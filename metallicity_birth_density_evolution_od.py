@@ -146,11 +146,14 @@ def get_data(eagle=False, ref=False):
         for snap in snaps:
             
             if eagle:
-                path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0050N0752/PE/AGNdT9/data/'
+                path = '/cosma7/data//Eagle/ScienceRuns/Planck1/' \
+                       'L0050N0752/PE/AGNdT9/data/'
             elif ref:
-                path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
+                path = '/cosma7/data//Eagle/ScienceRuns/Planck1/' \
+                       'L0100N1504/PE/REFERENCE/data'
             else:
-                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/' \
+                       'G-EAGLE_' + reg + '/data'
 
             print(reg, snap)
 
@@ -198,8 +201,10 @@ agndt9_stellar_bd, agndt9_stellar_met, agndt9_zs, _ = get_data(eagle=True)
 ref_stellar_bd, ref_stellar_met, ref_zs, _ = get_data(ref=True)
 
 zs_all = np.concatenate((zs, ref_zs, agndt9_zs))
-stellar_bd_all = np.concatenate((stellar_bd, ref_stellar_bd, agndt9_stellar_bd))
-stellar_met_all = np.concatenate((stellar_met, ref_stellar_met, agndt9_stellar_met))
+stellar_bd_all = np.concatenate((stellar_bd, ref_stellar_bd,
+                                 agndt9_stellar_bd))
+stellar_met_all = np.concatenate((stellar_met, ref_stellar_met,
+                                  agndt9_stellar_met))
 
 dbinLims = [-0.3, -0.15, -0.04, 0.04, 0.12, 0.22, 0.3]
 dbins = dbinLims[:-1] + np.diff(dbinLims)/2
@@ -232,8 +237,9 @@ plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_bd),
                  bins=None, ls="--")
 
 ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
-print(dbins, _cmap.colors)
-for low, up, c in zip(dbins[:-1], dbins[1:], _cmap.colors):
+print(dbinLims) 
+print(_cmap.colors)
+for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
 
     print(low, up, c)
 
@@ -247,10 +253,11 @@ ax.set_xlim(None, 22)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable
-cbaxes = fig.add_axes([0.8, 0.6, 0.3, 0.3], transform=ax.transAxes)
+cbaxes = fig.inset_axes([0.8, 0.6, 0.3, 0.3])
 cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
 cbar.ax.set_yticklabels(bin_labels)
-cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; (N_{\mathrm{regions}})$', size=13, rotation=90)
+cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; '
+                   '(N_{\mathrm{regions}})$', size=13, rotation=90)
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
@@ -291,10 +298,11 @@ ax.set_xlim(None, 22)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable
-cbaxes = fig.add_axes([0.52, 0.215, 0.025, 0.11])
+cbaxes = fig.inset_axes([0.8, 0.6, 0.3, 0.3])
 cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
 cbar.ax.set_yticklabels(bin_labels)
-cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; (N_{\mathrm{regions}})$', size=13, rotation=90)
+cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; '
+                   '(N_{\mathrm{regions}})$', size=13, rotation=90)
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<Z>$")
