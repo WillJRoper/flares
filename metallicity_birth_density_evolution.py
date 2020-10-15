@@ -40,6 +40,9 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
     if bins == None:
         bin = np.logspace(np.log10(xs[~np.isnan(xs)].min()),
                           np.log10(xs[~np.isnan(xs)].max()), 40)
+    elif bins == "lin":
+        bin = np.linspace(xs[~np.isnan(xs)].min(),
+                          xs[~np.isnan(xs)].max(), 40)
     else:
         zs = np.float64(xs)
 

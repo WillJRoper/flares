@@ -41,6 +41,9 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
     if bins == None:
         bin = np.logspace(np.log10(xs[~np.isnan(xs)].min()),
                           np.log10(xs[~np.isnan(xs)].max()), 20)
+    elif bins == "lin":
+        bin = np.linspace(xs[~np.isnan(xs)].min(),
+                          xs[~np.isnan(xs)].max(), 20)
     else:
         zs = np.float64(xs)
 
@@ -444,7 +447,7 @@ ax2.hexbin(stellar_formr_all, stellar_met_all, gridsize=100, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 plot_meidan_stat(stellar_met_all, stellar_formr_all, ax2, lab='Median',
-                 color='darkorange', bins=None, ls="dotted")
+                 color='darkorange', bins="lin", ls="dotted")
 
 ax3.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
            xscale='log', norm=LogNorm(),
