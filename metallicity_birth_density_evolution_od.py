@@ -36,7 +36,7 @@ def calc_ages(z, a_born):
     return ages
 
 
-def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
+def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls="-"):
 
     if bins == None:
         bin = np.logspace(np.log10(xs.min()),
@@ -63,7 +63,7 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
         bin[1:] = high_bins
 
     # Compute binned statistics
-    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median',
+    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic="median",
                                                  bins=bin)
 
     # Compute bincentres
@@ -121,15 +121,15 @@ def get_data(eagle=False, ref=False):
         regions = []
         for reg in range(0, 40):
             if reg < 10:
-                regions.append('0' + str(reg))
+                regions.append("0" + str(reg))
             else:
                 regions.append(str(reg))
 
     # Define snapshots
     if eagle or ref:
-        snaps = ['027_z000p101', ]
+        snaps = ["027_z000p101", ]
     else:
-        snaps = ['011_z004p770', ]
+        snaps = ["011_z004p770", ]
 
     stellar_met = []
     stellar_bd = []
@@ -146,40 +146,40 @@ def get_data(eagle=False, ref=False):
         for snap in snaps:
             
             if eagle:
-                path = '/cosma7/data//Eagle/ScienceRuns/Planck1/' \
-                       'L0050N0752/PE/AGNdT9/data/'
+                path = "/cosma7/data//Eagle/ScienceRuns/Planck1/" \
+                       "L0050N0752/PE/AGNdT9/data/"
             elif ref:
-                path = '/cosma7/data//Eagle/ScienceRuns/Planck1/' \
-                       'L0100N1504/PE/REFERENCE/data'
+                path = "/cosma7/data//Eagle/ScienceRuns/Planck1/" \
+                       "L0100N1504/PE/REFERENCE/data"
             else:
-                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/' \
-                       'G-EAGLE_' + reg + '/data'
+                path = "/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/" \
+                       "G-EAGLE_" + reg + "/data"
 
             print(reg, snap)
 
-            z_str = snap.split('z')[1].split('p')
-            z = float(z_str[0] + '.' + z_str[1])
+            z_str = snap.split("z")[1].split("p")
+            z = float(z_str[0] + "." + z_str[1])
 
             # Get halo IDs and halo data
             try:
-                parts_subgroup = E.read_array('PARTDATA', path, snap,
-                                              'PartType4/SubGroupNumber',
+                parts_subgroup = E.read_array("PARTDATA", path, snap,
+                                              "PartType4/SubGroupNumber",
                                               noH=True,
                                               physicalUnits=True,
                                               numThreads=8)
-                parts_bd = E.read_array('PARTDATA', path, snap,
-                                      'PartType4/BirthDensity', noH=True,
+                parts_bd = E.read_array("PARTDATA", path, snap,
+                                      "PartType4/BirthDensity", noH=True,
                                         physicalUnits=True, numThreads=8)
-                parts_met = E.read_array('PARTDATA', path, snap,
-                                       'PartType4/Metallicity', noH=True,
+                parts_met = E.read_array("PARTDATA", path, snap,
+                                       "PartType4/Metallicity", noH=True,
                                        physicalUnits=True, numThreads=8)
-                parts_aborn = E.read_array('PARTDATA', path, snap,
-                                         'PartType4/StellarFormationTime',
+                parts_aborn = E.read_array("PARTDATA", path, snap,
+                                         "PartType4/StellarFormationTime",
                                          noH=True, physicalUnits=True,
                                          numThreads=8)
-                gal_ms = E.read_array('SUBFIND', path, snap,
-                                      'Subhalo/ApertureMeasurements/'
-                                      'Mass/030kpc',
+                gal_ms = E.read_array("SUBFIND", path, snap,
+                                      "Subhalo/ApertureMeasurements/"
+                                      "Mass/030kpc",
                                       noH=True, physicalUnits=True,
                                       numThreads=8)[:, 4] * 10 ** 10
             except ValueError:
@@ -241,20 +241,20 @@ dselect = np.digitize(log1pdelta, dbinLims) - 1
 dindex = np.arange(0, np.max(dselect)+1)
 
 ticks = np.linspace(0.05, .95, len(dindex))
-_cmap = plt.cm.get_cmap('plasma', len(ticks))
+_cmap = plt.cm.get_cmap("plasma", len(ticks))
 # colors = [ cm.plasma(i) for i in ticks ]
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-ax.hexbin(zs_all, stellar_bd_all, gridsize=100, mincnt=1, yscale='log', 
-          norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.5)
+ax.hexbin(zs_all, stellar_bd_all, gridsize=100, mincnt=1, yscale="log", 
+          norm=LogNorm(), linewidths=0.2, cmap="Greys", alpha=0.4)
 
 plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_bd), ax,
-                 lab='AGNdT9: L0050N0752', color='orangered', bins=None,
-                 ls="dotted")
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
 plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_bd),
-                 ax, lab='REFERENCE: L0100N1504', color='royalblue',
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
                  bins=None, ls="--")
 
 ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
@@ -269,15 +269,15 @@ for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
                      ax, lab=None, color=c,
                      bins=None, ls="-")
 
-ax.set_xlim(None, 25)
+ax.set_xlim(None, 27)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable
-cbaxes = ax.inset_axes([0.7, 0.65, 0.05, 0.3])
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
 cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
 cbar.ax.set_yticklabels(bin_labels, fontsize=8)
-cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; '
-                   '(N_{\mathrm{regions}})$', size=10, rotation=90)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
@@ -294,14 +294,58 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
+plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_bd), ax,
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
+plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_bd),
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
+                 bins=None, ls="--")
+
+ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
+
+for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
+
+    print(low, up, c)
+
+    okinds = np.logical_and(ovdens >= low, ovdens < up)
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(None, 27)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, loc="lower right")
+
+ax.set_yscale("log")
+
+fig.savefig("plots/stellarbd_z_evolution_od_nohex.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
 ax.hexbin(zs_all, stellar_met_all, gridsize=100, mincnt=1,
-          norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.5)
+          norm=LogNorm(), linewidths=0.2, cmap="Greys", alpha=0.4)
 
 plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_met), ax,
-                 lab='AGNdT9: L0050N0752', color='orangered', bins=None,
-                 ls="dotted")
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
 plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_met),
-                 ax, lab='REFERENCE: L0100N1504', color='royalblue',
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
                  bins=None, ls="--")
 
 ax.plot((40, 90), (0.2, 0.5), color="k", linestyle="-", label="FLARES")
@@ -314,15 +358,15 @@ for low, up, c in zip(dbins[:-1], dbins[1:], _cmap.colors):
                      ax, lab=None, color=c,
                      bins=None, ls="-")
 
-ax.set_xlim(None, 22)
+ax.set_xlim(None, 27)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable
-cbaxes = ax.inset_axes([0.8, 0.6, 0.3, 0.3])
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
 cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
-cbar.ax.set_yticklabels(bin_labels)
-cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; '
-                   '(N_{\mathrm{regions}})$', size=13, rotation=90)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<Z>$")
@@ -331,3 +375,43 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc="upper left")
 
 fig.savefig("plots/stellarmet_z_evolution_od.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_met), ax,
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
+plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_met),
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
+                 bins=None, ls="--")
+
+ax.plot((40, 90), (0.2, 0.5), color="k", linestyle="-", label="FLARES")
+
+for low, up, c in zip(dbins[:-1], dbins[1:], _cmap.colors):
+
+    okinds = np.logical_and(ovdens >= low, ovdens < up)
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_met)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(None, 27)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<Z>$")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, loc="upper left")
+
+fig.savefig("plots/stellarmet_z_evolution_od_nohex.png", bbox_inches="tight")

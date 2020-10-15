@@ -87,33 +87,15 @@ def plot_meidan_statyx(xs, ys, ax, lab, color, ls='-'):
     zs = np.float64(ys)
 
     uniz = np.unique(zs)
-    bin_wids = uniz[1:] - uniz[:-1]
-    low_bins = uniz[:-1] - (bin_wids / 2)
-    high_bins = uniz[:-1] + (bin_wids / 2)
-    low_bins = list(low_bins)
-    high_bins = list(high_bins)
-    low_bins.append(high_bins[-1])
-    high_bins.append(uniz[-1] + 1)
-    low_bins = np.array(low_bins)
-    high_bins = np.array(high_bins)
 
-    bin = np.zeros(uniz.size + 1)
-    bin[:-1] = low_bins
-    bin[1:] = high_bins
+    zs_plt = np.zeros(len(uniz))
+    rs_plt = np.zeros(len(uniz))
+    for ind, z in enumerate(uniz):
+        okinds = ys == z
+        rs_plt[ind] = np.median(xs[okinds])
+        zs_plt[ind] = z
 
-    # Compute binned statistics
-    y_stat, binedges, bin_ind = binned_statistic(ys, xs, statistic='median',
-                                                 bins=bin)
-
-    # Compute bin centres
-    bin_wid = binedges[1] - binedges[0]
-    bin_cents = binedges[1:] - bin_wid / 2
-
-    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
-
-    sinds = np.argsort(y_stat[okinds])
-    ax.plot(y_stat[okinds][sinds], bin_cents[okinds][sinds], color=color,
-            linestyle=ls, label=lab)
+    ax.plot(rs_plt, zs_plt, color=color, linestyle=ls, label=lab)
 
 
 def plot_spread_stat(zs, ys, ax, color):
@@ -506,6 +488,7 @@ ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=F
 ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
 
 for ax in [ax1, ax2, ax3]:
+    ax.set_xlim(10**-2.3, 30)
     for spine in ax.spines.values():
         spine.set_edgecolor('k')
 
