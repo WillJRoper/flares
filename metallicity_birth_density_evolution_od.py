@@ -231,11 +231,11 @@ plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_bd),
                  ax, lab='REFERENCE: L0100N1504', color='royalblue',
                  bins=None, ls="--")
 
-ax.plot((40, 90), (10**7, 10**8), color="k", linestyle="-", label="FLARES")
-
+ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
+print(dbins, _cmap.colors)
 for low, up, c in zip(dbins[:-1], dbins[1:], _cmap.colors):
 
-    print(low, up)
+    print(low, up, c)
 
     okinds = np.logical_and(ovdens >= low, ovdens < up)
 
@@ -247,7 +247,7 @@ ax.set_xlim(None, 22)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable
-cbaxes = fig.add_axes([0.52, 0.215, 0.025, 0.11])
+cbaxes = fig.add_axes([0.8, 0.6, 0.3, 0.3], transform=ax.transAxes)
 cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
 cbar.ax.set_yticklabels(bin_labels)
 cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; (N_{\mathrm{regions}})$', size=13, rotation=90)
