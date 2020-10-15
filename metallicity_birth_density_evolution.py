@@ -11,6 +11,7 @@ import eagle_IO.eagle_IO as E
 from scipy.stats import binned_statistic
 from astropy.cosmology import Planck13 as cosmo
 from astropy.cosmology import z_at_value
+from matplotlib.colors import LogNorm
 import astropy.units as u
 import seaborn as sns
 
@@ -38,7 +39,7 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 
     if bins == None:
         bin = np.logspace(np.log10(xs[~np.isnan(xs)].min()),
-                          np.log10(xs[~np.isnan(xs)].max()), 20)
+                          np.log10(xs[~np.isnan(xs)].max()), 40)
     else:
         zs = np.float64(xs)
 
@@ -277,21 +278,15 @@ def get_data(masslim=1e8, eagle=False):
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
 
-                z100Myr = z_at_value(cosmo.age, (cosmo.age(z).value - 0.1) * u.Gyr)
-
-                stellar_bd.append(np.mean(parts_bd[(1 / parts_aborn) - 1 >= z100Myr]))
-                stellar_met.append(np.mean(parts_met[(1 / parts_aborn) - 1 >= z100Myr]))
-                stellar_bd_inside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 >= z100Myr,
-                                                                 rs <= hmr)]))
-                stellar_met_inside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 >= z100Myr,
-                                                                   rs <= hmr)]))
-                stellar_bd_outside.append(np.mean(parts_bd[np.logical_and((1 / parts_aborn) - 1 >= z100Myr,
-                                                                  rs > hmr)]))
-                stellar_met_outside.append(np.mean(parts_met[np.logical_and((1 / parts_aborn) - 1 >= z100Myr,
-                                                                    rs > hmr)]))
-                zs.append(z)
-                zs_inside.append(z)
-                zs_outside.append(z)
+                stellar_bd.extend(parts_bd)
+                stellar_met.extend(parts_met)
+                stellar_bd_inside.extend(parts_bd[rs <= hmr])
+                stellar_met_inside.extend(parts_met[rs <= hmr])
+                stellar_bd_outside.extend(parts_bd[rs > hmr])
+                stellar_met_outside.extend(parts_met[rs > hmr])
+                zs.extend((1 / parts_aborn) - 1)
+                zs_inside.extend((1 / parts_aborn[rs <= hmr]) - 1)
+                zs_outside.extend((1 / parts_aborn[rs > hmr]) - 1)
 
     return stellar_bd, stellar_met, \
            stellar_bd_inside, stellar_met_inside, \
@@ -308,22 +303,23 @@ eagle_stellar_bd_outside, eagle_stellar_met_outside, \
 eagle_zs, eagle_zs_inside, eagle_zs_outside \
     = get_data(masslim=10**9, eagle=True)
 
+zs_all = np.concatenate((zs, eagle_zs))
+stellar_bd_all = np.concatenate((stellar_bd, eagle_stellar_bd))
+stellar_met_all = np.concatenate((stellar_met, eagle_stellar_met))
+
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-plot_meidan_stat(eagle_zs, eagle_stellar_bd, ax, lab='Eagle: Total', color='orangered', bins=1, ls="--")
-plot_spread_stat(eagle_zs, eagle_stellar_bd, ax, color='orangered')
-plot_meidan_stat(eagle_zs_inside, eagle_stellar_bd_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=1, ls="--")
-plot_spread_stat(eagle_zs_inside, eagle_stellar_bd_inside, ax, color='royalblue')
-plot_meidan_stat(eagle_zs_outside, eagle_stellar_bd_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=1, ls="--")
-plot_spread_stat(eagle_zs_outside, eagle_stellar_bd_outside, ax, color='limegreen')
+ax.hexbin(zs_all, stellar_bd_all, gridsize=100, mincnt=1, yscale='log', 
+          norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.5)
 
-plot_meidan_stat(zs, stellar_bd, ax, lab='FLARES: Total', color='orangered', bins=1)
-plot_spread_stat(zs, stellar_bd, ax, color='orangered')
-plot_meidan_stat(zs_inside, stellar_bd_inside, ax, lab='FLARES: $R\leq R_{1/2}$', color='royalblue', bins=1)
-plot_spread_stat(zs_inside, stellar_bd_inside, ax, color='royalblue')
-plot_meidan_stat(zs_outside, stellar_bd_outside, ax, lab='FLARES: $R > R_{1/2}$', color='limegreen', bins=1)
-plot_spread_stat(zs_outside, stellar_bd_outside, ax, color='limegreen')
+plot_meidan_stat(eagle_zs, eagle_stellar_bd, ax, lab='Eagle: Total', color='orangered', bins=None, ls="--")
+plot_meidan_stat(eagle_zs_inside, eagle_stellar_bd_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=None, ls="--")
+plot_meidan_stat(eagle_zs_outside, eagle_stellar_bd_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=None, ls="--")
+
+plot_meidan_stat(zs, stellar_bd, ax, lab='FLARES: Total', color='orangered', bins=None)
+plot_meidan_stat(zs_inside, stellar_bd_inside, ax, lab='FLARES: $R\leq R_{1/2}$', color='royalblue', bins=None)
+plot_meidan_stat(zs_outside, stellar_bd_outside, ax, lab='FLARES: $R > R_{1/2}$', color='limegreen', bins=None)
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
@@ -340,21 +336,17 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-plot_meidan_stat(eagle_zs, eagle_stellar_met, ax, lab='Eagle: Total', color='orangered', bins=1, ls="--")
-plot_spread_stat(eagle_zs, eagle_stellar_met, ax, color='orangered')
-plot_meidan_stat(eagle_zs_inside, eagle_stellar_met_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=1, ls="--")
-plot_spread_stat(eagle_zs_inside, eagle_stellar_met_inside, ax, color='royalblue')
-plot_meidan_stat(eagle_zs_outside, eagle_stellar_met_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=1, ls="--")
-plot_spread_stat(eagle_zs_outside, eagle_stellar_met_outside, ax, color='limegreen')
+ax.hexbin(zs_all, stellar_met_all, gridsize=100, mincnt=1, yscale='log', 
+          norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.5)
 
-plot_meidan_stat(zs, stellar_met, ax, lab='Total', color='orangered', bins=1)
-plot_spread_stat(zs, stellar_met, ax, color='orangered')
-plot_meidan_stat(zs_inside, stellar_met_inside, ax, lab='$R\leq R_{1/2}$',
-                 color='royalblue', bins=1)
-plot_spread_stat(zs_inside, stellar_met_inside, ax, color='royalblue')
-plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='$R > R_{1/2}$',
-                 color='limegreen', bins=1)
-plot_spread_stat(zs_outside, stellar_met_outside, ax, color='limegreen')
+plot_meidan_stat(eagle_zs, eagle_stellar_met, ax, lab='Eagle: Total', color='orangered', bins=None, ls="--")
+plot_meidan_stat(eagle_zs_inside, eagle_stellar_met_inside, ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue', bins=None, ls="--")
+plot_meidan_stat(eagle_zs_outside, eagle_stellar_met_outside, ax, lab='Eagle: $R > R_{1/2}$', color='limegreen', bins=None, ls="--")
+
+plot_meidan_stat(zs, stellar_met, ax, lab='FLARES: Total', color='orangered', bins=None)
+plot_meidan_stat(zs_inside, stellar_met_inside, ax, lab='FLARES: $R\leq R_{1/2}$', color='royalblue', bins=None)
+plot_meidan_stat(zs_outside, stellar_met_outside, ax, lab='FLARES: $R > R_{1/2}$', color='limegreen', bins=None)
+
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<Z>$")
