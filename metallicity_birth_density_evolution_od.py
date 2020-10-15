@@ -254,7 +254,7 @@ ax.set_xlim(None, 22)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable
-cbaxes = fig.inset_axes([0.8, 0.6, 0.3, 0.3])
+cbaxes = ax.inset_axes([0.8, 0.6, 0.3, 0.3])
 cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
 cbar.ax.set_yticklabels(bin_labels)
 cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; '
@@ -299,7 +299,7 @@ ax.set_xlim(None, 22)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable
-cbaxes = fig.inset_axes([0.8, 0.6, 0.3, 0.3])
+cbaxes = ax.inset_axes([0.8, 0.6, 0.3, 0.3])
 cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
 cbar.ax.set_yticklabels(bin_labels)
 cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; '
