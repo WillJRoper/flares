@@ -237,7 +237,7 @@ plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_bd),
                  bins=None, ls="--")
 
 ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
-print(dbinLims) 
+print(dbinLims)
 print(_cmap.colors)
 for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
 

@@ -111,8 +111,9 @@ def plot_meidan_statyx(xs, ys, ax, lab, color, ls='-'):
 
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
-    ax.plot(y_stat[okinds], bin_cents[okinds], color=color, linestyle=ls,
-            label=lab)
+    sinds = np.argsort(y_stat[okinds])
+    ax.plot(y_stat[okinds][sinds], bin_cents[okinds][sinds], color=color,
+            linestyle=ls, label=lab)
 
 
 def plot_spread_stat(zs, ys, ax, color):
@@ -490,7 +491,7 @@ plot_meidan_stat(stellar_formr_all, stellar_met_all, ax2, lab='Median',
 
 ax3.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
            xscale='log', norm=LogNorm(),
-           linewidths=0.2, cmap='Greys', alpha=0.01)
+           linewidths=0.2, cmap='Greys', alpha=0.1)
 ax3.plot(softs, z_soft, linestyle="--", color="k", label="Softening")
 plot_meidan_statyx(stellar_formr_all, zs_all, ax3, lab='Median',
                  color='darkorange')
