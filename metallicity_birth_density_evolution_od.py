@@ -235,6 +235,8 @@ ax.plot((40, 90), (10**7, 10**8), color="k", linestyle="-", label="FLARES")
 
 for low, up, c in zip(dbins[:-1], dbins[1:], _cmap.colors):
 
+    print(low, up)
+
     okinds = np.logical_and(ovdens >= low, ovdens < up)
 
     plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
