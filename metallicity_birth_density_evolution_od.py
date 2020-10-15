@@ -39,11 +39,11 @@ def calc_ages(z, a_born):
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 
     if bins == None:
-        bin = np.logspace(np.log10(xs[~np.isnan(xs)].min()),
-                          np.log10(xs[~np.isnan(xs)].max()), 40)
+        bin = np.logspace(np.log10(xs.min()),
+                          np.log10(xs.max()), 40)
     elif bins == "lin":
-        bin = np.linspace(xs[~np.isnan(xs)].min(),
-                          xs[~np.isnan(xs)].max(), 40)
+        bin = np.linspace(xs.min(),
+                          xs.max(), 40)
     else:
         zs = np.float64(xs)
 
@@ -71,9 +71,11 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
     bin_cents = binedges[1:] - bin_wid / 2
 
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
-
-    ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls,
-            label=lab)
+    if lab != None:
+        ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls,
+                label=lab)
+    else:
+        ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls)
 
 
 def plot_spread_stat(zs, ys, ax, color):
@@ -111,58 +113,7 @@ def plot_spread_stat(zs, ys, ax, color):
                     alpha=0.3, color=color)
 
 
-def get_part_ids(sim, snapshot, part_type, all_parts=False):
-
-    # Get the particle IDs
-    if all_parts:
-        part_ids = E.read_array('SNAP', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
-    else:
-        part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
-                                numThreads=8)
-
-    # Extract the halo IDs (group names/keys) contained within this snapshot
-    group_part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
-                                  numThreads=8)
-    grp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/GroupNumber',
-                           numThreads=8)
-    subgrp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/SubGroupNumber',
-                              numThreads=8)
-
-    # Remove particles not associated to a subgroup
-    okinds = subgrp_ids != 1073741824
-    group_part_ids = group_part_ids[okinds]
-    grp_ids = grp_ids[okinds]
-    subgrp_ids = subgrp_ids[okinds]
-
-    # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
-    halo_ids = np.zeros(grp_ids.size, dtype=float)
-    for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
-        halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
-
-    # Sort particle IDs
-    unsort_part_ids = np.copy(part_ids)
-    sinds = np.argsort(part_ids)
-    part_ids = part_ids[sinds]
-
-    # Get the index of particles in the snapshot array from the in group array
-    sorted_index = np.searchsorted(part_ids, group_part_ids)
-    yindex = np.take(sinds, sorted_index, mode="raise")
-    mask = unsort_part_ids[yindex] != group_part_ids
-    result = np.ma.array(yindex, mask=mask)
-
-    # Apply mask to the id arrays
-    part_groups = halo_ids[np.logical_not(result.mask)]
-    parts_in_groups = result.data[np.logical_not(result.mask)]
-
-    # Produce a dictionary containing the index of particles in each halo
-    halo_part_inds = {}
-    for ind, grp in zip(parts_in_groups, part_groups):
-        halo_part_inds.setdefault(grp, set()).update({ind})
-
-    return halo_part_inds
-
-
-def get_data(masslim=1e8, eagle=False, ref=False):
+def get_data(eagle=False, ref=False):
 
     if eagle or ref:
         regions = ["EAGLE", ]
@@ -182,16 +133,16 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
     stellar_met = []
     stellar_bd = []
-    stellar_met_inside = []
-    stellar_bd_inside = []
-    stellar_met_outside = []
-    stellar_bd_outside = []
     ovden = []
     zs = []
-    zs_inside = []
-    zs_outside = []
+    
+    if eagle or ref:
+        ovds = [1, ]
+    else:
+        ovds = np.loadtxt("region_overdensity.txt", dtype=float)
+        print(ovds)
 
-    for reg in regions:
+    for reg, ovd in zip(regions, ovds):
 
         for snap in snaps:
             
@@ -209,38 +160,16 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
             # Get halo IDs and halo data
             try:
-                subgrp_ids = E.read_array('SUBFIND', path, snap,
-                                          'Subhalo/SubGroupNumber',
-                                          numThreads=8)
-                grp_ids = E.read_array('SUBFIND', path, snap,
-                                       'Subhalo/GroupNumber',
-                                       numThreads=8)
-                gal_ms = E.read_array('SUBFIND', path, snap,
-                                      'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                      noH=True, physicalUnits=True,
-                                      numThreads=8)[:, 4] * 10**10
-                gal_hmr = E.read_array('SUBFIND', path, snap,
-                                       'Subhalo/HalfMassRad',
-                                       noH=True, physicalUnits=True,
-                                       numThreads=8)[:, 4]
-                gal_cop = E.read_array('SUBFIND', path, snap,
-                                       'Subhalo/CentreOfPotential',
-                                       noH=True, physicalUnits=True,
-                                       numThreads=8)
-                gal_bd = E.read_array('PARTDATA', path, snap,
+                parts_bd = E.read_array('PARTDATA', path, snap,
                                       'PartType4/BirthDensity', noH=True,
                                         physicalUnits=True, numThreads=8)
-                gal_met = E.read_array('PARTDATA', path, snap,
+                parts_met = E.read_array('PARTDATA', path, snap,
                                        'PartType4/Metallicity', noH=True,
                                        physicalUnits=True, numThreads=8)
-                gal_aborn = E.read_array('PARTDATA', path, snap,
+                parts_aborn = E.read_array('PARTDATA', path, snap,
                                          'PartType4/StellarFormationTime',
                                          noH=True, physicalUnits=True,
                                          numThreads=8)
-                gal_coords = E.read_array('PARTDATA', path, snap,
-                                          'PartType4/Coordinates',
-                                          noH=True, physicalUnits=True,
-                                          numThreads=8)
             except ValueError:
                 print(reg, snap, "No data")
                 continue
@@ -252,41 +181,43 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 continue
 
             # Add stars from these galaxies
-            part_inds = list(halo_part_inds[halo])
-            pos = gal_coords[part_inds, :] - cop
-            rs = np.linalg.norm(pos, axis=1)
-            parts_bd = gal_bd[part_inds]
-            parts_met = gal_met[part_inds]
-            parts_aborn = gal_aborn[part_inds]
-
-            stellar_bd.extend((parts_bd * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
+            stellar_bd.extend((parts_bd * 10**10
+                               * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
             stellar_met.extend(parts_met)
-            stellar_bd_inside.extend((parts_bd[rs <= hmr] * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
-            stellar_met_inside.extend(parts_met[rs <= hmr])
-            stellar_bd_outside.extend((parts_bd[rs > hmr] * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
-            stellar_met_outside.extend(parts_met[rs > hmr])
             zs.extend((1 / parts_aborn) - 1)
-            zs_inside.extend((1 / parts_aborn[rs <= hmr]) - 1)
-            zs_outside.extend((1 / parts_aborn[rs > hmr]) - 1)
+            ovden.extend(np.full_like(parts_bd, ovd))
 
-    return stellar_bd, stellar_met, \
-           stellar_bd_inside, stellar_met_inside, \
-           stellar_bd_outside, stellar_met_outside, \
-           zs, zs_inside, zs_outside
+    return stellar_bd, stellar_met, zs, ovden
 
-stellar_bd, stellar_met, stellar_bd_inside, stellar_met_inside, \
-stellar_bd_outside, stellar_met_outside, zs, zs_inside, zs_outside \
-    = get_data(masslim=10**9)
 
-eagle_stellar_bd, eagle_stellar_met, \
-eagle_stellar_bd_inside, eagle_stellar_met_inside, \
-eagle_stellar_bd_outside, eagle_stellar_met_outside, \
-eagle_zs, eagle_zs_inside, eagle_zs_outside \
-    = get_data(masslim=10**9, eagle=True)
+log1pdelta = ovds = np.loadtxt("region_overdensity.txt", dtype=float)
 
-zs_all = np.concatenate((zs, eagle_zs))
-stellar_bd_all = np.concatenate((stellar_bd, eagle_stellar_bd))
-stellar_met_all = np.concatenate((stellar_met, eagle_stellar_met))
+stellar_bd, stellar_met, zs, ovdens = get_data()
+
+agndt9_stellar_bd, agndt9_stellar_met, agndt9_zs, _ = get_data(eagle=True)
+
+ref_stellar_bd, ref_stellar_met, ref_zs, _ = get_data(ref=True)
+
+zs_all = np.concatenate((zs, ref_zs, agndt9_zs))
+stellar_bd_all = np.concatenate((stellar_bd, ref_stellar_bd, agndt9_stellar_bd))
+stellar_met_all = np.concatenate((stellar_met, ref_stellar_met, agndt9_stellar_met))
+
+dbinLims = [-0.3, -0.15, -0.04, 0.04, 0.12, 0.22, 0.3]
+dbins = dbinLims[:-1] + np.diff(dbinLims)/2
+dbins = np.array(["%.2f" % db for db in dbins]).astype(float)
+
+N_regions = np.histogram(log1pdelta[::-1], dbinLims)[0]
+bin_labels = ["[%.2f - %.2f] (%i)" % (db1, db2, _N)
+              for db1, db2, _N in zip(dbinLims[:-1],
+                                      dbinLims[1:], N_regions)]
+
+
+dselect = np.digitize(log1pdelta, dbinLims) - 1
+dindex = np.arange(0, np.max(dselect)+1)
+
+ticks = np.linspace(0.05, .95, len(dindex))
+_cmap = plt.cm.get_cmap('plasma', len(ticks))
+# colors = [ cm.plasma(i) for i in ticks ]
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -294,28 +225,37 @@ ax = fig.add_subplot(111)
 ax.hexbin(zs_all, stellar_bd_all, gridsize=100, mincnt=1, yscale='log', 
           norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.5)
 
-plot_meidan_stat(np.array(eagle_zs), np.array(eagle_stellar_bd), ax,
-                 lab='Eagle: Total', color='orangered', bins=None, ls="--")
-plot_meidan_stat(np.array(eagle_zs_inside), np.array(eagle_stellar_bd_inside),
-                 ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue',
-                 bins=None, ls="--")
-plot_meidan_stat(np.array(eagle_zs_outside),
-                 np.array(eagle_stellar_bd_outside),
-                 ax, lab='Eagle: $R > R_{1/2}$', color='limegreen',
+plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_bd), ax,
+                 lab='AGNdT9: L0050N0752', color='orangered', bins=None,
+                 ls="dotted")
+plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_bd),
+                 ax, lab='REFERENCE: L0100N1504', color='royalblue',
                  bins=None, ls="--")
 
-plot_meidan_stat(np.array(zs), np.array(stellar_bd), ax, lab='FLARES: Total',
-                 color='orangered', bins=None)
-plot_meidan_stat(np.array(zs_inside), np.array(stellar_bd_inside), ax,
-                 lab='FLARES: $R\leq R_{1/2}$', color='royalblue', bins=None)
-plot_meidan_stat(np.array(zs_outside), np.array(stellar_bd_outside), ax,
-                 lab='FLARES: $R > R_{1/2}$', color='limegreen', bins=None)
+ax.plot((40, 90), (10**7, 10**8), color="k", linestyle="-", label="FLARES")
+
+for low, up, c in zip(dbins[:-1], dbins[1:], _cmap.colors):
+
+    okinds = np.logical_and(ovdens >= low, ovdens < up)
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(None, 22)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = fig.add_axes([0.52, 0.215, 0.025, 0.11])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels)
+cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; (N_{\mathrm{regions}})$', size=13, rotation=90)
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels)
+ax.legend(handles, labels, loc="lower right")
 
 ax.set_yscale("log")
 
@@ -329,23 +269,31 @@ ax = fig.add_subplot(111)
 ax.hexbin(zs_all, stellar_met_all, gridsize=100, mincnt=1,
           norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.5)
 
-plot_meidan_stat(np.array(eagle_zs), np.array(eagle_stellar_met), ax,
-                 lab='Eagle: Total', color='orangered', bins=None, ls="--")
-plot_meidan_stat(np.array(eagle_zs_inside), np.array(eagle_stellar_met_inside),
-                 ax, lab='Eagle: $R\leq R_{1/2}$', color='royalblue',
-                 bins=None, ls="--")
-plot_meidan_stat(np.array(eagle_zs_outside),
-                 np.array(eagle_stellar_met_outside),
-                 ax, lab='Eagle: $R > R_{1/2}$', color='limegreen',
+plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_met), ax,
+                 lab='AGNdT9: L0050N0752', color='orangered', bins=None,
+                 ls="dotted")
+plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_met),
+                 ax, lab='REFERENCE: L0100N1504', color='royalblue',
                  bins=None, ls="--")
 
-plot_meidan_stat(np.array(zs), np.array(stellar_met), ax, lab='FLARES: Total',
-                 color='orangered', bins=None)
-plot_meidan_stat(np.array(zs_inside), np.array(stellar_met_inside), ax,
-                 lab='FLARES: $R\leq R_{1/2}$', color='royalblue', bins=None)
-plot_meidan_stat(np.array(zs_outside), np.array(stellar_met_outside), ax,
-                 lab='FLARES: $R > R_{1/2}$', color='limegreen', bins=None)
+ax.plot((40, 90), (10**7, 10**8), color="k", linestyle="-", label="FLARES")
 
+for low, up, c in zip(dbins[:-1], dbins[1:], _cmap.colors):
+
+    okinds = np.logical_and(ovdens >= low, ovdens < up)
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_met)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(None, 22)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = fig.add_axes([0.52, 0.215, 0.025, 0.11])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels)
+cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; (N_{\mathrm{regions}})$', size=13, rotation=90)
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<Z>$")
