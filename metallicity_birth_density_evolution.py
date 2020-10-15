@@ -38,6 +38,8 @@ def calc_ages(z, a_born):
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 
     if bins == None:
+        print(xs)
+        print(ys)
         bin = np.logspace(np.log10(xs[~np.isnan(xs)].min()),
                           np.log10(xs[~np.isnan(xs)].max()), 40)
     else:
