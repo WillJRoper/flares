@@ -345,7 +345,7 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-ax.hexbin(zs_all, stellar_met_all, gridsize=100, mincnt=1, yscale='log', 
+ax.hexbin(zs_all, stellar_met_all, gridsize=100, mincnt=1,
           norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.5)
 
 plot_meidan_stat(eagle_zs, eagle_stellar_met, ax, lab='Eagle: Total', color='orangered', bins=None, ls="--")
