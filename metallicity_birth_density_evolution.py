@@ -12,6 +12,7 @@ from scipy.stats import binned_statistic
 from astropy.cosmology import Planck13 as cosmo
 from astropy.cosmology import z_at_value
 from matplotlib.colors import LogNorm
+from unyt import mh, cm, Gyr, g, Msun, Mpc
 import astropy.units as u
 import seaborn as sns
 
@@ -281,11 +282,11 @@ def get_data(masslim=1e8, eagle=False):
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
 
-                stellar_bd.extend(parts_bd)
+                stellar_bd.extend((parts_bd * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
                 stellar_met.extend(parts_met)
-                stellar_bd_inside.extend(parts_bd[rs <= hmr])
+                stellar_bd_inside.extend((parts_bd[rs <= hmr] * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
                 stellar_met_inside.extend(parts_met[rs <= hmr])
-                stellar_bd_outside.extend(parts_bd[rs > hmr])
+                stellar_bd_outside.extend((parts_bd[rs > hmr] * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
                 stellar_met_outside.extend(parts_met[rs > hmr])
                 zs.extend((1 / parts_aborn) - 1)
                 zs_inside.extend((1 / parts_aborn[rs <= hmr]) - 1)

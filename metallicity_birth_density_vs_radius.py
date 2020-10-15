@@ -72,7 +72,7 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
-    ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls,
+    ax.plot(y_stat[okinds], bin_cents[okinds], color=color, linestyle=ls,
             label=lab)
 
 
@@ -412,7 +412,7 @@ fig.savefig("plots/stellar_formation_radius_afterevo.png", bbox_inches="tight")
 
 plt.close(fig)
 
-stellar_bd_all = np.concatenate((stellar_bd, eagle_stellar_bd)) * 10**10
+stellar_bd_all = np.concatenate((stellar_bd, eagle_stellar_bd))
 stellar_met_all = np.concatenate((stellar_met, eagle_stellar_met))
 stellar_formr_all = np.concatenate((stellar_form_radius,
                                     eagle_stellar_form_radius))
@@ -421,7 +421,7 @@ hmrs_all = np.concatenate((hmrs, eagle_hmrs))
 
 current_radius_all = np.concatenate((stellar_current_radius,
                                      eagle_stellar_current_radius))
-current_stellar_bd_all = np.concatenate((stellar_bd_current, eagle_stellar_bd_current)) * 10**10
+current_stellar_bd_all = np.concatenate((stellar_bd_current, eagle_stellar_bd_current))
 current_stellar_met_all = np.concatenate((stellar_met_current, eagle_stellar_met_current))
 
 del stellar_bd, eagle_stellar_bd, stellar_met, eagle_stellar_met, \
