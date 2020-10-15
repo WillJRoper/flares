@@ -250,15 +250,15 @@ for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
                      ax, lab=None, color=c,
                      bins=None, ls="-")
 
-ax.set_xlim(None, 22)
+ax.set_xlim(None, 25)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable
-cbaxes = ax.inset_axes([0.8, 0.6, 0.3, 0.3])
+cbaxes = ax.inset_axes([0.7, 0.65, 0.2, 0.3])
 cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
 cbar.ax.set_yticklabels(bin_labels)
 cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; '
-                   '(N_{\mathrm{regions}})$', size=13, rotation=90)
+                   '(N_{\mathrm{regions}})$', size=10, rotation=90)
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
