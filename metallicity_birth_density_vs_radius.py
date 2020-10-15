@@ -59,16 +59,16 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
         bin[1:] = high_bins
 
     # Compute binned statistics
-    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median',
+    y_stat, binedges, bin_ind = binned_statistic(ys, xs, statistic='median',
                                                  bins=bin)
 
-    # Compute bincentres
+    # Compute bin centres
     bin_wid = binedges[1] - binedges[0]
     bin_cents = binedges[1:] - bin_wid / 2
 
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
-    ax.plot(bin_cents[okinds], y_stat[okinds], color=color, linestyle=ls,
+    ax.plot(y_stat[okinds], bin_cents[okinds], color=color, linestyle=ls,
             label=lab)
 
 
@@ -436,21 +436,21 @@ ax3 = fig.add_subplot(gs[2, 0])
 ax1.hexbin(stellar_formr_all, stellar_bd_all, gridsize=100, mincnt=1,
            xscale='log', yscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
-# plot_meidan_stat(stellar_formr_all, stellar_bd_all, ax1, lab='Median',
-#                  color='darkorange', bins=None, ls="dotted")
+plot_meidan_stat(stellar_formr_all, stellar_bd_all, ax1, lab='Median',
+                 color='darkorange', bins=None, ls="dotted")
 
 ax2.hexbin(stellar_formr_all, stellar_met_all, gridsize=100, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
-# plot_meidan_stat(stellar_formr_all, stellar_met_all, ax2, lab='Median',
-#                  color='darkorange', bins=None, ls="dotted")
+plot_meidan_stat(stellar_formr_all, stellar_met_all, ax2, lab='Median',
+                 color='darkorange', bins=None, ls="dotted")
 
 ax3.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='viridis', alpha=0.7)
 ax3.plot(softs, z_soft, linestyle="--", color="k", label="Softening")
-# plot_meidan_stat(stellar_formr_all, zs_all, ax3, lab='Median',
-#                  color='darkorange', bins=None, ls="dotted")
+plot_meidan_stat(stellar_formr_all, zs_all, ax3, lab='Median',
+                 color='darkorange', bins=None, ls="dotted")
 
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax2.set_ylabel(r"$Z$")
