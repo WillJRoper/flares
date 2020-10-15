@@ -162,11 +162,11 @@ def get_data(eagle=False, ref=False):
 
             # Get halo IDs and halo data
             try:
-                parts_subgroup = E.read_array("PARTDATA", path, snap,
-                                              "PartType4/SubGroupNumber",
-                                              noH=True,
-                                              physicalUnits=True,
-                                              numThreads=8)
+                # parts_subgroup = E.read_array("PARTDATA", path, snap,
+                #                               "PartType4/SubGroupNumber",
+                #                               noH=True,
+                #                               physicalUnits=True,
+                #                               numThreads=8)
                 parts_bd = E.read_array("PARTDATA", path, snap,
                                       "PartType4/BirthDensity", noH=True,
                                         physicalUnits=True, numThreads=8)
@@ -177,11 +177,11 @@ def get_data(eagle=False, ref=False):
                                          "PartType4/StellarFormationTime",
                                          noH=True, physicalUnits=True,
                                          numThreads=8)
-                gal_ms = E.read_array("SUBFIND", path, snap,
-                                      "Subhalo/ApertureMeasurements/"
-                                      "Mass/030kpc",
-                                      noH=True, physicalUnits=True,
-                                      numThreads=8)[:, 4] * 10 ** 10
+                # gal_ms = E.read_array("SUBFIND", path, snap,
+                #                       "Subhalo/ApertureMeasurements/"
+                #                       "Mass/030kpc",
+                #                       noH=True, physicalUnits=True,
+                #                       numThreads=8)[:, 4] * 10 ** 10
             except ValueError:
                 print(reg, snap, "No data")
                 continue
@@ -192,22 +192,29 @@ def get_data(eagle=False, ref=False):
                 print(reg, snap, "No data")
                 continue
 
-            okinds = parts_subgroup != 2**30
-            parts_subgroup = parts_subgroup[okinds]
-            parts_bd = parts_bd[okinds]
-            parts_met = parts_met[okinds]
-            parts_aborn = parts_aborn[okinds]
-
-            part_sub_mass = gal_ms[parts_subgroup]
-
-            okinds = part_sub_mass > 10**9
+            # okinds = parts_subgroup != 2**30
+            # parts_subgroup = parts_subgroup[okinds]
+            # parts_bd = parts_bd[okinds]
+            # parts_met = parts_met[okinds]
+            # parts_aborn = parts_aborn[okinds]
+            #
+            # part_sub_mass = gal_ms[parts_subgroup]
+            #
+            # okinds = part_sub_mass > 10**9
+            #
+            # # Add stars from these galaxies
+            # stellar_bd.extend((parts_bd[okinds] * 10**10
+            #                    * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
+            # stellar_met.extend(parts_met[okinds])
+            # zs.extend((1 / parts_aborn[okinds]) - 1)
+            # ovden.extend(np.full_like(parts_bd[okinds], ovd))
 
             # Add stars from these galaxies
-            stellar_bd.extend((parts_bd[okinds] * 10**10
+            stellar_bd.extend((parts_bd * 10**10
                                * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
-            stellar_met.extend(parts_met[okinds])
-            zs.extend((1 / parts_aborn[okinds]) - 1)
-            ovden.extend(np.full_like(parts_bd[okinds], ovd))
+            stellar_met.extend(parts_met)
+            zs.extend((1 / parts_aborn) - 1)
+            ovden.extend(np.full_like(parts_bd, ovd))
 
     return np.array(stellar_bd), np.array(stellar_met), \
            np.array(zs), np.array(ovden)
@@ -269,7 +276,7 @@ for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
                      ax, lab=None, color=c,
                      bins=None, ls="-")
 
-ax.set_xlim(None, 27)
+ax.set_xlim(-0.1, 27)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable
@@ -313,7 +320,7 @@ for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
                      ax, lab=None, color=c,
                      bins=None, ls="-")
 
-ax.set_xlim(None, 27)
+ax.set_xlim(None, 32)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable

@@ -184,9 +184,9 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
     return halo_part_inds
 
 
-def get_data(masslim=1e8, eagle=False):
+def get_data(masslim=1e8, eagle=False, ref=False):
 
-    if eagle:
+    if eagle or ref:
         regions = ["EAGLE", ]
     else:
         regions = []
@@ -197,7 +197,7 @@ def get_data(masslim=1e8, eagle=False):
                 regions.append(str(reg))
 
     # Define snapshots
-    if eagle:
+    if eagle or ref:
         pre_snaps = ['000_z020p000', '003_z008p988', '006_z005p971',
                      '009_z004p485', '012_z003p017', '015_z002p012',
                      '018_z001p259', '021_z000p736', '024_z000p366',
@@ -240,9 +240,14 @@ def get_data(masslim=1e8, eagle=False):
         for snap, prog_snap in zip(snaps, prog_snaps):
             
             if eagle:
-                path = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0050N0752/PE/AGNdT9/data/'
+                path = "/cosma7/data//Eagle/ScienceRuns/Planck1/" \
+                       "L0050N0752/PE/AGNdT9/data/"
+            elif ref:
+                path = "/cosma7/data//Eagle/ScienceRuns/Planck1/" \
+                       "L0100N1504/PE/REFERENCE/data"
             else:
-                path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
+                path = "/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/" \
+                       "G-EAGLE_" + reg + "/data"
 
             # Get particle IDs
             try:
@@ -333,7 +338,8 @@ def get_data(masslim=1e8, eagle=False):
                 part_inds = list(halo_part_inds[halo])
                 pos = gal_coords[part_inds, :] - cop
                 rs = np.linalg.norm(pos, axis=1) * 10**3
-                parts_bd = gal_bd[part_inds]
+                parts_bd = (gal_bd[part_inds]* 10**10
+                            * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
 
@@ -354,9 +360,11 @@ def get_data(masslim=1e8, eagle=False):
 
     return np.array(stellar_bd), np.array(stellar_met), np.array(stellar_form_radius), np.array(zs), np.array(stellar_bd_current), np.array(stellar_met_current), np.array(stellar_current_radius), np.array(hmrs)
 
-stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs = get_data(masslim=10**10)
+stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs = get_data(masslim=10**9)
 
-eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**10, eagle=True)
+eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**9, eagle=True)
+
+ref_stellar_bd, ref_stellar_met, ref_stellar_form_radius, ref_zs, ref_stellar_bd_current, ref_stellar_met_current, ref_stellar_current_radius, ref_hmrs = get_data(masslim=10**9, ref=True)
 
 bd_lims = []
 met_lims = []
@@ -371,86 +379,85 @@ for z in np.linspace(0, 9, 100):
     softs.append(soft)
     z_soft.append(z)
 
-fig = plt.figure(figsize=(6, 6))
-gs = gridspec.GridSpec(nrows=2, ncols=2)
-gs.update(wspace=0.0, hspace=0.0)
-ax1 = fig.add_subplot(gs[0, 0])
-ax2 = fig.add_subplot(gs[1, 0])
-ax3 = fig.add_subplot(gs[0, 1])
-ax4 = fig.add_subplot(gs[1, 1])
-
-ax1.hexbin(stellar_current_radius, stellar_bd_current * 10**10, gridsize=100, mincnt=1,
-           xscale='log', yscale='log', norm=LogNorm(),
-           linewidths=0.2, cmap='viridis', alpha=0.7)
-
-ax1.text(0.8, 0.9, "FLARES",
-        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-        transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
-
-ax2.hexbin(stellar_current_radius, stellar_met_current, gridsize=100, mincnt=1,
-           xscale='log', norm=LogNorm(),
-           linewidths=0.2, cmap='viridis', alpha=0.7)
-
-ax3.hexbin(eagle_stellar_current_radius, eagle_stellar_bd_current * 10**10, gridsize=100, mincnt=1,
-           xscale='log', yscale='log', norm=LogNorm(),
-           linewidths=0.2, cmap='viridis', alpha=0.7)
-
-ax3.text(0.8, 0.9, "EAGLE",
-        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-        transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
-
-ax4.hexbin(eagle_stellar_current_radius, eagle_stellar_met_current, gridsize=100, mincnt=1,
-           xscale='log', norm=LogNorm(),
-           linewidths=0.2, cmap='viridis', alpha=0.7)
-
-ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
-ax2.set_ylabel(r"$Z$")
-ax2.set_xlabel("$R / [\mathrm{pkpc}]$")
-ax4.set_xlabel("$R / [\mathrm{pkpc}]$")
-
-bd_lims.extend(ax1.get_ylim())
-bd_lims.extend(ax3.get_ylim())
-met_lims.extend(ax2.get_ylim())
-met_lims.extend(ax4.get_ylim())
-
-ax1.set_ylim(np.min(bd_lims), np.max(bd_lims))
-ax2.set_ylim(np.min(met_lims), np.max(met_lims))
-ax3.set_ylim(np.min(bd_lims), np.max(bd_lims))
-ax4.set_ylim(np.min(met_lims), np.max(met_lims))
-
-# Remove axis labels
-ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
-# ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+# fig = plt.figure(figsize=(6, 6))
+# gs = gridspec.GridSpec(nrows=2, ncols=2)
+# gs.update(wspace=0.0, hspace=0.0)
+# ax1 = fig.add_subplot(gs[0, 0])
+# ax2 = fig.add_subplot(gs[1, 0])
+# ax3 = fig.add_subplot(gs[0, 1])
+# ax4 = fig.add_subplot(gs[1, 1])
+#
+# ax1.hexbin(stellar_current_radius, stellar_bd_current, gridsize=100, mincnt=1,
+#            xscale='log', yscale='log', norm=LogNorm(),
+#            linewidths=0.2, cmap='viridis', alpha=0.7)
+#
+# ax1.text(0.8, 0.9, "FLARES",
+#         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+#         transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
+#
+# ax2.hexbin(stellar_current_radius, stellar_met_current, gridsize=100, mincnt=1,
+#            xscale='log', norm=LogNorm(),
+#            linewidths=0.2, cmap='viridis', alpha=0.7)
+#
+# ax3.hexbin(eagle_stellar_current_radius, eagle_stellar_bd_current, gridsize=100, mincnt=1,
+#            xscale='log', yscale='log', norm=LogNorm(),
+#            linewidths=0.2, cmap='viridis', alpha=0.7)
+#
+# ax3.text(0.8, 0.9, "EAGLE",
+#         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+#         transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
+#
+# ax4.hexbin(eagle_stellar_current_radius, eagle_stellar_met_current, gridsize=100, mincnt=1,
+#            xscale='log', norm=LogNorm(),
+#            linewidths=0.2, cmap='viridis', alpha=0.7)
+#
+# ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
+# ax2.set_ylabel(r"$Z$")
+# ax2.set_xlabel("$R / [\mathrm{pkpc}]$")
+# ax4.set_xlabel("$R / [\mathrm{pkpc}]$")
+#
+# bd_lims.extend(ax1.get_ylim())
+# bd_lims.extend(ax3.get_ylim())
+# met_lims.extend(ax2.get_ylim())
+# met_lims.extend(ax4.get_ylim())
+#
+# ax1.set_ylim(np.min(bd_lims), np.max(bd_lims))
+# ax2.set_ylim(np.min(met_lims), np.max(met_lims))
+# ax3.set_ylim(np.min(bd_lims), np.max(bd_lims))
+# ax4.set_ylim(np.min(met_lims), np.max(met_lims))
+#
+# # Remove axis labels
+# ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+# # ax2.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+# #                 labelright=False, labelbottom=False)
+# ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
 #                 labelright=False, labelbottom=False)
-ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
-                labelright=False, labelbottom=False)
-ax4.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+# ax4.tick_params(axis='y', left=False, right=False, labelleft=False, labelright=False)
+#
+# for ax in [ax1, ax2, ax3, ax4]:
+#     for spine in ax.spines.values():
+#         spine.set_edgecolor('k')
+#
+# fig.savefig("plots/stellar_formation_radius_afterevo.png", bbox_inches="tight")
+#
+# plt.close(fig)
 
-for ax in [ax1, ax2, ax3, ax4]:
-    for spine in ax.spines.values():
-        spine.set_edgecolor('k')
-
-fig.savefig("plots/stellar_formation_radius_afterevo.png", bbox_inches="tight")
-
-plt.close(fig)
-
-stellar_bd_all = np.concatenate((stellar_bd, eagle_stellar_bd))
-stellar_met_all = np.concatenate((stellar_met, eagle_stellar_met))
+stellar_bd_all = np.concatenate((stellar_bd,
+                                 eagle_stellar_bd,
+                                 ref_stellar_bd))
+stellar_met_all = np.concatenate((stellar_met,
+                                  eagle_stellar_met,
+                                  ref_stellar_met))
 stellar_formr_all = np.concatenate((stellar_form_radius,
-                                    eagle_stellar_form_radius))
-zs_all = np.concatenate((zs, eagle_zs))
-hmrs_all = np.concatenate((hmrs, eagle_hmrs))
+                                    eagle_stellar_form_radius,
+                                    ref_stellar_form_radius))
+zs_all = np.concatenate((zs, eagle_zs, ref_zs))
+hmrs_all = np.concatenate((hmrs, eagle_hmrs, ref_hmrs))
 
 current_radius_all = np.concatenate((stellar_current_radius,
                                      eagle_stellar_current_radius))
 current_stellar_bd_all = np.concatenate((stellar_bd_current, eagle_stellar_bd_current))
 current_stellar_met_all = np.concatenate((stellar_met_current, eagle_stellar_met_current))
-
-del stellar_bd, eagle_stellar_bd, stellar_met, eagle_stellar_met, \
-    stellar_form_radius, eagle_stellar_form_radius, zs, eagle_zs, hmrs, \
-    eagle_hmrs, stellar_current_radius, eagle_stellar_current_radius, \
-    stellar_bd_current, eagle_stellar_bd_current, stellar_met_current, \
-    eagle_stellar_met_current
 
 fig = plt.figure(figsize=(5, 9))
 gs = gridspec.GridSpec(nrows=3, ncols=1)
@@ -475,8 +482,14 @@ ax3.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='Greys', alpha=0.1)
 ax3.plot(softs, z_soft, linestyle="--", color="k", label="Softening")
-plot_meidan_statyx(stellar_formr_all, zs_all, ax3, lab='Median',
-                 color='darkorange')
+plot_meidan_statyx(stellar_formr_all, zs_all, ax3, lab='All',
+                   color='darkorange')
+plot_meidan_statyx(eagle_stellar_form_radius, eagle_zs, ax3,
+                   lab='AGNdT9: L0050N0752', color='royalblue', ls="dashdot")
+plot_meidan_statyx(ref_stellar_form_radius, ref_zs, ax3,
+                   lab='REFERENCE: L0100N1504', color='limegreen', ls="dotted")
+plot_meidan_statyx(stellar_form_radius, zs, ax3, lab='FLARES',
+                   color='blueviolet', ls="dashed")
 
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
 ax2.set_ylabel(r"$Z$")
@@ -545,7 +558,7 @@ cbar1.ax.set_xlabel(r'$f_{th}$', labelpad=1.5, fontsize=9)
 cbar1.ax.xaxis.set_label_position('top')
 cbar1.ax.tick_params(axis='x', labelsize=8)
 
-H, _, _ = np.histogram2d((stellar_bd_all * 10**10 * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value, stellar_met_all,
+H, _, _ = np.histogram2d(stellar_bd_all, stellar_met_all,
                          bins=[birth_density_bins, metal_mass_fraction_bins])
 
 ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
