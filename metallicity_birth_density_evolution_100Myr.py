@@ -37,8 +37,7 @@ def calc_ages(z, a_born):
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-'):
 
     if bins == None:
-        bin = np.logspace(np.log10(xs[~np.isnan(xs)].min()),
-                          np.log10(xs[~np.isnan(xs)].max()), 20)
+        bin = np.logspace(np.log10(xs.min()), np.log10(xs.max()), 20)
     else:
         zs = np.float64(xs)
 
@@ -171,10 +170,28 @@ def get_data(masslim=1e8, eagle=False):
 
     # Define snapshots
     if eagle:
-        snaps = ['027_z000p101', ]
+        pre_snaps = ['000_z020p000', '003_z008p988', '006_z005p971',
+                     '009_z004p485', '012_z003p017', '015_z002p012',
+                     '018_z001p259', '021_z000p736', '024_z000p366',
+                     '027_z000p101', '001_z015p132', '004_z008p075',
+                     '007_z005p487', '010_z003p984', '013_z002p478',
+                     '016_z001p737', '019_z001p004', '022_z000p615',
+                     '025_z000p271', '028_z000p000', '002_z009p993',
+                     '005_z007p050', '008_z005p037', '011_z003p528',
+                     '014_z002p237', '017_z001p487', '020_z000p865',
+                     '023_z000p503', '026_z000p183']
 
+        snaps = np.zeros(29, dtype=object)
+        for s in pre_snaps:
+            ind = int(s.split('_')[0])
+            snaps[ind] = s
+
+        snaps = list(snaps)
     else:
-        snaps = ['011_z004p770', ]
+        snaps = ['001_z014p000', '002_z013p000', '003_z012p000',
+                 '004_z011p000', '005_z010p000',
+                 '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000',
+                 '010_z005p000', '011_z004p770']
 
     stellar_met = []
     stellar_bd = []
