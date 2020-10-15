@@ -190,7 +190,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 1):
+        for reg in range(0, 40):
             if reg < 10:
                 regions.append('0' + str(reg))
             else:
@@ -480,7 +480,7 @@ plot_meidan_stat(stellar_formr_all, stellar_met_all, ax2, lab='Median',
 
 ax3.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
            xscale='log', norm=LogNorm(),
-           linewidths=0.2, cmap='Greys', alpha=0.1)
+           linewidths=0.2, cmap='Greys', alpha=0.001)
 ax3.plot(softs, z_soft, linestyle="--", color="k", label="Softening")
 plot_meidan_statyx(stellar_formr_all, zs_all, ax3, lab='All',
                    color='darkorange')
