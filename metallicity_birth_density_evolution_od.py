@@ -162,6 +162,11 @@ def get_data(eagle=False, ref=False):
 
             # Get halo IDs and halo data
             try:
+                parts_subgroup = E.read_array('PARTDATA', path, snap,
+                                              'PartType4/SubGroupNumber',
+                                              noH=True,
+                                              physicalUnits=True,
+                                              numThreads=8)
                 parts_bd = E.read_array('PARTDATA', path, snap,
                                       'PartType4/BirthDensity', noH=True,
                                         physicalUnits=True, numThreads=8)
@@ -172,6 +177,11 @@ def get_data(eagle=False, ref=False):
                                          'PartType4/StellarFormationTime',
                                          noH=True, physicalUnits=True,
                                          numThreads=8)
+                gal_ms = E.read_array('SUBFIND', path, snap,
+                                      'Subhalo/ApertureMeasurements/'
+                                      'Mass/030kpc',
+                                      noH=True, physicalUnits=True,
+                                      numThreads=8)[:, 4] * 10 ** 10
             except ValueError:
                 print(reg, snap, "No data")
                 continue
@@ -182,12 +192,16 @@ def get_data(eagle=False, ref=False):
                 print(reg, snap, "No data")
                 continue
 
+            part_sub_mass = gal_ms[parts_subgroup]
+
+            okinds = part_sub_mass > 10**9
+
             # Add stars from these galaxies
-            stellar_bd.extend((parts_bd * 10**10
+            stellar_bd.extend((parts_bd[okinds] * 10**10
                                * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
-            stellar_met.extend(parts_met)
-            zs.extend((1 / parts_aborn) - 1)
-            ovden.extend(np.full_like(parts_bd, ovd))
+            stellar_met.extend(parts_met[okinds])
+            zs.extend((1 / parts_aborn[okinds]) - 1)
+            ovden.extend(np.full_like(parts_bd[okinds], ovd))
 
     return np.array(stellar_bd), np.array(stellar_met), \
            np.array(zs), np.array(ovden)
@@ -238,8 +252,7 @@ plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_bd),
                  bins=None, ls="--")
 
 ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
-print(dbinLims)
-print(_cmap.colors)
+
 for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
 
     print(low, up, c)
@@ -254,9 +267,9 @@ ax.set_xlim(None, 25)
 
 sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
 sm._A = []  # # fake up the array of the scalar mappable
-cbaxes = ax.inset_axes([0.7, 0.65, 0.2, 0.3])
+cbaxes = ax.inset_axes([0.7, 0.65, 0.05, 0.3])
 cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
-cbar.ax.set_yticklabels(bin_labels)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
 cbar.ax.set_ylabel('$[\mathrm{log_{10}}(1 \,+\,\delta)] \; '
                    '(N_{\mathrm{regions}})$', size=10, rotation=90)
 
