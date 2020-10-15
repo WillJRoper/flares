@@ -82,6 +82,39 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
                 label=lab)
 
 
+def plot_meidan_statyx(xs, ys, ax, lab, color, ls='-', xy=True):
+
+    zs = np.float64(ys)
+
+    uniz = np.unique(zs)
+    bin_wids = uniz[1:] - uniz[:-1]
+    low_bins = uniz[:-1] - (bin_wids / 2)
+    high_bins = uniz[:-1] + (bin_wids / 2)
+    low_bins = list(low_bins)
+    high_bins = list(high_bins)
+    low_bins.append(high_bins[-1])
+    high_bins.append(uniz[-1] + 1)
+    low_bins = np.array(low_bins)
+    high_bins = np.array(high_bins)
+
+    bin = np.zeros(uniz.size + 1)
+    bin[:-1] = low_bins
+    bin[1:] = high_bins
+
+    # Compute binned statistics
+    y_stat, binedges, bin_ind = binned_statistic(ys, xs, statistic='median',
+                                                 bins=bin)
+
+    # Compute bin centres
+    bin_wid = binedges[1] - binedges[0]
+    bin_cents = binedges[1:] - bin_wid / 2
+
+    okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
+
+    ax.plot(y_stat[okinds], bin_cents[okinds], color=color, linestyle=ls,
+            label=lab)
+
+
 def plot_spread_stat(zs, ys, ax, color):
     zs = np.float64(zs)
 
@@ -459,7 +492,7 @@ ax3.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
            xscale='log', norm=LogNorm(),
            linewidths=0.2, cmap='Greys', alpha=0.01)
 ax3.plot(softs, z_soft, linestyle="--", color="k", label="Softening")
-plot_meidan_stat(zs_all, stellar_formr_all, ax3, lab='Median',
+plot_meidan_statyx(stellar_formr_all, zs_all, ax3, lab='Median',
                  color='darkorange', bins=None)
 
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
