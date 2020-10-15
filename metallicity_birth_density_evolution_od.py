@@ -189,7 +189,8 @@ def get_data(eagle=False, ref=False):
             zs.extend((1 / parts_aborn) - 1)
             ovden.extend(np.full_like(parts_bd, ovd))
 
-    return stellar_bd, stellar_met, zs, ovden
+    return np.array(stellar_bd), np.array(stellar_met), \
+           np.array(zs), np.array(ovden)
 
 
 log1pdelta = ovds = np.loadtxt("region_overdensity.txt", dtype=float)
@@ -284,7 +285,7 @@ plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_met),
                  ax, lab='REFERENCE: L0100N1504', color='royalblue',
                  bins=None, ls="--")
 
-ax.plot((40, 90), (10**7, 10**8), color="k", linestyle="-", label="FLARES")
+ax.plot((40, 90), (0.2, 0.5), color="k", linestyle="-", label="FLARES")
 
 for low, up, c in zip(dbins[:-1], dbins[1:], _cmap.colors):
 
@@ -308,6 +309,6 @@ ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<Z>$")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels)
+ax.legend(handles, labels, loc="upper left")
 
 fig.savefig("plots/stellarmet_z_evolution_od.png", bbox_inches="tight")
