@@ -84,16 +84,14 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
 
 def plot_meidan_statyx(xs, ys, ax, lab, color, ls='-'):
 
-    zs = np.float64(ys)
+    zs_binlims = np.linspace(0, 30, 51)
 
-    uniz = np.unique(zs)
-
-    zs_plt = np.zeros(len(uniz))
-    rs_plt = np.zeros(len(uniz))
-    for ind, z in enumerate(uniz):
-        okinds = ys == z
+    zs_plt = np.zeros(50)
+    rs_plt = np.zeros(50)
+    for ind, (low, up) in enumerate(zip(zs_binlims[:-1], zs_binlims[1:])):
+        okinds = np.logical_and(ys >= low, ys < up)
         rs_plt[ind] = np.median(xs[okinds])
-        zs_plt[ind] = z
+        zs_plt[ind] = np.median(ys[okinds])
 
     ax.plot(rs_plt, zs_plt, color=color, linestyle=ls, label=lab)
 
@@ -356,7 +354,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                     stellar_met_current.extend(parts_met)
                     stellar_current_radius.extend(rs)
 
-                zs.extend(np.full(len(parts_met[okinds]), z))
+                zs.extend((1 / parts_aborn[okinds]) - 1)
 
     return np.array(stellar_bd), np.array(stellar_met), np.array(stellar_form_radius), np.array(zs), np.array(stellar_bd_current), np.array(stellar_met_current), np.array(stellar_current_radius), np.array(hmrs)
 
