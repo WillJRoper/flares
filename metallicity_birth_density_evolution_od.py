@@ -119,7 +119,7 @@ def get_data(eagle=False, ref=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 40):
+        for reg in range(0, 1):
             if reg < 10:
                 regions.append("0" + str(reg))
             else:
@@ -346,7 +346,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 ax.hexbin(stellar_bd_all, stellar_met_all, gridsize=100, mincnt=1,
-          yscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
+          xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
           alpha=0.4)
 
 ax.set_xlabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
