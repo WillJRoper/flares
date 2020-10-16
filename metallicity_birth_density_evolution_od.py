@@ -345,6 +345,20 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
+ax.hexbin(stellar_bd_all, stellar_met_all, gridsize=100, mincnt=1,
+          yscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
+          alpha=0.4)
+
+ax.set_xlabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$<Z>$")
+
+fig.savefig("plots/stellarbd_vs_stellarz.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
 ax.hexbin(zs_all, stellar_met_all, gridsize=100, mincnt=1,
           norm=LogNorm(), linewidths=0.2, cmap="Greys", alpha=0.4)
 
