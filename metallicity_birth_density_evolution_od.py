@@ -395,7 +395,7 @@ plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_met),
                  ax, lab="REFERENCE: L0100N1504", color="limegreen",
                  bins=None, ls="--")
 
-ax.plot((40, 90), (0.2, 0.5), color="k", linestyle="-", label="FLARES")
+ax.plot((40, 90), (0.0001, 0.00002), color="k", linestyle="-", label="FLARES")
 
 for low, up, c in zip(dbins[:-1], dbins[1:], _cmap.colors):
 
