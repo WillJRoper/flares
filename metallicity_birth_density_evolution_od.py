@@ -346,8 +346,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 ax.hexbin(stellar_bd_all, stellar_met_all, gridsize=100, mincnt=1,
-          xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
-          alpha=0.4)
+          xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys")
 
 ax.set_xlabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 ax.set_ylabel(r"$<Z>$")
