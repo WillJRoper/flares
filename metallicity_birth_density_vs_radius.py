@@ -84,7 +84,7 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
 
 def plot_meidan_statyx(xs, ys, ax, lab, color, ls='-'):
 
-    zs_binlims = np.linspace(0, 30, 51)
+    zs_binlims = np.linspace(0, 15, 31)
 
     zs_plt = np.zeros(50)
     rs_plt = np.zeros(50)
@@ -478,7 +478,7 @@ plot_meidan_stat(stellar_formr_all, stellar_met_all, ax2, lab='Median',
 
 ax3.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
            xscale='log', norm=LogNorm(),
-           linewidths=0.2, cmap='Greys', alpha=0.001)
+           linewidths=0.2, cmap='Greys', alpha=0.7)
 ax3.plot(softs, z_soft, linestyle="--", color="k", label="Softening")
 plot_meidan_statyx(stellar_formr_all, zs_all, ax3, lab='All',
                    color='darkorange')
