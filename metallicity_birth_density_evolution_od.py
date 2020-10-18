@@ -229,11 +229,16 @@ agndt9_stellar_bd, agndt9_stellar_met, agndt9_zs, _ = get_data(eagle=True)
 
 ref_stellar_bd, ref_stellar_met, ref_zs, _ = get_data(ref=True)
 
+agndt9_ovdens = np.zeros_like(agndt9_stellar_met)
+ref_ovdens = np.zeros_like(ref_stellar_met)
+
 zs_all = np.concatenate((zs, ref_zs, agndt9_zs))
 stellar_bd_all = np.concatenate((stellar_bd, ref_stellar_bd,
                                  agndt9_stellar_bd))
 stellar_met_all = np.concatenate((stellar_met, ref_stellar_met,
                                   agndt9_stellar_met))
+
+ovdens_all = np.concatenate((ovdens, agndt9_ovdens, ref_ovdens))
 
 dbinLims = [-0.3, -0.15, -0.04, 0.04, 0.12, 0.22, 0.3]
 dbins = dbinLims[:-1] + np.diff(dbinLims)/2
@@ -304,7 +309,7 @@ ax = fig.add_subplot(111)
 
 im = ax.hexbin(zs_all, stellar_bd_all, C=stellar_met_all, gridsize=100,
                mincnt=1, yscale="log", reduce_C_function=np.mean,
-               norm=LogNorm(), linewidths=0.2, cmap="plasma")
+               linewidths=0.2, cmap="plasma")
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
@@ -313,6 +318,23 @@ cbar = plt.colorbar(im)
 cbar.ax.set_ylabel("$Z$")
 
 fig.savefig("plots/stellarbdmet_z_evolution.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+im = ax.hexbin(zs_all, stellar_bd_all, C=ovdens_all, gridsize=100,
+               mincnt=1, yscale="log", reduce_C_function=np.mean,
+               linewidths=0.2, cmap="plasma")
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+
+cbar = plt.colorbar(im)
+cbar.ax.set_ylabel("$\Delta$")
+
+fig.savefig("plots/stellarbdovden_z_evolution.png", bbox_inches="tight")
 
 plt.close(fig)
 
