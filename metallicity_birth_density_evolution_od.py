@@ -13,6 +13,7 @@ from astropy.cosmology import Planck13 as cosmo
 from astropy.cosmology import z_at_value
 from matplotlib.colors import LogNorm
 from unyt import mh, cm, Gyr, g, Msun, Mpc
+import matplotlib.gridspec as gridspec
 import astropy.units as u
 import seaborn as sns
 
@@ -342,14 +343,55 @@ fig.savefig("plots/stellarbd_z_evolution_od_nohex.png", bbox_inches="tight")
 
 plt.close(fig)
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
+fig = plt.figure(figsize=(6, 6))
+gs = gridspec.GridSpec(nrows=2, ncols=2)
+gs.update(wspace=0.0, hspace=0.0)
+ax1 = fig.add_subplot(gs[0, 0])
+ax2 = fig.add_subplot(gs[1, 0])
+ax3 = fig.add_subplot(gs[0, 1])
+ax4 = fig.add_subplot(gs[1, 1])
 
-ax.hexbin(stellar_bd_all, stellar_met_all, gridsize=100, mincnt=1,
-          xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys")
+ax1.hexbin(stellar_bd_all, stellar_met_all, gridsize=100, mincnt=1,
+           xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys")
 
-ax.set_xlabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
-ax.set_ylabel(r"$<Z>$")
+ax1.text(0.8, 0.9, "All",
+        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
+
+ax2.hexbin(stellar_bd, stellar_met, gridsize=100, mincnt=1,
+           xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys")
+
+ax2.text(0.8, 0.9, "FLARES",
+        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
+
+ax3.hexbin(agndt9_stellar_bd, agndt9_stellar_met, gridsize=100, mincnt=1,
+           xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys")
+
+ax3.text(0.8, 0.9, "EAGLE-AGNdT9",
+        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
+
+ax4.hexbin(ref_stellar_bd, ref_stellar_met, gridsize=100, mincnt=1,
+           xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys")
+
+ax4.text(0.8, 0.9, "EAGLE-REF",
+        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        transform=ax4.transAxes, horizontalalignment='right', fontsize=8)
+
+ax2.set_xlabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax4.set_xlabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax1.set_ylabel(r"$<Z>$")
+ax2.set_ylabel(r"$<Z>$")
+
+# Remove axis labels
+ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False,
+                labelbottom=False)
+ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False,
+                labelleft=False, labeltop=False,
+                labelright=False, labelbottom=False)
+ax4.tick_params(axis='y', left=False, right=False, labelleft=False,
+                labelright=False)
 
 fig.savefig("plots/stellarbd_vs_stellarz.png", bbox_inches="tight")
 
