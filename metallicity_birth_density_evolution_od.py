@@ -302,6 +302,23 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
+im = ax.hexbin(zs_all, stellar_bd_all, C=stellar_met_all, gridsize=100,
+               mincnt=1, yscale="log", reduce_C_function=np.mean,
+               norm=LogNorm(), linewidths=0.2, cmap="plasma")
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+
+cbar = plt.colorbar(im)
+cbar.ax.set_ylabel("$Z$")
+
+fig.savefig("plots/stellarbdmet_z_evolution.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
 plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_bd), ax,
                  lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
                  ls="dashdot")
