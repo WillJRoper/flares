@@ -306,7 +306,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc="lower right")
@@ -317,52 +317,78 @@ fig.savefig("plots/stellarbd_z_evolution_od.png", bbox_inches="tight")
 
 plt.close(fig)
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
+fig = plt.figure(figsize=(6, 6))
+gs = gridspec.GridSpec(nrows=2, ncols=2)
+gs.update(wspace=0.0, hspace=0.0)
+ax1 = fig.add_subplot(gs[0, 0])
+ax2 = fig.add_subplot(gs[1, 0])
+ax3 = fig.add_subplot(gs[0, 1])
+ax4 = fig.add_subplot(gs[1, 1])
 
-im = ax.hexbin(zs_all, stellar_bd_all, C=masses_all, gridsize=100, mincnt=1,
-               reduce_C_function=np.mean, yscale="log",  norm=LogNorm(),
-               linewidths=0.2, cmap="magma", alpha=0.8)
+okinds = np.logical_and(masses_all > 10**8, masses_all <= 10**9)
 
-plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_bd), ax,
-                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
-                 ls="dashdot")
-plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_bd),
-                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
-                 bins=None, ls="--")
+ax1.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
+           yscale="log",  norm=LogNorm(),
+           linewidths=0.2, cmap="Greys")
 
-ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
+ax1.text(0.8, 0.9, "$10^8 < M/M_\odot \leq 10^9$",
+        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
 
-for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
+okinds = np.logical_and(masses_all > 10**9, masses_all <= 10**9.5)
 
-    print(low, up, c)
+ax2.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
+           yscale="log",  norm=LogNorm(),
+           linewidths=0.2, cmap="Greys")
 
-    okinds = np.logical_and(ovdens >= low, ovdens < up)
+ax2.text(0.8, 0.9, "$10^9 < M/M_\odot \leq 10^9.5$",
+        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
 
-    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
-                     ax, lab=None, color=c,
-                     bins=None, ls="-")
+okinds = np.logical_and(masses_all > 10**9.5, masses_all <= 10**10)
 
-ax.set_xlim(-0.1, 27)
+ax3.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
+           yscale="log",  norm=LogNorm(),
+           linewidths=0.2, cmap="Greys")
 
-sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
-sm._A = []  # # fake up the array of the scalar mappable
-cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
-cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
-cbar.ax.set_yticklabels(bin_labels, fontsize=8)
-cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
-                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
+ax3.text(0.8, 0.9, "$10^9.5 < M/M_\odot \leq 10^10$",
+        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
 
-ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+okinds = masses_all > 10**10
 
-handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels, loc="lower right")
+ax4.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
+           yscale="log",  norm=LogNorm(),
+           linewidths=0.2, cmap="Greys")
 
-ax.set_yscale("log")
+ax4.text(0.8, 0.9, "$10^10 < M/M_\odot$",
+        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+        transform=ax4.transAxes, horizontalalignment='right', fontsize=8)
 
-cbar = fig.colorbar(im)
-cbar.ax.set_ylabel("$M/M_\odot$", size=9, rotation=90)
+ax2.set_xlabel(r"$z$")
+ax4.set_xlabel(r"$z$")
+ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
+ax2.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
+
+xlims = []
+ylims = []
+for ax in [ax1, ax2, ax3, ax4]:
+    xlims.extend(ax.get_xlim())
+    ylims.extend(ax.get_ylim())
+
+for ax in [ax1, ax2, ax3, ax4]:
+    ax.set_xlim(0, 30)
+    ax.set_ylim(np.min(ylims) - 0.1 * np.min(ylims),
+                np.max(ylims) + 0.1 * np.max(ylims))
+
+# Remove axis labels
+ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False,
+                labelbottom=False)
+ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False,
+                labelleft=False, labeltop=False,
+                labelright=False, labelbottom=False)
+ax4.tick_params(axis='y', left=False, right=False, labelleft=False,
+                labelright=False)
 
 fig.savefig("plots/stellarbd_z_evolution_mass.png", bbox_inches="tight")
 
@@ -414,10 +440,10 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels)
+ax.legend(handles, labels, loc="upper left")
 
 ax.set_yscale("log")
 
@@ -471,7 +497,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
@@ -528,7 +554,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
@@ -585,7 +611,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
@@ -642,7 +668,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
@@ -700,7 +726,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
@@ -749,8 +775,8 @@ ax4.text(0.8, 0.9, "EAGLE-REF",
 
 ax2.set_xlabel(r"$z$")
 ax4.set_xlabel(r"$z$")
-ax1.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
-ax2.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
+ax2.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 xlims = []
 ylims = []
@@ -812,7 +838,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc="lower right")
@@ -829,7 +855,7 @@ im = ax.hexbin(zs_all, stellar_bd_all, C=stellar_met_all, gridsize=100,
                linewidths=0.2, cmap="plasma")
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 cbar = plt.colorbar(im)
 cbar.ax.set_ylabel("$Z$")
@@ -846,7 +872,7 @@ im = ax.hexbin(zs_all, stellar_bd_all, C=ovdens_all, gridsize=100,
                linewidths=0.2, cmap="plasma")
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 cbar = plt.colorbar(im)
 cbar.ax.set_ylabel("$\Delta$")
@@ -888,7 +914,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc="lower right")
@@ -935,10 +961,10 @@ ax4.text(0.8, 0.9, "EAGLE-REF",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax4.transAxes, horizontalalignment='right', fontsize=8)
 
-ax2.set_xlabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
-ax4.set_xlabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
-ax1.set_ylabel(r"$<Z>$")
-ax2.set_ylabel(r"$<Z>$")
+ax2.set_xlabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
+ax4.set_xlabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
+ax1.set_ylabel(r"$Z$")
+ax2.set_ylabel(r"$Z$")
 
 xlims = []
 ylims = []
@@ -1000,7 +1026,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<Z>$")
+ax.set_ylabel(r"$Z$")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc="upper left")
@@ -1040,7 +1066,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<Z>$")
+ax.set_ylabel(r"$Z$")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc="upper left")
