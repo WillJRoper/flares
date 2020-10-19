@@ -656,20 +656,20 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-okinds = stellar_met_all > np.meadian(stellar_met)
+okinds = stellar_met_all > np.median(stellar_met)
 
 ax.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
           yscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
           alpha=0.4)
 
-okinds = agndt9_stellar_met > np.meadian(stellar_met)
+okinds = agndt9_stellar_met > np.median(stellar_met)
 
 plot_meidan_stat(np.array(agndt9_zs)[okinds],
                  np.array(agndt9_stellar_bd)[okinds], ax,
                  lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
                  ls="dashdot")
 
-okinds = ref_stellar_met > np.meadian(stellar_met)
+okinds = ref_stellar_met > np.median(stellar_met)
 
 plot_meidan_stat(np.array(ref_zs)[okinds], np.array(ref_stellar_bd)[okinds],
                  ax, lab="REFERENCE: L0100N1504", color="limegreen",
@@ -683,7 +683,7 @@ for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
 
     okinds = np.logical_and(ovdens >= low, np.logical_and(ovdens < up,
                                                           stellar_met >
-                                                          np.meadian(stellar_met)))
+                                                          np.median(stellar_met)))
 
     plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
                      ax, lab=None, color=c,
