@@ -293,7 +293,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             gal_ms = gal_ms[okinds]
 
             out = sfr_30kpc - sfr_1kpc
-            out[out <= 0] == 0
+            out[out <= 0] = 0
 
             sfr_out.extend(out)
             sfr_in.extend(sfr_1kpc)
