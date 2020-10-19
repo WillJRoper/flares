@@ -361,11 +361,11 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
     return np.array(stellar_bd), np.array(stellar_met), np.array(stellar_form_radius), np.array(zs), np.array(stellar_bd_current), np.array(stellar_met_current), np.array(stellar_current_radius), np.array(hmrs), np.array(stellar_mass)
 
-stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs, stellar_mass = get_data(masslim=10**8)
+stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs, stellar_mass = get_data(masslim=10**9)
 
-eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs, eagle_stellar_mass = get_data(masslim=10**8, eagle=True)
+eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs, eagle_stellar_mass = get_data(masslim=10**9, eagle=True)
 
-ref_stellar_bd, ref_stellar_met, ref_stellar_form_radius, ref_zs, ref_stellar_bd_current, ref_stellar_met_current, ref_stellar_current_radius, ref_hmrs, ref_stellar_mass = get_data(masslim=10**8, ref=True)
+ref_stellar_bd, ref_stellar_met, ref_stellar_form_radius, ref_zs, ref_stellar_bd_current, ref_stellar_met_current, ref_stellar_current_radius, ref_hmrs, ref_stellar_mass = get_data(masslim=10**9, ref=True)
 
 bd_lims = []
 met_lims = []

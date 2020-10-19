@@ -311,6 +311,349 @@ fig.savefig("plots/stellarbd_z_evolution_od.png", bbox_inches="tight")
 
 plt.close(fig)
 
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+okinds = stellar_met_all == 0
+
+ax.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
+          yscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
+          alpha=0.4)
+
+okinds = agndt9_stellar_met == 0
+
+plot_meidan_stat(np.array(agndt9_zs)[okinds],
+                 np.array(agndt9_stellar_bd)[okinds], ax,
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
+
+okinds = ref_stellar_met == 0
+
+plot_meidan_stat(np.array(ref_zs)[okinds], np.array(ref_stellar_bd)[okinds],
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
+                 bins=None, ls="--")
+
+ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
+
+for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
+
+    print(low, up, c)
+
+    okinds = np.logical_and(ovdens >= low, np.logical_and(ovdens < up,
+                                                          stellar_met == 0))
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(-0.1, 27)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, loc="lower right")
+
+ax.set_yscale("log")
+
+fig.savefig("plots/stellarbd_z_evolution_zeromet.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+okinds = stellar_met_all > 0
+
+ax.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
+          yscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
+          alpha=0.4)
+
+okinds = agndt9_stellar_met > 0
+
+plot_meidan_stat(np.array(agndt9_zs)[okinds],
+                 np.array(agndt9_stellar_bd)[okinds], ax,
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
+
+okinds = ref_stellar_met > 0
+
+plot_meidan_stat(np.array(ref_zs)[okinds], np.array(ref_stellar_bd)[okinds],
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
+                 bins=None, ls="--")
+
+ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
+
+for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
+
+    print(low, up, c)
+
+    okinds = np.logical_and(ovdens >= low, np.logical_and(ovdens < up,
+                                                          stellar_met > 0))
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(-0.1, 27)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, loc="lower right")
+
+ax.set_yscale("log")
+
+fig.savefig("plots/stellarbd_z_evolution_nonzeromet.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+okinds = stellar_met_all > 0.02
+
+ax.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
+          yscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
+          alpha=0.4)
+
+okinds = agndt9_stellar_met > 0.02
+
+plot_meidan_stat(np.array(agndt9_zs)[okinds],
+                 np.array(agndt9_stellar_bd)[okinds], ax,
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
+
+okinds = ref_stellar_met > 0.02
+
+plot_meidan_stat(np.array(ref_zs)[okinds], np.array(ref_stellar_bd)[okinds],
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
+                 bins=None, ls="--")
+
+ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
+
+for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
+
+    print(low, up, c)
+
+    okinds = np.logical_and(ovdens >= low, np.logical_and(ovdens < up,
+                                                          stellar_met > 0.02))
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(-0.1, 27)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, loc="lower right")
+
+ax.set_yscale("log")
+
+fig.savefig("plots/stellarbd_z_evolution_0p02.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+okinds = stellar_met_all > 0.04
+
+ax.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
+          yscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
+          alpha=0.4)
+
+okinds = agndt9_stellar_met > 0.04
+
+plot_meidan_stat(np.array(agndt9_zs)[okinds],
+                 np.array(agndt9_stellar_bd)[okinds], ax,
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
+
+okinds = ref_stellar_met > 0.04
+
+plot_meidan_stat(np.array(ref_zs)[okinds], np.array(ref_stellar_bd)[okinds],
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
+                 bins=None, ls="--")
+
+ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
+
+for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
+
+    print(low, up, c)
+
+    okinds = np.logical_and(ovdens >= low, np.logical_and(ovdens < up,
+                                                          stellar_met > 0.04))
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(-0.1, 27)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, loc="lower right")
+
+ax.set_yscale("log")
+
+fig.savefig("plots/stellarbd_z_evolution_0p04.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+okinds = stellar_met_all > 0.01
+
+ax.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
+          yscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
+          alpha=0.4)
+
+okinds = agndt9_stellar_met > 0.01
+
+plot_meidan_stat(np.array(agndt9_zs)[okinds],
+                 np.array(agndt9_stellar_bd)[okinds], ax,
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
+
+okinds = ref_stellar_met > 0.01
+
+plot_meidan_stat(np.array(ref_zs)[okinds], np.array(ref_stellar_bd)[okinds],
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
+                 bins=None, ls="--")
+
+ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
+
+for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
+
+    print(low, up, c)
+
+    okinds = np.logical_and(ovdens >= low, np.logical_and(ovdens < up,
+                                                          stellar_met > 0.01))
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(-0.1, 27)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, loc="lower right")
+
+ax.set_yscale("log")
+
+fig.savefig("plots/stellarbd_z_evolution_0p01.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+okinds = stellar_met_all > np.meadian(stellar_met)
+
+ax.hexbin(zs_all[okinds], stellar_bd_all[okinds], gridsize=100, mincnt=1,
+          yscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys",
+          alpha=0.4)
+
+okinds = agndt9_stellar_met > np.meadian(stellar_met)
+
+plot_meidan_stat(np.array(agndt9_zs)[okinds],
+                 np.array(agndt9_stellar_bd)[okinds], ax,
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
+
+okinds = ref_stellar_met > np.meadian(stellar_met)
+
+plot_meidan_stat(np.array(ref_zs)[okinds], np.array(ref_stellar_bd)[okinds],
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
+                 bins=None, ls="--")
+
+ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
+
+for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
+
+    print(low, up, c)
+
+    okinds = np.logical_and(ovdens >= low, np.logical_and(ovdens < up,
+                                                          stellar_met >
+                                                          np.meadian(stellar_met)))
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(-0.1, 27)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, loc="lower right")
+
+ax.set_yscale("log")
+
+fig.savefig("plots/stellarbd_z_evolution_med.png", bbox_inches="tight")
+
+plt.close(fig)
+
 fig = plt.figure(figsize=(6, 6))
 gs = gridspec.GridSpec(nrows=2, ncols=2)
 gs.update(wspace=0.0, hspace=0.0)
