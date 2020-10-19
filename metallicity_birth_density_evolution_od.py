@@ -137,6 +137,7 @@ def get_data(eagle=False, ref=False):
     ovden = []
     zs = []
     fths = []
+    masses = []
     
     if eagle or ref:
         ovds = [1, ]
@@ -164,11 +165,11 @@ def get_data(eagle=False, ref=False):
 
             # Get halo IDs and halo data
             try:
-                # parts_subgroup = E.read_array("PARTDATA", path, snap,
-                #                               "PartType4/SubGroupNumber",
-                #                               noH=True,
-                #                               physicalUnits=True,
-                #                               numThreads=8)
+                parts_subgroup = E.read_array("PARTDATA", path, snap,
+                                              "PartType4/SubGroupNumber",
+                                              noH=True,
+                                              physicalUnits=True,
+                                              numThreads=8)
                 parts_bd = E.read_array("PARTDATA", path, snap,
                                       "PartType4/BirthDensity", noH=True,
                                         physicalUnits=True, numThreads=8)
@@ -183,11 +184,11 @@ def get_data(eagle=False, ref=False):
                                          "PartType4/Feedback_EnergyFraction",
                                          noH=True, physicalUnits=True,
                                          numThreads=8)
-                # gal_ms = E.read_array("SUBFIND", path, snap,
-                #                       "Subhalo/ApertureMeasurements/"
-                #                       "Mass/030kpc",
-                #                       noH=True, physicalUnits=True,
-                #                       numThreads=8)[:, 4] * 10 ** 10
+                gal_ms = E.read_array("SUBFIND", path, snap,
+                                      "Subhalo/ApertureMeasurements/"
+                                      "Mass/030kpc",
+                                      noH=True, physicalUnits=True,
+                                      numThreads=8)[:, 4] * 10 ** 10
             except ValueError:
                 print(reg, snap, "No data")
                 continue
@@ -198,22 +199,24 @@ def get_data(eagle=False, ref=False):
                 print(reg, snap, "No data")
                 continue
 
-            # okinds = parts_subgroup != 2**30
-            # parts_subgroup = parts_subgroup[okinds]
-            # parts_bd = parts_bd[okinds]
-            # parts_met = parts_met[okinds]
-            # parts_aborn = parts_aborn[okinds]
-            #
-            # part_sub_mass = gal_ms[parts_subgroup]
-            #
+            okinds = parts_subgroup != 2**30
+            parts_subgroup = parts_subgroup[okinds]
+            parts_bd = parts_bd[okinds]
+            parts_met = parts_met[okinds]
+            parts_aborn = parts_aborn[okinds]
+            parts_fth = parts_fth[okinds]
+
+            part_sub_mass = gal_ms[parts_subgroup]
+
             # okinds = part_sub_mass > 10**9
-            #
+
             # # Add stars from these galaxies
             # stellar_bd.extend((parts_bd[okinds] * 10**10
             #                    * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value)
             # stellar_met.extend(parts_met[okinds])
             # zs.extend((1 / parts_aborn[okinds]) - 1)
             # ovden.extend(np.full_like(parts_bd[okinds], ovd))
+            # fths.extend(parts_fth[okinds])
 
             # Add stars from these galaxies
             stellar_bd.extend((parts_bd * 10**10
@@ -222,18 +225,19 @@ def get_data(eagle=False, ref=False):
             zs.extend((1 / parts_aborn) - 1)
             ovden.extend(np.full_like(parts_bd, ovd))
             fths.extend(parts_fth)
+            masses.extend(part_sub_mass)
 
     return np.array(stellar_bd), np.array(stellar_met), \
-           np.array(zs), np.array(ovden), np.array(fths)
+           np.array(zs), np.array(ovden), np.array(fths), np.array(masses)
 
 
 log1pdelta = ovds = np.loadtxt("region_overdensity.txt", dtype=float)
 
-stellar_bd, stellar_met, zs, ovdens, fth = get_data()
+stellar_bd, stellar_met, zs, ovdens, fth, masses = get_data()
 
-agndt9_stellar_bd, agndt9_stellar_met, agndt9_zs, _, agndt9_fth = get_data(eagle=True)
+agndt9_stellar_bd, agndt9_stellar_met, agndt9_zs, _, agndt9_fth, agndt9_masses = get_data(eagle=True)
 
-ref_stellar_bd, ref_stellar_met, ref_zs, _, ref_fth = get_data(ref=True)
+ref_stellar_bd, ref_stellar_met, ref_zs, _, ref_fth, ref_masses = get_data(ref=True)
 
 agndt9_ovdens = np.zeros_like(agndt9_stellar_met)
 ref_ovdens = np.zeros_like(ref_stellar_met)
@@ -246,6 +250,8 @@ stellar_met_all = np.concatenate((stellar_met, ref_stellar_met,
 
 ovdens_all = np.concatenate((ovdens, agndt9_ovdens, ref_ovdens))
 fth_all = np.concatenate((fth, agndt9_fth, ref_fth))
+
+masses_all = np.concatenate((masses, agndt9_masses, ref_masses))
 
 dbinLims = [-0.3, -0.15, -0.04, 0.04, 0.12, 0.22, 0.3]
 dbins = dbinLims[:-1] + np.diff(dbinLims)/2
@@ -308,6 +314,57 @@ ax.legend(handles, labels, loc="lower right")
 ax.set_yscale("log")
 
 fig.savefig("plots/stellarbd_z_evolution_od.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+im = ax.hexbin(zs_all, stellar_bd_all, C=masses_all, gridsize=100, mincnt=1,
+               reduce_C_function=np.mean, yscale="log",  norm=LogNorm(),
+               linewidths=0.2, cmap="Greys", alpha=0.4)
+
+plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_bd), ax,
+                 lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
+                 ls="dashdot")
+plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_bd),
+                 ax, lab="REFERENCE: L0100N1504", color="limegreen",
+                 bins=None, ls="--")
+
+ax.plot((40, 90), (10**1, 10**3), color="k", linestyle="-", label="FLARES")
+
+for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
+
+    print(low, up, c)
+
+    okinds = np.logical_and(ovdens >= low, ovdens < up)
+
+    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
+                     ax, lab=None, color=c,
+                     bins=None, ls="-")
+
+ax.set_xlim(-0.1, 27)
+
+sm = plt.cm.ScalarMappable(cmap=_cmap, norm=plt.Normalize(vmin=0., vmax=1.))
+sm._A = []  # # fake up the array of the scalar mappable
+cbaxes = ax.inset_axes([0.7, 0.625, 0.03, 0.35])
+cbar = plt.colorbar(sm, ticks=ticks, cax=cbaxes)
+cbar.ax.set_yticklabels(bin_labels, fontsize=8)
+cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
+                   "(N_{\mathrm{regions}})$", size=9, rotation=90)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, loc="lower right")
+
+ax.set_yscale("log")
+
+cbar = fig.colorbar(im)
+cbar.ax.set_ylabel("$M/M_\odot$", size=9, rotation=90)
+
+fig.savefig("plots/stellarbd_z_evolution_mass.png", bbox_inches="tight")
 
 plt.close(fig)
 
