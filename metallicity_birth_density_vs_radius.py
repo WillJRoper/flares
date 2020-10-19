@@ -196,7 +196,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
     # Define snapshots
     if eagle or ref:
-        pre_snaps = ['000_z020p000', '003_z008p988', '006_z005p971',
+        pre_snaps = ['000_z0100p000', '003_z008p988', '006_z005p971',
                      '009_z004p485', '012_z003p017', '015_z002p012',
                      '018_z001p259', '021_z000p736', '024_z000p366',
                      '027_z000p101', '001_z015p132', '004_z008p075',
@@ -219,7 +219,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                  '004_z011p000', '005_z010p000',
                  '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000',
                  '010_z005p000', '011_z004p770']
-        prog_snaps = ['000_z015p000', '001_z014p000', '002_z013p000',
+        prog_snaps = ['000_z0100p000', '001_z014p000', '002_z013p000',
                       '003_z012p000', '004_z011p000', '005_z010p000',
                       '006_z009p000', '007_z008p000', '008_z007p000',
                       '009_z006p000', '010_z005p000']
@@ -336,7 +336,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 part_inds = list(halo_part_inds[halo])
                 pos = gal_coords[part_inds, :] - cop
                 rs = np.linalg.norm(pos, axis=1) * 10**3
-                parts_bd = (gal_bd[part_inds]* 10**10
+                parts_bd = (gal_bd[part_inds] * 10**10
                             * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
@@ -358,11 +358,11 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
     return np.array(stellar_bd), np.array(stellar_met), np.array(stellar_form_radius), np.array(zs), np.array(stellar_bd_current), np.array(stellar_met_current), np.array(stellar_current_radius), np.array(hmrs)
 
-stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs = get_data(masslim=10**9)
+stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs = get_data(masslim=10**8)
 
-eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**9, eagle=True)
+eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**8, eagle=True)
 
-ref_stellar_bd, ref_stellar_met, ref_stellar_form_radius, ref_zs, ref_stellar_bd_current, ref_stellar_met_current, ref_stellar_current_radius, ref_hmrs = get_data(masslim=10**9, ref=True)
+ref_stellar_bd, ref_stellar_met, ref_stellar_form_radius, ref_zs, ref_stellar_bd_current, ref_stellar_met_current, ref_stellar_current_radius, ref_hmrs = get_data(masslim=10**8, ref=True)
 
 bd_lims = []
 met_lims = []
