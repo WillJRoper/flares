@@ -321,7 +321,7 @@ mass_all = np.concatenate((masses, agndt9_masses, ref_masses))
 fig = plt.figure(figsize=(5, 9))
 ax = fig.add_subplot(111)
 
-okinds = np.logical_and(sfrout_all > 0, sfr_in > 0)
+okinds = np.logical_and(sfrout_all > 0, sfrin_all > 0)
 
 ax.hexbin(zs_all, sfrout_all / sfrin_all, gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
