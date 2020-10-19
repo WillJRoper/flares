@@ -231,6 +231,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
     stellar_current_radius = []
     stellar_bd_current = []
     stellar_met_current = []
+    stellar_mass = []
     zs = []
 
     for reg in regions:
@@ -326,11 +327,12 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             subgrp_ids = subgrp_ids[okinds]
             gal_hmr = gal_hmr[okinds]
             gal_cop = gal_cop[okinds]
+            gal_ms = gal_ms[okinds]
             halo_ids = np.zeros(grp_ids.size, dtype=float)
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                 halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-            for halo, hmr, cop in zip(halo_ids, gal_hmr, gal_cop):
+            for halo, hmr, cop, m in zip(halo_ids, gal_hmr, gal_cop, gal_ms):
 
                 # Add stars from these galaxies
                 part_inds = list(halo_part_inds[halo])
@@ -348,6 +350,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 hmrs.extend(np.full(len(parts_met[okinds]), hmr))
                 stellar_bd.extend(parts_bd[okinds])
                 stellar_met.extend(parts_met[okinds])
+                stellar_mass.extend(np.full(len(parts_met[okinds]), m))
 
                 if snap == '011_z004p770' or snap == '027_z000p101':
                     stellar_bd_current.extend(parts_bd)
@@ -356,20 +359,20 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
                 zs.extend((1 / parts_aborn[okinds]) - 1)
 
-    return np.array(stellar_bd), np.array(stellar_met), np.array(stellar_form_radius), np.array(zs), np.array(stellar_bd_current), np.array(stellar_met_current), np.array(stellar_current_radius), np.array(hmrs)
+    return np.array(stellar_bd), np.array(stellar_met), np.array(stellar_form_radius), np.array(zs), np.array(stellar_bd_current), np.array(stellar_met_current), np.array(stellar_current_radius), np.array(hmrs), np.array(stellar_mass)
 
-stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs = get_data(masslim=10**8)
+stellar_bd, stellar_met, stellar_form_radius, zs, stellar_bd_current, stellar_met_current, stellar_current_radius, hmrs, stellar_mass = get_data(masslim=10**8)
 
-eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs = get_data(masslim=10**8, eagle=True)
+eagle_stellar_bd, eagle_stellar_met, eagle_stellar_form_radius, eagle_zs, eagle_stellar_bd_current, eagle_stellar_met_current, eagle_stellar_current_radius, eagle_hmrs, eagle_stellar_mass = get_data(masslim=10**8, eagle=True)
 
-ref_stellar_bd, ref_stellar_met, ref_stellar_form_radius, ref_zs, ref_stellar_bd_current, ref_stellar_met_current, ref_stellar_current_radius, ref_hmrs = get_data(masslim=10**8, ref=True)
+ref_stellar_bd, ref_stellar_met, ref_stellar_form_radius, ref_zs, ref_stellar_bd_current, ref_stellar_met_current, ref_stellar_current_radius, ref_hmrs, ref_stellar_mass = get_data(masslim=10**8, ref=True)
 
 bd_lims = []
 met_lims = []
 
 softs = []
 z_soft = []
-for z in np.linspace(0, 9, 100):
+for z in np.linspace(0, 15, 100):
     if z <= 2.8:
         soft = 0.000474390 / 0.6777 * 1e3
     else:
@@ -452,6 +455,8 @@ stellar_formr_all = np.concatenate((stellar_form_radius,
 zs_all = np.concatenate((zs, eagle_zs, ref_zs))
 hmrs_all = np.concatenate((hmrs, eagle_hmrs, ref_hmrs))
 
+mass_all = np.concatenate((stellar_mass, eagle_stellar_mass, ref_stellar_mass))
+
 current_radius_all = np.concatenate((stellar_current_radius,
                                      eagle_stellar_current_radius))
 current_stellar_bd_all = np.concatenate((stellar_bd_current, eagle_stellar_bd_current))
@@ -494,8 +499,6 @@ ax2.set_ylabel(r"$Z$")
 ax3.set_ylabel("$z_{\mathrm{form}}$")
 ax3.set_xlabel("$R / [\mathrm{pkpc}]$")
 
-ax3.set_ylim(None, 30)
-
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
 ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
@@ -506,87 +509,167 @@ for ax in [ax1, ax2, ax3]:
         spine.set_edgecolor('k')
 
 handles, labels = ax3.get_legend_handles_labels()
-ax3.legend(handles, labels)
+ax2.legend(handles, labels)
+
+ax2.set_ylim(None, 0.2)
 
 fig.savefig("plots/stellar_formation_radius.png", bbox_inches="tight")
 
 plt.close(fig)
 
-# EAGLE parameters
-parameters = {"f_th,min": 0.3,
-              "f_th,max": 3,
-              "n_Z": 1.0,
-              "n_n": 1.0,
-              "Z_pivot": 0.1 * 0.012,
-              "n_pivot": 0.67}
+fig = plt.figure(figsize=(5, 9))
+gs = gridspec.GridSpec(nrows=3, ncols=1)
+gs.update(wspace=0.0, hspace=0.0)
+ax1 = fig.add_subplot(gs[0, 0])
+ax2 = fig.add_subplot(gs[1, 0])
+ax3 = fig.add_subplot(gs[2, 0])
 
-star_formation_parameters = {"threshold_Z0": 0.002,
-                             "threshold_n0": 0.1,
-                             "slope": -0.64}
+ax1.hexbin(mass_all, stellar_bd_all, gridsize=100, mincnt=1,
+           xscale='log', yscale='log', norm=LogNorm(),
+           linewidths=0.2, cmap='Greys', alpha=0.7)
+plot_meidan_stat(mass_all, stellar_bd_all, ax1, lab='Median',
+                 color='darkorange', bins=None)
 
+ax2.hexbin(mass_all, stellar_met_all, gridsize=100, mincnt=1,
+           xscale='log', norm=LogNorm(),
+           linewidths=0.2, cmap='Greys', alpha=0.7)
+plot_meidan_stat(mass_all, stellar_met_all, ax2, lab='Median',
+                 color='darkorange', bins=None)
 
-number_of_bins = 128
+ax3.hexbin(mass_all, zs_all, gridsize=50, mincnt=1,
+           xscale='log', norm=LogNorm(),
+           linewidths=0.2, cmap='Greys', alpha=0.7)
+plot_meidan_statyx(mass_all, zs_all, ax3, lab='All',
+                   color='darkorange')
+plot_meidan_statyx(eagle_stellar_mass, eagle_zs, ax3,
+                   lab='AGNdT9: L0050N0752', color='royalblue', ls="dashdot")
+plot_meidan_statyx(ref_stellar_mass, ref_zs, ax3,
+                   lab='REFERENCE: L0100N1504', color='limegreen', ls="dotted")
+plot_meidan_statyx(stellar_mass, zs, ax3, lab='FLARES',
+                   color='blueviolet', ls="dashed")
 
-# Constants; these could be put in the parameter file but are rarely changed.
-birth_density_bins = np.logspace(-3, 6.8, number_of_bins)
-metal_mass_fraction_bins = np.logspace(-5.9, 0, number_of_bins)
+ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
+ax2.set_ylabel(r"$Z$")
+ax3.set_ylabel("$z_{\mathrm{form}}$")
+ax3.set_xlabel("$M / M_\odot$")
 
-# Now need to make background grid of f_th.
-birth_density_grid, metal_mass_fraction_grid = np.meshgrid(
-    0.5 * (birth_density_bins[1:] + birth_density_bins[:-1]),
-    0.5 * (metal_mass_fraction_bins[1:] + metal_mass_fraction_bins[:-1]))
+# Remove axis labels
+ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
+ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
 
-f_th_grid = parameters["f_th,min"] + (parameters["f_th,max"] - parameters["f_th,min"]) / (
-    1.0
-    + (metal_mass_fraction_grid / parameters["Z_pivot"]) ** parameters["n_Z"]
-    * (birth_density_grid / parameters["n_pivot"]) ** (-parameters["n_n"])
-)
+for ax in [ax1, ax2, ax3]:
+    for spine in ax.spines.values():
+        spine.set_edgecolor('k')
 
-# Set up plot
+handles, labels = ax3.get_legend_handles_labels()
+ax2.legend(handles, labels)
+
+ax2.set_ylim(None, 0.2)
+
+fig.savefig("plots/stellar_formation_mass.png", bbox_inches="tight")
+
+plt.close(fig)
+
 fig = plt.figure()
-ax = fig.add_subplot(111)
+ax1 = fig.add_subplot(111)
 
-ax.loglog()
+ax1.hexbin(stellar_formr_all, zs_all, gridsize=50, mincnt=1,
+           xscale='log', norm=LogNorm(),
+           linewidths=0.2, cmap='Greys', alpha=0.7)
+ax1.plot(softs, z_soft, linestyle="--", color="k", label="Softening")
+plot_meidan_statyx(stellar_formr_all, zs_all, ax1, lab='All',
+                   color='darkorange')
+plot_meidan_statyx(eagle_stellar_form_radius, eagle_zs, ax1,
+                   lab='AGNdT9: L0050N0752', color='royalblue', ls="dashdot")
+plot_meidan_statyx(ref_stellar_form_radius, ref_zs, ax3,
+                   lab='REFERENCE: L0100N1504', color='limegreen', ls="dotted")
+plot_meidan_statyx(stellar_form_radius, zs, ax1, lab='FLARES',
+                   color='blueviolet', ls="dashed")
 
-mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins,
-                         f_th_grid, vmin=0.3, vmax=3)
+ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [$M_\odot$ Mpc$^{-3}$]")
+ax1.set_xlabel("$R / [\mathrm{pkpc}]$")
 
-# Add colorbars
-cax1 = ax.inset_axes([0.65, 0.1, 0.3, 0.03])
-cbar1 = fig.colorbar(mappable, cax=cax1, orientation="horizontal")
-cbar1.ax.set_xlabel(r'$f_{th}$', labelpad=1.5, fontsize=9)
-cbar1.ax.xaxis.set_label_position('top')
-cbar1.ax.tick_params(axis='x', labelsize=8)
+handles, labels = ax3.get_legend_handles_labels()
+ax3.legend(handles, labels)
 
-H, _, _ = np.histogram2d(stellar_bd_all, stellar_met_all,
-                         bins=[birth_density_bins, metal_mass_fraction_bins])
+fig.savefig("plots/stellar_formation_z_radius.png", bbox_inches="tight")
 
-ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
-
-# Add line showing SF law
-sf_threshold_density = star_formation_parameters["threshold_n0"] * \
-                       (metal_mass_fraction_bins
-                        / star_formation_parameters["threshold_Z0"]) ** (star_formation_parameters["slope"])
-ax.plot(sf_threshold_density, metal_mass_fraction_bins, linestyle="dashed", label="SF threshold")
-
-
-# Label axes
-ax.set_xlabel(r"$\rho_{\mathrm{birth}}$ / [$n_H$ cm$^{-3}$]")
-ax.set_ylabel(r"$Z$")
-
-legend = ax.legend(markerfirst=True, loc="lower left", fontsize=8)
-plt.setp(legend.get_texts())
-
-try:
-    fontsize = legend.get_texts()[0].get_fontsize()
-except:
-    fontsize = 6
-
-
-ax.text(0.975, 0.025, "\n".join([f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" for k, v in parameters.items()]),
-         color="k", transform=ax.transAxes, ha="right", va="bottom", fontsize=fontsize)
-
-ax.text(0.975, 0.975, "Contour lines \n linearly spaced", color="k", transform=ax.transAxes, ha="right", va="top",
-         fontsize=fontsize)
-
-fig.savefig('plots/birthdensity_metallicity_EAGLE+FLARES.png', bbox_inches='tight')
+#
+# # EAGLE parameters
+# parameters = {"f_th,min": 0.3,
+#               "f_th,max": 3,
+#               "n_Z": 1.0,
+#               "n_n": 1.0,
+#               "Z_pivot": 0.1 * 0.012,
+#               "n_pivot": 0.67}
+#
+# star_formation_parameters = {"threshold_Z0": 0.002,
+#                              "threshold_n0": 0.1,
+#                              "slope": -0.64}
+#
+#
+# number_of_bins = 128
+#
+# # Constants; these could be put in the parameter file but are rarely changed.
+# birth_density_bins = np.logspace(-3, 6.8, number_of_bins)
+# metal_mass_fraction_bins = np.logspace(-5.9, 0, number_of_bins)
+#
+# # Now need to make background grid of f_th.
+# birth_density_grid, metal_mass_fraction_grid = np.meshgrid(
+#     0.5 * (birth_density_bins[1:] + birth_density_bins[:-1]),
+#     0.5 * (metal_mass_fraction_bins[1:] + metal_mass_fraction_bins[:-1]))
+#
+# f_th_grid = parameters["f_th,min"] + (parameters["f_th,max"] - parameters["f_th,min"]) / (
+#     1.0
+#     + (metal_mass_fraction_grid / parameters["Z_pivot"]) ** parameters["n_Z"]
+#     * (birth_density_grid / parameters["n_pivot"]) ** (-parameters["n_n"])
+# )
+#
+# # Set up plot
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
+#
+# ax.loglog()
+#
+# mappable = ax.pcolormesh(birth_density_bins, metal_mass_fraction_bins,
+#                          f_th_grid, vmin=0.3, vmax=3)
+#
+# # Add colorbars
+# cax1 = ax.inset_axes([0.65, 0.1, 0.3, 0.03])
+# cbar1 = fig.colorbar(mappable, cax=cax1, orientation="horizontal")
+# cbar1.ax.set_xlabel(r'$f_{th}$', labelpad=1.5, fontsize=9)
+# cbar1.ax.xaxis.set_label_position('top')
+# cbar1.ax.tick_params(axis='x', labelsize=8)
+#
+# H, _, _ = np.histogram2d(stellar_bd_all, stellar_met_all,
+#                          bins=[birth_density_bins, metal_mass_fraction_bins])
+#
+# ax.contour(birth_density_grid, metal_mass_fraction_grid, H.T, levels=6, cmap="magma")
+#
+# # Add line showing SF law
+# sf_threshold_density = star_formation_parameters["threshold_n0"] * \
+#                        (metal_mass_fraction_bins
+#                         / star_formation_parameters["threshold_Z0"]) ** (star_formation_parameters["slope"])
+# ax.plot(sf_threshold_density, metal_mass_fraction_bins, linestyle="dashed", label="SF threshold")
+#
+#
+# # Label axes
+# ax.set_xlabel(r"$\rho_{\mathrm{birth}}$ / [$n_H$ cm$^{-3}$]")
+# ax.set_ylabel(r"$Z$")
+#
+# legend = ax.legend(markerfirst=True, loc="lower left", fontsize=8)
+# plt.setp(legend.get_texts())
+#
+# try:
+#     fontsize = legend.get_texts()[0].get_fontsize()
+# except:
+#     fontsize = 6
+#
+#
+# ax.text(0.975, 0.025, "\n".join([f"${k.replace('_', '_{') + '}'}$: ${v:.4g}$" for k, v in parameters.items()]),
+#          color="k", transform=ax.transAxes, ha="right", va="bottom", fontsize=fontsize)
+#
+# ax.text(0.975, 0.975, "Contour lines \n linearly spaced", color="k", transform=ax.transAxes, ha="right", va="top",
+#          fontsize=fontsize)
+#
+# fig.savefig('plots/birthdensity_metallicity_EAGLE+FLARES.png', bbox_inches='tight')
