@@ -494,6 +494,8 @@ ax2.set_ylabel(r"$Z$")
 ax3.set_ylabel("$z_{\mathrm{form}}$")
 ax3.set_xlabel("$R / [\mathrm{pkpc}]$")
 
+ax3.set_ylim(None, 30)
+
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
 ax2.tick_params(axis='x', top=False, bottom=False, labeltop=False, labelbottom=False)
