@@ -360,7 +360,7 @@ ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels, loc="lower right")
+ax.legend(handles, labels)
 
 ax.set_yscale("log")
 
@@ -417,7 +417,7 @@ ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels, loc="lower right")
+ax.legend(handles, labels)
 
 ax.set_yscale("log")
 
@@ -474,7 +474,7 @@ ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels, loc="lower right")
+ax.legend(handles, labels)
 
 ax.set_yscale("log")
 
@@ -531,7 +531,7 @@ ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels, loc="lower right")
+ax.legend(handles, labels)
 
 ax.set_yscale("log")
 
@@ -588,7 +588,7 @@ ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels, loc="lower right")
+ax.legend(handles, labels)
 
 ax.set_yscale("log")
 
@@ -646,7 +646,7 @@ ax.set_xlabel("$z$")
 ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels, loc="lower right")
+ax.legend(handles, labels)
 
 ax.set_yscale("log")
 
