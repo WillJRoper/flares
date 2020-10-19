@@ -349,6 +349,6 @@ ax.set_xlabel("SFR (30 kpc) / SFR (1 kpc)")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/stellar_formation_radius.png", bbox_inches="tight")
+fig.savefig("plots/aperture_sfr_evolution.png", bbox_inches="tight")
 
 plt.close(fig)
