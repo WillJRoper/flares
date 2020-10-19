@@ -292,7 +292,10 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             sfr_30kpc = sfr_30kpc[okinds]
             gal_ms = gal_ms[okinds]
 
-            sfr_out.extend(sfr_30kpc - sfr_1kpc)
+            out = sfr_30kpc - sfr_1kpc
+            out[out <= 0] == 0
+
+            sfr_out.extend(out)
             sfr_in.extend(sfr_1kpc)
             zs.extend(np.full(len(gal_ms), z))
             mass.extend(gal_ms)
@@ -317,6 +320,8 @@ mass_all = np.concatenate((masses, agndt9_masses, ref_masses))
 
 fig = plt.figure(figsize=(5, 9))
 ax = fig.add_subplot(111)
+
+okinds = np.logical_and(sfrout_all > 0, sfr_in > 0)
 
 ax.hexbin(zs_all, sfrout_all / sfrin_all, gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
