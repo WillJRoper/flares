@@ -318,7 +318,7 @@ mass_all = np.concatenate((masses, agndt9_masses, ref_masses))
 fig = plt.figure(figsize=(5, 9))
 ax = fig.add_subplot(111)
 
-ax.hexbin(zs_all, sfrout_all / sfrin_all, gridsize=100, mincnt=1,
+ax.hexbin(zs_all, sfrout_all / sfrin_all, gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.7)
 
@@ -343,8 +343,8 @@ plot_meidan_stat(zs_all[okinds4], sfrout_all[okinds4] / sfrin_all[okinds4],
                  ax, lab="$10^10 < M/M_\odot$",
                  color='magenta', bins=1, ls="dotted")
 
-ax.set_ylabel("$z$")
-ax.set_xlabel("SFR (30 kpc) / SFR (1 kpc)")
+ax.set_xlabel("$z$")
+ax.set_ylabel("SFR (30 kpc) / SFR (1 kpc)")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
