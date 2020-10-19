@@ -322,7 +322,7 @@ ax = fig.add_subplot(111)
 
 im = ax.hexbin(zs_all, stellar_bd_all, C=masses_all, gridsize=100, mincnt=1,
                reduce_C_function=np.mean, yscale="log",  norm=LogNorm(),
-               linewidths=0.2, cmap="Greys", alpha=0.4)
+               linewidths=0.2, cmap="magma", alpha=0.8)
 
 plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_bd), ax,
                  lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
