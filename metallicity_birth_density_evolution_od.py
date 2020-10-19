@@ -507,28 +507,28 @@ ax2 = fig.add_subplot(gs[1, 0])
 ax3 = fig.add_subplot(gs[0, 1])
 ax4 = fig.add_subplot(gs[1, 1])
 
-ax1.hexbin(stellar_bd_all, 1 - stellar_met_all, gridsize=100, mincnt=1, yscale="log",
+ax1.hexbin(stellar_bd_all, stellar_met_all, gridsize=100, mincnt=1,
            xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys")
 
 ax1.text(0.8, 0.9, "All",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
 
-ax2.hexbin(stellar_bd, 1 - stellar_met, gridsize=100, mincnt=1, yscale= "log",
+ax2.hexbin(stellar_bd, stellar_met, gridsize=100, mincnt=1,
            xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys")
 
 ax2.text(0.8, 0.9, "FLARES",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
 
-ax3.hexbin(agndt9_stellar_bd, 1 - agndt9_stellar_met, gridsize=100, mincnt=1, yscale="log",
+ax3.hexbin(agndt9_stellar_bd, agndt9_stellar_met, gridsize=100, mincnt=1,
            xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys")
 
 ax3.text(0.8, 0.9, "EAGLE-AGNdT9",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
 
-ax4.hexbin(ref_stellar_bd, 1 - ref_stellar_met, gridsize=100, mincnt=1, yscale="log",
+ax4.hexbin(ref_stellar_bd, ref_stellar_met, gridsize=100, mincnt=1,
            xscale="log", norm=LogNorm(), linewidths=0.2, cmap="Greys")
 
 ax4.text(0.8, 0.9, "EAGLE-REF",
@@ -537,8 +537,8 @@ ax4.text(0.8, 0.9, "EAGLE-REF",
 
 ax2.set_xlabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 ax4.set_xlabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
-ax1.set_ylabel(r"$<1 - Z>$")
-ax2.set_ylabel(r"$<1 - Z>$")
+ax1.set_ylabel(r"$<Z>$")
+ax2.set_ylabel(r"$<Z>$")
 
 xlims = []
 ylims = []
@@ -569,10 +569,10 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-ax.hexbin(zs_all, 1 - stellar_met_all, gridsize=100, mincnt=1, yscale="log",
+ax.hexbin(zs_all, stellar_met_all, gridsize=100, mincnt=1,
           norm=LogNorm(), linewidths=0.2, cmap="Greys", alpha=0.4)
 
-plot_meidan_stat(np.array(agndt9_zs), 1 - np.array(agndt9_stellar_met), ax,
+plot_meidan_stat(np.array(agndt9_zs), np.array(agndt9_stellar_met), ax,
                  lab="AGNdT9: L0050N0752", color="royalblue", bins=None,
                  ls="dashdot")
 plot_meidan_stat(np.array(ref_zs), np.array(ref_stellar_met),
@@ -585,7 +585,7 @@ for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
 
     okinds = np.logical_and(ovdens >= low, ovdens < up)
 
-    plot_meidan_stat(np.array(zs)[okinds],  1 - np.array(stellar_met)[okinds],
+    plot_meidan_stat(np.array(zs)[okinds],  np.array(stellar_met)[okinds],
                      ax, lab=None, color=c,
                      bins=None, ls="-")
 
@@ -600,7 +600,7 @@ cbar.ax.set_ylabel("$[\mathrm{log_{10}}(1 \,+\,\delta)] \; "
                    "(N_{\mathrm{regions}})$", size=9, rotation=90)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel(r"$<1 - Z>$")
+ax.set_ylabel(r"$<Z>$")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc="upper left")
