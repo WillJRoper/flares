@@ -397,7 +397,7 @@ for low, up, c in zip(dbinLims[:-1], dbinLims[1:], _cmap.colors):
 
     okinds = np.logical_and(ovdens >= low, ovdens < up)
 
-    plot_meidan_stat(np.array(zs)[okinds], np.array(stellar_bd)[okinds],
+    plot_meidan_stat(np.array(zs)[okinds], np.array(fth)[okinds],
                      ax, lab=None, color=c,
                      bins=None, ls="-")
 
@@ -416,8 +416,6 @@ ax.set_ylabel(r"$<\rho_{\mathrm{birth}}>$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc="lower right")
-
-ax.set_yscale("log")
 
 fig.savefig("plots/stellarfth_z_evolution_od.png", bbox_inches="tight")
 
