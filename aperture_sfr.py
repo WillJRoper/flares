@@ -394,19 +394,19 @@ plot_meidan_stat(zs_all[okinds4], sfrout_all[okinds4],
 
 plot_meidan_stat(zs_all[okinds1], sfrin_all[okinds1],
                  ax, lab="In: $10^8 < M/M_\odot \leq 10^9$",
-                 color='darkorange', bins=1, ls="dashed")
+                 color='darkorange', bins=1)
 
 plot_meidan_stat(zs_all[okinds2], sfrin_all[okinds2],
                  ax, lab="In: $10^9 < M/M_\odot \leq 10^{9.5}$",
-                 color='royalblue', bins=1, ls="dashed")
+                 color='royalblue', bins=1)
 
 plot_meidan_stat(zs_all[okinds3], sfrin_all[okinds3],
                  ax, lab="In: $10^{9.5} < M/M_\odot \leq 10^{10}$",
-                 color='limegreen', bins=1, ls="dashed")
+                 color='limegreen', bins=1)
 
 plot_meidan_stat(zs_all[okinds4], sfrin_all[okinds4],
                  ax, lab="In: $10^{10} < M/M_\odot$",
-                 color='magenta', bins=1, ls="dashed")
+                 color='magenta', bins=1)
 
 ax.set_xlabel("$z$")
 ax.set_ylabel("SFR")
