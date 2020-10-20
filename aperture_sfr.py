@@ -362,7 +362,7 @@ fig = plt.figure(figsize=(5, 9))
 ax = fig.add_subplot(111)
 
 combo_zs = np.concatenate((zs_all, zs_all))
-combo_sfr = np.concatenate((sfr_in, sfr_out))
+combo_sfr = np.concatenate((sfrin_all, sfrout_all))
 
 okinds = combo_sfr > 0
 
