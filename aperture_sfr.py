@@ -38,39 +38,25 @@ def calc_ages(z, a_born):
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
 
-    okinds = np.logical_and(~np.isnan(xs), ~np.isnan(ys))
-
-    xs = xs[okinds]
-    ys = ys[okinds]
-
     zs = np.float64(xs)
 
     uniz = np.unique(zs)
     print(uniz)
-    bin_wids = uniz[1:] - uniz[:-1]
-    low_bins = uniz[:-1] - (bin_wids / 2)
-    high_bins = uniz[:-1] + (bin_wids / 2)
-    low_bins = list(low_bins)
-    high_bins = list(high_bins)
-    low_bins.append(high_bins[-1])
-    high_bins.append(uniz[-1] + 1)
-    low_bins = np.array(low_bins)
-    high_bins = np.array(high_bins)
 
-    bin = np.zeros(uniz.size + 1)
-    bin[:-1] = low_bins
-    bin[1:] = high_bins
+    bin_cents = []
+    y_stat = []
+    for z in uniz:
 
-    # Compute binned statistics
-    y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median',
-                                                 bins=bin)
+        okinds = xs == z
 
-    # Compute bin centres
-    bin_wid = binedges[1] - binedges[0]
-    bin_cents = binedges[1:] - bin_wid / 2
+        bin_cents.append(z)
+        y_stat.append(np.median(ys[okinds]))
 
     print(bin_cents)
     print(y_stat)
+
+    bin_cents = np.array(bin_cents)
+    y_stat = np.array(y_stat)
 
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
