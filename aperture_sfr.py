@@ -38,29 +38,23 @@ def calc_ages(z, a_born):
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
 
-    if bins == None:
-        bin = np.logspace(np.log10(xs[~np.isnan(xs)].min()),
-                          np.log10(xs[~np.isnan(xs)].max()), 20)
-    elif bins == "lin":
-        bin = np.linspace(xs[~np.isnan(xs)].min(),
-                          xs[~np.isnan(xs)].max(), 20)
-    else:
-        zs = np.float64(xs)
+    zs = np.float64(xs)
 
-        uniz = np.unique(zs)
-        bin_wids = uniz[1:] - uniz[:-1]
-        low_bins = uniz[:-1] - (bin_wids / 2)
-        high_bins = uniz[:-1] + (bin_wids / 2)
-        low_bins = list(low_bins)
-        high_bins = list(high_bins)
-        low_bins.append(high_bins[-1])
-        high_bins.append(uniz[-1] + 1)
-        low_bins = np.array(low_bins)
-        high_bins = np.array(high_bins)
+    uniz = np.unique(zs)
+    print(uniz)
+    bin_wids = uniz[1:] - uniz[:-1]
+    low_bins = uniz[:-1] - (bin_wids / 2)
+    high_bins = uniz[:-1] + (bin_wids / 2)
+    low_bins = list(low_bins)
+    high_bins = list(high_bins)
+    low_bins.append(high_bins[-1])
+    high_bins.append(uniz[-1] + 1)
+    low_bins = np.array(low_bins)
+    high_bins = np.array(high_bins)
 
-        bin = np.zeros(uniz.size + 1)
-        bin[:-1] = low_bins
-        bin[1:] = high_bins
+    bin = np.zeros(uniz.size + 1)
+    bin[:-1] = low_bins
+    bin[1:] = high_bins
 
     # Compute binned statistics
     y_stat, binedges, bin_ind = binned_statistic(xs, ys, statistic='median',
@@ -292,10 +286,10 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             sfr_30kpc = sfr_30kpc[okinds]
             gal_ms = gal_ms[okinds]
 
-            # out = sfr_30kpc - sfr_1kpc
-            # out[out <= 0] = 0
+            out = sfr_30kpc - sfr_1kpc
+            out[out <= 0] = 0
 
-            sfr_out.extend(sfr_30kpc)
+            sfr_out.extend(out)
             sfr_in.extend(sfr_1kpc)
             zs.extend(np.full(len(gal_ms), z))
             mass.extend(gal_ms)
@@ -321,9 +315,9 @@ mass_all = np.concatenate((masses, agndt9_masses, ref_masses))
 fig = plt.figure(figsize=(5, 9))
 ax = fig.add_subplot(111)
 
-okinds = np.logical_and(sfrout_all > 0, sfrin_all > 0)
+# okinds = np.logical_and(sfrout_all > 0, sfrin_all > 0)
 
-ax.hexbin(zs_all[okinds], sfrout_all[okinds] / sfrin_all[okinds],
+ax.hexbin(zs_all, 1 - sfrout_all / sfrin_all,
           gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.7)
@@ -333,24 +327,24 @@ okinds2 = np.logical_and(mass_all > 10**9, mass_all <= 10**9.5)
 okinds3 = np.logical_and(mass_all > 10**9.5, mass_all <= 10**10)
 okinds4 = mass_all > 10**10
 
-plot_meidan_stat(zs_all[okinds1], sfrout_all[okinds1] / sfrin_all[okinds1], 
+plot_meidan_stat(zs_all[okinds1], 1 - sfrout_all[okinds1] / sfrin_all[okinds1],
                  ax, lab="$10^8 < M/M_\odot \leq 10^9$",
                  color='darkorange', bins=1)
 
-plot_meidan_stat(zs_all[okinds2], sfrout_all[okinds2] / sfrin_all[okinds2], 
-                 ax, lab="$10^9 < M/M_\odot \leq 10^9.5$",
+plot_meidan_stat(zs_all[okinds2], 1 - sfrout_all[okinds2] / sfrin_all[okinds2],
+                 ax, lab="$10^9 < M/M_\odot \leq 10^{9.5}$",
                  color='royalblue', bins=1, ls="dashed")
 
-plot_meidan_stat(zs_all[okinds3], sfrout_all[okinds3] / sfrin_all[okinds3], 
-                 ax, lab="$10^9.5 < M/M_\odot \leq 10^10$",
+plot_meidan_stat(zs_all[okinds3], 1 - sfrout_all[okinds3] / sfrin_all[okinds3],
+                 ax, lab="$10^{9.5} < M/M_\odot \leq 10^{10}$",
                  color='limegreen', bins=1, ls="dashdot")
 
-plot_meidan_stat(zs_all[okinds4], sfrout_all[okinds4] / sfrin_all[okinds4], 
-                 ax, lab="$10^10 < M/M_\odot$",
+plot_meidan_stat(zs_all[okinds4], 1 - sfrout_all[okinds4] / sfrin_all[okinds4],
+                 ax, lab="$10^{10} < M/M_\odot$",
                  color='magenta', bins=1, ls="dotted")
 
 ax.set_xlabel("$z$")
-ax.set_ylabel("SFR (30 kpc) / SFR (1 kpc)")
+ax.set_ylabel("1 - SFR (Extended) / SFR (Core)")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
