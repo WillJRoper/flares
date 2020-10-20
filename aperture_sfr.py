@@ -50,7 +50,7 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
         okinds = xs == z
 
         bin_cents.append(z)
-        y_stat.append(np.median(ys[okinds]))
+        y_stat.append(np.nanmedian(ys[okinds]))
 
     print(bin_cents)
     print(y_stat)
@@ -360,7 +360,7 @@ okinds = combo_sfr > 0
 ax.hexbin(combo_zs[okinds], combo_sfr[okinds],
           gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
-          cmap='Greys', alpha=0.4)
+          cmap='Greys', alpha=0.2)
 
 okinds1 = np.logical_and(mass_all > 10**8, mass_all <= 10**9)
 okinds2 = np.logical_and(mass_all > 10**9, mass_all <= 10**9.5)
@@ -400,7 +400,7 @@ plot_meidan_stat(zs_all[okinds4], sfrin_all[okinds4],
                  color='magenta', bins=1)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel("SFR")
+ax.set_ylabel("SFR / $M_\odot$ yr$^{-1}$")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
