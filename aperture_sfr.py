@@ -38,6 +38,11 @@ def calc_ages(z, a_born):
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
 
+    okinds = np.logical_and(~np.isnan(xs), ~np.isnan(ys))
+
+    xs = xs[okinds]
+    ys = ys[okinds]
+
     zs = np.float64(xs)
 
     uniz = np.unique(zs)
