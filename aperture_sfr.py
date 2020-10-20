@@ -64,6 +64,8 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
     bin_wid = binedges[1] - binedges[0]
     bin_cents = binedges[1:] - bin_wid / 2
 
+    print(bin_cents)
+
     okinds = np.logical_and(~np.isnan(bin_cents), ~np.isnan(y_stat))
 
     if xy:
