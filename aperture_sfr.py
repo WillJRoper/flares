@@ -364,7 +364,9 @@ ax = fig.add_subplot(111)
 combo_zs = np.concatenate((zs_all, zs_all))
 combo_sfr = np.concatenate((sfr_in, sfr_out))
 
-ax.hexbin(combo_zs, combo_sfr,
+okinds = combo_sfr > 0
+
+ax.hexbin(combo_zs[okinds], combo_sfr[okinds],
           gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.4)
