@@ -317,8 +317,8 @@ ax = fig.add_subplot(111)
 
 # okinds = np.logical_and(sfrout_all > 0, sfrin_all > 0)
 
-ax.hexbin(zs_all, 1 - sfrout_all / sfrin_all,
-          gridsize=100, mincnt=1,
+ax.hexbin(zs_all, sfrout_all / sfrin_all,
+          gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.7)
 
@@ -327,24 +327,24 @@ okinds2 = np.logical_and(mass_all > 10**9, mass_all <= 10**9.5)
 okinds3 = np.logical_and(mass_all > 10**9.5, mass_all <= 10**10)
 okinds4 = mass_all > 10**10
 
-plot_meidan_stat(zs_all[okinds1], 1 - sfrout_all[okinds1] / sfrin_all[okinds1],
+plot_meidan_stat(zs_all[okinds1], sfrout_all[okinds1] / sfrin_all[okinds1],
                  ax, lab="$10^8 < M/M_\odot \leq 10^9$",
                  color='darkorange', bins=1)
 
-plot_meidan_stat(zs_all[okinds2], 1 - sfrout_all[okinds2] / sfrin_all[okinds2],
+plot_meidan_stat(zs_all[okinds2], sfrout_all[okinds2] / sfrin_all[okinds2],
                  ax, lab="$10^9 < M/M_\odot \leq 10^{9.5}$",
                  color='royalblue', bins=1, ls="dashed")
 
-plot_meidan_stat(zs_all[okinds3], 1 - sfrout_all[okinds3] / sfrin_all[okinds3],
+plot_meidan_stat(zs_all[okinds3], sfrout_all[okinds3] / sfrin_all[okinds3],
                  ax, lab="$10^{9.5} < M/M_\odot \leq 10^{10}$",
                  color='limegreen', bins=1, ls="dashdot")
 
-plot_meidan_stat(zs_all[okinds4], 1 - sfrout_all[okinds4] / sfrin_all[okinds4],
+plot_meidan_stat(zs_all[okinds4], sfrout_all[okinds4] / sfrin_all[okinds4],
                  ax, lab="$10^{10} < M/M_\odot$",
                  color='magenta', bins=1, ls="dotted")
 
 ax.set_xlabel("$z$")
-ax.set_ylabel("1 - SFR (Extended) / SFR (Core)")
+ax.set_ylabel("SFR (Extended) / SFR (Core)")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
