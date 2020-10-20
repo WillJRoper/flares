@@ -427,7 +427,9 @@ plt.close(fig)
 fig = plt.figure(figsize=(5, 9))
 ax = fig.add_subplot(111)
 
-ax.hexbin(zs_all, met_all,
+okinds = met_all > 0
+
+ax.hexbin(zs_all[okinds], met_all[okinds],
           gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.01)
