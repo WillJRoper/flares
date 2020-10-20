@@ -318,7 +318,7 @@ ax = fig.add_subplot(111)
 # okinds = np.logical_and(sfrout_all > 0, sfrin_all > 0)
 
 ax.hexbin(zs_all, 1 - sfrout_all / sfrin_all,
-          gridsize=100, mincnt=1, yscale="log",
+          gridsize=100, mincnt=1,
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.7)
 
