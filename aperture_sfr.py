@@ -38,22 +38,18 @@ def calc_ages(z, a_born):
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
 
-    zs = np.float64(xs)
-
-    uniz = np.unique(zs)
-    print(uniz)
+    bin_lims = [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6,
+                1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5,
+                6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 20.0]
 
     bin_cents = []
     y_stat = []
-    for z in uniz:
+    for low, up in zip(bin_lims[:-1], bin_lims[1:]):
 
-        okinds = xs == z
+        okinds = np.logical_and(xs > low, xs <= up)
 
-        bin_cents.append(z)
+        bin_cents.append(np.median(xs[okinds]))
         y_stat.append(np.nanmedian(ys[okinds]))
-
-    print(bin_cents)
-    print(y_stat)
 
     bin_cents = np.array(bin_cents)
     y_stat = np.array(y_stat)
