@@ -289,7 +289,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             gal_ms = gal_ms[okinds]
 
             out = sfr_30kpc - sfr_1kpc
-            out[out <= 0] = 0.00001
+            out[out <= 0] = 0
 
             sfr_out.extend(out)
             sfr_in.extend(sfr_1kpc)
@@ -317,12 +317,14 @@ mass_all = np.concatenate((masses, agndt9_masses, ref_masses))
 fig = plt.figure(figsize=(5, 9))
 ax = fig.add_subplot(111)
 
-# okinds = np.logical_and(sfrout_all > 0, sfrin_all > 0)
+okinds = np.logical_and(sfrout_all > 0, sfrin_all > 0)
 
-ax.hexbin(zs_all, sfrout_all / sfrin_all,
+ax.hexbin(zs_all[okinds], sfrout_all[okinds] / sfrin_all[okinds],
           gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
-          cmap='Greys', alpha=0.7)
+          cmap='Greys', alpha=0.4)
+
+ax.axhline(1)
 
 okinds1 = np.logical_and(mass_all > 10**8, mass_all <= 10**9)
 okinds2 = np.logical_and(mass_all > 10**9, mass_all <= 10**9.5)
@@ -352,5 +354,63 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
 fig.savefig("plots/aperture_sfr_evolution.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure(figsize=(5, 9))
+ax = fig.add_subplot(111)
+
+combo_zs = np.concatenate((zs_all, zs_all))
+combo_sfr = np.concatenate((sfr_in, sfr_out))
+
+ax.hexbin(combo_zs, combo_sfr,
+          gridsize=100, mincnt=1, yscale="log",
+          norm=LogNorm(), linewidths=0.2,
+          cmap='Greys', alpha=0.4)
+
+okinds1 = np.logical_and(mass_all > 10**8, mass_all <= 10**9)
+okinds2 = np.logical_and(mass_all > 10**9, mass_all <= 10**9.5)
+okinds3 = np.logical_and(mass_all > 10**9.5, mass_all <= 10**10)
+okinds4 = mass_all > 10**10
+
+plot_meidan_stat(zs_all[okinds1], sfrout_all[okinds1],
+                 ax, lab="Out: $10^8 < M/M_\odot \leq 10^9$",
+                 color='darkorange', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_all[okinds2], sfrout_all[okinds2],
+                 ax, lab="Out: $10^9 < M/M_\odot \leq 10^{9.5}$",
+                 color='royalblue', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_all[okinds3], sfrout_all[okinds3],
+                 ax, lab="Out: $10^{9.5} < M/M_\odot \leq 10^{10}$",
+                 color='limegreen', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_all[okinds4], sfrout_all[okinds4],
+                 ax, lab="Out: $10^{10} < M/M_\odot$",
+                 color='magenta', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_all[okinds1], sfrin_all[okinds1],
+                 ax, lab="In: $10^8 < M/M_\odot \leq 10^9$",
+                 color='darkorange', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_all[okinds2], sfrin_all[okinds2],
+                 ax, lab="In: $10^9 < M/M_\odot \leq 10^{9.5}$",
+                 color='royalblue', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_all[okinds3], sfrin_all[okinds3],
+                 ax, lab="In: $10^{9.5} < M/M_\odot \leq 10^{10}$",
+                 color='limegreen', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_all[okinds4], sfrin_all[okinds4],
+                 ax, lab="In: $10^{10} < M/M_\odot$",
+                 color='magenta', bins=1, ls="dashed")
+
+ax.set_xlabel("$z$")
+ax.set_ylabel("SFR")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
+
+fig.savefig("plots/aperture_sfr_evolution_split.png", bbox_inches="tight")
 
 plt.close(fig)
