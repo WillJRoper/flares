@@ -292,10 +292,10 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             sfr_30kpc = sfr_30kpc[okinds]
             gal_ms = gal_ms[okinds]
 
-            out = sfr_30kpc - sfr_1kpc
-            out[out <= 0] = 0
+            # out = sfr_30kpc - sfr_1kpc
+            # out[out <= 0] = 0
 
-            sfr_out.extend(out)
+            sfr_out.extend(sfr_30kpc)
             sfr_in.extend(sfr_1kpc)
             zs.extend(np.full(len(gal_ms), z))
             mass.extend(gal_ms)
@@ -309,11 +309,11 @@ agndt9_sfr_in, agndt9_sfr_out, agndt9_zs, agndt9_masses = get_data(masslim=10**8
 ref_sfr_in, ref_sfr_out, ref_zs, ref_masses = get_data(masslim=10**8, ref=True)
 
 sfrin_all = np.concatenate((sfr_in,
-                                 agndt9_sfr_in,
-                                 ref_sfr_in))
+                            agndt9_sfr_in,
+                            ref_sfr_in))
 sfrout_all = np.concatenate((sfr_out,
-                                  agndt9_sfr_out,
-                                  ref_sfr_out))
+                             agndt9_sfr_out,
+                             ref_sfr_out))
 zs_all = np.concatenate((zs, agndt9_zs, ref_zs))
 
 mass_all = np.concatenate((masses, agndt9_masses, ref_masses))
