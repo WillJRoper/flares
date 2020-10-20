@@ -176,7 +176,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 1):
+        for reg in range(0, 40):
             if reg < 10:
                 regions.append('0' + str(reg))
             else:
@@ -360,7 +360,7 @@ okinds = combo_sfr > 0
 ax.hexbin(combo_zs[okinds], combo_sfr[okinds],
           gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
-          cmap='Greys', alpha=0.2)
+          cmap='Greys', alpha=0.01)
 
 okinds1 = np.logical_and(mass_all > 10**8, mass_all <= 10**9)
 okinds2 = np.logical_and(mass_all > 10**9, mass_all <= 10**9.5)
