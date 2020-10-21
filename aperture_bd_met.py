@@ -899,8 +899,8 @@ ax4.text(0.8, 0.9, "REFERENCE",
 
 ax2.set_xlabel("$z$")
 ax4.set_xlabel("$z$")
-ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
-ax3.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
+ax1.set_ylabel(r"$Z$")
+ax3.set_ylabel(r"$Z$")
 
 handles, labels = ax3.get_legend_handles_labels()
 ax3.legend(handles, labels)
