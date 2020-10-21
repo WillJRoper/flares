@@ -350,7 +350,7 @@ ax.set_ylabel("sSFR (Extended) / SFR (Core)")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/aperture_sfr_evolution.png", bbox_inches="tight")
+fig.savefig("plots/aperture_ssfr_evolution.png", bbox_inches="tight")
 
 plt.close(fig)
 
