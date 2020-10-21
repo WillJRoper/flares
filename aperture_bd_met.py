@@ -162,18 +162,10 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
     # Define snapshots
     if eagle or ref:
-        pre_snaps = ['027_z000p101', '026_z000p500']
+        snaps = ['027_z000p101']
 
-        snaps = np.zeros(29, dtype=object)
-        for s in pre_snaps:
-            ind = int(s.split('_')[0])
-            snaps[ind] = s
-
-        snaps = list(snaps)[1:]
-        prog_snaps = snaps[:-1]
     else:
         snaps = ['011_z004p770', ]
-        prog_snaps = ['010_z005p000', ]
 
     bd_in = []
     bd_out = []
@@ -186,7 +178,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
     for reg in regions:
 
-        for snap, prog_snap in zip(snaps, prog_snaps):
+        for snap in snaps:
             
             if eagle:
                 path = "/cosma7/data//Eagle/ScienceRuns/Planck1/" \
@@ -202,8 +194,6 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
             z_str = snap.split('z')[1].split('p')
             z = float(z_str[0] + '.' + z_str[1])
-            z_str = prog_snap.split('z')[1].split('p')
-            z_prog = float(z_str[0] + '.' + z_str[1])
 
             # Get particle IDs
             try:
