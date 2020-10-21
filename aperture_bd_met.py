@@ -673,6 +673,7 @@ ax3.legend(handles, labels, fontsize=8)
 
 for ax in [ax1, ax2, ax3, ax4]:
     ax.set_xlim(0, 35)
+    ax.set_ylim(10**-2, 10**5.5)
 
 fig.savefig("plots/aperture_bd_evolution_split_sim.png", bbox_inches="tight")
 
@@ -910,6 +911,7 @@ ax3.legend(handles, labels, fontsize=8)
 
 for ax in [ax1, ax2, ax3, ax4]:
     ax.set_xlim(0, 35)
+    ax.set_ylim(10**-6, 10**-0.5)
 
 fig.savefig("plots/aperture_met_evolution_split_sim.png", bbox_inches="tight")
 
