@@ -18,24 +18,6 @@ import seaborn as sns
 
 sns.set_style("whitegrid")
 
-
-def calc_ages(z, a_born):
-
-    # Convert scale factor into redshift
-    z_borns = 1 / a_born - 1
-
-    # Convert to time in Gyrs
-    t = cosmo.age(z).value
-    t_born = np.zeros(len(a_born))
-    for ind, z_born in enumerate(z_borns):
-        t_born[ind] = cosmo.age(z_born).value
-
-    # Calculate the VR
-    ages = (t - t_born)
-
-    return ages
-
-
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
 
     bin_lims = [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6,
@@ -172,7 +154,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 40):
+        for reg in range(0, 1):
             if reg < 10:
                 regions.append('0' + str(reg))
             else:
@@ -208,10 +190,14 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                       '006_z009p000', '007_z008p000', '008_z007p000',
                       '009_z006p000', '010_z005p000']
 
-    sfr_in = []
-    sfr_out = []
-    zs = []
-    mass = []
+    bd_in = []
+    bd_out = []
+    met_in = []
+    met_out = []
+    zs_in = []
+    mass_in = []
+    zs_out = []
+    mass_out = []
 
     for reg in regions:
 
@@ -234,8 +220,24 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             z_str = prog_snap.split('z')[1].split('p')
             z_prog = float(z_str[0] + '.' + z_str[1])
 
+            # Get particle IDs
+            try:
+                halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
+            except ValueError:
+                print(reg, snap, "No data")
+                continue
+            except OSError:
+                print(reg, snap, "No data")
+                continue
+            except KeyError:
+                print(reg, snap, "No data")
+                continue
+
             # Get halo IDs and halo data
             try:
+                grp_ids = E.read_array('SUBFIND', path, snap,
+                                       'Subhalo/GroupNumber',
+                                       numThreads=8)
                 subgrp_ids = E.read_array('SUBFIND', path, snap,
                                           'Subhalo/SubGroupNumber',
                                           numThreads=8)
@@ -243,17 +245,23 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                                       'Subhalo/ApertureMeasurements/Mass/030kpc',
                                       noH=True, physicalUnits=True,
                                       numThreads=8)[:, 4] * 10**10
-                gal_ms1 = E.read_array('SUBFIND', path, snap,
-                                       'Subhalo/ApertureMeasurements/'
-                                       'Mass/001kpc',
-                                       noH=True, physicalUnits=True,
-                                       numThreads=8)[:, 4] * 10**10
-                sfr_1kpc = E.read_array('SUBFIND', path, snap,
-                                       'Subhalo/ApertureMeasurements/SFR/001kpc',
+                gal_cop = E.read_array('SUBFIND', path, snap,
+                                       'Subhalo/CentreOfPotential',
                                        noH=True, physicalUnits=True,
                                        numThreads=8)
-                sfr_30kpc = E.read_array('SUBFIND', path, snap,
-                                         'Subhalo/ApertureMeasurements/SFR/030kpc',
+
+                gal_bd = E.read_array('PARTDATA', path, snap,
+                                      'PartType4/BirthDensity', noH=True,
+                                        physicalUnits=True, numThreads=8)
+                gal_met = E.read_array('PARTDATA', path, snap,
+                                       'PartType4/Metallicity', noH=True,
+                                       physicalUnits=True, numThreads=8)
+                gal_coords = E.read_array('PARTDATA', path, snap,
+                                          'PartType4/Coordinates',
+                                          noH=True, physicalUnits=True,
+                                          numThreads=8)
+                gal_aborn = E.read_array('PARTDATA', path, snap,
+                                         'PartType4/StellarFormationTime',
                                          noH=True, physicalUnits=True,
                                          numThreads=8)
 
@@ -277,139 +285,202 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
             # Remove particles not associated to a subgroup
             okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > masslim)
-            sfr_1kpc = sfr_1kpc[okinds]
-            sfr_30kpc = sfr_30kpc[okinds]
+            grp_ids = grp_ids[okinds]
+            subgrp_ids = subgrp_ids[okinds]
+            gal_cop = gal_cop[okinds]
             gal_ms = gal_ms[okinds]
-            gal_ms1 = gal_ms1[okinds]
+            halo_ids = np.zeros(grp_ids.size, dtype=float)
+            for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
+                halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-            out = sfr_30kpc - sfr_1kpc
-            out[out <= 0] = 0
+            for halo, cop, m in zip(halo_ids, gal_cop, gal_ms):
 
-            mass_out = gal_ms - gal_ms1
-            mass_out[mass_out <= 0] = 0
+                # Add stars from these galaxies
+                part_inds = list(halo_part_inds[halo])
+                pos = gal_coords[part_inds, :] - cop
+                rs = np.linalg.norm(pos, axis=1) * 10**3
+                parts_bd = (gal_bd[part_inds] * 10**10
+                            * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
+                parts_met = gal_met[part_inds]
+                parts_aborn = gal_aborn[part_inds]
 
-            sfr_out.extend(out / mass_out)
-            sfr_in.extend(sfr_1kpc / gal_ms)
-            zs.extend(np.full(len(gal_ms), z))
-            mass.extend(gal_ms)
+                okinds1 = np.logical_and(rs <= 1,
+                                         (1 / parts_aborn) - 1 < z_prog)
+                okinds30 = np.logical_and(rs <= 30,
+                                          np.logical_and(rs > 1,
+                                                         (1 / parts_aborn)
+                                                         - 1 < z_prog))
 
-    return np.array(sfr_in), np.array(sfr_out), np.array(zs), np.array(mass)
+                bd_in.extend(parts_bd[okinds1])
+                bd_out.extend(parts_bd[okinds30])
+                met_in.extend(parts_met[okinds1])
+                met_out.extend(parts_met[okinds30])
 
-sfr_in, sfr_out, zs, masses = get_data(masslim=10**8)
+                zs_in.extend(np.full_like(parts_met[okinds1], z))
+                zs_out.extend(np.full_like(parts_met[okinds30], z))
 
-agndt9_sfr_in, agndt9_sfr_out, agndt9_zs, agndt9_masses = get_data(masslim=10**8, eagle=True)
+                mass_in.extend(np.full_like(parts_met[okinds1], m))
+                mass_out.extend(np.full_like(parts_met[okinds30], m))
 
-ref_sfr_in, ref_sfr_out, ref_zs, ref_masses = get_data(masslim=10**8, ref=True)
+    return np.array(bd_in), np.array(bd_out), \
+           np.array(met_in), np.array(met_out), \
+           np.array(zs_in), np.array(zs_out), \
+           np.array(mass_in), np.array(mass_out)
 
-sfrin_all = np.concatenate((sfr_in,
-                            agndt9_sfr_in,
-                            ref_sfr_in))
-sfrout_all = np.concatenate((sfr_out,
-                             agndt9_sfr_out,
-                             ref_sfr_out))
-zs_all = np.concatenate((zs, agndt9_zs, ref_zs))
+bd_in, bd_out, met_in, met_out, zs_in, zs_out, mass_in, mass_out = get_data(masslim=10**8)
 
-mass_all = np.concatenate((masses, agndt9_masses, ref_masses))
+agndt9_bd_in, agndt9_bd_out, agndt9_met_in, agndt9_met_out, agndt9_zs_in, agndt9_zs_out, agndt9_mass_in, agndt9_mass_out = get_data(masslim=10**8, eagle=True)
+
+ref_bd_in, ref_bd_out, ref_met_in, ref_met_out, ref_zs_in, ref_zs_out, ref_mass_in, ref_mass_out  = get_data(masslim=10**8, ref=True)
+
+bd_in_all = np.concatenate((bd_in,
+                            agndt9_bd_in,
+                            ref_bd_in))
+bd_out_all = np.concatenate((bd_out,
+                             agndt9_bd_out,
+                             ref_bd_out))
+bd_all = np.concatenate((bd_out_all, bd_in_all))
+
+met_in_all = np.concatenate((met_in,
+                            agndt9_met_in,
+                            ref_met_in))
+met_out_all = np.concatenate((met_out,
+                             agndt9_met_out,
+                             ref_met_out))
+met_all = np.concatenate((met_out_all, met_in_all))
+
+zs_in_all = np.concatenate((zs_in,
+                            agndt9_zs_in,
+                            ref_zs_in))
+zs_out_all = np.concatenate((zs_out,
+                             agndt9_zs_out,
+                             ref_zs_out))
+zs_all = np.concatenate((zs_out_all, zs_in_all))
+
+mass_in_all = np.concatenate((mass_in,
+                            agndt9_mass_in,
+                            ref_mass_in))
+mass_out_all = np.concatenate((mass_out,
+                             agndt9_mass_out,
+                             ref_mass_out))
+mass_all = np.concatenate((mass_out_all, mass_in_all))
 
 fig = plt.figure(figsize=(5, 9))
 ax = fig.add_subplot(111)
 
-okinds = np.logical_and(sfrout_all > 0, sfrin_all > 0)
-
-ax.hexbin(zs_all[okinds], sfrout_all[okinds] / sfrin_all[okinds],
-          gridsize=100, mincnt=1, yscale="log",
-          norm=LogNorm(), linewidths=0.2,
-          cmap='Greys', alpha=0.4)
-
-ax.axhline(1)
-
-okinds1 = np.logical_and(mass_all > 10**8, mass_all <= 10**9)
-okinds2 = np.logical_and(mass_all > 10**9, mass_all <= 10**9.5)
-okinds3 = np.logical_and(mass_all > 10**9.5, mass_all <= 10**10)
-okinds4 = mass_all > 10**10
-
-plot_meidan_stat(zs_all[okinds1], sfrout_all[okinds1] / sfrin_all[okinds1],
-                 ax, lab="$10^8 < M_\star/M_\odot \leq 10^9$",
-                 color='darkorange', bins=1)
-
-plot_meidan_stat(zs_all[okinds2], sfrout_all[okinds2] / sfrin_all[okinds2],
-                 ax, lab="$10^9 < M_\star/M_\odot \leq 10^{9.5}$",
-                 color='royalblue', bins=1, ls="dashed")
-
-plot_meidan_stat(zs_all[okinds3], sfrout_all[okinds3] / sfrin_all[okinds3],
-                 ax, lab="$10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
-                 color='limegreen', bins=1, ls="dashdot")
-
-plot_meidan_stat(zs_all[okinds4], sfrout_all[okinds4] / sfrin_all[okinds4],
-                 ax, lab="$10^{10} < M_\star/M_\odot$",
-                 color='magenta', bins=1, ls="dotted")
-
-ax.set_xlabel("$z$")
-ax.set_ylabel("sSFR (Extended) / SFR (Core)")
-
-handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels)
-
-fig.savefig("plots/aperture_ssfr_evolution.png", bbox_inches="tight")
-
-plt.close(fig)
-
-fig = plt.figure(figsize=(5, 5))
-ax = fig.add_subplot(111)
-
-combo_zs = np.concatenate((zs_all, zs_all))
-combo_sfr = np.concatenate((sfrin_all, sfrout_all))
-
-okinds = combo_sfr > 0
-
-ax.hexbin(combo_zs[okinds], combo_sfr[okinds],
+ax.hexbin(zs_all, bd_all,
           gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.01)
 
-okinds1 = np.logical_and(mass_all > 10**8, mass_all <= 10**9)
-okinds2 = np.logical_and(mass_all > 10**9, mass_all <= 10**9.5)
-okinds3 = np.logical_and(mass_all > 10**9.5, mass_all <= 10**10)
-okinds4 = mass_all > 10**10
+okinds1in = np.logical_and(mass_in_all > 10**8, mass_in_all <= 10**9)
+okinds2in = np.logical_and(mass_in_all > 10**9, mass_in_all <= 10**9.5)
+okinds3in = np.logical_and(mass_in_all > 10**9.5, mass_in_all <= 10**10)
+okinds4in = mass_in_all > 10**10
+okinds1out = np.logical_and(mass_out_all > 10**8, mass_out_all <= 10**9)
+okinds2out = np.logical_and(mass_out_all > 10**9, mass_out_all <= 10**9.5)
+okinds3out = np.logical_and(mass_out_all > 10**9.5, mass_out_all <= 10**10)
+okinds4out = mass_out_all > 10**10
 
-plot_meidan_stat(zs_all[okinds1], sfrout_all[okinds1],
-                 ax, lab="Out: $10^8 < M_\star/M_\odot \leq 10^9$",
+plot_meidan_stat(zs_out_all[okinds1out], bd_out_all[okinds1out],
+                 ax, lab="Out: $10^8 < M/M_\odot \leq 10^9$",
                  color='darkorange', bins=1, ls="dashed")
 
-plot_meidan_stat(zs_all[okinds2], sfrout_all[okinds2],
-                 ax, lab="Out: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+plot_meidan_stat(zs_out_all[okinds2out], bd_out_all[okinds2out],
+                 ax, lab="Out: $10^9 < M/M_\odot \leq 10^{9.5}$",
                  color='royalblue', bins=1, ls="dashed")
 
-plot_meidan_stat(zs_all[okinds3], sfrout_all[okinds3],
-                 ax, lab="Out: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+plot_meidan_stat(zs_out_all[okinds3out], bd_out_all[okinds3out],
+                 ax, lab="Out: $10^{9.5} < M/M_\odot \leq 10^{10}$",
                  color='limegreen', bins=1, ls="dashed")
 
-plot_meidan_stat(zs_all[okinds4], sfrout_all[okinds4],
-                 ax, lab="Out: $10^{10} < M_\star/M_\odot$",
+plot_meidan_stat(zs_out_all[okinds4out], bd_out_all[okinds4out],
+                 ax, lab="Out: $10^{10} < M/M_\odot$",
                  color='magenta', bins=1, ls="dashed")
 
-plot_meidan_stat(zs_all[okinds1], sfrin_all[okinds1],
-                 ax, lab="In: $10^8 < M_\star/M_\odot \leq 10^9$",
+plot_meidan_stat(zs_in_all[okinds1in], bd_in_all[okinds1in],
+                 ax, lab="In: $10^8 < M/M_\odot \leq 10^9$",
                  color='darkorange', bins=1)
 
-plot_meidan_stat(zs_all[okinds2], sfrin_all[okinds2],
-                 ax, lab="In: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+plot_meidan_stat(zs_in_all[okinds2in], bd_in_all[okinds2in],
+                 ax, lab="In: $10^9 < M/M_\odot \leq 10^{9.5}$",
                  color='royalblue', bins=1)
 
-plot_meidan_stat(zs_all[okinds3], sfrin_all[okinds3],
-                 ax, lab="In: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+plot_meidan_stat(zs_in_all[okinds3in], bd_in_all[okinds3in],
+                 ax, lab="In: $10^{9.5} < M/M_\odot \leq 10^{10}$",
                  color='limegreen', bins=1)
 
-plot_meidan_stat(zs_all[okinds4], sfrin_all[okinds4],
-                 ax, lab="In: $10^{10} < M_\star/M_\odot$",
+plot_meidan_stat(zs_in_all[okinds4in], bd_in_all[okinds4in],
+                 ax, lab="In: $10^{10} < M/M_\odot$",
                  color='magenta', bins=1)
 
 ax.set_xlabel("$z$")
-ax.set_ylabel("sSFR / $M_\odot$ yr$^{-1}$")
+ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels, ncol=2, loc="lower right")
+ax.legend(handles, labels)
 
-fig.savefig("plots/aperture_ssfr_evolution_split.png", bbox_inches="tight")
+fig.savefig("plots/aperture_bd_evolution_split.png", bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure(figsize=(5, 9))
+ax = fig.add_subplot(111)
+
+okinds = met_all > 0
+
+ax.hexbin(zs_all[okinds], met_all[okinds],
+          gridsize=100, mincnt=1, yscale="log",
+          norm=LogNorm(), linewidths=0.2,
+          cmap='Greys', alpha=0.01)
+
+okinds1in = np.logical_and(mass_in_all > 10**8, mass_in_all <= 10**9)
+okinds2in = np.logical_and(mass_in_all > 10**9, mass_in_all <= 10**9.5)
+okinds3in = np.logical_and(mass_in_all > 10**9.5, mass_in_all <= 10**10)
+okinds4in = mass_in_all > 10**10
+okinds1out = np.logical_and(mass_out_all > 10**8, mass_out_all <= 10**9)
+okinds2out = np.logical_and(mass_out_all > 10**9, mass_out_all <= 10**9.5)
+okinds3out = np.logical_and(mass_out_all > 10**9.5, mass_out_all <= 10**10)
+okinds4out = mass_out_all > 10**10
+
+plot_meidan_stat(zs_out_all[okinds1out], met_out_all[okinds1out],
+                 ax, lab="Out: $10^8 < M/M_\odot \leq 10^9$",
+                 color='darkorange', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_out_all[okinds2out], met_out_all[okinds2out],
+                 ax, lab="Out: $10^9 < M/M_\odot \leq 10^{9.5}$",
+                 color='royalblue', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_out_all[okinds3out], met_out_all[okinds3out],
+                 ax, lab="Out: $10^{9.5} < M/M_\odot \leq 10^{10}$",
+                 color='limegreen', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_out_all[okinds4out], met_out_all[okinds4out],
+                 ax, lab="Out: $10^{10} < M/M_\odot$",
+                 color='magenta', bins=1, ls="dashed")
+
+plot_meidan_stat(zs_in_all[okinds1in], met_in_all[okinds1in],
+                 ax, lab="In: $10^8 < M/M_\odot \leq 10^9$",
+                 color='darkorange', bins=1)
+
+plot_meidan_stat(zs_in_all[okinds2in], met_in_all[okinds2in],
+                 ax, lab="In: $10^9 < M/M_\odot \leq 10^{9.5}$",
+                 color='royalblue', bins=1)
+
+plot_meidan_stat(zs_in_all[okinds3in], met_in_all[okinds3in],
+                 ax, lab="In: $10^{9.5} < M/M_\odot \leq 10^{10}$",
+                 color='limegreen', bins=1)
+
+plot_meidan_stat(zs_in_all[okinds4in], met_in_all[okinds4in],
+                 ax, lab="In: $10^{10} < M/M_\odot$",
+                 color='magenta', bins=1)
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$Z$")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
+
+fig.savefig("plots/aperture_met_evolution_split.png", bbox_inches="tight")
 
 plt.close(fig)

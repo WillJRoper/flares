@@ -162,16 +162,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
     # Define snapshots
     if eagle or ref:
-        pre_snaps = ['000_z0100p000', '003_z008p988', '006_z005p971',
-                     '009_z004p485', '012_z003p017', '015_z002p012',
-                     '018_z001p259', '021_z000p736', '024_z000p366',
-                     '027_z000p101', '001_z015p132', '004_z008p075',
-                     '007_z005p487', '010_z003p984', '013_z002p478',
-                     '016_z001p737', '019_z001p004', '022_z000p615',
-                     '025_z000p271', '028_z000p000', '002_z009p993',
-                     '005_z007p050', '008_z005p037', '011_z003p528',
-                     '014_z002p237', '017_z001p487', '020_z000p865',
-                     '023_z000p503', '026_z000p183']
+        pre_snaps = ['027_z000p101', '026_z000p500']
 
         snaps = np.zeros(29, dtype=object)
         for s in pre_snaps:
@@ -181,14 +172,8 @@ def get_data(masslim=1e8, eagle=False, ref=False):
         snaps = list(snaps)[1:]
         prog_snaps = snaps[:-1]
     else:
-        snaps = ['001_z014p000', '002_z013p000', '003_z012p000',
-                 '004_z011p000', '005_z010p000',
-                 '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000',
-                 '010_z005p000', '011_z004p770']
-        prog_snaps = ['000_z0100p000', '001_z014p000', '002_z013p000',
-                      '003_z012p000', '004_z011p000', '005_z010p000',
-                      '006_z009p000', '007_z008p000', '008_z007p000',
-                      '009_z006p000', '010_z005p000']
+        snaps = ['011_z004p770', ]
+        prog_snaps = ['010_z005p000', ]
 
     bd_in = []
     bd_out = []
@@ -304,20 +289,16 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
 
-                okinds1 = np.logical_and(rs <= 1,
-                                         (1 / parts_aborn) - 1 < z_prog)
-                okinds30 = np.logical_and(rs <= 30,
-                                          np.logical_and(rs > 1,
-                                                         (1 / parts_aborn)
-                                                         - 1 < z_prog))
+                okinds1 = rs <= 1
+                okinds30 = np.logical_and(rs <= 30, rs > 1)
 
                 bd_in.extend(parts_bd[okinds1])
                 bd_out.extend(parts_bd[okinds30])
                 met_in.extend(parts_met[okinds1])
                 met_out.extend(parts_met[okinds30])
 
-                zs_in.extend(np.full_like(parts_met[okinds1], z))
-                zs_out.extend(np.full_like(parts_met[okinds30], z))
+                zs_in.extend((1 / parts_aborn[okinds1]) - 1)
+                zs_out.extend((1 / parts_aborn[okinds30]) - 1)
 
                 mass_in.extend(np.full_like(parts_met[okinds1], m))
                 mass_out.extend(np.full_like(parts_met[okinds30], m))
@@ -432,7 +413,7 @@ okinds = met_all > 0
 ax.hexbin(zs_all[okinds], met_all[okinds],
           gridsize=100, mincnt=1, yscale="log",
           norm=LogNorm(), linewidths=0.2,
-          cmap='Greys', alpha=0.01)
+          cmap='Greys', alpha=0.4)
 
 okinds1in = np.logical_and(mass_in_all > 10**8, mass_in_all <= 10**9)
 okinds2in = np.logical_and(mass_in_all > 10**9, mass_in_all <= 10**9.5)

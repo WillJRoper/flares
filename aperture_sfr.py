@@ -320,19 +320,19 @@ okinds3 = np.logical_and(mass_all > 10**9.5, mass_all <= 10**10)
 okinds4 = mass_all > 10**10
 
 plot_meidan_stat(zs_all[okinds1], sfrout_all[okinds1] / sfrin_all[okinds1],
-                 ax, lab="$10^8 < M/M_\odot \leq 10^9$",
+                 ax, lab="$10^8 < M_\star/M_\odot \leq 10^9$",
                  color='darkorange', bins=1)
 
 plot_meidan_stat(zs_all[okinds2], sfrout_all[okinds2] / sfrin_all[okinds2],
-                 ax, lab="$10^9 < M/M_\odot \leq 10^{9.5}$",
+                 ax, lab="$10^9 < M_\star/M_\odot \leq 10^{9.5}$",
                  color='royalblue', bins=1, ls="dashed")
 
 plot_meidan_stat(zs_all[okinds3], sfrout_all[okinds3] / sfrin_all[okinds3],
-                 ax, lab="$10^{9.5} < M/M_\odot \leq 10^{10}$",
+                 ax, lab="$10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
                  color='limegreen', bins=1, ls="dashdot")
 
 plot_meidan_stat(zs_all[okinds4], sfrout_all[okinds4] / sfrin_all[okinds4],
-                 ax, lab="$10^{10} < M/M_\odot$",
+                 ax, lab="$10^{10} < M_\star/M_\odot$",
                  color='magenta', bins=1, ls="dotted")
 
 ax.set_xlabel("$z$")
@@ -364,42 +364,42 @@ okinds3 = np.logical_and(mass_all > 10**9.5, mass_all <= 10**10)
 okinds4 = mass_all > 10**10
 
 plot_meidan_stat(zs_all[okinds1], sfrout_all[okinds1],
-                 ax, lab="Out: $10^8 < M/M_\odot \leq 10^9$",
+                 ax, lab="Out: $10^8 < M_\star/M_\odot \leq 10^9$",
                  color='darkorange', bins=1, ls="dashed")
 
 plot_meidan_stat(zs_all[okinds2], sfrout_all[okinds2],
-                 ax, lab="Out: $10^9 < M/M_\odot \leq 10^{9.5}$",
+                 ax, lab="Out: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
                  color='royalblue', bins=1, ls="dashed")
 
 plot_meidan_stat(zs_all[okinds3], sfrout_all[okinds3],
-                 ax, lab="Out: $10^{9.5} < M/M_\odot \leq 10^{10}$",
+                 ax, lab="Out: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
                  color='limegreen', bins=1, ls="dashed")
 
 plot_meidan_stat(zs_all[okinds4], sfrout_all[okinds4],
-                 ax, lab="Out: $10^{10} < M/M_\odot$",
+                 ax, lab="Out: $10^{10} < M_\star/M_\odot$",
                  color='magenta', bins=1, ls="dashed")
 
 plot_meidan_stat(zs_all[okinds1], sfrin_all[okinds1],
-                 ax, lab="In: $10^8 < M/M_\odot \leq 10^9$",
+                 ax, lab="In: $10^8 < M_\star/M_\odot \leq 10^9$",
                  color='darkorange', bins=1)
 
 plot_meidan_stat(zs_all[okinds2], sfrin_all[okinds2],
-                 ax, lab="In: $10^9 < M/M_\odot \leq 10^{9.5}$",
+                 ax, lab="In: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
                  color='royalblue', bins=1)
 
 plot_meidan_stat(zs_all[okinds3], sfrin_all[okinds3],
-                 ax, lab="In: $10^{9.5} < M/M_\odot \leq 10^{10}$",
+                 ax, lab="In: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
                  color='limegreen', bins=1)
 
 plot_meidan_stat(zs_all[okinds4], sfrin_all[okinds4],
-                 ax, lab="In: $10^{10} < M/M_\odot$",
+                 ax, lab="In: $10^{10} < M_\star/M_\odot$",
                  color='magenta', bins=1)
 
 ax.set_xlabel("$z$")
 ax.set_ylabel("SFR / $M_\odot$ yr$^{-1}$")
 
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels)
+ax.legend(handles, labels, ncol=2, loc="lower right")
 
 fig.savefig("plots/aperture_sfr_evolution_split.png", bbox_inches="tight")
 
