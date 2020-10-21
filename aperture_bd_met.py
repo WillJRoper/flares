@@ -669,7 +669,10 @@ ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 ax3.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax3.get_legend_handles_labels()
-ax3.legend(handles, labels)
+ax3.legend(handles, labels, fontsize=8)
+
+for ax in [ax1, ax2, ax3, ax4]:
+    ax.set_xlim(0, 35)
 
 fig.savefig("plots/aperture_bd_evolution_split_sim.png", bbox_inches="tight")
 
@@ -903,7 +906,10 @@ ax1.set_ylabel(r"$Z$")
 ax3.set_ylabel(r"$Z$")
 
 handles, labels = ax3.get_legend_handles_labels()
-ax3.legend(handles, labels)
+ax3.legend(handles, labels, fontsize=8)
+
+for ax in [ax1, ax2, ax3, ax4]:
+    ax.set_xlim(0, 35)
 
 fig.savefig("plots/aperture_met_evolution_split_sim.png", bbox_inches="tight")
 
