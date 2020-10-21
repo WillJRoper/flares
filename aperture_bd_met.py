@@ -376,7 +376,7 @@ ax.hexbin(zs_all, bd_all,
 okinds1in = np.logical_and(mass_in_all > 10**8, mass_in_all <= 10**9)
 okinds2in = np.logical_and(mass_in_all > 10**9, mass_in_all <= 10**9.5)
 okinds3in = np.logical_and(mass_in_all > 10**9.5, mass_in_all <= 10**10)
-okinds4in = mass_all > 10**10
+okinds4in = mass_in_all > 10**10
 okinds1out = np.logical_and(mass_out_all > 10**8, mass_out_all <= 10**9)
 okinds2out = np.logical_and(mass_out_all > 10**9, mass_out_all <= 10**9.5)
 okinds3out = np.logical_and(mass_out_all > 10**9.5, mass_out_all <= 10**10)
@@ -437,7 +437,7 @@ ax.hexbin(zs_all[okinds], met_all[okinds],
 okinds1in = np.logical_and(mass_in_all > 10**8, mass_in_all <= 10**9)
 okinds2in = np.logical_and(mass_in_all > 10**9, mass_in_all <= 10**9.5)
 okinds3in = np.logical_and(mass_in_all > 10**9.5, mass_in_all <= 10**10)
-okinds4in = mass_all > 10**10
+okinds4in = mass_in_all > 10**10
 okinds1out = np.logical_and(mass_out_all > 10**8, mass_out_all <= 10**9)
 okinds2out = np.logical_and(mass_out_all > 10**9, mass_out_all <= 10**9.5)
 okinds3out = np.logical_and(mass_out_all > 10**9.5, mass_out_all <= 10**10)
