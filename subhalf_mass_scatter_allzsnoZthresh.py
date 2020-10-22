@@ -20,6 +20,7 @@ snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
          '019_z001p004', '020_z000p865', '027_z000p101']
 path = "/cosma7/data/Eagle/ScienceRuns/Planck1/L0025N0376/" \
                        "PE/EagleVariation_NoZDEPSFthresh/data"
+path2 = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
 axlims_x = []
 axlims_y = []
 
