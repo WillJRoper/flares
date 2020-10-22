@@ -20,9 +20,11 @@ sns.set_style("whitegrid")
 
 def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
 
-    bin_lims = [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6,
-                1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5,
-                6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 20.0]
+    # bin_lims = [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6,
+    #             1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5,
+    #             6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 20.0]
+
+    bin_lims = np.linspace(0, 25.0, 30)
 
     bin_cents = []
     y_stat = []
@@ -666,14 +668,24 @@ ax4.text(0.8, 0.9, "REFERENCE",
 ax2.set_xlabel("$z$")
 ax4.set_xlabel("$z$")
 ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
-ax3.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
+ax2.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax3.get_legend_handles_labels()
-ax3.legend(handles, labels, fontsize=8)
+ax3.legend(handles, labels, fontsize=6)
 
 for ax in [ax1, ax2, ax3, ax4]:
     ax.set_xlim(0, 35)
     ax.set_ylim(10**-2, 10**5.5)
+
+# Remove axis labels
+ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False,
+                labelbottom=False)
+ax3.tick_params(axis='both', left=False, top=False, right=False,
+                bottom=False,
+                labelleft=False, labeltop=False,
+                labelright=False, labelbottom=False)
+ax4.tick_params(axis='y', left=False, right=False, labelleft=False,
+                labelright=False)
 
 fig.savefig("plots/aperture_bd_evolution_split_sim.png", bbox_inches="tight")
 
@@ -904,14 +916,23 @@ ax4.text(0.8, 0.9, "REFERENCE",
 ax2.set_xlabel("$z$")
 ax4.set_xlabel("$z$")
 ax1.set_ylabel(r"$Z$")
-ax3.set_ylabel(r"$Z$")
+ax2.set_ylabel(r"$Z$")
 
 handles, labels = ax3.get_legend_handles_labels()
-ax3.legend(handles, labels, fontsize=8)
+ax3.legend(handles, labels, fontsize=6)
 
 for ax in [ax1, ax2, ax3, ax4]:
     ax.set_xlim(0, 35)
     ax.set_ylim(10**-6, 10**-0.5)
+
+# Remove axis labels
+ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False,
+                labelbottom=False)
+ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False,
+                labelleft=False, labeltop=False,
+                labelright=False, labelbottom=False)
+ax4.tick_params(axis='y', left=False, right=False, labelleft=False,
+                labelright=False)
 
 fig.savefig("plots/aperture_met_evolution_split_sim.png", bbox_inches="tight")
 
