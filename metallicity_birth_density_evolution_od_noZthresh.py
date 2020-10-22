@@ -443,8 +443,6 @@ ax.set_ylabel(r"$Z$")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc="lower right")
 
-ax.set_yscale("log")
-
 fig.savefig("plots/stellarmet_z_evolution_od_noZthresh.png", bbox_inches="tight")
 
 plt.close(fig)
