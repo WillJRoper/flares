@@ -150,7 +150,7 @@ def get_data(eagle=False, ref=False):
             
             if eagle:
                 path = "/cosma7/data/Eagle/ScienceRuns/Planck1/L0025N0376/" \
-                       "PE/EagleVariation_NoZDEPSFthresh"
+                       "PE/EagleVariation_NoZDEPSFthresh/data"
 
             elif ref:
                 path = "/cosma7/data//Eagle/ScienceRuns/Planck1/" \
