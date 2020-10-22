@@ -408,7 +408,7 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-ax.hexbin(zs_all, fth_all, gridsize=100, mincnt=1, yscale="log", 
+ax.hexbin(zs_all, fth_all, gridsize=100, mincnt=1,
           norm=LogNorm(), linewidths=0.2, cmap="Greys", alpha=0.4)
 
 plot_meidan_stat(np.array(zs_all), np.array(fth_all), ax,
