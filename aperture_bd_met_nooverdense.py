@@ -399,7 +399,7 @@ ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/aperture_bd_evolution_split.png", bbox_inches="tight")
+fig.savefig("plots/aperture_bd_evolution_split_nooverdense.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -462,7 +462,7 @@ ax.legend(handles, labels)
 
 ax.set_ylim(10**-10, None)
 
-fig.savefig("plots/aperture_met_evolution_split.png", bbox_inches="tight")
+fig.savefig("plots/aperture_met_evolution_split_nooverdense.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -693,7 +693,7 @@ ax3.tick_params(axis='both', left=False, top=False, right=False,
 ax4.tick_params(axis='y', left=False, right=False, labelleft=False,
                 labelright=False)
 
-fig.savefig("plots/aperture_bd_evolution_split_sim.png", bbox_inches="tight")
+fig.savefig("plots/aperture_bd_evolution_split_sim_nooverdense.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -940,7 +940,7 @@ ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False,
 ax4.tick_params(axis='y', left=False, right=False, labelleft=False,
                 labelright=False)
 
-fig.savefig("plots/aperture_met_evolution_split_sim.png", bbox_inches="tight")
+fig.savefig("plots/aperture_met_evolution_split_sim_nooverdense.png", bbox_inches="tight")
 
 plt.close(fig)
 
