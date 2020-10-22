@@ -286,7 +286,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 parts_aborn = gal_aborn[part_inds]
 
                 okinds1 = rs <= hmr
-                okinds30 = np.logical_and(rs <= hmr, rs > hmr)
+                okinds30 = np.logical_and(rs <= 30, rs > hmr)
 
                 bd_in.extend(parts_bd[okinds1])
                 bd_out.extend(parts_bd[okinds30])
