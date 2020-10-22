@@ -24,7 +24,7 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
     #             1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5,
     #             6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 20.0]
 
-    bin_lims = np.linspace(0, 25.0, 20)
+    bin_lims = np.linspace(0, 25.0, 30)
 
     bin_cents = []
     y_stat = []
@@ -162,12 +162,6 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             else:
                 regions.append(str(reg))
 
-        ovds = np.loadtxt("region_overdensity.txt", dtype=float)
-
-        regions = np.array(regions)
-        okinds = ovds < 0.1
-        regions = regions[okinds]
-
     # Define snapshots
     if eagle or ref:
         snaps = ['027_z000p101']
@@ -232,6 +226,10 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                                        'Subhalo/CentreOfPotential',
                                        noH=True, physicalUnits=True,
                                        numThreads=8)
+                gal_hmr = E.read_array('SUBFIND', path, snap, 
+                                       'Subhalo/HalfMassRad',
+                                       noH=True,
+                                       numThreads=8)[:, 4] * 1e3
 
                 gal_bd = E.read_array('PARTDATA', path, snap,
                                       'PartType4/BirthDensity', noH=True,
@@ -276,7 +274,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                 halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-            for halo, cop, m in zip(halo_ids, gal_cop, gal_ms):
+            for halo, cop, m, hmr in zip(halo_ids, gal_cop, gal_ms, gal_hmr):
 
                 # Add stars from these galaxies
                 part_inds = list(halo_part_inds[halo])
@@ -287,8 +285,8 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 parts_met = gal_met[part_inds]
                 parts_aborn = gal_aborn[part_inds]
 
-                okinds1 = rs <= 1
-                okinds30 = np.logical_and(rs <= 30, rs > 1)
+                okinds1 = rs <= hmr
+                okinds30 = np.logical_and(rs <= hmr, rs > hmr)
 
                 bd_in.extend(parts_bd[okinds1])
                 bd_out.extend(parts_bd[okinds30])
@@ -399,7 +397,7 @@ ax.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/aperture_bd_evolution_split_nooverdense.png", bbox_inches="tight")
+fig.savefig("plots/aperture_bd_evolution_split_hmr.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -462,7 +460,7 @@ ax.legend(handles, labels)
 
 ax.set_ylim(10**-10, None)
 
-fig.savefig("plots/aperture_met_evolution_split_nooverdense.png", bbox_inches="tight")
+fig.savefig("plots/aperture_met_evolution_split_hmr.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -677,7 +675,7 @@ ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 ax2.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax3.get_legend_handles_labels()
-ax3.legend(handles, labels, fontsize=6, loc="lower right")
+ax3.legend(handles, labels, fontsize=6)
 
 for ax in [ax1, ax2, ax3, ax4]:
     ax.set_xlim(0, 35)
@@ -693,7 +691,7 @@ ax3.tick_params(axis='both', left=False, top=False, right=False,
 ax4.tick_params(axis='y', left=False, right=False, labelleft=False,
                 labelright=False)
 
-fig.savefig("plots/aperture_bd_evolution_split_sim_nooverdense.png", bbox_inches="tight")
+fig.savefig("plots/aperture_bd_evolution_split_sim_hmr.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -925,7 +923,7 @@ ax1.set_ylabel(r"$Z$")
 ax2.set_ylabel(r"$Z$")
 
 handles, labels = ax3.get_legend_handles_labels()
-ax3.legend(handles, labels, fontsize=6, loc="lower right")
+ax3.legend(handles, labels, fontsize=6)
 
 for ax in [ax1, ax2, ax3, ax4]:
     ax.set_xlim(0, 35)
@@ -940,7 +938,7 @@ ax3.tick_params(axis='both', left=False, top=False, right=False, bottom=False,
 ax4.tick_params(axis='y', left=False, right=False, labelleft=False,
                 labelright=False)
 
-fig.savefig("plots/aperture_met_evolution_split_sim_nooverdense.png", bbox_inches="tight")
+fig.savefig("plots/aperture_met_evolution_split_sim_hmr.png", bbox_inches="tight")
 
 plt.close(fig)
 
