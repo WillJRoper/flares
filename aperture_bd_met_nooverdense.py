@@ -165,7 +165,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
         ovds = np.loadtxt("region_overdensity.txt", dtype=float)
 
         regions = np.array(regions)
-        okinds = ovds < 0.1
+        okinds = ovds < 0.04
         regions = regions[okinds]
 
     # Define snapshots
