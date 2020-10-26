@@ -173,14 +173,14 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                      '014_z002p237', '017_z001p487', '020_z000p865',
                      '023_z000p503', '026_z000p183']
 
-        snaps = np.zeros(29, dtype=object)
+        ini_snaps = np.zeros(29, dtype=object)
         for s in pre_snaps:
             ind = int(s.split('_')[0])
-            snaps[ind] = s
+            ini_snaps[ind] = s
 
-        snaps = list(snaps)[1:]
-        prog_snaps = snaps[:-1]
-        print(snaps, prog_snaps)
+        snaps = list(ini_snaps)[1:]
+        prog_snaps = list(ini_snaps)[:-1]
+
     else:
         snaps = ['001_z014p000', '002_z013p000', '003_z012p000',
                  '004_z011p000', '005_z010p000',
