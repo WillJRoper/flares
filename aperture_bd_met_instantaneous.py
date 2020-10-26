@@ -180,6 +180,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
         snaps = list(snaps)[1:]
         prog_snaps = snaps[:-1]
+        print(snaps, prog_snaps)
     else:
         snaps = ['001_z014p000', '002_z013p000', '003_z012p000',
                  '004_z011p000', '005_z010p000',
