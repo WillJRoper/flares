@@ -365,7 +365,7 @@ mass_out_all = np.concatenate((mass_out,
                              ref_mass_out))
 mass_all = np.concatenate((mass_out_all, mass_in_all))
 
-fig = plt.figure(figsize=(5, 9))
+fig = plt.figure()
 ax = fig.add_subplot(111)
 
 ax.hexbin(zs_all, bd_all,
@@ -424,7 +424,7 @@ fig.savefig("plots/aperture_bd_evolution_split.png", bbox_inches="tight")
 
 plt.close(fig)
 
-fig = plt.figure(figsize=(5, 9))
+fig = plt.figure()
 ax = fig.add_subplot(111)
 
 okinds = met_all > 0
@@ -950,7 +950,7 @@ ax3.legend(handles, labels, fontsize=6, loc="lower right")
 
 for ax in [ax1, ax2, ax3, ax4]:
     ax.set_xlim(0, 25)
-    ax.set_ylim(10**-6, 10**-0.5)
+    ax.set_ylim(10**-4, 10**-0.5)
 
 # Remove axis labels
 ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False,
