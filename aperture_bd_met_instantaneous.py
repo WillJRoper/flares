@@ -316,8 +316,8 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 met_in.extend(parts_met[okinds1])
                 met_out.extend(parts_met[okinds30])
 
-                zs_in.extend(np.full_like(parts_met[okinds1], z))
-                zs_out.extend(np.full_like(parts_met[okinds30], z))
+                zs_in.extend((1 / parts_aborn[okinds1]) - 1)
+                zs_out.extend((1 / parts_aborn[okinds30]) - 1)
 
                 mass_in.extend(np.full_like(parts_met[okinds1], m))
                 mass_out.extend(np.full_like(parts_met[okinds30], m))
@@ -698,10 +698,10 @@ ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 ax2.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
 
 handles, labels = ax3.get_legend_handles_labels()
-ax3.legend(handles, labels, fontsize=6)
+ax3.legend(handles, labels, fontsize=6, loc="lower right")
 
 for ax in [ax1, ax2, ax3, ax4]:
-    ax.set_xlim(0, 35)
+    ax.set_xlim(0, 25)
     ax.set_ylim(10**-2, 10**5.5)
 
 # Remove axis labels
@@ -946,10 +946,10 @@ ax1.set_ylabel(r"$Z$")
 ax2.set_ylabel(r"$Z$")
 
 handles, labels = ax3.get_legend_handles_labels()
-ax3.legend(handles, labels, fontsize=6)
+ax3.legend(handles, labels, fontsize=6, loc="lower right")
 
 for ax in [ax1, ax2, ax3, ax4]:
-    ax.set_xlim(0, 35)
+    ax.set_xlim(0, 25)
     ax.set_ylim(10**-6, 10**-0.5)
 
 # Remove axis labels
