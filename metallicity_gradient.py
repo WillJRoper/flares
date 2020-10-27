@@ -306,16 +306,16 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 # okinds = np.logical_and(rs <= 1,
                 #                          (1 / parts_aborn) - 1 < z_prog)
                 
-                popt, pcov = curve_fit(strt_fit, rs, np.log10(parts_met),
+                popt, pcov = curve_fit(strt_fit, np.log10(rs), np.log10(parts_met),
                                        p0=(-0.5, 0))
                 
                 fig = plt.figure()
                 ax = fig.add_subplot(111)
 
-                ax.hexbin(rs, np.log10(parts_met),
+                ax.hexbin(np.log10(rs), np.log10(parts_met),
                           gridsize=100, mincnt=1,
                           norm=LogNorm(), linewidths=0.2, cmap='Greys')
-                xs = np.linspace(0, 30, 100)
+                xs = np.log10(np.linspace(0, 30, 100))
                 ax.plot(xs, strt_fit(xs, popt[0], popt[1]), linestyle="--")
                 
                 ax.set_xlabel("$R$")
