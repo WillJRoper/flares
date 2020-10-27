@@ -153,7 +153,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 40):
+        for reg in range(0, 1):
             if reg < 10:
                 regions.append('0' + str(reg))
             else:
@@ -308,23 +308,6 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 
                 popt, pcov = curve_fit(strt_fit, np.log10(rs), np.log10(parts_met),
                                        p0=(-0.5, 0))
-                
-                fig = plt.figure()
-                ax = fig.add_subplot(111)
-
-                ax.hexbin(np.log10(rs), np.log10(parts_met),
-                          gridsize=100, mincnt=1,
-                          norm=LogNorm(), linewidths=0.2, cmap='Greys')
-                xs = np.log10(np.linspace(0, 30, 100))
-                ax.plot(xs, strt_fit(xs, popt[0], popt[1]), linestyle="--")
-                
-                ax.set_xlabel("$R$")
-                ax.set_ylabel("$Z$")
-                
-                fig.savefig("plots/metprof_%.1f.png" % np.log10(m), 
-                            bbox_inches="tight")
-                
-                plt.close(fig)
 
                 met_grads.append(popt[0])
 
