@@ -299,15 +299,20 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 parts_met = gal_met[part_inds]
                 # parts_aborn = gal_aborn[part_inds]
 
+                okinds = parts_met > 0
+                parts_met = parts_met[okinds]
+                rs = rs[okinds]
+
                 # okinds = np.logical_and(rs <= 1,
                 #                          (1 / parts_aborn) - 1 < z_prog)
                 
-                popt, pcov = curve_fit(strt_fit, rs, parts_met, p0=(-0.5, 0))
+                popt, pcov = curve_fit(strt_fit, rs, np.log10(parts_met),
+                                       p0=(-0.5, 0))
                 
                 fig = plt.figure()
                 ax = fig.add_subplot(111)
 
-                ax.hexbin(rs, parts_met,
+                ax.hexbin(rs, np.log10(parts_met),
                           gridsize=100, mincnt=1,
                           norm=LogNorm(), linewidths=0.2, cmap='Greys')
                 xs = np.linspace(0, 30, 100)
