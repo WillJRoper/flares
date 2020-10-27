@@ -309,9 +309,9 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
                 ax.hexbin(rs, parts_met,
                           gridsize=100, mincnt=1,
-                          norm=LogNorm(), linewidths=0.2, cmap='Greys',
-                          alpha=0.4)
-                ax.plot(rs, strt_fit(rs, popt[0], popt[1]), linestyle="--")
+                          norm=LogNorm(), linewidths=0.2, cmap='Greys')
+                xs = np.linspace(0, 30, 100)
+                ax.plot(xs, strt_fit(xs, popt[0], popt[1]), linestyle="--")
                 
                 ax.set_xlabel("$R$")
                 ax.set_ylabel("$Z$")
