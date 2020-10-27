@@ -143,7 +143,7 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
     return halo_part_inds
 
 
-def fit(x, m, c):
+def strt_fit(x, m, c):
     return m * x + c
 
 
@@ -245,9 +245,9 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                                        noH=True, physicalUnits=True,
                                        numThreads=8)
 
-                gal_bd = E.read_array('PARTDATA', path, snap,
-                                      'PartType4/BirthDensity', noH=True,
-                                        physicalUnits=True, numThreads=8)
+                # gal_bd = E.read_array('PARTDATA', path, snap,
+                #                       'PartType4/BirthDensity', noH=True,
+                #                         physicalUnits=True, numThreads=8)
                 gal_met = E.read_array('PARTDATA', path, snap,
                                        'PartType4/Metallicity', noH=True,
                                        physicalUnits=True, numThreads=8)
@@ -294,15 +294,15 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 part_inds = list(halo_part_inds[halo])
                 pos = gal_coords[part_inds, :] - cop
                 rs = np.linalg.norm(pos, axis=1) * 10**3
-                parts_bd = (gal_bd[part_inds] * 10**10
-                            * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
+                # parts_bd = (gal_bd[part_inds] * 10**10
+                #             * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
                 parts_met = gal_met[part_inds]
                 # parts_aborn = gal_aborn[part_inds]
 
                 # okinds = np.logical_and(rs <= 1,
                 #                          (1 / parts_aborn) - 1 < z_prog)
                 
-                popt, pcov = curve_fit(fit, rs, parts_met, p0=(-0.5, 0))
+                popt, pcov = curve_fit(strt_fit, rs, parts_met, p0=(-0.5, 0))
                 
                 fig = plt.figure()
                 ax = fig.add_subplot(111)
@@ -311,7 +311,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                           gridsize=100, mincnt=1,
                           norm=LogNorm(), linewidths=0.2, cmap='Greys',
                           alpha=0.4)
-                ax.plot(rs, fit(rs, popt[0]. popt[1]), linestyle="--")
+                ax.plot(rs, strt_fit(rs, popt[0], popt[1]), linestyle="--")
                 
                 ax.set_xlabel("$R$")
                 ax.set_ylabel("$Z$")
