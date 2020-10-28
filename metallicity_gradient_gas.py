@@ -247,10 +247,12 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 subgrp_ids = E.read_array('SUBFIND', path, snap,
                                           'Subhalo/SubGroupNumber',
                                           numThreads=8)
-                gal_ms = E.read_array('SUBFIND', path, snap,
+                gal_m = E.read_array('SUBFIND', path, snap,
                                       'Subhalo/ApertureMeasurements/Mass/030kpc',
                                       noH=True, physicalUnits=True,
-                                      numThreads=8)[:, 4] * 10**10
+                                      numThreads=8) * 10**10
+                gal_ms = gal_m[:, 4]
+                gal_gas_ms = gal_m[:, 0]
                 gal_cop = E.read_array('SUBFIND', path, snap,
                                        'Subhalo/CentreOfPotential',
                                        noH=True, physicalUnits=True,
@@ -299,7 +301,9 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 continue
 
             # Remove particles not associated to a subgroup
-            okinds = np.logical_and(subgrp_ids != 1073741824, gal_ms > masslim)
+            okinds = np.logical_and(subgrp_ids != 1073741824,
+                                    np.logical_and(gal_ms > masslim,
+                                                   gal_gas_ms > 0))
             grp_ids = grp_ids[okinds]
             subgrp_ids = subgrp_ids[okinds]
             gal_cop = gal_cop[okinds]
