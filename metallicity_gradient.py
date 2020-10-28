@@ -21,7 +21,7 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
         bin_lims = np.linspace(10**8, 10**12, 20)
 
     else:
-        bin_lims = [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6,
+        bin_lims = [-0.01, 0.001, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6,
                     1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5,
                     6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 20.0]
 
@@ -336,8 +336,8 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 # okinds = np.logical_and(rs <= 1,
                 #                         (1 / parts_aborn) - 1 < z_prog)
 
-                # okinds = np.logical_and(rs <= hmr * 2, rs > hmr * 0.5)
-                okinds = rs < 30
+                okinds = np.logical_and(rs <= hmr * 2, rs > hmr * 0.5)
+                # okinds = rs < 30
                 prof_parts_met = parts_met[okinds]
                 prof_rs = rs[okinds]
 
