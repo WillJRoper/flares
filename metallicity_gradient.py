@@ -319,21 +319,23 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 okinds = np.logical_and(rs <= hmr * 2, rs > hmr * 0.5)
                 prof_parts_met = parts_met[okinds]
                 prof_rs = rs[okinds]
+
+                print(prof_rs)
+                print(prof_parts_met)
                 
                 popt, pcov = curve_fit(strt_fit, prof_rs,
                                        prof_parts_met,
                                        p0=(-0.5, 0))
-                print(prof_rs)
-                print(prof_parts_met)
-                
+
                 fig = plt.figure()
                 ax = fig.add_subplot(111)
 
                 ax.hexbin(rs, parts_met,
-                          gridsize=100, mincnt=1,
-                          norm=LogNorm(), linewidths=0.2, cmap='Greys')
+                          gridsize=100, mincnt=1, xscale="log",
+                          norm=LogNorm(), linewidths=0.2, cmap='plasma')
                 xs = np.linspace(hmr * 0.5, hmr * 2, 100)
-                ax.plot(xs, strt_fit(xs, popt[0], popt[1]), linestyle="--")
+                ax.plot(xs, strt_fit(xs, popt[0], popt[1]), linestyle="--",
+                        color="k")
 
                 ax.set_xlabel("$R / [\mathrm{pkpc}]$")
                 ax.set_ylabel("$12 + \log_{10}(O/H)$")
