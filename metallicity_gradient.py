@@ -153,7 +153,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 1):
+        for reg in range(0, 40):
             if reg < 10:
                 regions.append('0' + str(reg))
             else:
@@ -317,12 +317,12 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
     return np.array(met_grads), np.array(zs), np.array(masses)
 
-met_grads, zs, masses = get_data(masslim=10**10)
+met_grads, zs, masses = get_data(masslim=10**8)
 
-agndt9_met_grads, agndt9_zs, agndt9_masses = get_data(masslim=10**10,
+agndt9_met_grads, agndt9_zs, agndt9_masses = get_data(masslim=10**8,
                                                       eagle=True)
 
-ref_met_grads, ref_zs, ref_masses = get_data(masslim=10**10, ref=True)
+ref_met_grads, ref_zs, ref_masses = get_data(masslim=10**8, ref=True)
 
 met_grads_all = np.concatenate((met_grads,
                                agndt9_met_grads,
