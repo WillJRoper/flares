@@ -299,6 +299,9 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
             for halo, cop, m, hmr in zip(halo_ids, gal_cop, gal_ms, gal_hmr):
 
+                if hmr == 0.0:
+                    continue
+
                 # Add stars from these galaxies
                 part_inds = list(halo_part_inds[halo])
                 pos = gal_coords[part_inds, :] - cop
