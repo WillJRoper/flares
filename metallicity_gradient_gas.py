@@ -197,11 +197,11 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                       '009_z006p000', '010_z005p000']
 
     met_grads = []
-    recent_met_grads = []
+    sfweighted_met_grads = []
     zs = []
-    recent_zs = []
+    sfweighted_zs = []
     masses = []
-    recent_masses = []
+    sfweighted_masses = []
 
     for reg in regions:
 
@@ -228,7 +228,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
             # Get particle IDs
             try:
-                halo_part_inds = get_part_ids(path, snap, 4, all_parts=False)
+                halo_part_inds = get_part_ids(path, snap, 0, all_parts=False)
             except ValueError:
                 print(reg, snap, "No data")
                 continue
@@ -261,22 +261,22 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                                        numThreads=8)[:, 4] * 1e3
 
                 # gal_bd = E.read_array('PARTDATA', path, snap,
-                #                       'PartType4/BirthDensity', noH=True,
+                #                       'PartType0/BirthDensity', noH=True,
                 #                         physicalUnits=True, numThreads=8)
                 gal_ox = E.read_array('PARTDATA', path, snap,
-                                       'PartType4/SmoothedElementAbundance/'
+                                       'PartType0/SmoothedElementAbundance/'
                                        'Oxygen', noH=True,
                                        physicalUnits=True, numThreads=8)
                 gal_hy = E.read_array('PARTDATA', path, snap,
-                                       'PartType4/SmoothedElementAbundance/'
+                                       'PartType0/SmoothedElementAbundance/'
                                        'Hydrogen', noH=True,
                                        physicalUnits=True, numThreads=8)
                 gal_coords = E.read_array('PARTDATA', path, snap,
-                                          'PartType4/Coordinates',
+                                          'PartType0/Coordinates',
                                           noH=True, physicalUnits=True,
                                           numThreads=8)
-                gal_aborn = E.read_array('PARTDATA', path, snap,
-                                         'PartType4/StellarFormationTime',
+                gal_sfr = E.read_array('PARTDATA', path, snap,
+                                         'PartType0/StellarFormationTime',
                                          noH=True, physicalUnits=True,
                                          numThreads=8)
 
@@ -323,7 +323,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 rs = rs[okinds]
                 parts_met = 12 + np.log10(gal_ox[part_inds][okinds]
                                           / gal_hy[part_inds][okinds])
-                parts_aborn = gal_aborn[part_inds][okinds]
+                parts_sfr = gal_sfr[part_inds][okinds]
 
                 # okinds = np.logical_and(rs <= 1,
                 #                         (1 / parts_aborn) - 1 < z_prog)
@@ -332,6 +332,9 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 okinds = rs < 30
                 prof_parts_met = parts_met[okinds]
                 prof_rs = rs[okinds]
+                sfweighted_parts_met = parts_met[okinds]
+                sfweighted_rs = rs[okinds]
+                parts_sfr = parts_sfr[okinds]
 
                 if len(prof_rs) < 10:
                     continue
@@ -364,33 +367,29 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
                 masses.append(m)
 
-                okinds = np.logical_and((1 / parts_aborn) - 1 >= z100Myr,
-                                        rs < 30)
-                recent_parts_met = parts_met[okinds]
-                recent_rs = rs[okinds]
-
-                if len(recent_rs) < 10:
+                if len(sfweighted_rs) < 10:
                     continue
 
-                popt, pcov = curve_fit(strt_fit, recent_rs,
-                                       recent_parts_met,
-                                       p0=(-0.5, 0))
+                popt, pcov = curve_fit(strt_fit, sfweighted_rs,
+                                       sfweighted_parts_met,
+                                       p0=(-0.5, 0), sigma=parts_sfr,
+                                       absolute_sigma=True)
 
-                recent_met_grads.append(popt[0])
+                sfweighted_met_grads.append(popt[0])
 
-                recent_zs.append(z)
+                sfweighted_zs.append(z)
 
-                recent_masses.append(m)
+                sfweighted_masses.append(m)
 
     return np.array(met_grads), np.array(zs), np.array(masses),\
-           np.array(recent_met_grads), np.array(recent_zs), \
-           np.array(recent_masses)
+           np.array(sfweighted_met_grads), np.array(sfweighted_zs), \
+           np.array(sfweighted_masses)
 
-met_grads, zs, masses, recent_met_grads, recent_zs, recent_masses = get_data(masslim=10**8)
+met_grads, zs, masses, sfweighted_met_grads, sfweighted_zs, sfweighted_masses = get_data(masslim=10**8)
 
-agndt9_met_grads, agndt9_zs, agndt9_masses, agndt9_recent_met_grads, agndt9_recent_zs, agndt9_recent_masses = get_data(masslim=10**8, eagle=True)
+agndt9_met_grads, agndt9_zs, agndt9_masses, agndt9_sfweighted_met_grads, agndt9_sfweighted_zs, agndt9_sfweighted_masses = get_data(masslim=10**8, eagle=True)
 
-ref_met_grads, ref_zs, ref_masses, ref_recent_met_grads, ref_recent_zs, ref_recent_masses = get_data(masslim=10**8, ref=True)
+ref_met_grads, ref_zs, ref_masses, ref_sfweighted_met_grads, ref_sfweighted_zs, ref_sfweighted_masses = get_data(masslim=10**8, ref=True)
 
 met_grads_all = np.concatenate((met_grads,
                                agndt9_met_grads,
@@ -404,17 +403,17 @@ mass_all = np.concatenate((masses,
                            agndt9_masses,
                            ref_masses))
 
-recent_met_grads_all = np.concatenate((recent_met_grads,
-                                       agndt9_recent_met_grads,
-                                       ref_recent_met_grads))
+sfweighted_met_grads_all = np.concatenate((sfweighted_met_grads,
+                                       agndt9_sfweighted_met_grads,
+                                       ref_sfweighted_met_grads))
 
-recent_zs_all = np.concatenate((recent_zs,
-                                agndt9_recent_zs,
-                                ref_recent_zs))
+sfweighted_zs_all = np.concatenate((sfweighted_zs,
+                                agndt9_sfweighted_zs,
+                                ref_sfweighted_zs))
 
-recent_mass_all = np.concatenate((recent_masses,
-                                  agndt9_recent_masses,
-                                  ref_recent_masses))
+sfweighted_mass_all = np.concatenate((sfweighted_masses,
+                                  agndt9_sfweighted_masses,
+                                  ref_sfweighted_masses))
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -430,19 +429,19 @@ okinds3 = np.logical_and(mass_all > 10**9.5, mass_all <= 10**10)
 okinds4 = mass_all > 10**10
 
 plot_meidan_stat(zs_all[okinds1], met_grads_all[okinds1],
-                 ax, lab="$10^8 < M_\star/M_\odot \leq 10^9$",
+                 ax, lab="$10^8 < M/M_\odot \leq 10^9$",
                  color='darkorange', bins=1)
 
 plot_meidan_stat(zs_all[okinds2], met_grads_all[okinds2],
-                 ax, lab="$10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+                 ax, lab="$10^9 < M/M_\odot \leq 10^{9.5}$",
                  color='royalblue', bins=1)
 
 plot_meidan_stat(zs_all[okinds3], met_grads_all[okinds3],
-                 ax, lab="$10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+                 ax, lab="$10^{9.5} < M/M_\odot \leq 10^{10}$",
                  color='limegreen', bins=1)
 
 plot_meidan_stat(zs_all[okinds4], met_grads_all[okinds4],
-                 ax, lab="$10^{10} < M_\star/M_\odot$",
+                 ax, lab="$10^{10} < M/M_\odot$",
                  color='magenta', bins=1)
 
 ax.set_xlabel("$z$")
@@ -484,7 +483,7 @@ plot_meidan_stat(mass_all[okinds4], met_grads_all[okinds4],
                  ax, lab="$6 < z$",
                  color='magenta', bins="mass")
 
-ax.set_xlabel("$M_\star/M_\odot$")
+ax.set_xlabel("$M/M_\odot$")
 ax.set_ylabel(r"$\nabla_{O/H}$")
 
 handles, labels = ax.get_legend_handles_labels()
@@ -497,30 +496,30 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-ax.hexbin(recent_zs_all, recent_met_grads_all,
+ax.hexbin(sfweighted_zs_all, sfweighted_met_grads_all,
           gridsize=100, mincnt=1,
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.4)
 
-okinds1 = np.logical_and(recent_mass_all > 10**8, recent_mass_all <= 10**9)
-okinds2 = np.logical_and(recent_mass_all > 10**9, recent_mass_all <= 10**9.5)
-okinds3 = np.logical_and(recent_mass_all > 10**9.5, recent_mass_all <= 10**10)
-okinds4 = recent_mass_all > 10**10
+okinds1 = np.logical_and(sfweighted_mass_all > 10**8, sfweighted_mass_all <= 10**9)
+okinds2 = np.logical_and(sfweighted_mass_all > 10**9, sfweighted_mass_all <= 10**9.5)
+okinds3 = np.logical_and(sfweighted_mass_all > 10**9.5, sfweighted_mass_all <= 10**10)
+okinds4 = sfweighted_mass_all > 10**10
 
-plot_meidan_stat(recent_zs_all[okinds1], recent_met_grads_all[okinds1],
-                 ax, lab="$10^8 < M_\star/M_\odot \leq 10^9$",
+plot_meidan_stat(sfweighted_zs_all[okinds1], sfweighted_met_grads_all[okinds1],
+                 ax, lab="$10^8 < M/M_\odot \leq 10^9$",
                  color='darkorange', bins=1)
 
-plot_meidan_stat(recent_zs_all[okinds2], recent_met_grads_all[okinds2],
-                 ax, lab="$10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+plot_meidan_stat(sfweighted_zs_all[okinds2], sfweighted_met_grads_all[okinds2],
+                 ax, lab="$10^9 < M/M_\odot \leq 10^{9.5}$",
                  color='royalblue', bins=1)
 
-plot_meidan_stat(recent_zs_all[okinds3], recent_met_grads_all[okinds3],
-                 ax, lab="$10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+plot_meidan_stat(sfweighted_zs_all[okinds3], sfweighted_met_grads_all[okinds3],
+                 ax, lab="$10^{9.5} < M/M_\odot \leq 10^{10}$",
                  color='limegreen', bins=1)
 
-plot_meidan_stat(recent_zs_all[okinds4], recent_met_grads_all[okinds4],
-                 ax, lab="$10^{10} < M_\star/M_\odot$",
+plot_meidan_stat(sfweighted_zs_all[okinds4], sfweighted_met_grads_all[okinds4],
+                 ax, lab="$10^{10} < M/M_\odot$",
                  color='magenta', bins=1)
 
 ax.set_xlabel("$z$")
@@ -529,46 +528,46 @@ ax.set_ylabel(r"$\nabla_{O/H}$")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/stellar_recent_met_grad_evo.png", bbox_inches="tight")
+fig.savefig("plots/stellar_sfweighted_met_grad_evo.png", bbox_inches="tight")
 
 plt.close(fig)
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-ax.hexbin(recent_mass_all, recent_met_grads_all,
+ax.hexbin(sfweighted_mass_all, sfweighted_met_grads_all,
           gridsize=100, mincnt=1,
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.4)
 
-okinds1 = np.logical_and(recent_zs_all > 0, recent_zs_all <= 1)
-okinds2 = np.logical_and(recent_zs_all > 1, recent_zs_all <= 3)
-okinds3 = np.logical_and(recent_zs_all > 3, recent_zs_all <= 6)
-okinds4 = recent_zs_all > 6
+okinds1 = np.logical_and(sfweighted_zs_all > 0, sfweighted_zs_all <= 1)
+okinds2 = np.logical_and(sfweighted_zs_all > 1, sfweighted_zs_all <= 3)
+okinds3 = np.logical_and(sfweighted_zs_all > 3, sfweighted_zs_all <= 6)
+okinds4 = sfweighted_zs_all > 6
 
-plot_meidan_stat(recent_mass_all[okinds1], recent_met_grads_all[okinds1],
+plot_meidan_stat(sfweighted_mass_all[okinds1], sfweighted_met_grads_all[okinds1],
                  ax, lab="$0 < z \leq 1$",
                  color='darkorange', bins="mass")
 
-plot_meidan_stat(recent_mass_all[okinds2], recent_met_grads_all[okinds2],
+plot_meidan_stat(sfweighted_mass_all[okinds2], sfweighted_met_grads_all[okinds2],
                  ax, lab="$1 < z \leq 3$",
                  color='royalblue', bins="mass")
 
-plot_meidan_stat(recent_mass_all[okinds3], recent_met_grads_all[okinds3],
+plot_meidan_stat(sfweighted_mass_all[okinds3], sfweighted_met_grads_all[okinds3],
                  ax, lab="$3 < z \leq 6$",
                  color='limegreen', bins="mass")
 
-plot_meidan_stat(recent_mass_all[okinds4], recent_met_grads_all[okinds4],
+plot_meidan_stat(sfweighted_mass_all[okinds4], sfweighted_met_grads_all[okinds4],
                  ax, lab="$6 < z$",
                  color='magenta', bins="mass")
 
-ax.set_xlabel("$M_\star/M_\odot$")
+ax.set_xlabel("$M/M_\odot$")
 ax.set_ylabel(r"$\nabla_{O/H}$")
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/stellar_recent_met_grad_mass.png", bbox_inches="tight")
+fig.savefig("plots/stellar_sfweighted_met_grad_mass.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -594,35 +593,35 @@ plt.close(fig)
 # okinds4out = mass_out_all > 10**10
 #
 # plot_meidan_stat(zs_out_all[okinds1out], bd_out_all[okinds1out],
-#                  ax1, lab="Out: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  ax1, lab="Out: $10^8 < M/M_\odot \leq 10^9$",
 #                  color='darkorange', bins=1, ls="dashed")
 #
 # plot_meidan_stat(zs_out_all[okinds2out], bd_out_all[okinds2out],
-#                  ax1, lab="Out: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  ax1, lab="Out: $10^9 < M/M_\odot \leq 10^{9.5}$",
 #                  color='royalblue', bins=1, ls="dashed")
 #
 # plot_meidan_stat(zs_out_all[okinds3out], bd_out_all[okinds3out],
-#                  ax1, lab="Out: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  ax1, lab="Out: $10^{9.5} < M/M_\odot \leq 10^{10}$",
 #                  color='limegreen', bins=1, ls="dashed")
 #
 # plot_meidan_stat(zs_out_all[okinds4out], bd_out_all[okinds4out],
-#                  ax1, lab="Out: $10^{10} < M_\star/M_\odot$",
+#                  ax1, lab="Out: $10^{10} < M/M_\odot$",
 #                  color='magenta', bins=1, ls="dashed")
 #
 # plot_meidan_stat(zs_in_all[okinds1in], bd_in_all[okinds1in],
-#                  ax1, lab="In: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  ax1, lab="In: $10^8 < M/M_\odot \leq 10^9$",
 #                  color='darkorange', bins=1)
 #
 # plot_meidan_stat(zs_in_all[okinds2in], bd_in_all[okinds2in],
-#                  ax1, lab="In: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  ax1, lab="In: $10^9 < M/M_\odot \leq 10^{9.5}$",
 #                  color='royalblue', bins=1)
 #
 # plot_meidan_stat(zs_in_all[okinds3in], bd_in_all[okinds3in],
-#                  ax1, lab="In: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  ax1, lab="In: $10^{9.5} < M/M_\odot \leq 10^{10}$",
 #                  color='limegreen', bins=1)
 #
 # plot_meidan_stat(zs_in_all[okinds4in], bd_in_all[okinds4in],
-#                  ax1, lab="In: $10^{10} < M_\star/M_\odot$",
+#                  ax1, lab="In: $10^{10} < M/M_\odot$",
 #                  color='magenta', bins=1)
 #
 # ax1.text(0.8, 0.9, "All",
@@ -643,35 +642,35 @@ plt.close(fig)
 # okinds4out = mass_out > 10**10
 #
 # plot_meidan_stat(zs_out[okinds1out], bd_out[okinds1out],
-#                  ax2, lab="Out: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  ax2, lab="Out: $10^8 < M/M_\odot \leq 10^9$",
 #                  color='darkorange', bins=1, ls="dashed")
 #
 # plot_meidan_stat(zs_out[okinds2out], bd_out[okinds2out],
-#                  ax2, lab="Out: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  ax2, lab="Out: $10^9 < M/M_\odot \leq 10^{9.5}$",
 #                  color='royalblue', bins=1, ls="dashed")
 #
 # plot_meidan_stat(zs_out[okinds3out], bd_out[okinds3out],
-#                  ax2, lab="Out: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  ax2, lab="Out: $10^{9.5} < M/M_\odot \leq 10^{10}$",
 #                  color='limegreen', bins=1, ls="dashed")
 #
 # plot_meidan_stat(zs_out[okinds4out], bd_out[okinds4out],
-#                  ax2, lab="Out: $10^{10} < M_\star/M_\odot$",
+#                  ax2, lab="Out: $10^{10} < M/M_\odot$",
 #                  color='magenta', bins=1, ls="dashed")
 #
 # plot_meidan_stat(zs_in[okinds1in], bd_in[okinds1in],
-#                  ax2, lab="In: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  ax2, lab="In: $10^8 < M/M_\odot \leq 10^9$",
 #                  color='darkorange', bins=1)
 #
 # plot_meidan_stat(zs_in[okinds2in], bd_in[okinds2in],
-#                  ax2, lab="In: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  ax2, lab="In: $10^9 < M/M_\odot \leq 10^{9.5}$",
 #                  color='royalblue', bins=1)
 #
 # plot_meidan_stat(zs_in[okinds3in], bd_in[okinds3in],
-#                  ax2, lab="In: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  ax2, lab="In: $10^{9.5} < M/M_\odot \leq 10^{10}$",
 #                  color='limegreen', bins=1)
 #
 # plot_meidan_stat(zs_in[okinds4in], bd_in[okinds4in],
-#                  ax2, lab="In: $10^{10} < M_\star/M_\odot$",
+#                  ax2, lab="In: $10^{10} < M/M_\odot$",
 #                  color='magenta', bins=1)
 #
 # ax2.text(0.8, 0.9, "FLARES",
@@ -693,35 +692,35 @@ plt.close(fig)
 # okinds4out = agndt9_mass_out > 10**10
 #
 # plot_meidan_stat(agndt9_zs_out[okinds1out], agndt9_bd_out[okinds1out],
-#                  ax3, lab="Out: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  ax3, lab="Out: $10^8 < M/M_\odot \leq 10^9$",
 #                  color='darkorange', bins=1, ls="dashed")
 #
 # plot_meidan_stat(agndt9_zs_out[okinds2out], agndt9_bd_out[okinds2out],
-#                  ax3, lab="Out: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  ax3, lab="Out: $10^9 < M/M_\odot \leq 10^{9.5}$",
 #                  color='royalblue', bins=1, ls="dashed")
 #
 # plot_meidan_stat(agndt9_zs_out[okinds3out], agndt9_bd_out[okinds3out],
-#                  ax3, lab="Out: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  ax3, lab="Out: $10^{9.5} < M/M_\odot \leq 10^{10}$",
 #                  color='limegreen', bins=1, ls="dashed")
 #
 # plot_meidan_stat(agndt9_zs_out[okinds4out], agndt9_bd_out[okinds4out],
-#                  ax3, lab="Out: $10^{10} < M_\star/M_\odot$",
+#                  ax3, lab="Out: $10^{10} < M/M_\odot$",
 #                  color='magenta', bins=1, ls="dashed")
 #
 # plot_meidan_stat(agndt9_zs_in[okinds1in], agndt9_bd_in[okinds1in],
-#                  ax3, lab="In: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  ax3, lab="In: $10^8 < M/M_\odot \leq 10^9$",
 #                  color='darkorange', bins=1)
 #
 # plot_meidan_stat(agndt9_zs_in[okinds2in], agndt9_bd_in[okinds2in],
-#                  ax3, lab="In: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  ax3, lab="In: $10^9 < M/M_\odot \leq 10^{9.5}$",
 #                  color='royalblue', bins=1)
 #
 # plot_meidan_stat(agndt9_zs_in[okinds3in], agndt9_bd_in[okinds3in],
-#                  ax3, lab="In: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  ax3, lab="In: $10^{9.5} < M/M_\odot \leq 10^{10}$",
 #                  color='limegreen', bins=1)
 #
 # plot_meidan_stat(agndt9_zs_in[okinds4in], agndt9_bd_in[okinds4in],
-#                  ax3, lab="In: $10^{10} < M_\star/M_\odot$",
+#                  ax3, lab="In: $10^{10} < M/M_\odot$",
 #                  color='magenta', bins=1)
 #
 # ax3.text(0.8, 0.9, "AGNdT9",
@@ -743,35 +742,35 @@ plt.close(fig)
 # okinds4out = ref_mass_out > 10**10
 #
 # plot_meidan_stat(ref_zs_out[okinds1out], ref_bd_out[okinds1out],
-#                  ax4, lab="Out: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  ax4, lab="Out: $10^8 < M/M_\odot \leq 10^9$",
 #                  color='darkorange', bins=1, ls="dashed")
 #
 # plot_meidan_stat(ref_zs_out[okinds2out], ref_bd_out[okinds2out],
-#                  ax4, lab="Out: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  ax4, lab="Out: $10^9 < M/M_\odot \leq 10^{9.5}$",
 #                  color='royalblue', bins=1, ls="dashed")
 #
 # plot_meidan_stat(ref_zs_out[okinds3out], ref_bd_out[okinds3out],
-#                  ax4, lab="Out: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  ax4, lab="Out: $10^{9.5} < M/M_\odot \leq 10^{10}$",
 #                  color='limegreen', bins=1, ls="dashed")
 #
 # plot_meidan_stat(ref_zs_out[okinds4out], ref_bd_out[okinds4out],
-#                  ax4, lab="Out: $10^{10} < M_\star/M_\odot$",
+#                  ax4, lab="Out: $10^{10} < M/M_\odot$",
 #                  color='magenta', bins=1, ls="dashed")
 #
 # plot_meidan_stat(ref_zs_in[okinds1in], ref_bd_in[okinds1in],
-#                  ax4, lab="In: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  ax4, lab="In: $10^8 < M/M_\odot \leq 10^9$",
 #                  color='darkorange', bins=1)
 #
 # plot_meidan_stat(ref_zs_in[okinds2in], ref_bd_in[okinds2in],
-#                  ax4, lab="In: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  ax4, lab="In: $10^9 < M/M_\odot \leq 10^{9.5}$",
 #                  color='royalblue', bins=1)
 #
 # plot_meidan_stat(ref_zs_in[okinds3in], ref_bd_in[okinds3in],
-#                  ax4, lab="In: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  ax4, lab="In: $10^{9.5} < M/M_\odot \leq 10^{10}$",
 #                  color='limegreen', bins=1)
 #
 # plot_meidan_stat(ref_zs_in[okinds4in], ref_bd_in[okinds4in],
-#                  ax4, lab="In: $10^{10} < M_\star/M_\odot$",
+#                  ax4, lab="In: $10^{10} < M/M_\odot$",
 #                  color='magenta', bins=1)
 #
 # ax4.text(0.8, 0.9, "REFERENCE",
