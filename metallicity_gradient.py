@@ -268,6 +268,8 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 #                          'PartType4/StellarFormationTime',
                 #                          noH=True, physicalUnits=True,
                 #                          numThreads=8)
+                print(gal_ox)
+                print(gal_hy)
 
             except ValueError:
 
@@ -305,7 +307,10 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 rs = np.linalg.norm(pos, axis=1) * 10**3
                 # parts_bd = (gal_bd[part_inds] * 10**10
                 #             * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
-                parts_met = 12 + np.log10(gal_ox[part_inds] / gal_hy[part_inds])
+                okinds = gal_ox[part_inds] > 0
+                rs = rs[okinds]
+                parts_met = 12 + np.log10(gal_ox[part_inds][okinds]
+                                          / gal_hy[part_inds][okinds])
                 # parts_aborn = gal_aborn[part_inds]
 
                 # okinds = np.logical_and(rs <= 1,
