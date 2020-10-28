@@ -276,7 +276,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                                           noH=True, physicalUnits=True,
                                           numThreads=8)
                 gal_sfr = E.read_array('PARTDATA', path, snap,
-                                         'PartType0/StellarFormationTime',
+                                         'PartType0/StarFormationRate',
                                          noH=True, physicalUnits=True,
                                          numThreads=8)
 
