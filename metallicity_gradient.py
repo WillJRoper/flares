@@ -244,12 +244,21 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                                        'Subhalo/CentreOfPotential',
                                        noH=True, physicalUnits=True,
                                        numThreads=8)
+                gal_hmr = E.read_array('SUBFIND', path, snap,
+                                       'Subhalo/HalfMassRad',
+                                       noH=True, physicalUnits=True,
+                                       numThreads=8)[:, 4] * 1e3
 
                 # gal_bd = E.read_array('PARTDATA', path, snap,
                 #                       'PartType4/BirthDensity', noH=True,
                 #                         physicalUnits=True, numThreads=8)
-                gal_met = E.read_array('PARTDATA', path, snap,
-                                       'PartType4/Metallicity', noH=True,
+                gal_ox = E.read_array('PARTDATA', path, snap,
+                                       'PartType4/SmoothedElementAbundance/'
+                                       'Oxygen', noH=True,
+                                       physicalUnits=True, numThreads=8)
+                gal_hy = E.read_array('PARTDATA', path, snap,
+                                       'PartType4/SmoothedElementAbundance/'
+                                       'Hydrogen', noH=True,
                                        physicalUnits=True, numThreads=8)
                 gal_coords = E.read_array('PARTDATA', path, snap,
                                           'PartType4/Coordinates',
@@ -288,7 +297,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             for (ind, g), sg in zip(enumerate(grp_ids), subgrp_ids):
                 halo_ids[ind] = float(str(int(g)) + '.%05d' % int(sg))
 
-            for halo, cop, m in zip(halo_ids, gal_cop, gal_ms):
+            for halo, cop, m, hmr in zip(halo_ids, gal_cop, gal_ms, gal_hmr):
 
                 # Add stars from these galaxies
                 part_inds = list(halo_part_inds[halo])
@@ -296,18 +305,36 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 rs = np.linalg.norm(pos, axis=1) * 10**3
                 # parts_bd = (gal_bd[part_inds] * 10**10
                 #             * Msun / Mpc ** 3 / mh).to(1 / cm ** 3).value
-                parts_met = gal_met[part_inds]
+                parts_met = 12 + np.log10(gal_ox[part_inds] / gal_hy[part_inds])
                 # parts_aborn = gal_aborn[part_inds]
 
-                okinds = parts_met > 0
-                parts_met = parts_met[okinds]
-                rs = rs[okinds]
-
                 # okinds = np.logical_and(rs <= 1,
-                #                          (1 / parts_aborn) - 1 < z_prog)
+                #                         (1 / parts_aborn) - 1 < z_prog)
+
+                okinds = np.logical_and(rs <= hmr * 2, rs > hmr * 0.5)
+                prof_parts_met = parts_met[okinds]
+                prof_rs = rs[okinds]
                 
-                popt, pcov = curve_fit(strt_fit, np.log10(rs), np.log10(parts_met),
+                popt, pcov = curve_fit(strt_fit, prof_rs,
+                                       prof_parts_met,
                                        p0=(-0.5, 0))
+
+                fig = plt.figure()
+                ax = fig.add_subplot(111)
+
+                ax.hexbin(rs, parts_met,
+                          gridsize=100, mincnt=1,
+                          norm=LogNorm(), linewidths=0.2, cmap='Greys')
+                xs = np.log10(np.linspace(hmr * 0.5, hmr * 2, 100))
+                ax.plot(xs, strt_fit(xs, popt[0], popt[1]), linestyle="--")
+
+                ax.set_xlabel("$R / [\mathrm{pkpc}]$")
+                ax.set_ylabel("$12 + \log_{10}(O/H)$")
+
+                fig.savefig("plots/metprof_%.1f.png" % np.log10(m),
+                            bbox_inches="tight")
+
+                plt.close(fig)
 
                 met_grads.append(popt[0])
 
