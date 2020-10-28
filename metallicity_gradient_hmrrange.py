@@ -336,8 +336,8 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 # okinds = np.logical_and(rs <= 1,
                 #                         (1 / parts_aborn) - 1 < z_prog)
 
-                # okinds = np.logical_and(rs <= hmr * 2, rs > hmr * 0.5)
-                okinds = rs < 30
+                okinds = np.logical_and(rs <= hmr * 2, rs > hmr * 0.5)
+                # okinds = rs < 30
                 prof_parts_met = parts_met[okinds]
                 prof_rs = rs[okinds]
 
@@ -361,7 +361,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 # ax.set_xlabel("$R / [\mathrm{pkpc}]$")
                 # ax.set_ylabel("$12 + \log_{10}(O/H)$")
                 #
-                # fig.savefig("plots/metprof_%.1f.png" % np.log10(m),
+                # fig.savefig("plots/metprof_%.1f_hmrrange.png" % np.log10(m),
                 #             bbox_inches="tight")
                 #
                 # plt.close(fig)
@@ -461,68 +461,48 @@ ax.legend(handles, labels)
 
 # ax.set_ylim(-1, 1)
 
-fig.savefig("plots/stellar_met_grad_evo.png", bbox_inches="tight")
+fig.savefig("plots/stellar_met_grad_evo_hmrrange.png", bbox_inches="tight")
 
 plt.close(fig)
 
 fig = plt.figure()
-gs = gridspec.GridSpec(nrows=4, ncols=1)
-gs.update(wspace=0.0, hspace=0.0)
-ax1 = fig.add_subplot(gs[0, 0])
-ax2 = fig.add_subplot(gs[1, 0])
-ax3 = fig.add_subplot(gs[2, 0])
-ax4 = fig.add_subplot(gs[3, 0])
+ax = fig.add_subplot(111)
 
-okinds1 = np.logical_and(zs_all > 0, zs_all <= 1)
-okinds2 = np.logical_and(zs_all > 1, zs_all <= 3)
-okinds3 = np.logical_and(zs_all > 3, zs_all <= 5)
-okinds4 = zs_all > 5
-
-ax1.hexbin(mass_all[okinds1], met_grads_all[okinds1] + 5,
-          gridsize=100, mincnt=1, xscale="log", yscale="log",
+ax.hexbin(mass_all, met_grads_all,
+          gridsize=100, mincnt=1, xscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
 
-ax1.text(0.8, 0.9, "$0 < z \leq 1$",
-        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-        transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
+# okinds1 = np.logical_and(zs_all > 0, zs_all <= 1)
+# okinds2 = np.logical_and(zs_all > 1, zs_all <= 3)
+# okinds3 = np.logical_and(zs_all > 3, zs_all <= 6)
+# okinds4 = zs_all > 6
 
-ax2.hexbin(mass_all[okinds2], met_grads_all[okinds2] + 5,
-          gridsize=100, mincnt=1, xscale="log", yscale="log",
-          norm=LogNorm(), linewidths=0.2,
-          cmap='plasma')
+# plot_meidan_stat(mass_all[okinds1], met_grads_all[okinds1],
+#                  ax, lab="$0 < z \leq 1$",
+#                  color='darkorange', bins="mass")
+#
+# plot_meidan_stat(mass_all[okinds2], met_grads_all[okinds2],
+#                  ax, lab="$1 < z \leq 3$",
+#                  color='royalblue', bins="mass")
+#
+# plot_meidan_stat(mass_all[okinds3], met_grads_all[okinds3],
+#                  ax, lab="$3 < z \leq 6$",
+#                  color='limegreen', bins="mass")
+#
+# plot_meidan_stat(mass_all[okinds4], met_grads_all[okinds4],
+#                  ax, lab="$6 < z$",
+#                  color='magenta', bins="mass")
 
-ax2.text(0.8, 0.9, "$1 < z \leq 3$",
-        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-        transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
+ax.set_xlabel("$M_\star/M_\odot$")
+ax.set_ylabel(r"$\nabla_{O/H}$")
 
-ax3.hexbin(mass_all[okinds3], met_grads_all[okinds3] + 5,
-          gridsize=100, mincnt=1, xscale="log", yscale="log",
-          norm=LogNorm(), linewidths=0.2,
-          cmap='plasma')
+# handles, labels = ax.get_legend_handles_labels()
+# ax.legend(handles, labels)
 
-ax3.text(0.8, 0.9, "$3 < z \leq 5$",
-        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-        transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
+# ax.set_ylim(-1, 1)
 
-ax4.hexbin(mass_all[okinds4], met_grads_all[okinds4] + 5,
-          gridsize=100, mincnt=1, xscale="log", yscale="log",
-          norm=LogNorm(), linewidths=0.2,
-          cmap='plasma')
-
-ax4.text(0.8, 0.9, "$5 < z$",
-        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-        transform=ax4.transAxes, horizontalalignment='right', fontsize=8)
-
-ax4.set_xlabel("$M_\star/M_\odot$")
-for ax in [ax1, ax2, ax3, ax4]:
-    ax.set_ylabel(r"$\nabla_{O/H}+5$")
-    ax.axhline(5, linestyle="--", color="k")
-    if ax != ax4:
-        ax.tick_params(axis='x', top=False, bottom=False, labeltop=False,
-                       labelbottom=False)
-
-fig.savefig("plots/stellar_met_grad_mass.png", bbox_inches="tight")
+fig.savefig("plots/stellar_met_grad_mass_hmrrange.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -563,67 +543,279 @@ ax.legend(handles, labels)
 
 # ax.set_ylim(-1, 1)
 
-fig.savefig("plots/stellar_recent_met_grad_evo.png", bbox_inches="tight")
+fig.savefig("plots/stellar_recent_met_grad_evo_hmrrange.png", bbox_inches="tight")
 
 plt.close(fig)
 
 fig = plt.figure()
-gs = gridspec.GridSpec(nrows=4, ncols=1)
-gs.update(wspace=0.0, hspace=0.0)
-ax1 = fig.add_subplot(gs[0, 0])
-ax2 = fig.add_subplot(gs[1, 0])
-ax3 = fig.add_subplot(gs[2, 0])
-ax4 = fig.add_subplot(gs[3, 0])
+ax = fig.add_subplot(111)
 
-okinds1 = np.logical_and(zs_all > 0, zs_all <= 1)
-okinds2 = np.logical_and(zs_all > 1, zs_all <= 3)
-okinds3 = np.logical_and(zs_all > 3, zs_all <= 5)
-okinds4 = zs_all > 5
-
-ax1.hexbin(recent_mass_all[okinds1], recent_met_grads_all[okinds1] + 5,
-          gridsize=100, mincnt=1, xscale="log", yscale="log",
+ax.hexbin(recent_mass_all, recent_met_grads_all,
+          gridsize=100, mincnt=1, xscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
 
-ax1.text(0.8, 0.9, "$0 < z \leq 1$",
-        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-        transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
+# okinds1 = np.logical_and(recent_zs_all > 0, recent_zs_all <= 1)
+# okinds2 = np.logical_and(recent_zs_all > 1, recent_zs_all <= 3)
+# okinds3 = np.logical_and(recent_zs_all > 3, recent_zs_all <= 6)
+# okinds4 = recent_zs_all > 6
+#
+# plot_meidan_stat(recent_mass_all[okinds1], recent_met_grads_all[okinds1],
+#                  ax, lab="$0 < z \leq 1$",
+#                  color='darkorange', bins="mass")
+#
+# plot_meidan_stat(recent_mass_all[okinds2], recent_met_grads_all[okinds2],
+#                  ax, lab="$1 < z \leq 3$",
+#                  color='royalblue', bins="mass")
+#
+# plot_meidan_stat(recent_mass_all[okinds3], recent_met_grads_all[okinds3],
+#                  ax, lab="$3 < z \leq 6$",
+#                  color='limegreen', bins="mass")
+#
+# plot_meidan_stat(recent_mass_all[okinds4], recent_met_grads_all[okinds4],
+#                  ax, lab="$6 < z$",
+#                  color='magenta', bins="mass")
 
-ax2.hexbin(recent_mass_all[okinds2], recent_met_grads_all[okinds2] + 5,
-          gridsize=100, mincnt=1, xscale="log", yscale="log",
-          norm=LogNorm(), linewidths=0.2,
-          cmap='plasma')
+ax.set_xlabel("$M_\star/M_\odot$")
+ax.set_ylabel(r"$\nabla_{O/H}$")
 
-ax2.text(0.8, 0.9, "$1 < z \leq 3$",
-        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-        transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
+# handles, labels = ax.get_legend_handles_labels()
+# ax.legend(handles, labels)
 
-ax3.hexbin(recent_mass_all[okinds3], recent_met_grads_all[okinds3] + 5,
-          gridsize=100, mincnt=1, xscale="log", yscale="log",
-          norm=LogNorm(), linewidths=0.2,
-          cmap='plasma')
+# ax.set_ylim(-1, 1)
 
-ax3.text(0.8, 0.9, "$3 < z \leq 5$",
-        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-        transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
-
-ax4.hexbin(recent_mass_all[okinds4], recent_met_grads_all[okinds4] + 5,
-          gridsize=100, mincnt=1, xscale="log", yscale="log",
-          norm=LogNorm(), linewidths=0.2,
-          cmap='plasma')
-
-ax4.text(0.8, 0.9, "$5 < z$",
-        bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
-        transform=ax4.transAxes, horizontalalignment='right', fontsize=8)
-
-ax4.set_xlabel("$M_\star/M_\odot$")
-for ax in [ax1, ax2, ax3, ax4]:
-    ax.set_ylabel(r"$\nabla_{O/H}+5$")
-    ax.axhline(5, linestyle="--", color="k")
-    if ax != ax4:
-        ax.tick_params(axis='x', top=False, bottom=False, labeltop=False,
-                       labelbottom=False)
-
-fig.savefig("plots/stellar_recent_met_grad_mass.png", bbox_inches="tight")
+fig.savefig("plots/stellar_recent_met_grad_mass_hmrrange.png", bbox_inches="tight")
 
 plt.close(fig)
+
+#
+# fig = plt.figure(figsize=(8, 8))
+# gs = gridspec.GridSpec(nrows=2, ncols=2)
+# gs.update(wspace=0.0, hspace=0.0)
+# ax1 = fig.add_subplot(gs[0, 0])
+# ax2 = fig.add_subplot(gs[1, 0])
+# ax3 = fig.add_subplot(gs[0, 1])
+# ax4 = fig.add_subplot(gs[1, 1])
+#
+# ax1.hexbin(zs_all, bd_all, gridsize=100, mincnt=1, yscale="log",
+#            norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.4)
+#
+# okinds1in = np.logical_and(mass_in_all > 10**8, mass_in_all <= 10**9)
+# okinds2in = np.logical_and(mass_in_all > 10**9, mass_in_all <= 10**9.5)
+# okinds3in = np.logical_and(mass_in_all > 10**9.5, mass_in_all <= 10**10)
+# okinds4in = mass_in_all > 10**10
+# okinds1out = np.logical_and(mass_out_all > 10**8, mass_out_all <= 10**9)
+# okinds2out = np.logical_and(mass_out_all > 10**9, mass_out_all <= 10**9.5)
+# okinds3out = np.logical_and(mass_out_all > 10**9.5, mass_out_all <= 10**10)
+# okinds4out = mass_out_all > 10**10
+#
+# plot_meidan_stat(zs_out_all[okinds1out], bd_out_all[okinds1out],
+#                  ax1, lab="Out: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  color='darkorange', bins=1, ls="dashed")
+#
+# plot_meidan_stat(zs_out_all[okinds2out], bd_out_all[okinds2out],
+#                  ax1, lab="Out: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  color='royalblue', bins=1, ls="dashed")
+#
+# plot_meidan_stat(zs_out_all[okinds3out], bd_out_all[okinds3out],
+#                  ax1, lab="Out: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  color='limegreen', bins=1, ls="dashed")
+#
+# plot_meidan_stat(zs_out_all[okinds4out], bd_out_all[okinds4out],
+#                  ax1, lab="Out: $10^{10} < M_\star/M_\odot$",
+#                  color='magenta', bins=1, ls="dashed")
+#
+# plot_meidan_stat(zs_in_all[okinds1in], bd_in_all[okinds1in],
+#                  ax1, lab="In: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  color='darkorange', bins=1)
+#
+# plot_meidan_stat(zs_in_all[okinds2in], bd_in_all[okinds2in],
+#                  ax1, lab="In: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  color='royalblue', bins=1)
+#
+# plot_meidan_stat(zs_in_all[okinds3in], bd_in_all[okinds3in],
+#                  ax1, lab="In: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  color='limegreen', bins=1)
+#
+# plot_meidan_stat(zs_in_all[okinds4in], bd_in_all[okinds4in],
+#                  ax1, lab="In: $10^{10} < M_\star/M_\odot$",
+#                  color='magenta', bins=1)
+#
+# ax1.text(0.8, 0.9, "All",
+#         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+#         transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
+#
+# ax2.hexbin(np.concatenate((zs_in, zs_out)), np.concatenate((bd_in, bd_out)),
+#            gridsize=100, mincnt=1, yscale="log",
+#            norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.4)
+#
+# okinds1in = np.logical_and(mass_in > 10**8, mass_in <= 10**9)
+# okinds2in = np.logical_and(mass_in > 10**9, mass_in <= 10**9.5)
+# okinds3in = np.logical_and(mass_in > 10**9.5, mass_in <= 10**10)
+# okinds4in = mass_in > 10**10
+# okinds1out = np.logical_and(mass_out > 10**8, mass_out <= 10**9)
+# okinds2out = np.logical_and(mass_out > 10**9, mass_out <= 10**9.5)
+# okinds3out = np.logical_and(mass_out > 10**9.5, mass_out <= 10**10)
+# okinds4out = mass_out > 10**10
+#
+# plot_meidan_stat(zs_out[okinds1out], bd_out[okinds1out],
+#                  ax2, lab="Out: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  color='darkorange', bins=1, ls="dashed")
+#
+# plot_meidan_stat(zs_out[okinds2out], bd_out[okinds2out],
+#                  ax2, lab="Out: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  color='royalblue', bins=1, ls="dashed")
+#
+# plot_meidan_stat(zs_out[okinds3out], bd_out[okinds3out],
+#                  ax2, lab="Out: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  color='limegreen', bins=1, ls="dashed")
+#
+# plot_meidan_stat(zs_out[okinds4out], bd_out[okinds4out],
+#                  ax2, lab="Out: $10^{10} < M_\star/M_\odot$",
+#                  color='magenta', bins=1, ls="dashed")
+#
+# plot_meidan_stat(zs_in[okinds1in], bd_in[okinds1in],
+#                  ax2, lab="In: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  color='darkorange', bins=1)
+#
+# plot_meidan_stat(zs_in[okinds2in], bd_in[okinds2in],
+#                  ax2, lab="In: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  color='royalblue', bins=1)
+#
+# plot_meidan_stat(zs_in[okinds3in], bd_in[okinds3in],
+#                  ax2, lab="In: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  color='limegreen', bins=1)
+#
+# plot_meidan_stat(zs_in[okinds4in], bd_in[okinds4in],
+#                  ax2, lab="In: $10^{10} < M_\star/M_\odot$",
+#                  color='magenta', bins=1)
+#
+# ax2.text(0.8, 0.9, "FLARES",
+#         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+#         transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
+#
+# ax3.hexbin(np.concatenate((agndt9_zs_in, agndt9_zs_out)),
+#            np.concatenate((agndt9_bd_in, agndt9_bd_out)),
+#            gridsize=100, mincnt=1, yscale="log",
+#            norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.4)
+#
+# okinds1in = np.logical_and(agndt9_mass_in > 10**8, agndt9_mass_in <= 10**9)
+# okinds2in = np.logical_and(agndt9_mass_in > 10**9, agndt9_mass_in <= 10**9.5)
+# okinds3in = np.logical_and(agndt9_mass_in > 10**9.5, agndt9_mass_in <= 10**10)
+# okinds4in = agndt9_mass_in > 10**10
+# okinds1out = np.logical_and(agndt9_mass_out > 10**8, agndt9_mass_out <= 10**9)
+# okinds2out = np.logical_and(agndt9_mass_out > 10**9, agndt9_mass_out <= 10**9.5)
+# okinds3out = np.logical_and(agndt9_mass_out > 10**9.5, agndt9_mass_out <= 10**10)
+# okinds4out = agndt9_mass_out > 10**10
+#
+# plot_meidan_stat(agndt9_zs_out[okinds1out], agndt9_bd_out[okinds1out],
+#                  ax3, lab="Out: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  color='darkorange', bins=1, ls="dashed")
+#
+# plot_meidan_stat(agndt9_zs_out[okinds2out], agndt9_bd_out[okinds2out],
+#                  ax3, lab="Out: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  color='royalblue', bins=1, ls="dashed")
+#
+# plot_meidan_stat(agndt9_zs_out[okinds3out], agndt9_bd_out[okinds3out],
+#                  ax3, lab="Out: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  color='limegreen', bins=1, ls="dashed")
+#
+# plot_meidan_stat(agndt9_zs_out[okinds4out], agndt9_bd_out[okinds4out],
+#                  ax3, lab="Out: $10^{10} < M_\star/M_\odot$",
+#                  color='magenta', bins=1, ls="dashed")
+#
+# plot_meidan_stat(agndt9_zs_in[okinds1in], agndt9_bd_in[okinds1in],
+#                  ax3, lab="In: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  color='darkorange', bins=1)
+#
+# plot_meidan_stat(agndt9_zs_in[okinds2in], agndt9_bd_in[okinds2in],
+#                  ax3, lab="In: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  color='royalblue', bins=1)
+#
+# plot_meidan_stat(agndt9_zs_in[okinds3in], agndt9_bd_in[okinds3in],
+#                  ax3, lab="In: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  color='limegreen', bins=1)
+#
+# plot_meidan_stat(agndt9_zs_in[okinds4in], agndt9_bd_in[okinds4in],
+#                  ax3, lab="In: $10^{10} < M_\star/M_\odot$",
+#                  color='magenta', bins=1)
+#
+# ax3.text(0.8, 0.9, "AGNdT9",
+#         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+#         transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
+#
+# ax4.hexbin(np.concatenate((ref_zs_in, ref_zs_out)),
+#            np.concatenate((ref_bd_in, ref_bd_out)),
+#            gridsize=100, mincnt=1, yscale="log",
+#            norm=LogNorm(), linewidths=0.2, cmap='Greys', alpha=0.4)
+#
+# okinds1in = np.logical_and(ref_mass_in > 10**8, ref_mass_in <= 10**9)
+# okinds2in = np.logical_and(ref_mass_in > 10**9, ref_mass_in <= 10**9.5)
+# okinds3in = np.logical_and(ref_mass_in > 10**9.5, ref_mass_in <= 10**10)
+# okinds4in = ref_mass_in > 10**10
+# okinds1out = np.logical_and(ref_mass_out > 10**8, ref_mass_out <= 10**9)
+# okinds2out = np.logical_and(ref_mass_out > 10**9, ref_mass_out <= 10**9.5)
+# okinds3out = np.logical_and(ref_mass_out > 10**9.5, ref_mass_out <= 10**10)
+# okinds4out = ref_mass_out > 10**10
+#
+# plot_meidan_stat(ref_zs_out[okinds1out], ref_bd_out[okinds1out],
+#                  ax4, lab="Out: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  color='darkorange', bins=1, ls="dashed")
+#
+# plot_meidan_stat(ref_zs_out[okinds2out], ref_bd_out[okinds2out],
+#                  ax4, lab="Out: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  color='royalblue', bins=1, ls="dashed")
+#
+# plot_meidan_stat(ref_zs_out[okinds3out], ref_bd_out[okinds3out],
+#                  ax4, lab="Out: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  color='limegreen', bins=1, ls="dashed")
+#
+# plot_meidan_stat(ref_zs_out[okinds4out], ref_bd_out[okinds4out],
+#                  ax4, lab="Out: $10^{10} < M_\star/M_\odot$",
+#                  color='magenta', bins=1, ls="dashed")
+#
+# plot_meidan_stat(ref_zs_in[okinds1in], ref_bd_in[okinds1in],
+#                  ax4, lab="In: $10^8 < M_\star/M_\odot \leq 10^9$",
+#                  color='darkorange', bins=1)
+#
+# plot_meidan_stat(ref_zs_in[okinds2in], ref_bd_in[okinds2in],
+#                  ax4, lab="In: $10^9 < M_\star/M_\odot \leq 10^{9.5}$",
+#                  color='royalblue', bins=1)
+#
+# plot_meidan_stat(ref_zs_in[okinds3in], ref_bd_in[okinds3in],
+#                  ax4, lab="In: $10^{9.5} < M_\star/M_\odot \leq 10^{10}$",
+#                  color='limegreen', bins=1)
+#
+# plot_meidan_stat(ref_zs_in[okinds4in], ref_bd_in[okinds4in],
+#                  ax4, lab="In: $10^{10} < M_\star/M_\odot$",
+#                  color='magenta', bins=1)
+#
+# ax4.text(0.8, 0.9, "REFERENCE",
+#         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
+#         transform=ax4.transAxes, horizontalalignment='right', fontsize=8)
+#
+# ax2.set_xlabel("$z$")
+# ax4.set_xlabel("$z$")
+# ax1.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
+# ax2.set_ylabel(r"$\rho_{\mathrm{birth}}$ / [cm$^{-3}$]")
+#
+# handles, labels = ax3.get_legend_handles_labels()
+# ax3.legend(handles, labels, fontsize=6, loc="lower right")
+#
+# for ax in [ax1, ax2, ax3, ax4]:
+#     ax.set_xlim(0, 25)
+#     ax.set_ylim(10**-2, 10**5.5)
+#
+# # Remove axis labels
+# ax1.tick_params(axis='x', top=False, bottom=False, labeltop=False,
+#                 labelbottom=False)
+# ax3.tick_params(axis='both', left=False, top=False, right=False,
+#                 bottom=False,
+#                 labelleft=False, labeltop=False,
+#                 labelright=False, labelbottom=False)
+# ax4.tick_params(axis='y', left=False, right=False, labelleft=False,
+#                 labelright=False)
+#
+# fig.savefig("plots/aperture_bd_evolution_split_sim_hmrrange.png", bbox_inches="tight")
+#
+# plt.close(fig)
