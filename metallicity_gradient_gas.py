@@ -450,7 +450,7 @@ ax.set_ylabel(r"$\nabla_{O/H}$")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/stellar_met_grad_evo.png", bbox_inches="tight")
+fig.savefig("plots/gas_met_grad_evo.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -489,7 +489,7 @@ ax.set_ylabel(r"$\nabla_{O/H}$")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/stellar_met_grad_mass.png", bbox_inches="tight")
+fig.savefig("plots/gas_met_grad_mass.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -528,7 +528,7 @@ ax.set_ylabel(r"$\nabla_{O/H}$")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/stellar_sfweighted_met_grad_evo.png", bbox_inches="tight")
+fig.savefig("plots/gas_sfweighted_met_grad_evo.png", bbox_inches="tight")
 
 plt.close(fig)
 
@@ -567,7 +567,7 @@ ax.set_ylabel(r"$\nabla_{O/H}$")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-fig.savefig("plots/stellar_sfweighted_met_grad_mass.png", bbox_inches="tight")
+fig.savefig("plots/gas_sfweighted_met_grad_mass.png", bbox_inches="tight")
 
 plt.close(fig)
 
