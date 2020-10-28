@@ -320,8 +320,8 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 prof_parts_met = parts_met[okinds]
                 prof_rs = rs[okinds]
 
-                print(prof_rs)
-                print(prof_parts_met)
+                if len(prof_rs) < 10:
+                    continue
                 
                 popt, pcov = curve_fit(strt_fit, prof_rs,
                                        prof_parts_met,
