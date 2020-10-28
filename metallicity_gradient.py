@@ -182,16 +182,13 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                      '009_z004p485', '012_z003p017', '015_z002p012',
                      '001_z015p132', '004_z008p075',
                      '007_z005p487', '010_z003p984',
-                     '019_z001p004',
-                     '028_z000p000', '002_z009p993',
-                     '017_z001p487',
-                     '023_z000p503']
+                     '019_z001p004', '002_z009p993',]
 
         ini_snaps = np.zeros(29, dtype=object)
         for s in pre_snaps:
             ind = int(s.split('_')[0])
             ini_snaps[ind] = s
-            
+
         ini_snaps = ini_snaps[ini_snaps != 0.0]
 
         snaps = list(ini_snaps)[1:]
@@ -430,10 +427,10 @@ recent_mass_all = np.concatenate((recent_masses,
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-ax.hexbin(zs_all, met_grads_all,
-          gridsize=100, mincnt=1,
-          norm=LogNorm(), linewidths=0.2,
-          cmap='Greys', alpha=0.4)
+# ax.hexbin(zs_all, met_grads_all,
+#           gridsize=100, mincnt=1,
+#           norm=LogNorm(), linewidths=0.2,
+#           cmap='Greys', alpha=0.4)
 
 okinds1 = np.logical_and(mass_all > 10**8, mass_all <= 10**9)
 okinds2 = np.logical_and(mass_all > 10**9, mass_all <= 10**9.5)
@@ -462,7 +459,7 @@ ax.set_ylabel(r"$\nabla_{O/H}$")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-ax.set_ylim(-1, 1)
+# ax.set_ylim(-1, 1)
 
 fig.savefig("plots/stellar_met_grad_evo.png", bbox_inches="tight")
 
@@ -474,36 +471,36 @@ ax = fig.add_subplot(111)
 ax.hexbin(mass_all, met_grads_all,
           gridsize=100, mincnt=1, xscale="log",
           norm=LogNorm(), linewidths=0.2,
-          cmap='Greys', alpha=0.4)
+          cmap='plasma')
 
-okinds1 = np.logical_and(zs_all > 0, zs_all <= 1)
-okinds2 = np.logical_and(zs_all > 1, zs_all <= 3)
-okinds3 = np.logical_and(zs_all > 3, zs_all <= 6)
-okinds4 = zs_all > 6
+# okinds1 = np.logical_and(zs_all > 0, zs_all <= 1)
+# okinds2 = np.logical_and(zs_all > 1, zs_all <= 3)
+# okinds3 = np.logical_and(zs_all > 3, zs_all <= 6)
+# okinds4 = zs_all > 6
 
-plot_meidan_stat(mass_all[okinds1], met_grads_all[okinds1],
-                 ax, lab="$0 < z \leq 1$",
-                 color='darkorange', bins="mass")
-
-plot_meidan_stat(mass_all[okinds2], met_grads_all[okinds2],
-                 ax, lab="$1 < z \leq 3$",
-                 color='royalblue', bins="mass")
-
-plot_meidan_stat(mass_all[okinds3], met_grads_all[okinds3],
-                 ax, lab="$3 < z \leq 6$",
-                 color='limegreen', bins="mass")
-
-plot_meidan_stat(mass_all[okinds4], met_grads_all[okinds4],
-                 ax, lab="$6 < z$",
-                 color='magenta', bins="mass")
+# plot_meidan_stat(mass_all[okinds1], met_grads_all[okinds1],
+#                  ax, lab="$0 < z \leq 1$",
+#                  color='darkorange', bins="mass")
+#
+# plot_meidan_stat(mass_all[okinds2], met_grads_all[okinds2],
+#                  ax, lab="$1 < z \leq 3$",
+#                  color='royalblue', bins="mass")
+#
+# plot_meidan_stat(mass_all[okinds3], met_grads_all[okinds3],
+#                  ax, lab="$3 < z \leq 6$",
+#                  color='limegreen', bins="mass")
+#
+# plot_meidan_stat(mass_all[okinds4], met_grads_all[okinds4],
+#                  ax, lab="$6 < z$",
+#                  color='magenta', bins="mass")
 
 ax.set_xlabel("$M_\star/M_\odot$")
 ax.set_ylabel(r"$\nabla_{O/H}$")
 
-handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels)
+# handles, labels = ax.get_legend_handles_labels()
+# ax.legend(handles, labels)
 
-ax.set_ylim(-1, 1)
+# ax.set_ylim(-1, 1)
 
 fig.savefig("plots/stellar_met_grad_mass.png", bbox_inches="tight")
 
@@ -512,10 +509,10 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-ax.hexbin(recent_zs_all, recent_met_grads_all,
-          gridsize=100, mincnt=1,
-          norm=LogNorm(), linewidths=0.2,
-          cmap='Greys', alpha=0.4)
+# ax.hexbin(recent_zs_all, recent_met_grads_all,
+#           gridsize=100, mincnt=1,
+#           norm=LogNorm(), linewidths=0.2,
+#           cmap='Greys', alpha=0.4)
 
 okinds1 = np.logical_and(recent_mass_all > 10**8, recent_mass_all <= 10**9)
 okinds2 = np.logical_and(recent_mass_all > 10**9, recent_mass_all <= 10**9.5)
@@ -544,7 +541,7 @@ ax.set_ylabel(r"$\nabla_{O/H}$")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels)
 
-ax.set_ylim(-1, 1)
+# ax.set_ylim(-1, 1)
 
 fig.savefig("plots/stellar_recent_met_grad_evo.png", bbox_inches="tight")
 
@@ -556,36 +553,36 @@ ax = fig.add_subplot(111)
 ax.hexbin(recent_mass_all, recent_met_grads_all,
           gridsize=100, mincnt=1, xscale="log",
           norm=LogNorm(), linewidths=0.2,
-          cmap='Greys', alpha=0.4)
+          cmap='plasma')
 
-okinds1 = np.logical_and(recent_zs_all > 0, recent_zs_all <= 1)
-okinds2 = np.logical_and(recent_zs_all > 1, recent_zs_all <= 3)
-okinds3 = np.logical_and(recent_zs_all > 3, recent_zs_all <= 6)
-okinds4 = recent_zs_all > 6
-
-plot_meidan_stat(recent_mass_all[okinds1], recent_met_grads_all[okinds1],
-                 ax, lab="$0 < z \leq 1$",
-                 color='darkorange', bins="mass")
-
-plot_meidan_stat(recent_mass_all[okinds2], recent_met_grads_all[okinds2],
-                 ax, lab="$1 < z \leq 3$",
-                 color='royalblue', bins="mass")
-
-plot_meidan_stat(recent_mass_all[okinds3], recent_met_grads_all[okinds3],
-                 ax, lab="$3 < z \leq 6$",
-                 color='limegreen', bins="mass")
-
-plot_meidan_stat(recent_mass_all[okinds4], recent_met_grads_all[okinds4],
-                 ax, lab="$6 < z$",
-                 color='magenta', bins="mass")
+# okinds1 = np.logical_and(recent_zs_all > 0, recent_zs_all <= 1)
+# okinds2 = np.logical_and(recent_zs_all > 1, recent_zs_all <= 3)
+# okinds3 = np.logical_and(recent_zs_all > 3, recent_zs_all <= 6)
+# okinds4 = recent_zs_all > 6
+#
+# plot_meidan_stat(recent_mass_all[okinds1], recent_met_grads_all[okinds1],
+#                  ax, lab="$0 < z \leq 1$",
+#                  color='darkorange', bins="mass")
+#
+# plot_meidan_stat(recent_mass_all[okinds2], recent_met_grads_all[okinds2],
+#                  ax, lab="$1 < z \leq 3$",
+#                  color='royalblue', bins="mass")
+#
+# plot_meidan_stat(recent_mass_all[okinds3], recent_met_grads_all[okinds3],
+#                  ax, lab="$3 < z \leq 6$",
+#                  color='limegreen', bins="mass")
+#
+# plot_meidan_stat(recent_mass_all[okinds4], recent_met_grads_all[okinds4],
+#                  ax, lab="$6 < z$",
+#                  color='magenta', bins="mass")
 
 ax.set_xlabel("$M_\star/M_\odot$")
 ax.set_ylabel(r"$\nabla_{O/H}$")
 
-handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles, labels)
+# handles, labels = ax.get_legend_handles_labels()
+# ax.legend(handles, labels)
 
-ax.set_ylim(-1, 1)
+# ax.set_ylim(-1, 1)
 
 fig.savefig("plots/stellar_recent_met_grad_mass.png", bbox_inches="tight")
 
