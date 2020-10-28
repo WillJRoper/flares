@@ -167,16 +167,25 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
     # Define snapshots
     if eagle or ref:
+        # pre_snaps = ['000_z0100p000', '003_z008p988', '006_z005p971',
+        #              '009_z004p485', '012_z003p017', '015_z002p012',
+        #              '018_z001p259', '021_z000p736', '024_z000p366',
+        #              '027_z000p101', '001_z015p132', '004_z008p075',
+        #              '007_z005p487', '010_z003p984', '013_z002p478',
+        #              '016_z001p737', '019_z001p004', '022_z000p615',
+        #              '025_z000p271', '028_z000p000', '002_z009p993',
+        #              '005_z007p050', '008_z005p037', '011_z003p528',
+        #              '014_z002p237', '017_z001p487', '020_z000p865',
+        #              '023_z000p503', '026_z000p183']
+
         pre_snaps = ['000_z0100p000', '003_z008p988', '006_z005p971',
                      '009_z004p485', '012_z003p017', '015_z002p012',
-                     '018_z001p259', '021_z000p736', '024_z000p366',
-                     '027_z000p101', '001_z015p132', '004_z008p075',
-                     '007_z005p487', '010_z003p984', '013_z002p478',
-                     '016_z001p737', '019_z001p004', '022_z000p615',
-                     '025_z000p271', '028_z000p000', '002_z009p993',
-                     '005_z007p050', '008_z005p037', '011_z003p528',
-                     '014_z002p237', '017_z001p487', '020_z000p865',
-                     '023_z000p503', '026_z000p183']
+                     '001_z015p132', '004_z008p075',
+                     '007_z005p487', '010_z003p984',
+                     '019_z001p004',
+                     '028_z000p000', '002_z009p993',
+                     '017_z001p487',
+                     '023_z000p503']
 
         ini_snaps = np.zeros(29, dtype=object)
         for s in pre_snaps:
@@ -461,7 +470,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 ax.hexbin(mass_all, met_grads_all,
-          gridsize=100, mincnt=1,
+          gridsize=100, mincnt=1, xscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.4)
 
@@ -543,7 +552,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 ax.hexbin(recent_mass_all, recent_met_grads_all,
-          gridsize=100, mincnt=1,
+          gridsize=100, mincnt=1, xscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='Greys', alpha=0.4)
 
