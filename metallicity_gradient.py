@@ -247,7 +247,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 gal_hmr = E.read_array('SUBFIND', path, snap,
                                        'Subhalo/HalfMassRad',
                                        noH=True, physicalUnits=True,
-                                       numThreads=8)[:, 4] * 1e3
+                                       numThreads=8)[:, 0] * 1e3
 
                 # gal_bd = E.read_array('PARTDATA', path, snap,
                 #                       'PartType4/BirthDensity', noH=True,
