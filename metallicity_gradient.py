@@ -247,7 +247,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 gal_hmr = E.read_array('SUBFIND', path, snap,
                                        'Subhalo/HalfMassRad',
                                        noH=True, physicalUnits=True,
-                                       numThreads=8)[:, 0] * 1e3
+                                       numThreads=8)[:, 4] * 1e3
 
                 # gal_bd = E.read_array('PARTDATA', path, snap,
                 #                       'PartType4/BirthDensity', noH=True,
@@ -329,23 +329,23 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                                        prof_parts_met,
                                        p0=(-0.5, 0))
 
-                fig = plt.figure()
-                ax = fig.add_subplot(111)
-
-                ax.hexbin(rs, parts_met,
-                          gridsize=100, mincnt=1,
-                          norm=LogNorm(), linewidths=0.2, cmap='viridis')
-                xs = np.linspace(0, 30, 100)
-                ax.plot(xs, strt_fit(xs, popt[0], popt[1]), linestyle="--",
-                        color="darkorange")
-
-                ax.set_xlabel("$R / [\mathrm{pkpc}]$")
-                ax.set_ylabel("$12 + \log_{10}(O/H)$")
-
-                fig.savefig("plots/metprof_%.1f.png" % np.log10(m),
-                            bbox_inches="tight")
-
-                plt.close(fig)
+                # fig = plt.figure()
+                # ax = fig.add_subplot(111)
+                #
+                # ax.hexbin(rs, parts_met,
+                #           gridsize=100, mincnt=1,
+                #           norm=LogNorm(), linewidths=0.2, cmap='viridis')
+                # xs = np.linspace(0, 30, 100)
+                # ax.plot(xs, strt_fit(xs, popt[0], popt[1]), linestyle="--",
+                #         color="darkorange")
+                #
+                # ax.set_xlabel("$R / [\mathrm{pkpc}]$")
+                # ax.set_ylabel("$12 + \log_{10}(O/H)$")
+                #
+                # fig.savefig("plots/metprof_%.1f.png" % np.log10(m),
+                #             bbox_inches="tight")
+                #
+                # plt.close(fig)
 
                 met_grads.append(popt[0])
 
