@@ -191,6 +191,8 @@ def get_data(masslim=1e8, eagle=False, ref=False):
         for s in pre_snaps:
             ind = int(s.split('_')[0])
             ini_snaps[ind] = s
+            
+        ini_snaps = ini_snaps[ini_snaps != 0.0]
 
         snaps = list(ini_snaps)[1:]
         prog_snaps = list(ini_snaps)[:-1]
