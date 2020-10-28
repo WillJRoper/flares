@@ -335,11 +335,11 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 ax = fig.add_subplot(111)
 
                 ax.hexbin(rs, parts_met,
-                          gridsize=100, mincnt=1, xscale="log",
-                          norm=LogNorm(), linewidths=0.2, cmap='plasma')
+                          gridsize=100, mincnt=1,
+                          norm=LogNorm(), linewidths=0.2, cmap='viridis')
                 xs = np.linspace(hmr * 0.5, hmr * 2, 100)
                 ax.plot(xs, strt_fit(xs, popt[0], popt[1]), linestyle="--",
-                        color="k")
+                        color="darkorange")
 
                 ax.set_xlabel("$R / [\mathrm{pkpc}]$")
                 ax.set_ylabel("$12 + \log_{10}(O/H)$")
