@@ -323,7 +323,9 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 popt, pcov = curve_fit(strt_fit, prof_rs,
                                        prof_parts_met,
                                        p0=(-0.5, 0))
-
+                print(prof_rs)
+                print(prof_parts_met)
+                
                 fig = plt.figure()
                 ax = fig.add_subplot(111)
 
