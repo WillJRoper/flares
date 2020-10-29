@@ -527,7 +527,7 @@ ax4.text(0.8, 0.9, "$5 < z$",
 ax4.set_xlabel("$M_\star/M_\odot$")
 for ax in [ax1, ax2, ax3, ax4]:
     ax.set_ylabel(r"$\nabla_{O/H} + 100$")
-    ax.axhline(5, linestyle="--", color="k")
+    ax.axhline(100, linestyle="--", color="k")
     if ax != ax4:
         ax.tick_params(axis='x', top=False, bottom=False, labeltop=False,
                        labelbottom=False)
@@ -629,7 +629,7 @@ ax4.text(0.8, 0.9, "$5 < z$",
 ax4.set_xlabel("$M_\star/M_\odot$")
 for ax in [ax1, ax2, ax3, ax4]:
     ax.set_ylabel(r"$\nabla_{O/H} + 100$")
-    ax.axhline(5, linestyle="--", color="k")
+    ax.axhline(100, linestyle="--", color="k")
     if ax != ax4:
         ax.tick_params(axis='x', top=False, bottom=False, labeltop=False,
                        labelbottom=False)
