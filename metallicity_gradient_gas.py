@@ -117,18 +117,18 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
 
     # Get the particle IDs
     if all_parts:
-        part_ids = E.read_array('SNAP', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=8)
+        part_ids = E.read_array('SNAP', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=16)
     else:
         part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
-                                numThreads=8)
+                                numThreads=16)
 
     # Extract the halo IDs (group names/keys) contained within this snapshot
     group_part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
-                                  numThreads=8)
+                                  numThreads=16)
     grp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/GroupNumber',
-                           numThreads=8)
+                           numThreads=16)
     subgrp_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/SubGroupNumber',
-                              numThreads=8)
+                              numThreads=16)
 
     # Remove particles not associated to a subgroup
     okinds = subgrp_ids != 1073741824
@@ -258,44 +258,44 @@ def get_data(masslim=1e8, eagle=False, ref=False):
             try:
                 grp_ids = E.read_array('SUBFIND', path, snap,
                                        'Subhalo/GroupNumber',
-                                       numThreads=8)
+                                       numThreads=16)
                 subgrp_ids = E.read_array('SUBFIND', path, snap,
                                           'Subhalo/SubGroupNumber',
-                                          numThreads=8)
+                                          numThreads=16)
                 gal_m = E.read_array('SUBFIND', path, snap,
                                       'Subhalo/ApertureMeasurements/Mass/030kpc',
                                       noH=True, physicalUnits=True,
-                                      numThreads=8) * 10**10
+                                      numThreads=16) * 10**10
                 gal_ms = gal_m[:, 4]
                 gal_gas_ms = gal_m[:, 0]
                 gal_cop = E.read_array('SUBFIND', path, snap,
                                        'Subhalo/CentreOfPotential',
                                        noH=True, physicalUnits=True,
-                                       numThreads=8)
+                                       numThreads=16)
                 gal_hmr = E.read_array('SUBFIND', path, snap,
                                        'Subhalo/HalfMassRad',
                                        noH=True, physicalUnits=True,
-                                       numThreads=8)[:, 4] * 1e3
+                                       numThreads=16)[:, 4] * 1e3
 
                 # gal_bd = E.read_array('PARTDATA', path, snap,
                 #                       'PartType0/BirthDensity', noH=True,
-                #                         physicalUnits=True, numThreads=8)
+                #                         physicalUnits=True, numThreads=16)
                 gal_ox = E.read_array('PARTDATA', path, snap,
                                        'PartType0/SmoothedElementAbundance/'
                                        'Oxygen', noH=True,
-                                       physicalUnits=True, numThreads=8)
+                                       physicalUnits=True, numThreads=16)
                 gal_hy = E.read_array('PARTDATA', path, snap,
                                        'PartType0/SmoothedElementAbundance/'
                                        'Hydrogen', noH=True,
-                                       physicalUnits=True, numThreads=8)
+                                       physicalUnits=True, numThreads=16)
                 gal_coords = E.read_array('PARTDATA', path, snap,
                                           'PartType0/Coordinates',
                                           noH=True, physicalUnits=True,
-                                          numThreads=8)
+                                          numThreads=16)
                 gal_sfr = E.read_array('PARTDATA', path, snap,
                                          'PartType0/StarFormationRate',
                                          noH=True, physicalUnits=True,
-                                         numThreads=8)
+                                         numThreads=16)
 
             except ValueError:
 
