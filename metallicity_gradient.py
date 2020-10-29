@@ -472,7 +472,7 @@ okinds2 = np.logical_and(zs_all > 1, zs_all <= 3)
 okinds3 = np.logical_and(zs_all > 3, zs_all <= 5)
 okinds4 = zs_all > 5
 
-ax1.hexbin(mass_all[okinds1], met_grads_all[okinds1] + 5,
+ax1.hexbin(mass_all[okinds1], met_grads_all[okinds1]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -481,7 +481,7 @@ ax1.text(0.8, 0.9, "$0 < z \leq 1$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
 
-ax2.hexbin(mass_all[okinds2], met_grads_all[okinds2] + 5,
+ax2.hexbin(mass_all[okinds2], met_grads_all[okinds2]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -490,7 +490,7 @@ ax2.text(0.8, 0.9, "$1 < z \leq 3$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
 
-ax3.hexbin(mass_all[okinds3], met_grads_all[okinds3] + 5,
+ax3.hexbin(mass_all[okinds3], met_grads_all[okinds3]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -499,7 +499,7 @@ ax3.text(0.8, 0.9, "$3 < z \leq 5$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
 
-ax4.hexbin(mass_all[okinds4], met_grads_all[okinds4] + 5,
+ax4.hexbin(mass_all[okinds4], met_grads_all[okinds4]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -510,7 +510,7 @@ ax4.text(0.8, 0.9, "$5 < z$",
 
 ax4.set_xlabel("$M_\star/M_\odot$")
 for ax in [ax1, ax2, ax3, ax4]:
-    ax.set_ylabel(r"$\nabla_{O/H}+5$")
+    ax.set_ylabel(r"$\nabla_{O/H}+ 10$")
     ax.axhline(5, linestyle="--", color="k")
     if ax != ax4:
         ax.tick_params(axis='x', top=False, bottom=False, labeltop=False,
@@ -574,7 +574,7 @@ okinds2 = np.logical_and(zs_all > 1, zs_all <= 3)
 okinds3 = np.logical_and(zs_all > 3, zs_all <= 5)
 okinds4 = zs_all > 5
 
-ax1.hexbin(recent_mass_all[okinds1], recent_met_grads_all[okinds1] + 5,
+ax1.hexbin(recent_mass_all[okinds1], recent_met_grads_all[okinds1]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -583,7 +583,7 @@ ax1.text(0.8, 0.9, "$0 < z \leq 1$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
 
-ax2.hexbin(recent_mass_all[okinds2], recent_met_grads_all[okinds2] + 5,
+ax2.hexbin(recent_mass_all[okinds2], recent_met_grads_all[okinds2]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -592,7 +592,7 @@ ax2.text(0.8, 0.9, "$1 < z \leq 3$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
 
-ax3.hexbin(recent_mass_all[okinds3], recent_met_grads_all[okinds3] + 5,
+ax3.hexbin(recent_mass_all[okinds3], recent_met_grads_all[okinds3]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -601,7 +601,7 @@ ax3.text(0.8, 0.9, "$3 < z \leq 5$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
 
-ax4.hexbin(recent_mass_all[okinds4], recent_met_grads_all[okinds4] + 5,
+ax4.hexbin(recent_mass_all[okinds4], recent_met_grads_all[okinds4]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -612,7 +612,7 @@ ax4.text(0.8, 0.9, "$5 < z$",
 
 ax4.set_xlabel("$M_\star/M_\odot$")
 for ax in [ax1, ax2, ax3, ax4]:
-    ax.set_ylabel(r"$\nabla_{O/H}+5$")
+    ax.set_ylabel(r"$\nabla_{O/H}+10$")
     ax.axhline(5, linestyle="--", color="k")
     if ax != ax4:
         ax.tick_params(axis='x', top=False, bottom=False, labeltop=False,
