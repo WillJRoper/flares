@@ -473,7 +473,7 @@ okinds2 = np.logical_and(zs_all > 1, zs_all <= 3)
 okinds3 = np.logical_and(zs_all > 3, zs_all <= 5)
 okinds4 = zs_all > 5
 
-ax1.hexbin(mass_all[okinds1], met_grads_all[okinds1] + 5,
+ax1.hexbin(mass_all[okinds1], met_grads_all[okinds1]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -482,7 +482,7 @@ ax1.text(0.8, 0.9, "$0 < z \leq 1$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
 
-ax2.hexbin(mass_all[okinds2], met_grads_all[okinds2] + 5,
+ax2.hexbin(mass_all[okinds2], met_grads_all[okinds2]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -491,7 +491,7 @@ ax2.text(0.8, 0.9, "$1 < z \leq 3$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
 
-ax3.hexbin(mass_all[okinds3], met_grads_all[okinds3] + 5,
+ax3.hexbin(mass_all[okinds3], met_grads_all[okinds3]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -500,7 +500,7 @@ ax3.text(0.8, 0.9, "$3 < z \leq 5$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
 
-ax4.hexbin(mass_all[okinds4], met_grads_all[okinds4] + 5,
+ax4.hexbin(mass_all[okinds4], met_grads_all[okinds4]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -575,7 +575,7 @@ okinds2 = np.logical_and(zs_all > 1, zs_all <= 3)
 okinds3 = np.logical_and(zs_all > 3, zs_all <= 5)
 okinds4 = zs_all > 5
 
-ax1.hexbin(sfweighted_mass_all[okinds1], sfweighted_met_grads_all[okinds1] + 5,
+ax1.hexbin(sfweighted_mass_all[okinds1], sfweighted_met_grads_all[okinds1]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -584,7 +584,7 @@ ax1.text(0.8, 0.9, "$0 < z \leq 1$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax1.transAxes, horizontalalignment='right', fontsize=8)
 
-ax2.hexbin(sfweighted_mass_all[okinds2], sfweighted_met_grads_all[okinds2] + 5,
+ax2.hexbin(sfweighted_mass_all[okinds2], sfweighted_met_grads_all[okinds2]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -593,7 +593,7 @@ ax2.text(0.8, 0.9, "$1 < z \leq 3$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax2.transAxes, horizontalalignment='right', fontsize=8)
 
-ax3.hexbin(sfweighted_mass_all[okinds3], sfweighted_met_grads_all[okinds3] + 5,
+ax3.hexbin(sfweighted_mass_all[okinds3], sfweighted_met_grads_all[okinds3]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
@@ -602,7 +602,7 @@ ax3.text(0.8, 0.9, "$3 < z \leq 5$",
         bbox=dict(boxstyle="round,pad=0.3", fc='w', ec="k", lw=1, alpha=0.8),
         transform=ax3.transAxes, horizontalalignment='right', fontsize=8)
 
-ax4.hexbin(sfweighted_mass_all[okinds4], sfweighted_met_grads_all[okinds4] + 5,
+ax4.hexbin(sfweighted_mass_all[okinds4], sfweighted_met_grads_all[okinds4]+ 10,
           gridsize=100, mincnt=1, xscale="log", yscale="log",
           norm=LogNorm(), linewidths=0.2,
           cmap='plasma')
