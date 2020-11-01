@@ -21,23 +21,7 @@ def plot_meidan_stat(xs, ys, ax, lab, color, bins=None, ls='-', xy=True):
         bin_lims = np.linspace(10**8, 10**12, 20)
 
     else:
-        zs = np.float64(xs)
-
-        uniz = np.unique(zs)
-        bin_wids = uniz[1:] - uniz[:-1]
-        low_bins = uniz[:-1] - (bin_wids / 2)
-        high_bins = uniz[:-1] + (bin_wids / 2)
-        low_bins = list(low_bins)
-        high_bins = list(high_bins)
-        low_bins.append(high_bins[-1])
-        high_bins.append(uniz[-1] + 1)
-        low_bins = np.array(low_bins)
-        high_bins = np.array(high_bins)
-
-        bin = np.zeros(uniz.size + 1)
-        bin[:-1] = low_bins
-        bin[1:] = high_bins
-        bin_lims = bin
+        bin_lims = np.arange(0, 15, 0.5)
 
     bin_cents = []
     y_stat = []
