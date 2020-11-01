@@ -117,7 +117,7 @@ def get_part_ids(sim, snapshot, part_type, all_parts=False):
 
     # Get the particle IDs
     if all_parts:
-        part_ids = E.read_array('SNAP', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=16)
+        part_ids = E.read_array('SNAP', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs', numThreads=28)
     else:
         part_ids = E.read_array('PARTDATA', sim, snapshot, 'PartType' + str(part_type) + '/ParticleIDs',
                                 numThreads=16)
@@ -279,15 +279,15 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
                 # gal_bd = E.read_array('PARTDATA', path, snap,
                 #                       'PartType0/BirthDensity', noH=True,
-                #                         physicalUnits=True, numThreads=16)
+                #                         physicalUnits=True, numThreads=28)
                 gal_ox = E.read_array('PARTDATA', path, snap,
                                        'PartType0/SmoothedElementAbundance/'
                                        'Oxygen', noH=True,
-                                       physicalUnits=True, numThreads=16)
+                                       physicalUnits=True, numThreads=28)
                 gal_hy = E.read_array('PARTDATA', path, snap,
                                        'PartType0/SmoothedElementAbundance/'
                                        'Hydrogen', noH=True,
-                                       physicalUnits=True, numThreads=16)
+                                       physicalUnits=True, numThreads=28)
                 gal_coords = E.read_array('PARTDATA', path, snap,
                                           'PartType0/Coordinates',
                                           noH=True, physicalUnits=True,
