@@ -583,10 +583,10 @@ ax2 = fig.add_subplot(gs[1, 0])
 ax3 = fig.add_subplot(gs[2, 0])
 ax4 = fig.add_subplot(gs[3, 0])
 
-okinds1 = np.logical_and(zs_all > 0, zs_all <= 1)
-okinds2 = np.logical_and(zs_all > 1, zs_all <= 3)
-okinds3 = np.logical_and(zs_all > 3, zs_all <= 5)
-okinds4 = zs_all > 5
+okinds1 = np.logical_and(recent_zs_all > 0, recent_zs_all <= 1)
+okinds2 = np.logical_and(recent_zs_all > 1, recent_zs_all <= 3)
+okinds3 = np.logical_and(recent_zs_all > 3, recent_zs_all <= 5)
+okinds4 = recent_zs_all > 5
 
 ax1.hexbin(recent_mass_all[okinds1], recent_met_grads_all[okinds1],
           gridsize=100, mincnt=1, xscale="log",
