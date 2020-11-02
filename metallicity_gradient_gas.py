@@ -404,11 +404,11 @@ def get_data(masslim=1e8, eagle=False, ref=False):
            np.array(sfweighted_met_grads), np.array(sfweighted_zs), \
            np.array(sfweighted_masses)
 
-met_grads, zs, masses, sfweighted_met_grads, sfweighted_zs, sfweighted_masses = get_data(masslim=10**8)
+met_grads, zs, masses, sfweighted_met_grads, sfweighted_zs, sfweighted_masses = get_data(masslim=10**9)
 
-agndt9_met_grads, agndt9_zs, agndt9_masses, agndt9_sfweighted_met_grads, agndt9_sfweighted_zs, agndt9_sfweighted_masses = get_data(masslim=10**8, eagle=True)
+agndt9_met_grads, agndt9_zs, agndt9_masses, agndt9_sfweighted_met_grads, agndt9_sfweighted_zs, agndt9_sfweighted_masses = get_data(masslim=10**9, eagle=True)
 
-ref_met_grads, ref_zs, ref_masses, ref_sfweighted_met_grads, ref_sfweighted_zs, ref_sfweighted_masses = get_data(masslim=10**8, ref=True)
+ref_met_grads, ref_zs, ref_masses, ref_sfweighted_met_grads, ref_sfweighted_zs, ref_sfweighted_masses = get_data(masslim=10**9, ref=True)
 
 met_grads_all = np.concatenate((met_grads,
                                agndt9_met_grads,
@@ -442,14 +442,14 @@ ax = fig.add_subplot(111)
 #           norm=LogNorm(), linewidths=0.2,
 #           cmap='Greys', alpha=0.4)
 
-okinds1 = np.logical_and(mass_all > 10**8, mass_all <= 10**9)
+# okinds1 = np.logical_and(mass_all > 10**8, mass_all <= 10**9)
 okinds2 = np.logical_and(mass_all > 10**9, mass_all <= 10**9.5)
 okinds3 = np.logical_and(mass_all > 10**9.5, mass_all <= 10**10)
 okinds4 = mass_all > 10**10
 
-plot_meidan_stat(zs_all[okinds1], met_grads_all[okinds1],
-                 ax, lab="$10^8 < M_\star/M_\odot \leq 10^9$",
-                 color='darkorange', bins=1)
+# plot_meidan_stat(zs_all[okinds1], met_grads_all[okinds1],
+#                  ax, lab="$10^8 < M_\star/M_\odot \leq 10^9$",
+#                  color='darkorange', bins=1)
 
 plot_meidan_stat(zs_all[okinds2], met_grads_all[okinds2],
                  ax, lab="$10^9 < M_\star/M_\odot \leq 10^{9.5}$",
@@ -474,6 +474,27 @@ ax.legend(handles, labels)
 fig.savefig("plots/gas_met_grad_evo.png", bbox_inches="tight")
 
 plt.close(fig)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+ax.hexbin(zs_all, met_grads_all,
+          gridsize=100, mincnt=1,
+          norm=LogNorm(), linewidths=0.2,
+          cmap='viridis')
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$\nabla_{O/H}$")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
+
+# ax.set_ylim(-1, 1)
+
+fig.savefig("plots/gas_met_grad_evo_scatter.png", bbox_inches="tight")
+
+plt.close(fig)
+
 
 fig = plt.figure()
 gs = gridspec.GridSpec(nrows=4, ncols=1)
@@ -544,14 +565,14 @@ ax = fig.add_subplot(111)
 #           norm=LogNorm(), linewidths=0.2,
 #           cmap='Greys', alpha=0.4)
 
-okinds1 = np.logical_and(sfweighted_mass_all > 10**8, sfweighted_mass_all <= 10**9)
+# okinds1 = np.logical_and(sfweighted_mass_all > 10**8, sfweighted_mass_all <= 10**9)
 okinds2 = np.logical_and(sfweighted_mass_all > 10**9, sfweighted_mass_all <= 10**9.5)
 okinds3 = np.logical_and(sfweighted_mass_all > 10**9.5, sfweighted_mass_all <= 10**10)
 okinds4 = sfweighted_mass_all > 10**10
 
-plot_meidan_stat(sfweighted_zs_all[okinds1], sfweighted_met_grads_all[okinds1],
-                 ax, lab="$10^8 < M_\star/M_\odot \leq 10^9$",
-                 color='darkorange', bins=1)
+# plot_meidan_stat(sfweighted_zs_all[okinds1], sfweighted_met_grads_all[okinds1],
+#                  ax, lab="$10^8 < M_\star/M_\odot \leq 10^9$",
+#                  color='darkorange', bins=1)
 
 plot_meidan_stat(sfweighted_zs_all[okinds2], sfweighted_met_grads_all[okinds2],
                  ax, lab="$10^9 < M_\star/M_\odot \leq 10^{9.5}$",
