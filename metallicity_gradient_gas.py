@@ -391,7 +391,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
                 popt, pcov = curve_fit(strt_fit, sfweighted_rs,
                                        sfweighted_parts_met,
-                                       p0=(-0.5, 0), sigma=parts_sfr,
+                                       p0=(-0.5, 0), sigma=1/parts_sfr,
                                        absolute_sigma=True)
 
                 sfweighted_met_grads.append(popt[0])
