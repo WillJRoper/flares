@@ -15,12 +15,12 @@ matplotlib.use('Agg')
 sns.set_style('whitegrid')
 
 
-snaps = ['003_z012p000', '004_z011p000', '005_z010p000',
-         '006_z009p000', '007_z008p000', '008_z007p000',
-         '009_z006p000', '010_z005p000', '011_z004p770']
+snaps = ['004_z008p075', '008_z005p037', '010_z003p984',
+         '012_z003p017', '013_z002p478', '018_z001p259',
+         '019_z001p004', '020_z000p865', '027_z000p101']
 path = "/cosma7/data/Eagle/ScienceRuns/Planck1/L0025N0376/" \
                        "PE/EagleVariation_NoZDEPSFthresh/data"
-path2 = '/cosma7/data/dp004/dc-love2/data/G-EAGLE/geagle_0000/data/'
+path2 = '/cosma7/data//Eagle/ScienceRuns/Planck1/L0100N1504/PE/REFERENCE/data'
 axlims_x = []
 axlims_y = []
 
