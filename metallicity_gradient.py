@@ -481,7 +481,7 @@ ax = fig.add_subplot(111)
 ax.hexbin(zs_all, met_grads_all,
           gridsize=100, mincnt=1,
           norm=LogNorm(), linewidths=0.2,
-          cmap='viridis', alpha=0.4)
+          cmap='viridis')
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$\nabla_{O/H}$")
