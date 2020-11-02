@@ -53,11 +53,13 @@ xaxis_dict = {}
 for snap in snaps:
 
     print(snap)
-
-    half_mass_rads_dict[snap] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
-                                                  numThreads=8)[:, 4]
-    xaxis_dict[snap] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
-                                         noH=True, numThreads=8)[:, 4] * 10**10
+    try:
+        half_mass_rads_dict[snap] = E.read_array('SUBFIND', path, snap, 'Subhalo/HalfMassRad', noH=True,
+                                                      numThreads=8)[:, 4]
+        xaxis_dict[snap] = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc',
+                                             noH=True, numThreads=8)[:, 4] * 10**10
+    except ValueError:
+        continue
 
 # Set up plot
 fig = plt.figure(figsize=(18, 10))
