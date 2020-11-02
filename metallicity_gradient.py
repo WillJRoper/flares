@@ -350,6 +350,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 okinds = rs < 30
                 prof_parts_met = parts_met[okinds]
                 prof_rs = rs[okinds]
+                prof_parts_aborn = parts_aborn[okinds]
 
                 if len(prof_rs) < 10:
                     continue
@@ -378,7 +379,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
                 met_grads.append(popt[0])
 
-                zs.append(z)
+                zs.append(np.median((1 / prof_parts_aborn) - 1))
 
                 masses.append(m)
 
@@ -386,6 +387,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                                         rs < 30)
                 recent_parts_met = parts_met[okinds]
                 recent_rs = rs[okinds]
+                recent_part_aborn = parts_aborn[okinds]
 
                 if len(recent_rs) < 10:
                     continue
@@ -396,7 +398,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
                 recent_met_grads.append(popt[0])
 
-                recent_zs.append(z)
+                recent_zs.append(np.median((1 / recent_part_aborn) - 1))
 
                 recent_masses.append(m)
 
