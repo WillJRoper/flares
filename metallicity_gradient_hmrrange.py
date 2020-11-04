@@ -328,7 +328,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 # okinds = np.logical_and(rs <= 1,
                 #                         (1 / parts_aborn) - 1 < z_prog)
 
-                okinds = np.logical_and(rs <= hmr * 2, rs > hmr * 0.5)
+                okinds = np.logical_and(rs <= hmr * 4, rs > hmr * 0.5)
                 # okinds = rs < 30
                 prof_parts_met = parts_met[okinds]
                 prof_rs = rs[okinds]
@@ -361,7 +361,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
                 met_grads.append(popt[0])
 
-                zs.append(np.median((1 / prof_parts_aborn) - 1))
+                zs.append(z)
 
                 masses.append(m)
 
@@ -380,7 +380,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
 
                 recent_met_grads.append(popt[0])
 
-                recent_zs.append(np.median((1 / recent_part_aborn) - 1))
+                recent_zs.append(z)
 
                 recent_masses.append(m)
 
@@ -543,10 +543,10 @@ plt.close(fig)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-# ax.hexbin(recent_zs_all, recent_met_grads_all,
-#           gridsize=100, mincnt=1,
-#           norm=LogNorm(), linewidths=0.2,
-#           cmap='Greys', alpha=0.4)
+ax.hexbin(recent_zs_all, recent_met_grads_all,
+          gridsize=100, mincnt=10,
+          norm=LogNorm(), linewidths=0.2,
+          cmap='Greys', alpha=0.4)
 
 # okinds1 = np.logical_and(recent_mass_all > 10**8, recent_mass_all <= 10**9)
 okinds2 = np.logical_and(recent_mass_all > 10**9, recent_mass_all <= 10**9.5)

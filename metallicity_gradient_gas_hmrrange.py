@@ -346,7 +346,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 # okinds = np.logical_and(rs <= 1,
                 #                         (1 / parts_aborn) - 1 < z_prog)
 
-                okinds = np.logical_and(rs <= hmr * 2, rs > hmr * 0.5)
+                okinds = np.logical_and(rs <= hmr * 4, rs > hmr * 0.5)
                 # okinds = rs < 30
                 prof_parts_met = parts_met[okinds]
                 prof_rs = rs[okinds]
@@ -374,7 +374,7 @@ def get_data(masslim=1e8, eagle=False, ref=False):
                 # ax.set_xlabel("$R / [\mathrm{pkpc}]$")
                 # ax.set_ylabel("$12 + \log_{10}(O/H)$")
                 #
-                # fig.savefig("plots/metprof_%.1f_hmrrange.png" % np.log10(m),
+                # fig.savefig("plots/metprof_%.1f_hmrrange_gas.png" % np.log10(m),
                 #             bbox_inches="tight")
                 #
                 # plt.close(fig)
