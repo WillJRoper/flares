@@ -1,22 +1,24 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-import eagle_IO.eagle_IO as E
-import numba as nb
-import astropy.units as u
 import gc
 import os
 import sys
-from utilities import calc_ages, get_Z_LOS
+import warnings
+
+import astropy.units as u
+import eagle_IO.eagle_IO as E
+import h5py
+import matplotlib
+import numba as nb
+import numpy as np
+from astropy.cosmology import Planck13 as cosmo
 from photutils import CircularAperture, aperture_photometry
 from scipy.interpolate import interp1d
-import h5py
-import warnings
-from astropy.cosmology import Planck13 as cosmo
+from utilities import calc_ages, get_Z_LOS
+
 os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
 import FLARE.filters
 from SynthObs.SED import models
+
 matplotlib.use('Agg')
 warnings.filterwarnings('ignore')
 
@@ -43,21 +45,25 @@ def get_part_inds(halo_ids, part_ids, group_part_ids, sorted):
         part_ids = part_ids[sinds]
 
     # Get the index of particles in the snapshot array from the in particles in a group array
-    sorted_index = np.searchsorted(part_ids, group_part_ids)  # find the indices that would sort the array
-    yindex = np.take(sinds, sorted_index, mode="raise")  # take the indices at the indices found above
-    mask = unsort_part_ids[yindex] != group_part_ids  # define the mask based on these particles
+    sorted_index = np.searchsorted(part_ids,
+                                   group_part_ids)  # find the indices that would sort the array
+    yindex = np.take(sinds, sorted_index,
+                     mode="raise")  # take the indices at the indices found above
+    mask = unsort_part_ids[
+               yindex] != group_part_ids  # define the mask based on these particles
     result = np.ma.array(yindex, mask=mask)  # create a mask array
 
     # Apply the mask to the id arrays to get halo ids and the particle indices
     part_groups = halo_ids[np.logical_not(result.mask)]  # halo ids
-    parts_in_groups = result.data[np.logical_not(result.mask)]  # particle indices
+    parts_in_groups = result.data[
+        np.logical_not(result.mask)]  # particle indices
 
     return parts_in_groups, part_groups
 
 
-def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas_ms, gas_sml,
+def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss,
+               gas_ms, gas_sml,
                lkernel, kbins, conv, model, F, i, j, f):
-
     # Define dimensions array
     if i == 0 and j == 1:
         k = 2
@@ -67,7 +73,8 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
         k = 0
     dimens = np.array([i, j, k])
 
-    gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml, dimens, lkernel, kbins, conv)
+    gal_met_surfden = get_Z_LOS(gal_poss, gas_poss, gas_ms, gas_mets, gas_sml,
+                                dimens, lkernel, kbins, conv)
 
     # Calculate optical depth of ISM and birth cloud
     tauVs_ISM = 0.0063 * gal_met_surfden
@@ -75,10 +82,12 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
 
     # Extract the flux in erg s^-1 Hz^-1
     if f.split(".")[0] == 'FAKE':
-        L = (models.generate_Lnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
+        L = (models.generate_Lnu_array(model, gal_ini_ms, gal_ages, gal_mets,
+                                       tauVs_ISM,
                                        tauVs_BC, F, f, fesc=0, log10t_BC=7))
     else:
-        L = (models.generate_Fnu_array(model, gal_ini_ms, gal_ages, gal_mets, tauVs_ISM,
+        L = (models.generate_Fnu_array(model, gal_ini_ms, gal_ages, gal_mets,
+                                       tauVs_ISM,
                                        tauVs_BC, F, f, fesc=0, log10t_BC=7))
 
     return L
@@ -86,7 +95,6 @@ def get_lumins(gal_poss, gal_ini_ms, gal_ages, gal_mets, gas_mets, gas_poss, gas
 
 @nb.jit(nogil=True, parallel=True)
 def make_soft_img(pos, Ndim, i, j, imgrange, ls, smooth):
-
     # Define x and y positions for the gaussians
     Gx, Gy = np.meshgrid(np.linspace(imgrange[0][0], imgrange[0][1], Ndim),
                          np.linspace(imgrange[1][0], imgrange[1][1], Ndim))
@@ -114,12 +122,13 @@ def make_soft_img(pos, Ndim, i, j, imgrange, ls, smooth):
 
 @nb.jit(nogil=True, parallel=True)
 def get_img_hlr(img, apertures, tot_l, app_rs, res, csoft):
-
     # Apply the apertures
-    phot_table = aperture_photometry(img, apertures, method='subpixel', subpixels=5)
+    phot_table = aperture_photometry(img, apertures, method='subpixel',
+                                     subpixels=5)
 
     # Extract the aperture luminosities
-    row = np.lib.recfunctions.structured_to_unstructured(np.array(phot_table[0]))
+    row = np.lib.recfunctions.structured_to_unstructured(
+        np.array(phot_table[0]))
     lumins = row[3:]
 
     # Get half the total luminosity
@@ -139,24 +148,21 @@ def get_img_hlr(img, apertures, tot_l, app_rs, res, csoft):
 
 @nb.njit(nogil=True, parallel=True)
 def calc_rad(poss, i, j):
-
     # Get galaxy particle indices
-    rs = np.sqrt(poss[:, i]**2 + poss[:, j]**2)
+    rs = np.sqrt(poss[:, i] ** 2 + poss[:, j] ** 2)
 
     return rs
 
 
 @nb.njit(nogil=True, parallel=True)
 def calc_3drad(poss):
-
     # Get galaxy particle indices
-    rs = np.sqrt(poss[:, 0]**2 + poss[:, 1]**2 + poss[:, 2]**2)
+    rs = np.sqrt(poss[:, 0] ** 2 + poss[:, 1] ** 2 + poss[:, 2] ** 2)
 
     return rs
 
 
 def lumin_weighted_centre(poss, ls):
-
     cent = np.average(poss, axis=0, weights=ls)
 
     return cent
@@ -164,7 +170,6 @@ def lumin_weighted_centre(poss, ls):
 
 @nb.njit(nogil=True, parallel=True)
 def calc_light_mass_rad(ls, poss, i, j, ms):
-
     rs = calc_rad(poss, i, j)
 
     # Sort the radii and masses
@@ -187,17 +192,17 @@ def calc_light_mass_rad(ls, poss, i, j, ms):
     hmr_ind = np.argmin(np.abs(l_profile - half_l))
     hmr = rs[hmr_ind]
 
-    return hmr, tot_l, np.sum(ms) / 10**10
+    return hmr, tot_l, np.sum(ms) / 10 ** 10
 
 
 def get_main(path, snap, savepath, filters, F, model, filename):
-
     # Get the redshift
     z_str = snap.split('z')[1].split('p')
     z = float(z_str[0] + '.' + z_str[1])
 
-    kinp = np.load('/cosma/home/dp004/dc-rope1/cosma7/FLARES/flares/los_extinction/kernel_sph-anarchy.npz',
-                   allow_pickle=True)
+    kinp = np.load(
+        '/cosma/home/dp004/dc-rope1/cosma7/FLARES/flares/los_extinction/kernel_sph-anarchy.npz',
+        allow_pickle=True)
     lkernel = kinp['kernel']
     header = kinp['header']
     kbins = header.item()['bins']
@@ -205,18 +210,26 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     conv = (u.solMass / u.Mpc ** 2).to(u.solMass / u.pc ** 2)
 
     # Load all necessary arrays
-    subfind_grp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/GroupNumber', numThreads=8)
-    subfind_subgrp_ids = E.read_array('SUBFIND', path, snap, 'Subhalo/SubGroupNumber', numThreads=8)
-    gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential', noH=True,
+    subfind_grp_ids = E.read_array('SUBFIND', path, snap,
+                                   'Subhalo/GroupNumber', numThreads=8)
+    subfind_subgrp_ids = E.read_array('SUBFIND', path, snap,
+                                      'Subhalo/SubGroupNumber', numThreads=8)
+    gal_cops = E.read_array('SUBFIND', path, snap, 'Subhalo/CentreOfPotential',
+                            noH=True,
                             physicalUnits=True, numThreads=8)
-    all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType', numThreads=8)
-    all_gal_ms = E.read_array('SUBFIND', path, snap, 'Subhalo/ApertureMeasurements/Mass/030kpc', numThreads=8) * 10**10
+    all_gal_ns = E.read_array('SUBFIND', path, snap, 'Subhalo/SubLengthType',
+                              numThreads=8)
+    all_gal_ms = E.read_array('SUBFIND', path, snap,
+                              'Subhalo/ApertureMeasurements/Mass/030kpc',
+                              numThreads=8) * 10 ** 10
 
     # Remove particles not in a subgroup
     okinds = np.logical_and(subfind_subgrp_ids != 1073741824,
-                            np.logical_and((all_gal_ns[:, 4] + all_gal_ns[:, 0]) >= 100,
-                                           np.logical_and(all_gal_ms[:, 4] >= 1e8, all_gal_ms[:, 0] > 0)
-                                           )
+                            np.logical_and(
+                                (all_gal_ns[:, 4] + all_gal_ns[:, 0]) >= 100,
+                                np.logical_and(all_gal_ms[:, 4] >= 1e8,
+                                               all_gal_ms[:, 0] > 0)
+                                )
                             )
     subfind_grp_ids = subfind_grp_ids[okinds]
     subfind_subgrp_ids = subfind_subgrp_ids[okinds]
@@ -231,30 +244,41 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     try:
         # Load data for luminosities
-        all_poss = E.read_array('PARTDATA', path, snap, 'PartType4/Coordinates', noH=True,
+        all_poss = E.read_array('PARTDATA', path, snap,
+                                'PartType4/Coordinates', noH=True,
                                 physicalUnits=True, numThreads=8)
-        gal_sml = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothingLength', noH=True,
+        gal_sml = E.read_array('PARTDATA', path, snap,
+                               'PartType4/SmoothingLength', noH=True,
                                physicalUnits=True, numThreads=8)
-        a_born = E.read_array('PARTDATA', path, snap, 'PartType4/StellarFormationTime', noH=True,
+        a_born = E.read_array('PARTDATA', path, snap,
+                              'PartType4/StellarFormationTime', noH=True,
                               physicalUnits=True, numThreads=8)
-        metallicities = E.read_array('PARTDATA', path, snap, 'PartType4/SmoothedMetallicity', noH=True,
+        metallicities = E.read_array('PARTDATA', path, snap,
+                                     'PartType4/SmoothedMetallicity', noH=True,
                                      physicalUnits=True, numThreads=8)
-        masses = E.read_array('PARTDATA', path, snap, 'PartType4/InitialMass', noH=True, physicalUnits=True,
+        masses = E.read_array('PARTDATA', path, snap, 'PartType4/InitialMass',
+                              noH=True, physicalUnits=True,
                               numThreads=8) * 10 ** 10
-        app_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass', noH=True, physicalUnits=True,
-                              numThreads=8) * 10 ** 10
+        app_masses = E.read_array('PARTDATA', path, snap, 'PartType4/Mass',
+                                  noH=True, physicalUnits=True,
+                                  numThreads=8) * 10 ** 10
 
         # Calculate ages
         ages = calc_ages(z, a_born)
 
-        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber', noH=True,
+        grp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/GroupNumber',
+                               noH=True,
                                physicalUnits=True, verbose=False, numThreads=8)
 
-        subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType4/SubGroupNumber', noH=True,
-                                  physicalUnits=True, verbose=False, numThreads=8)
+        subgrp_ids = E.read_array('PARTDATA', path, snap,
+                                  'PartType4/SubGroupNumber', noH=True,
+                                  physicalUnits=True, verbose=False,
+                                  numThreads=8)
 
-        part_ids = E.read_array('PARTDATA', path, snap, 'PartType4/ParticleIDs', noH=True,
-                                physicalUnits=True, verbose=False, numThreads=8)
+        part_ids = E.read_array('PARTDATA', path, snap,
+                                'PartType4/ParticleIDs', noH=True,
+                                physicalUnits=True, verbose=False,
+                                numThreads=8)
     except OSError:
         return
     except KeyError:
@@ -285,7 +309,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     print("Got halo IDs")
 
-    parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids, group_part_ids, False)
+    parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids,
+                                                 group_part_ids, False)
 
     # Produce a dictionary containing the index of particles in each halo
     halo_part_inds = {}
@@ -323,26 +348,35 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     # If there are no galaxies exit
     if len(gal_ages.keys()) == 0:
         return
-    
-    print('Got galaxy properties')
-    
-    # Get gas particle information
-    gas_all_poss = E.read_array('PARTDATA', path, snap, 'PartType0/Coordinates', noH=True, physicalUnits=True,
-                                numThreads=8)
-    gas_metallicities = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothedMetallicity', noH=True,
-                                     physicalUnits=True, numThreads=8)
-    gas_smooth_ls = E.read_array('PARTDATA', path, snap, 'PartType0/SmoothingLength', noH=True, physicalUnits=True,
-                                 numThreads=8)
-    gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass', noH=True, physicalUnits=True,
-                              numThreads=8) * 10**10
 
-    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber', noH=True,
+    print('Got galaxy properties')
+
+    # Get gas particle information
+    gas_all_poss = E.read_array('PARTDATA', path, snap,
+                                'PartType0/Coordinates', noH=True,
+                                physicalUnits=True,
+                                numThreads=8)
+    gas_metallicities = E.read_array('PARTDATA', path, snap,
+                                     'PartType0/SmoothedMetallicity', noH=True,
+                                     physicalUnits=True, numThreads=8)
+    gas_smooth_ls = E.read_array('PARTDATA', path, snap,
+                                 'PartType0/SmoothingLength', noH=True,
+                                 physicalUnits=True,
+                                 numThreads=8)
+    gas_masses = E.read_array('PARTDATA', path, snap, 'PartType0/Mass',
+                              noH=True, physicalUnits=True,
+                              numThreads=8) * 10 ** 10
+
+    grp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/GroupNumber',
+                           noH=True,
                            physicalUnits=True, verbose=False, numThreads=8)
 
-    subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType0/SubGroupNumber', noH=True,
+    subgrp_ids = E.read_array('PARTDATA', path, snap,
+                              'PartType0/SubGroupNumber', noH=True,
                               physicalUnits=True, verbose=False, numThreads=8)
 
-    part_ids = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs', noH=True,
+    part_ids = E.read_array('PARTDATA', path, snap, 'PartType0/ParticleIDs',
+                            noH=True,
                             physicalUnits=True, verbose=False, numThreads=8)
 
     # A copy of this array is needed for the extraction method
@@ -368,7 +402,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
     print("Got halo IDs")
 
-    parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids, group_part_ids, False)
+    parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids,
+                                                 group_part_ids, False)
 
     # Produce a dictionary containing the index of particles in each halo
     halo_part_inds = {}
@@ -437,7 +472,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
     for f in filters:
 
         if f.split(".")[0] == 'FAKE':
-            model.create_Lnu_grid(F)  # create new L grid for each filter. In units of erg/s/Hz
+            model.create_Lnu_grid(
+                F)  # create new L grid for each filter. In units of erg/s/Hz
         else:
             model.create_Fnu_grid(F, z, cosmo)
 
@@ -466,8 +502,10 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                     #                 gal_mets[id][okinds_star], gas_mets[id][okinds_gas], centd_gas_pos,
                     #                 gas_ms[id][okinds_gas], gas_smls[id][okinds_gas], lkernel, kbins,
                     #                 conv, model, F, i, j, f)
-                    ls = get_lumins(centd_star_pos, gal_ini_ms[id], gal_ages[id], gal_mets[id],
-                                    gas_mets[id], centd_gas_pos, gas_ms[id], gas_smls[id], lkernel, kbins,
+                    ls = get_lumins(centd_star_pos, gal_ini_ms[id],
+                                    gal_ages[id], gal_mets[id],
+                                    gas_mets[id], centd_gas_pos, gas_ms[id],
+                                    gas_smls[id], lkernel, kbins,
                                     conv, model, F, i, j, f)
 
                     # # Centre on luminosity weighted centre
@@ -476,18 +514,25 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
                     # Compute half mass radii
                     try:
-                        hls[ind2, ind1], tot_l[ind2, ind1], ms[ind2, ind1] = calc_light_mass_rad(ls, centd_star_pos,
-                                                                                                 i, j, gal_app_ms[id])
+                        hls[ind2, ind1], tot_l[ind2, ind1], ms[
+                            ind2, ind1] = calc_light_mass_rad(ls,
+                                                              centd_star_pos,
+                                                              i, j,
+                                                              gal_app_ms[id])
                     except ValueError:
-                        print("Galaxy", id, "had no stars within 30 kpc of COP")
+                        print("Galaxy", id,
+                              "had no stars within 30 kpc of COP")
                         continue
 
                     # Make an image at softening length
-                    img = make_soft_img(centd_star_pos, res, i, j, imgrange, ls, gal_smls[id])
+                    img = make_soft_img(centd_star_pos, res, i, j, imgrange,
+                                        ls, gal_smls[id])
                     imgs[ind2, :, :, ind1] = img
 
                     # Get the image half light radius
-                    img_hlrs[ind2, ind1] = get_img_hlr(img, apertures, tot_l[ind2, ind1], app_radii, res, csoft)
+                    img_hlrs[ind2, ind1] = get_img_hlr(img, apertures,
+                                                       tot_l[ind2, ind1],
+                                                       app_radii, res, csoft)
 
                 except KeyError:
                     print("Galaxy", id, "Does not appear in the dictionaries")
@@ -502,10 +547,12 @@ def get_main(path, snap, savepath, filters, F, model, filename):
                             compression="gzip")  # Half light radius [Mpc]
         filt.create_dataset('Image_half_light_rad', data=img_hlrs, dtype=float,
                             compression="gzip")  # Half light radius [Mpc]
-        filt.create_dataset('Images', data=imgs, dtype=float, compression="gzip")  # Images in erg/s/Hz
+        filt.create_dataset('Images', data=imgs, dtype=float,
+                            compression="gzip")  # Images in erg/s/Hz
         filt.create_dataset('Aperture_Mass_30kpc', data=ms, dtype=float,
                             compression="gzip")  # Aperture mass [Msun * 10*10]
-        filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l, dtype=float,
+        filt.create_dataset('Aperture_Luminosity_30kpc', data=tot_l,
+                            dtype=float,
                             compression="gzip")  # Aperture Luminosity [nJy]
 
         hdf.close()
@@ -535,7 +582,8 @@ def get_main(path, snap, savepath, filters, F, model, filename):
 
 
 # Define SED model
-model = models.define_model('BPASSv2.2.1.binary/Chabrier_300')  # define SED grid
+model = models.define_model(
+    'BPASSv2.2.1.binary/Chabrier_300')  # define SED grid
 model.dust_ISM = ('simple', {'slope': -1.0})
 model.dust_BC = ('simple', {'slope': -1.0})
 # filters = FLARE.filters.NIRCam
@@ -552,14 +600,15 @@ for reg in range(0, 40):
     else:
         regions.append(str(reg))
 regions.reverse()
-snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000', '004_z011p000', '005_z010p000',
-         '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000', '010_z005p000', '011_z004p770']
+snaps = ['000_z015p000', '001_z014p000', '002_z013p000', '003_z012p000',
+         '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000', '009_z006p000',
+         '010_z005p000', '011_z004p770']
 
 reg_snaps = []
 for reg in regions:
 
     for snap in snaps:
-
         reg_snaps.append((reg, snap))
 
 ind = int(sys.argv[1])
@@ -567,6 +616,7 @@ print(reg_snaps[ind])
 reg, snap = reg_snaps[ind]
 
 path = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/G-EAGLE_' + reg + '/data'
-savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + reg_snaps[ind][0] + '/'
+savepath = '/cosma/home/dp004/dc-rope1/FLARES/FLARES-1/WebbData/GEAGLE_' + \
+           reg_snaps[ind][0] + '/'
 
 get_main(path, snap, savepath, filters, F, model, filename=filename)

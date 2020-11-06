@@ -1,12 +1,28 @@
 #!/cosma/home/dp004/dc-rope1/.conda/envs/flares-env/bin/python
 import numpy as np
-import h5py
+import matplotlib
 import matplotlib.pyplot as plt
+import eagle_IO.eagle_IO as E
+import numba as nb
+import astropy.units as u
+import gc
+import os
+import sys
+from utilities import calc_ages, get_Z_LOS
+from photutils import CircularAperture, aperture_photometry
+from scipy.interpolate import interp1d
+import h5py
+import warnings
+from astropy.cosmology import Planck13 as cosmo
+os.environ['FLARE'] = '/cosma7/data/dp004/dc-wilk2/flare'
+import FLARE.filters
+from SynthObs.SED import models
+matplotlib.use('Agg')
+warnings.filterwarnings('ignore')
 import seaborn as sns
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
 from scipy.stats import binned_statistic
-from scipy.optimize import curve_fit
 
 
 sns.set_context("paper")

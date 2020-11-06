@@ -597,6 +597,27 @@ fig.savefig("plots/gas_sfweighted_met_grad_evo_hmrrange.png", bbox_inches="tight
 plt.close(fig)
 
 fig = plt.figure()
+ax = fig.add_subplot(111)
+
+ax.hexbin(sfweighted_zs_all, sfweighted_met_grads_all,
+          gridsize=100, mincnt=1,
+          norm=LogNorm(), linewidths=0.2,
+          cmap='viridis')
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$\nabla_{O/H}$")
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
+
+# ax.set_ylim(-1, 1)
+
+fig.savefig("plots/gas_sfweighted_met_grad_evo_hmrrange_scatter.png",
+            bbox_inches="tight")
+
+plt.close(fig)
+
+fig = plt.figure(figsize=(9, 5))
 gs = gridspec.GridSpec(nrows=4, ncols=1)
 gs.update(wspace=0.0, hspace=0.0)
 ax1 = fig.add_subplot(gs[0, 0])
