@@ -57,7 +57,7 @@ kawa_fit = lambda l, r0, b: r0 * (l / photconv.M_to_lum(-21)) ** b
 snaps = ['003_z012p000', '004_z011p000',
          '005_z010p000', '006_z009p000']
 
-f = 'FAKE.TH.NUV'
+f = 'FAKE.TH.FUV'
 
 Type = "Total"
 orientation = "sim"
@@ -106,7 +106,7 @@ lumin = np.array(lumin)
 mass = np.array(mass)
 F_zs = np.array(F_zs)
 
-okinds = mass > 10**9.5
+okinds = mass > 10**9
 
 print("There are", len(F_zs), "FLARES galaxies")
 
