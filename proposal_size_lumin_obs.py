@@ -57,7 +57,7 @@ kawa_fit = lambda l, r0, b: r0 * (l / photconv.M_to_lum(-21)) ** b
 snaps = ['003_z012p000', '004_z011p000',
          '005_z010p000', '006_z009p000']
 
-f = 'FAKE.TH.FUV'
+f = 'FAKE.TH.NUV'
 
 Type = "Total"
 orientation = "sim"
