@@ -150,7 +150,7 @@ labels = {"G11": "Grazian+2011",
           "C16": "Calvi+2016",
           "K18": "Kawamata+2018",
           "M18": "FIRE-2 intrinsic (Ma+2018)",
-          "F20": "FLARES pixel (Roper+[in prep])"}
+          "F20": "FLARES particle (Roper+[in prep])"}
 markers = {"G11": "s", "G12": "v", "C16": "D",
            "K18": "o", "M18": "H", "F20": "o"}
 colors = {"G11": "lightskyblue", "G12": "khaki", "C16": "lightcoral",
