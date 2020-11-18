@@ -92,7 +92,6 @@ for reg, snap in reg_snaps:
     type_group = hdf[Type]
     orientation_group = type_group[orientation]
 
-
     # hlr_dict[z].extend(orientation_group[f]["HLR_0.5"][...])
     # hlr_app_dict[z].extend(
     #     orientation_group[f]["HLR_Aperture_0.5"][...])
@@ -100,6 +99,7 @@ for reg, snap in reg_snaps:
     lumin.extend(orientation_group[f]["Luminosity"][...])
     mass.extend(orientation_group[f]["Mass"][...])
     F_zs.extend(np.full(orientation_group[f]["Mass"][...].size, z))
+    hdf.close()
 
 hlr = np.array(hlr)
 lumin = np.array(lumin)
@@ -107,6 +107,8 @@ mass = np.array(mass)
 F_zs = np.array(F_zs)
 
 okinds = mass > 10**9.5
+
+print("There are", len(F_zs), "FLARES galaxies")
 
 hlr = hlr[okinds]
 lumin = lumin[okinds]
@@ -499,10 +501,10 @@ ax.legend(handles=legend_elements)
 # cbaxes.xaxis.set_ticks_position("top")
 # cbar.ax.set_xlabel("$z$", labelpad=-30)
 
-ax.set_xlim(-24, m_to_M(29.5, cosmo, z))
-ax.set_ylim(0.005, 3)
-ax1.set_ylim(0.005 * z9_conv, 3 * z9_conv)
-ax2.set_xlim(-24, m_to_M(29.5, cosmo, z))
+# ax.set_xlim(-24, m_to_M(29.5, cosmo, z))
+# ax.set_ylim(0.005, 3)
+# ax1.set_ylim(0.005 * z9_conv, 3 * z9_conv)
+# ax2.set_xlim(-24, m_to_M(29.5, cosmo, z))
 
 # plt.show()
 fig.savefig("plots/proposal_obs_size_abmag_z9.png", bbox_inches="tight")
