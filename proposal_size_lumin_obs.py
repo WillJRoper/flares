@@ -95,7 +95,7 @@ for reg, snap in reg_snaps:
     # hlr_dict[z].extend(orientation_group[f]["HLR_0.5"][...])
     # hlr_app_dict[z].extend(
     #     orientation_group[f]["HLR_Aperture_0.5"][...])
-    hlr.extend( orientation_group[f]["HLR_Aperture_0.5"][...])
+    hlr.extend( orientation_group[f]["HLR_0.5"][...])
     lumin.extend(orientation_group[f]["Luminosity"][...])
     mass.extend(orientation_group[f]["Mass"][...])
     F_zs.extend(np.full(orientation_group[f]["Mass"][...].size, z))
