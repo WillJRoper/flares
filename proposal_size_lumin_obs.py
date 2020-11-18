@@ -482,7 +482,7 @@ def tick_function(M):
 
 ax2.set_xticks(new_tick_locations)
 ax2.set_xticklabels(tick_function(new_tick_locations))
-ax2.set_xlabel(r"$m_i(z=9)$")
+ax2.set_xlabel(r"$m_\mathrm{UV}(z=9)$")
 
 handles2, _ = ax1.get_legend_handles_labels()
 
@@ -501,10 +501,10 @@ ax.legend(handles=legend_elements)
 # cbaxes.xaxis.set_ticks_position("top")
 # cbar.ax.set_xlabel("$z$", labelpad=-30)
 
-# ax.set_xlim(-24, m_to_M(29.5, cosmo, z))
-# ax.set_ylim(0.005, 3)
-# ax1.set_ylim(0.005 * z9_conv, 3 * z9_conv)
-# ax2.set_xlim(-24, m_to_M(29.5, cosmo, z))
+ax.set_xlim(-24, m_to_M(29.5, cosmo, z))
+ax.set_ylim(0.005, 3)
+ax1.set_ylim(0.005 * z9_conv, 3 * z9_conv)
+ax2.set_xlim(-24, m_to_M(29.5, cosmo, z))
 
 # plt.show()
 fig.savefig("plots/proposal_obs_size_abmag_z9.png", bbox_inches="tight")
