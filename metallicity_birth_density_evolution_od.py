@@ -1149,3 +1149,57 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc="upper left")
 
 fig.savefig("plots/stellarmet_z_evolution_od_nohex.png", bbox_inches="tight")
+
+
+# ============================ Evolution Gradients ============================
+
+bins = np.arange(cosmo.age(27).value, cosmo.age(0).value
+                 (100 * u.Myr).to(u.Gyr))
+ages = cosmo.age(zs_all).value
+
+print(bins)
+
+# Compute binned statistics
+stellar_bd_binned, binedges, bin_ind = binned_statistic(ages, stellar_bd_all, 
+                                                        statistic="median",
+                                                        bins=bins)
+stellar_met_binned, binedges, bin_ind = binned_statistic(ages, stellar_met_all, 
+                                                        statistic="median",
+                                                        bins=bins)
+
+bin_width = bins[1] - bins[0]
+bin_cents = bins[1:] - (bin_width / 2)
+# bin_cents_z = np.array([z_at_value(cosmo.age, a, zmin=0, zmax=28)
+#                         for a in bin_cents])
+
+growth = lambda x1, x2, t1, t2: np.arctan((t2 + t1) * (x2 - x1) 
+                                          / ((t2 - t1) * (x2 + x1))) \
+                                / (np.pi / 2)
+
+met_grad = []
+bd_grad = []
+plt_zs = []
+for i in range(len(stellar_bd_binned) - 1):
+    bd_grad.append(growth(stellar_bd_binned[i], stellar_bd_binned[i + 1], 
+                           bin_cents[i], bin_cents[i + 1]))
+    met_grad.append(growth(stellar_met_binned[i], stellar_met_binned[i + 1], 
+                           bin_cents[i], bin_cents[i + 1]))
+    plt_zs.append(z_at_value(cosmo.age,
+                             bin_cents[i + 1] - (bin_width / 2),
+                             zmin=0, zmax=28))
+
+met_grad = np.array(met_grad)
+bd_grad = np.array(bd_grad)
+plt_zs = np.array(plt_zs)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+ax.plot(plt_zs, bd_grad, linestyle="-", color="r", label="Birth Density")
+ax.plot(plt_zs, met_grad, linestyle="-", color="r", label="Birth Metallicity")
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$\beta$")
+
+fig.savefig("plots/stellarbdmet_z_evolution_gradient.png", bbox_inches="tight")
+
