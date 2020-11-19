@@ -1168,6 +1168,10 @@ zs_all = zs_all[okinds]
 stellar_bd_all = stellar_bd_all[okinds]
 stellar_met_all = stellar_met_all[okinds]
 
+print(np.min(zs_all), np.max(zs_all))
+print(np.min(stellar_bd_all), np.max(stellar_bd_all))
+print(np.min(stellar_met_all), np.max(stellar_met_all))
+
 # Compute binned statistics
 stellar_bd_binned, binedges, bin_ind = binned_statistic(zs_all, stellar_bd_all,
                                                         statistic="median",
