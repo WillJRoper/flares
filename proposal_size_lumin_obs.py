@@ -291,7 +291,7 @@ ax.set_xlabel("$M_{i}$")
 ax.set_ylabel("$R_e / \mathrm{pkpc}$")
 ax1.set_ylabel("$R_e(z=9) / \mathrm{arcseconds}$")
 
-new_tick_locations = np.arange(-24, -10, 2)
+new_tick_locations = np.arange(m_to_M(24, comso, 9), m_to_M(29.5, comso, 9), 2)
 bins = np.arange(-24, -10, 1)
 
 # # Plot median
@@ -451,7 +451,7 @@ ax.set_xlabel("$M_{\mathrm{UV}}$")
 ax.set_ylabel("$R_e / \mathrm{pkpc}$")
 ax1.set_ylabel("$R_e(z=9) / \mathrm{arcseconds}$")
 
-new_tick_locations = np.arange(-24, -10, 2)
+new_tick_locations = np.arange(m_to_M(24, cosmo, 9), m_to_M(29.5, cosmo, 9), 2)
 bins = np.arange(-24, -10, 1)
 
 # # Plot median
@@ -482,7 +482,7 @@ def tick_function(M):
 
 ax2.set_xticks(new_tick_locations)
 ax2.set_xticklabels(tick_function(new_tick_locations))
-ax2.set_xlabel(r"$m_\mathrm{UV}(z=9)$")
+ax2.set_xlabel(r"$m(z=9)$")
 
 handles2, _ = ax1.get_legend_handles_labels()
 
