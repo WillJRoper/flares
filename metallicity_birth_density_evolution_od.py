@@ -1158,9 +1158,9 @@ bins_age = np.arange(cosmo.age(27.5).value, cosmo.age(0).value,
 print(bins_age)
 bins = [z_at_value(lambda x: cosmo.age(x).value,
                             a, zmin=0, zmax=28) for a in bins_age]
+bins[-1] = 0
 bins.reverse()
 bins = np.array(bins)
-bins[-1] = 0
 print(bins)
 
 okinds = np.logical_and(~np.isnan(zs_all),
