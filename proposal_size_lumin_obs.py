@@ -359,7 +359,7 @@ plt.close(fig)
 cmap = mpl.cm.get_cmap("cividis")
 norm = plt.Normalize(vmin=9, vmax=10.5)
 
-fig = plt.figure(figsize=(4, 4))
+fig = plt.figure(figsize=(6, 6))
 ax = fig.add_subplot(111)
 ax1 = ax.twinx()
 ax2 = ax.twiny()
