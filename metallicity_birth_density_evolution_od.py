@@ -120,7 +120,7 @@ def get_data(eagle=False, ref=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 40):
+        for reg in range(0, 1):
             if reg < 10:
                 regions.append("0" + str(reg))
             else:
@@ -1153,17 +1153,17 @@ _cmap = plt.cm.get_cmap("plasma", len(ticks))
 
 # ============================ Evolution Gradients ============================
 
-bins = np.arange(cosmo.age(27).value, cosmo.age(0).value,
-                 (100 * u.Myr).to(u.Gyr).value)
-ages = cosmo.age(zs_all).value
+bins_age = np.arange(cosmo.age(27).value, cosmo.age(0).value,
+                     (100 * u.Myr).to(u.Gyr).value)
+bins = np.array([z_at_value(cosmo.age, a, zmin=0, zmax=28) for a in bins_age])
 
 print(bins)
 
 # Compute binned statistics
-stellar_bd_binned, binedges, bin_ind = binned_statistic(ages, stellar_bd_all, 
+stellar_bd_binned, binedges, bin_ind = binned_statistic(zs_all, stellar_bd_all,
                                                         statistic="median",
                                                         bins=bins)
-stellar_met_binned, binedges, bin_ind = binned_statistic(ages, stellar_met_all, 
+stellar_met_binned, binedges, bin_ind = binned_statistic(zs_all, stellar_met_all,
                                                         statistic="median",
                                                         bins=bins)
 
@@ -1180,13 +1180,11 @@ met_grad = []
 bd_grad = []
 plt_zs = []
 for i in range(len(stellar_bd_binned) - 1):
-    bd_grad.append(growth(stellar_bd_binned[i], stellar_bd_binned[i + 1], 
-                           bin_cents[i], bin_cents[i + 1]))
-    met_grad.append(growth(stellar_met_binned[i], stellar_met_binned[i + 1], 
-                           bin_cents[i], bin_cents[i + 1]))
-    plt_zs.append(z_at_value(cosmo.age,
-                             bin_cents[i + 1] - (bin_width / 2),
-                             zmin=0, zmax=28))
+    bd_grad.append(growth(stellar_bd_binned[i], stellar_bd_binned[i + 1],
+                          cosmo.age(bin_cents[i]).value, cosmo.age(bin_cents[i + 1]).value))
+    met_grad.append(growth(stellar_met_binned[i], stellar_met_binned[i + 1],
+                           cosmo.age(bin_cents[i]).value, cosmo.age(bin_cents[i + 1]).value))
+    plt_zs.append(bin_cents[i + 1] - (bin_width / 2))
 
 met_grad = np.array(met_grad)
 bd_grad = np.array(bd_grad)
