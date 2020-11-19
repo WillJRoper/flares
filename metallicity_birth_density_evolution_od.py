@@ -1210,7 +1210,26 @@ ax.plot(plt_zs, met_grad, linestyle="-", color="g", label="Birth Metallicity")
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$\beta$")
 
-ax.legened()
+ax.legend()
 
 fig.savefig("plots/stellarbdmet_z_evolution_gradient.png", bbox_inches="tight")
+
+plt.close(fig)
+
+norm_grad = lambda x: (x - x.min()) / (x.max() - x.min())
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+ax.plot(plt_zs, norm_grad(np.abs(bd_grad)),
+        linestyle="-", color="r", label="Birth Density")
+ax.plot(plt_zs, norm_grad(np.abs(met_grad)),
+        linestyle="-", color="g", label="Birth Metallicity")
+
+ax.set_xlabel("$z$")
+ax.set_ylabel(r"$|\beta|$")
+
+ax.legend()
+
+fig.savefig("plots/stellarbdmet_z_evolution_gradient_normed.png", bbox_inches="tight")
 
