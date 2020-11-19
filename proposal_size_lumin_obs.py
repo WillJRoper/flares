@@ -506,6 +506,8 @@ ax.set_ylim(0.005, 3)
 ax1.set_ylim(0.005 * z9_conv, 3 * z9_conv)
 ax2.set_xlim(-24, m_to_M(29.5, cosmo, z))
 
+ax.axis('equal')
+
 # plt.show()
 fig.savefig("plots/proposal_obs_size_abmag_z9.png", bbox_inches="tight")
 
