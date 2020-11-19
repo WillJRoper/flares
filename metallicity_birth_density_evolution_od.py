@@ -1154,7 +1154,7 @@ _cmap = plt.cm.get_cmap("plasma", len(ticks))
 # ============================ Evolution Gradients ============================
 
 bins_age = np.arange(cosmo.age(27.5).value, cosmo.age(0).value,
-                     (100 * u.Myr).to(u.Gyr).value)
+                     (500 * u.Myr).to(u.Gyr).value)
 print(bins_age)
 bins = [z_at_value(lambda x: cosmo.age(x).value,
                             a, zmin=0, zmax=28) for a in bins_age]
