@@ -1156,8 +1156,10 @@ _cmap = plt.cm.get_cmap("plasma", len(ticks))
 bins_age = np.arange(cosmo.age(27.5).value, cosmo.age(0).value,
                      (1000 * u.Myr).to(u.Gyr).value)
 print(bins_age)
-bins = np.array([z_at_value(lambda x: cosmo.age(x).value,
-                            a, zmin=0, zmax=28) for a in bins_age])
+bins = [z_at_value(lambda x: cosmo.age(x).value,
+                            a, zmin=0, zmax=28) for a in bins_age]
+bins.reverse()
+bins = np.array(bins)
 bins[-1] = 0
 print(bins)
 
