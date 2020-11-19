@@ -1154,7 +1154,7 @@ _cmap = plt.cm.get_cmap("plasma", len(ticks))
 # ============================ Evolution Gradients ============================
 
 bins_age = np.arange(cosmo.age(27.5).value, cosmo.age(0).value,
-                     (1000 * u.Myr).to(u.Gyr).value)
+                     (100 * u.Myr).to(u.Gyr).value)
 print(bins_age)
 bins = [z_at_value(lambda x: cosmo.age(x).value,
                             a, zmin=0, zmax=28) for a in bins_age]
@@ -1170,10 +1170,6 @@ zs_all = zs_all[okinds]
 stellar_bd_all = stellar_bd_all[okinds]
 stellar_met_all = stellar_met_all[okinds]
 
-print(np.min(zs_all), np.max(zs_all))
-print(np.min(stellar_bd_all), np.max(stellar_bd_all))
-print(np.min(stellar_met_all), np.max(stellar_met_all))
-
 # Compute binned statistics
 stellar_bd_binned, binedges, bin_ind = binned_statistic(zs_all, stellar_bd_all,
                                                         statistic="median",
@@ -1187,8 +1183,8 @@ bin_cents = bins[1:] - (bin_width / 2)
 # bin_cents_z = np.array([z_at_value(cosmo.age, a, zmin=0, zmax=28)
 #                         for a in bin_cents])
 
-growth = lambda x1, x2, t1, t2: np.arctan((t2 + t1) * (x2 - x1) 
-                                          / ((t2 - t1) * (x2 + x1))) \
+growth = lambda x1, x2, t1, t2: np.arctan((t1 + t2) * (x1 - x2)
+                                          / ((t1 - t2) * (x1 + x2))) \
                                 / (np.pi / 2)
 
 met_grad = []
@@ -1209,10 +1205,12 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 ax.plot(plt_zs, bd_grad, linestyle="-", color="r", label="Birth Density")
-ax.plot(plt_zs, met_grad, linestyle="-", color="r", label="Birth Metallicity")
+ax.plot(plt_zs, met_grad, linestyle="-", color="g", label="Birth Metallicity")
 
 ax.set_xlabel("$z$")
 ax.set_ylabel(r"$\beta$")
+
+ax.legened()
 
 fig.savefig("plots/stellarbdmet_z_evolution_gradient.png", bbox_inches="tight")
 
