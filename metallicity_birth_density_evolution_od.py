@@ -1153,13 +1153,20 @@ _cmap = plt.cm.get_cmap("plasma", len(ticks))
 
 # ============================ Evolution Gradients ============================
 
-bins_age = np.arange(cosmo.age(27).value, cosmo.age(0).value,
+bins_age = np.arange(cosmo.age(27.5).value, cosmo.age(0).value,
                      (100 * u.Myr).to(u.Gyr).value)
 print(bins_age)
 bins = np.array([z_at_value(lambda x: cosmo.age(x).value,
                             a, zmin=0, zmax=28) for a in bins_age])
-
+bins[-1] = 0
 print(bins)
+
+okinds = np.logical_and(~np.isnan(zs_all),
+                        np.logical_and(~np.isnan(stellar_bd_all),
+                                       ~np.isnan(stellar_met_all)))
+zs_all = zs_all[okinds]
+stellar_bd_all = stellar_bd_all[okinds]
+stellar_met_all = stellar_met_all[okinds]
 
 # Compute binned statistics
 stellar_bd_binned, binedges, bin_ind = binned_statistic(zs_all, stellar_bd_all,
