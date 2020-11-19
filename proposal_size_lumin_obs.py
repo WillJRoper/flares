@@ -451,7 +451,7 @@ ax.set_xlabel("$M_{\mathrm{UV}}$")
 ax.set_ylabel("$R_e / \mathrm{pkpc}$")
 ax1.set_ylabel("$R_e(z=9) / \mathrm{arcseconds}$")
 
-new_tick_locations = np.arange(m_to_M(24, cosmo, 9), m_to_M(29.5, cosmo, 9), 2)
+new_tick_locations = np.arange(m_to_M(23, cosmo, 9), m_to_M(29.5, cosmo, 9), 1)
 bins = np.arange(-24, -10, 1)
 
 # # Plot median
