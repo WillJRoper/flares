@@ -1179,8 +1179,8 @@ stellar_met_binned, binedges, bin_ind = binned_statistic(zs_all, stellar_met_all
                                                         statistic="median",
                                                         bins=bins)
 
-okinds = np.logical_and(~np.isnan(stellar_met_binned),
-                        ~np.isnan(stellar_bd_binned))
+okinds = np.logical_or(~np.isnan(stellar_met_binned),
+                       ~np.isnan(stellar_bd_binned))
 
 bin_width = bins[1] - bins[0]
 bin_cents = bins[1:] - (bin_width / 2)

@@ -161,9 +161,9 @@ labels = {"G11": "Grazian+2011 (z=7)",
 markers = {"G11": "s", "G12": "v", "C16": "D",
            "K18": "o", "M18": "H", "F20": ".", "MO18": "o",
            "B19": "^", "O16": "P", "S18": "D", "H20": "*"}
-colors = {"G11": "darkred", "G12": "darkred", "C16": "darkred",
-           "K18": "darkred", "M18": "green", "F20": ".", "MO18": "darkred",
-           "B19": "darkred", "O16": "darkred", "S18": "darkred", "H20": "darkred"}
+colors = {"G11": "r", "G12": "r", "C16": "r",
+           "K18": "r", "M18": "b", "F20": ".", "MO18": "r",
+           "B19": "r", "O16": "r", "S18": "r", "H20": "r"}
 
 z9_conv = cosmo.arcsec_per_kpc_proper(9).value
 
@@ -366,7 +366,7 @@ plt.close(fig)
 # ============================================================================
 
 cmap = mpl.cm.get_cmap("cividis")
-norm = plt.Normalize(vmin=9, vmax=10.5)
+norm = plt.Normalize(vmin=0, vmax=10)
 
 fig = plt.figure(figsize=(6, 6))
 ax = fig.add_subplot(111)
@@ -379,17 +379,31 @@ fig.subplots_adjust(bottom=0.2)
 ax.semilogy()
 ax1.semilogy()
 
-# Plot pixels
-ax1.axhline(5 * nircam_short, label="5 NIRCam-Short Pixels",
-            linestyle="dashed", color="k", alpha=0.2)
-ax1.axhline(5 * nircam_long, label="5 NIRCam-Long Pixels",
-            linestyle="dashdot", color="k", alpha=0.2)
-ax1.axhline(3 * wfc3, label="3 WFC3-IR Pixels",
-            linestyle="dotted", color="k", alpha=0.2)
-ax1.axhline(nircam_short, label="1 NIRCam-Short Pixels",
-            linestyle="dashed", color="darkgray", alpha=0.2)
-ax1.axhline(nircam_long, label="1 NIRCam-Long Pixels",
-            linestyle="dashdot", color="darkgray", alpha=0.2)
+# # Plot pixels
+# ax1.axhline(5 * nircam_short, label="5 NIRCam-Short Pixels",
+#             linestyle="dashed", color="k", alpha=0.2)
+# ax1.axhline(5 * nircam_long, label="5 NIRCam-Long Pixels",
+#             linestyle="dashdot", color="k", alpha=0.2)
+# ax1.axhline(3 * wfc3, label="3 WFC3-IR Pixels",
+#             linestyle="dotted", color="k", alpha=0.2)
+# ax1.axhline(nircam_short, label="1 NIRCam-Short Pixels",
+#             linestyle="dashed", color="darkgray", alpha=0.2)
+# ax1.axhline(nircam_long, label="1 NIRCam-Long Pixels",
+#             linestyle="dashdot", color="darkgray", alpha=0.2)
+
+ax.axvspan(-22, -19, alpha=0.5, color='lightgrey', zorder=0)
+
+legend_elements = []
+
+legend_elements.append(Line2D([0], [0], linestyle="dashed", color='k',
+                                  label="NIRCam-Short pixels", alpha=0.4))
+
+for n in [1, 2, 4, 6, 8, 10]:
+    ax1.axhline(n * nircam_short,
+                linestyle="dashed", color="k", alpha=0.4)
+    ax1.text(-23.5, n * nircam_short + 0.002, "%d Pixels" % n,
+             verticalalignment="bottom", horizontalalignment='center',
+             fontsize=8, color="k")
 
 ax.plot([26, 26.1], [100, 1000], color="k", alpha=0.8, label=labels["K18"])
 
@@ -411,8 +425,6 @@ for z in [9, ]:
                      kawa_params['beta'][int(z)]),
             color=colors["K18"], alpha=0.8)
 
-legend_elements = []
-
 for p in markers.keys():
 
     if p != "F20" and p != "K18":
@@ -427,9 +439,11 @@ for p in markers.keys():
         # if np.max(M) > -18:
         #     continue
 
-        legend_elements.append(Line2D([0], [0], marker=markers[p], color='w',
-                                  label=labels[p], markerfacecolor=colors[p],
-                                  markersize=8, alpha=0.7))
+        legend_elements.append(Line2D([0], [0], marker=markers[p], color='none',
+                                      label=labels[p],
+                                      markerfacecolor=colors[p],
+                                      markeredgecolor=colors[p],
+                                      markersize=6, alpha=0.7))
 
         ax.scatter(M, r_es[papers == p][okinds],
                    marker=markers[p], label=labels[p], s=25,
@@ -506,7 +520,7 @@ legend_elements.insert(0, Line2D([0], [0], linestyle="-", color=colors["K18"],
 # legend_elements.extend(handles2[:5])
 
 ax.legend(handles=legend_elements, ncol=2, loc="upper right", fontsize=8)
-ax1.legend(handles=handles2[:5], ncol=2, loc="lower left", fontsize=8)
+# ax1.legend(handles=handles2[:5], ncol=2, loc="lower left", fontsize=8)
 
 # sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
 # sm._A = []  # # fake up the array of the scalar mappable
