@@ -1153,14 +1153,15 @@ _cmap = plt.cm.get_cmap("plasma", len(ticks))
 
 # ============================ Evolution Gradients ============================
 
-bins_age = np.arange(cosmo.age(27.5).value, cosmo.age(0).value,
-                     (100 * u.Myr).to(u.Gyr).value)
-print(bins_age)
-bins = [z_at_value(lambda x: cosmo.age(x).value,
-                            a, zmin=0, zmax=28) for a in bins_age]
-bins[-1] = 0
-bins.reverse()
-bins = np.array(bins)
+# bins_age = np.arange(cosmo.age(27.5).value, cosmo.age(0).value,
+#                      (100 * u.Myr).to(u.Gyr).value)
+# print(bins_age)
+# bins = [z_at_value(lambda x: cosmo.age(x).value,
+#                             a, zmin=0, zmax=28) for a in bins_age]
+# bins[-1] = 0
+# bins.reverse()
+# bins = np.array(bins)
+bins = np.arange(0, 27, 0.5)
 print(bins)
 
 okinds = np.logical_and(~np.isnan(zs_all),
@@ -1177,6 +1178,12 @@ stellar_bd_binned, binedges, bin_ind = binned_statistic(zs_all, stellar_bd_all,
 stellar_met_binned, binedges, bin_ind = binned_statistic(zs_all, stellar_met_all,
                                                         statistic="median",
                                                         bins=bins)
+
+okinds = np.logical_and(~np.isnan(stellar_met_binned),
+                        ~np.isnan(stellar_bd_binned))
+
+stellar_bd_binned = stellar_bd_binned[okinds]
+stellar_met_binned = stellar_met_binned[okinds]
 
 bin_width = bins[1] - bins[0]
 bin_cents = bins[1:] - (bin_width / 2)
