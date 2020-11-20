@@ -120,7 +120,7 @@ def get_data(eagle=False, ref=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 1):
+        for reg in range(0, 40):
             if reg < 10:
                 regions.append("0" + str(reg))
             else:
@@ -1154,7 +1154,7 @@ _cmap = plt.cm.get_cmap("plasma", len(ticks))
 # ============================ Evolution Gradients ============================
 
 bins_age = np.arange(cosmo.age(27.5).value, cosmo.age(0).value,
-                     (1000 * u.Myr).to(u.Gyr).value)
+                     (100 * u.Myr).to(u.Gyr).value)
 print(bins_age)
 bins = [z_at_value(lambda x: cosmo.age(x).value,
                             a, zmin=0, zmax=28) for a in bins_age]
