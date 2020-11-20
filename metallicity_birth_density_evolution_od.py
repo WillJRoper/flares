@@ -233,41 +233,43 @@ def get_data(eagle=False, ref=False):
 
 log1pdelta = ovds = np.loadtxt("region_overdensity.txt", dtype=float)
 
-stellar_bd, stellar_met, zs, ovdens, fth, masses = get_data()
+stellar_bd_all, stellar_met_all, zs_all, ovdens, fth, masses = get_data()
 
-agndt9_stellar_bd, agndt9_stellar_met, agndt9_zs, _, agndt9_fth, agndt9_masses = get_data(eagle=True)
-
-ref_stellar_bd, ref_stellar_met, ref_zs, _, ref_fth, ref_masses = get_data(ref=True)
-
-agndt9_ovdens = np.zeros_like(agndt9_stellar_met)
-ref_ovdens = np.zeros_like(ref_stellar_met)
-
-zs_all = np.concatenate((zs, ref_zs, agndt9_zs))
-stellar_bd_all = np.concatenate((stellar_bd, ref_stellar_bd,
-                                 agndt9_stellar_bd))
-stellar_met_all = np.concatenate((stellar_met, ref_stellar_met,
-                                  agndt9_stellar_met))
-
-ovdens_all = np.concatenate((ovdens, agndt9_ovdens, ref_ovdens))
-fth_all = np.concatenate((fth, agndt9_fth, ref_fth))
-
-masses_all = np.concatenate((masses, agndt9_masses, ref_masses))
-
-dbinLims = [-0.3, -0.15, -0.04, 0.04, 0.12, 0.22, 0.3]
-dbins = dbinLims[:-1] + np.diff(dbinLims)/2
-dbins = np.array(["%.2f" % db for db in dbins]).astype(float)
-
-N_regions = np.histogram(log1pdelta[::-1], dbinLims)[0]
-bin_labels = ["[%.2f - %.2f] (%i)" % (db1, db2, _N)
-              for db1, db2, _N in zip(dbinLims[:-1],
-                                      dbinLims[1:], N_regions)]
-
-
-dselect = np.digitize(log1pdelta, dbinLims) - 1
-dindex = np.arange(0, np.max(dselect)+1)
-
-ticks = np.linspace(0.05, .95, len(dindex))
-_cmap = plt.cm.get_cmap("plasma", len(ticks))
+# stellar_bd, stellar_met, zs, ovdens, fth, masses = get_data()
+#
+# agndt9_stellar_bd, agndt9_stellar_met, agndt9_zs, _, agndt9_fth, agndt9_masses = get_data(eagle=True)
+#
+# ref_stellar_bd, ref_stellar_met, ref_zs, _, ref_fth, ref_masses = get_data(ref=True)
+#
+# agndt9_ovdens = np.zeros_like(agndt9_stellar_met)
+# ref_ovdens = np.zeros_like(ref_stellar_met)
+#
+# zs_all = np.concatenate((zs, ref_zs, agndt9_zs))
+# stellar_bd_all = np.concatenate((stellar_bd, ref_stellar_bd,
+#                                  agndt9_stellar_bd))
+# stellar_met_all = np.concatenate((stellar_met, ref_stellar_met,
+#                                   agndt9_stellar_met))
+#
+# ovdens_all = np.concatenate((ovdens, agndt9_ovdens, ref_ovdens))
+# fth_all = np.concatenate((fth, agndt9_fth, ref_fth))
+#
+# masses_all = np.concatenate((masses, agndt9_masses, ref_masses))
+#
+# dbinLims = [-0.3, -0.15, -0.04, 0.04, 0.12, 0.22, 0.3]
+# dbins = dbinLims[:-1] + np.diff(dbinLims)/2
+# dbins = np.array(["%.2f" % db for db in dbins]).astype(float)
+#
+# N_regions = np.histogram(log1pdelta[::-1], dbinLims)[0]
+# bin_labels = ["[%.2f - %.2f] (%i)" % (db1, db2, _N)
+#               for db1, db2, _N in zip(dbinLims[:-1],
+#                                       dbinLims[1:], N_regions)]
+#
+#
+# dselect = np.digitize(log1pdelta, dbinLims) - 1
+# dindex = np.arange(0, np.max(dselect)+1)
+#
+# ticks = np.linspace(0.05, .95, len(dindex))
+# _cmap = plt.cm.get_cmap("plasma", len(ticks))
 # colors = [ cm.plasma(i) for i in ticks ]
 
 # fig = plt.figure()
