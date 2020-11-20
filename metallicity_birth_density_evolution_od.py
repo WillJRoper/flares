@@ -1154,7 +1154,7 @@ _cmap = plt.cm.get_cmap("plasma", len(ticks))
 # ============================ Evolution Gradients ============================
 
 bins_age = np.arange(cosmo.age(27.5).value, cosmo.age(0).value,
-                     (500 * u.Myr).to(u.Gyr).value)
+                     (1000 * u.Myr).to(u.Gyr).value)
 print(bins_age)
 bins = [z_at_value(lambda x: cosmo.age(x).value,
                             a, zmin=0, zmax=28) for a in bins_age]
@@ -1217,7 +1217,10 @@ fig.savefig("plots/stellarbdmet_z_evolution_gradient.png", bbox_inches="tight")
 plt.close(fig)
 
 norm_grad = lambda x: (x - x.min()) / (x.max() - x.min())
-
+print(np.min(bd_grad), np.max(bd_grad))
+print(bd_grad)
+print(np.abs(bd_grad))
+print(norm_grad(np.abs(bd_grad)))
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
