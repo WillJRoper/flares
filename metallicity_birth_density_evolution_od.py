@@ -1163,7 +1163,7 @@ stellar_bd_all, stellar_met_all, zs_all, ovdens, fth, masses = get_data()
 # bins[-1] = 0
 # bins.reverse()
 # bins = np.array(bins)
-bins = np.arange(0, 27, 1)
+bins = np.arange(0, 25, 0.1)
 print(bins)
 
 okinds = np.logical_and(~np.isnan(zs_all),
