@@ -1161,7 +1161,7 @@ _cmap = plt.cm.get_cmap("plasma", len(ticks))
 # bins[-1] = 0
 # bins.reverse()
 # bins = np.array(bins)
-bins = np.arange(0, 27, 0.5)
+bins = np.arange(0, 27, 1)
 print(bins)
 
 okinds = np.logical_and(~np.isnan(zs_all),
@@ -1182,13 +1182,14 @@ stellar_met_binned, binedges, bin_ind = binned_statistic(zs_all, stellar_met_all
 okinds = np.logical_and(~np.isnan(stellar_met_binned),
                         ~np.isnan(stellar_bd_binned))
 
-stellar_bd_binned = stellar_bd_binned[okinds]
-stellar_met_binned = stellar_met_binned[okinds]
-
 bin_width = bins[1] - bins[0]
 bin_cents = bins[1:] - (bin_width / 2)
 # bin_cents_z = np.array([z_at_value(cosmo.age, a, zmin=0, zmax=28)
 #                         for a in bin_cents])
+
+stellar_bd_binned = stellar_bd_binned[okinds]
+stellar_met_binned = stellar_met_binned[okinds]
+bin_cents = bin_cents[okinds]
 
 growth = lambda x1, x2, t1, t2: np.arctan((t1 + t2) * (x1 - x2)
                                           / ((t1 - t2) * (x1 + x2))) \
@@ -1199,9 +1200,11 @@ bd_grad = []
 plt_zs = []
 for i in range(len(stellar_bd_binned) - 1):
     bd_grad.append(growth(stellar_bd_binned[i], stellar_bd_binned[i + 1],
-                          cosmo.age(bin_cents[i]).value, cosmo.age(bin_cents[i + 1]).value))
+                          cosmo.age(bin_cents[i]).value,
+                          cosmo.age(bin_cents[i + 1]).value))
     met_grad.append(growth(stellar_met_binned[i], stellar_met_binned[i + 1],
-                           cosmo.age(bin_cents[i]).value, cosmo.age(bin_cents[i + 1]).value))
+                           cosmo.age(bin_cents[i]).value,
+                           cosmo.age(bin_cents[i + 1]).value))
     plt_zs.append(bin_cents[i + 1] - (bin_width / 2))
 
 met_grad = np.array(met_grad)
