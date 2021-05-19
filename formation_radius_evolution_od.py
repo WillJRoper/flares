@@ -171,7 +171,7 @@ def get_data(eagle=False, ref=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 40):
+        for reg in range(20, 21):
             if reg < 10:
                 regions.append("0" + str(reg))
             else:
@@ -209,11 +209,6 @@ def get_data(eagle=False, ref=False):
     stellar_formz = []
     stellar_formr = []
     ovden = []
-
-    if eagle or ref:
-        ovds = [1, ]
-    else:
-        ovds = np.loadtxt("region_overdensity.txt", dtype=float)
 
     for reg, ovd in zip(regions, ovds):
 
