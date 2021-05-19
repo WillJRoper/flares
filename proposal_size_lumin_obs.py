@@ -160,10 +160,7 @@ labels = {"G11": "Grazian+2011 (z=7)",
           "H20": "Holwerda+2020 (z=9-10.2)"}
 markers = {"G11": "s", "G12": "v", "C16": "D",
            "K18": "o", "M18": "H", "F20": ".", "MO18": "o",
-           "B19": "^", "O16": "P", "S18": "D", "H20": "*"}
-colors = {"G11": "r", "G12": "r", "C16": "r",
-           "K18": "r", "M18": "b", "F20": ".", "MO18": "r",
-           "B19": "r", "O16": "r", "S18": "r", "H20": "r"}
+           "B19": "^", "O16": "P", "S18": "s", "H20": "*"}
 
 z9_conv = cosmo.arcsec_per_kpc_proper(9).value
 
@@ -365,8 +362,13 @@ plt.close(fig)
 
 # ============================================================================
 
-cmap = mpl.cm.get_cmap("cividis")
-norm = plt.Normalize(vmin=0, vmax=10)
+cmap = mpl.cm.get_cmap("twilight_shifted")
+norm = plt.Normalize(vmin=0, vmax=1)
+
+colors = {"C16": cmap(norm(0.1)),
+          "K18": cmap(norm(0)), "MO18": cmap(norm(0.2)),
+          "S18": cmap(norm(0.3)), "H20": cmap(norm(0.4)),
+          "M18": cmap(norm(0.8))}
 
 fig = plt.figure(figsize=(6, 6))
 ax = fig.add_subplot(111)
@@ -391,7 +393,7 @@ ax1.semilogy()
 # ax1.axhline(nircam_long, label="1 NIRCam-Long Pixels",
 #             linestyle="dashdot", color="darkgray", alpha=0.2)
 
-ax.axvspan(-22, -19, alpha=0.5, color='lightgrey', zorder=0)
+# ax.axvspan(-22, -19, alpha=0.5, color='lightgrey', zorder=0)
 
 legend_elements = []
 
@@ -401,9 +403,9 @@ legend_elements.append(Line2D([0], [0], linestyle="dashed", color='k',
 for n in [1, 2, 4, 6, 8, 10]:
     ax1.axhline(n * nircam_short,
                 linestyle="dashed", color="k", alpha=0.4)
-    ax1.text(-23.5, n * nircam_short + 0.002, "%d Pixels" % n,
+    ax1.text(-20, n * nircam_short + 0.002, "%d Pixels" % n,
              verticalalignment="bottom", horizontalalignment='center',
-             fontsize=8, color="k")
+             fontsize=8, color="k", alpha=0.4)
 
 ax.plot([26, 26.1], [100, 1000], color="k", alpha=0.8, label=labels["K18"])
 
@@ -435,9 +437,16 @@ for p in markers.keys():
             continue
 
         M = m_to_M(mags[papers == p][okinds], cosmo, zs[papers == p][okinds])
+        plt_r_es = r_es[papers == p][okinds]
+        plt_zs = zs[papers == p][okinds]
 
-        # if np.max(M) > -18:
-        #     continue
+        okinds = np.logical_and(M > -22, M < -18)
+        plt_r_es = plt_r_es[okinds]
+        M = M[okinds]
+        plt_zs = plt_zs[okinds]
+
+        if M.size == 0:
+            continue
 
         legend_elements.append(Line2D([0], [0], marker=markers[p], color='none',
                                       label=labels[p],
@@ -445,15 +454,15 @@ for p in markers.keys():
                                       markeredgecolor=colors[p],
                                       markersize=6, alpha=0.7))
 
-        ax.scatter(M, r_es[papers == p][okinds],
+        ax.scatter(M, plt_r_es,
                    marker=markers[p], label=labels[p], s=25,
                    color=colors[p], alpha=0.7)
-        ax1.scatter(M, r_es[papers == p][okinds] * z9_conv,
+        ax1.scatter(M, plt_r_es * z9_conv,
                     marker=markers[p], label=labels[p], s=0,
-                    color=cmap(norm(zs[papers == p][okinds])))
-        ax2.scatter(M, r_es[papers == p][okinds],
+                    color=colors[p])
+        ax2.scatter(M, plt_r_es,
                     marker=markers[p], label=labels[p], s=0,
-                    color=cmap(norm(zs[papers == p][okinds])))
+                    color=colors[p])
 
     else:
         continue
@@ -474,9 +483,9 @@ for p in markers.keys():
         #             marker=markers[p], label=labels[p], s=0,
         #             color="k")
 
-ax.set_xlabel("$M_{\mathrm{UV}}$")
-ax.set_ylabel("$R_e / \mathrm{pkpc}$")
-ax1.set_ylabel("$R_e(z=9) / \mathrm{arcseconds}$")
+ax.set_xlabel(r"$\mathrm{\bf UV Absolute\ Magnitude}\ M_{1500}$")
+ax.set_ylabel(r"$\mathrm{\bf Half-Light\ Radius}\ R_{e} / \mathrm{kpc}}$")
+ax1.set_ylabel(r'$\mathrm{\bf Half-Light\ Radius}\ R_{e}(z=9)/$"')
 
 new_tick_locations = np.arange(m_to_M(23, cosmo, 9), m_to_M(29.5, cosmo, 9), 1)
 bins = np.arange(-24, -10, 1)
@@ -488,7 +497,7 @@ bins = np.arange(-24, -10, 1)
 
 def tick_function(M):
     m = M_to_m(M, cosmo, 9)
-    return ["%.2f" % im for im in m]
+    return ["%.1f" % im for im in m]
 
 # # Move twinned axis ticks and label from top to bottom
 # ax2.xaxis.set_ticks_position("bottom")
@@ -509,7 +518,7 @@ def tick_function(M):
 
 ax2.set_xticks(new_tick_locations)
 ax2.set_xticklabels(tick_function(new_tick_locations))
-ax2.set_xlabel(r"$m(z=9)$")
+ax2.set_xlabel(r"$\mathrm{\bf Apparent\ Magnitude}\ m(z=9)$")
 
 handles2, labels2 = ax1.get_legend_handles_labels()
 
@@ -529,10 +538,10 @@ ax.legend(handles=legend_elements, ncol=2, loc="upper right", fontsize=8)
 # cbaxes.xaxis.set_ticks_position("top")
 # cbar.ax.set_xlabel("$z$", labelpad=-30)
 
-ax.set_xlim(-24, m_to_M(29.5, cosmo, 9))
+ax.set_xlim(-22, -18)
 ax.set_ylim(0.05, 5)
 ax1.set_ylim(0.05 * z9_conv, 5 * z9_conv)
-ax2.set_xlim(-24, m_to_M(29.5, cosmo, z))
+ax2.set_xlim(-22, -18)
 
 # plt.show()
 fig.savefig("plots/proposal_obs_size_abmag_z9.png", bbox_inches="tight")
