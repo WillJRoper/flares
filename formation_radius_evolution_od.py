@@ -301,9 +301,9 @@ def get_data(eagle=False, ref=False):
 
 log1pdelta = ovds = np.loadtxt("region_overdensity.txt", dtype=float)
 
+stellar_formr_agndT9, stellar_formz_agndT9 = get_data(eagle=True)
 stellar_formr, stellar_formz = get_data()
 stellar_formr_ref, stellar_formz_ref = get_data(ref=True)
-stellar_formr_agndT9, stellar_formz_agndT9 = get_data(eagle=True)
 
 zs_all = np.concatenate((stellar_formz, stellar_formz_ref, stellar_formz_agndT9))
 stellar_formr_all = np.concatenate((stellar_formr, stellar_formr_ref,
