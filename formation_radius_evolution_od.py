@@ -171,7 +171,7 @@ def get_data(eagle=False, ref=False):
         regions = ["EAGLE", ]
     else:
         regions = []
-        for reg in range(0, 40):
+        for reg in range(39, 40):
             if reg < 10:
                 regions.append("0" + str(reg))
             else:
@@ -179,21 +179,18 @@ def get_data(eagle=False, ref=False):
 
     # Define snapshots
     if eagle or ref:
-        pre_snaps = ['000_z020p000', '003_z008p988', '006_z005p971',
-                     '009_z004p485', '012_z003p017', '015_z002p012',
-                     '018_z001p259', '021_z000p736', '024_z000p366',
-                     '027_z000p101', '001_z015p132', '004_z008p075',
-                     '007_z005p487', '010_z003p984', '013_z002p478',
-                     '016_z001p737', '019_z001p004', '022_z000p615',
-                     '025_z000p271', '028_z000p000', '002_z009p993',
-                     '005_z007p050', '008_z005p037', '011_z003p528',
-                     '014_z002p237', '017_z001p487', '020_z000p865',
-                     '023_z000p503', '026_z000p183']
+        pre_snaps = ['000_z020p000', '006_z005p971', '015_z002p012',
+                     '021_z000p736', '027_z000p101', '001_z015p132',
+                     '004_z008p075', '010_z003p984', '013_z002p478',
+                     '019_z001p004', '028_z000p000', '002_z009p993',
+                     '005_z007p050', '023_z000p503', '026_z000p183']
 
         snaps = np.zeros(29, dtype=object)
         for s in pre_snaps:
             ind = int(s.split('_')[0])
             snaps[ind] = s
+
+        snaps = snaps[snaps != 0.0]
 
         snaps = list(snaps[1:])
         prog_snaps = snaps[:-1]
@@ -312,7 +309,7 @@ plot_meidan_stat(np.array(stellar_formz_ref), np.array(stellar_formr_ref),
                  bins=None, ls="--")
 plot_meidan_stat(np.array(stellar_formz), np.array(stellar_formr),
                  ax, lab="FLARES", color="m",
-                 bins=None, ls="--")
+                 bins=None, ls="-")
 
 ax.set_xlim(-0.1, 27)
 
