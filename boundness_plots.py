@@ -160,6 +160,8 @@ def get_main(snap, G, conv):
 
     rs_dict = {}
     E_dict = {}
+    GEs_dict = {}
+    KEs_dict = {}
     ratio_dict = {}
     total_mass = {}
 
@@ -337,6 +339,8 @@ def get_main(snap, G, conv):
 
             rs_dict.setdefault(id, []).extend(gal_rs)
             E_dict.setdefault(id, []).extend(En)
+            GEs_dict.setdefault(id, []).extend(GE)
+            KEs_dict.setdefault(id, []).extend(KE)
             ratio_dict.setdefault(id, []).extend(GE / KE)
             total_mass[id] = gal_ms[id]
 
@@ -352,7 +356,11 @@ def get_main(snap, G, conv):
     jet = plt.get_cmap('plasma')
     scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
 
-    for id in rs_dict:
+    total_masses  = list(total_mass.values())
+    sinds = np.argsort(total_masses)
+    ids = np.array(list(rs_dict.keys()))[sinds]
+
+    for id in ids:
 
         sinds = np.argsort(rs_dict[id])
         c = scalarMap.to_rgba(total_mass[id])
@@ -385,7 +393,11 @@ def get_main(snap, G, conv):
     jet = plt.get_cmap('plasma')
     scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
 
-    for id in rs_dict:
+    total_masses = list(total_mass.values())
+    sinds = np.argsort(total_masses)
+    ids = np.array(list(rs_dict.keys()))[sinds]
+
+    for id in ids:
 
         sinds = np.argsort(rs_dict[id])
         c = scalarMap.to_rgba(total_mass[id])
@@ -457,9 +469,142 @@ def get_main(snap, G, conv):
     fig.savefig("plots/radial_ratio_" + snap + "_binned.png",
                 bbox_inches="tight")
 
+    # ========================== Cumalative ==========================
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.loglog()
+
+    # Set up colormap
+    # normalize item number values to colormap
+    norm = ml.colors.LogNorm(vmin=10 ** 8, vmax=10 ** 11.5)
+
+    jet = plt.get_cmap('plasma')
+    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
+
+    total_masses = list(total_mass.values())
+    sinds = np.argsort(total_masses)
+    ids = np.array(list(rs_dict.keys()))[sinds]
+
+    for id in ids:
+        sinds = np.argsort(rs_dict[id])
+        c = scalarMap.to_rgba(total_mass[id])
+
+        plot_median_stat(np.array(rs_dict[id])[sinds] * 10 ** 3,
+                         np.cumsum(np.array(GEs_dict[id])[sinds]) - np.cumsum(np.array(KEs_dict[id])[sinds]), ax, norm=norm,
+                         color=c, alpha=0.1)
+
+    ax.axvline(csoft, linestyle="--", color='k')
+
+    ax.set_xlabel("$R /$ [pkpc]")
+    ax.set_ylabel(
+        "$U / [\mathrm{M}_{\odot} \ \mathrm{km}^2 \ \mathrm{s}^{-2}]$")
+
+    # Make an axis for the colorbar on the right side
+    cbar = fig.colorbar(scalarMap)
+
+    cbar.set_label("$M_{\star}/M_{\odot}$")
+
+    fig.savefig("plots/radial_energy_" + snap + "_cumalative.png", bbox_inches="tight")
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.loglog()
+
+    # Set up colormap
+    # normalize item number values to colormap
+    norm = ml.colors.LogNorm(vmin=10 ** 8, vmax=10 ** 11.5)
+
+    jet = plt.get_cmap('plasma')
+    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
+
+    total_masses = list(total_mass.values())
+    sinds = np.argsort(total_masses)
+    ids = np.array(list(rs_dict.keys()))[sinds]
+
+    for id in ids:
+        sinds = np.argsort(rs_dict[id])
+        c = scalarMap.to_rgba(total_mass[id])
+
+        plot_median_stat(np.array(rs_dict[id])[sinds] * 10 ** 3,
+                         np.cumsum(np.array(GEs_dict[id])[sinds]) / np.cumsum(np.array(KEs_dict[id])[sinds]), ax, norm=norm,
+                         color=c, alpha=0.1)
+
+    ax.axvline(csoft, linestyle="--", color='k')
+
+    ax.set_xlabel("$R /$ [pkpc]")
+    ax.set_ylabel("$\mathrm{GE}/\mathrm{KE}$")
+
+    # Make an axis for the colorbar on the right side
+    cbar = fig.colorbar(scalarMap)
+
+    cbar.set_label("$M_{\star}/M_{\odot}$")
+
+    fig.savefig("plots/radial_energyratio_" + snap + "_cumalative.png",
+                bbox_inches="tight")
+
+    bin_inds = np.digitize(list(total_mass.values()), mass_bins) - 1
+
+    binned_rs_dict = {}
+    binned_ratio_dict = {}
+
+    for id, bin in zip(total_mass.keys(), bin_inds):
+        binned_rs_dict.setdefault(bin, []).extend(rs_dict[id])
+        sinds = np.argsort(rs_dict[id])
+        binned_ratio_dict.setdefault(bin, []).extend(np.cumsum(np.array(GEs_dict[id])[sinds]) / np.cumsum(np.array(KEs_dict[id])[sinds]))
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.loglog()
+
+    # Set up colormap
+    # normalize item number values to colormap
+    norm = ml.colors.LogNorm(vmin=10 ** 8, vmax=10 ** 11.5)
+
+    jet = plt.get_cmap('plasma')
+    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
+
+    mass_bin_wid = mass_bins[1] - mass_bins[0]
+    mass_bin_cents = mass_bins[1:] - mass_bin_wid
+
+    for bin, m in enumerate(mass_bin_cents):
+
+        try:
+            sinds = np.argsort(binned_rs_dict[bin])
+        except KeyError:
+            continue
+        c = scalarMap.to_rgba(m)
+        print(np.log10(m), c, bin)
+
+        plot_median_stat(np.array(binned_rs_dict[bin])[sinds] * 10 ** 3,
+                         np.array(binned_ratio_dict[bin])[sinds], ax,
+                         norm=norm,
+                         color=c, alpha=1)
+
+    ax.axvline(csoft, linestyle="--", color='k')
+
+    ax.set_xlabel("$R /$ [pkpc]")
+    ax.set_ylabel("$\mathrm{GE}/\mathrm{KE}$")
+
+    # Make an axis for the colorbar on the right side
+    cbar = fig.colorbar(scalarMap)
+
+    cbar.set_label("$M_{\star}/M_{\odot}$")
+
+    fig.savefig("plots/radial_ratio_" + snap + "_binned_cumalative.png",
+                bbox_inches="tight")
+
+
+snaps = ['000_z015p000', '001_z014p000', '002_z013p000',
+         '003_z012p000', '004_z011p000', '005_z010p000',
+         '006_z009p000', '007_z008p000', '008_z007p000',
+         '009_z006p000', '010_z005p000', '011_z004p770']
+
 G = (const.G.to(u.Mpc ** 3 * u.M_sun ** -1 * u.s ** -2)).value
 conv = (u.M_sun * u.Mpc**2 * u.s ** -2).to(u.M_sun * u.km**2 * u.s ** -2)
 
-snap = '009_z006p000'
-
-get_main(snap, G, conv)
+for snap in snaps:
+    get_main(snap, G, conv)
