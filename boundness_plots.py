@@ -161,7 +161,7 @@ def get_main(snap, G, conv):
     mass_bins = np.logspace(8, 11.5, 15)
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(0, 1):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -322,6 +322,8 @@ def get_main(snap, G, conv):
             gal_part_poss = gal_part_poss[okinds]
             gal_part_vel = gal_part_vel[okinds]
             masses = masses[okinds]
+
+            print(gal_rs.size, masses.size)
 
             # Calculate potential
             En, GE, KE = halo_energy_calc_exact(gal_part_poss, gal_part_vel,
