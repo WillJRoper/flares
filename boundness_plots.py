@@ -349,26 +349,26 @@ def get_main(snap, G, conv):
 
             idkey += 1
 
+    # Set up colormap
+    # normalize item number values to colormap
+    norm = ml.colors.TwoSlopeNorm(vmin=8, vcenter=9, vmax=11.5)
+
+    jet = plt.get_cmap('Spectral')
+    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
+
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
     ax.loglog()
 
-    # Set up colormap
-    # normalize item number values to colormap
-    norm = ml.colors.LogNorm(vmin=10**8, vmax=10**11.5)
-
-    jet = plt.get_cmap('plasma')
-    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
-
-    total_masses  = list(total_mass.values())
+    total_masses = list(total_mass.values())
     sinds = np.argsort(total_masses)
     ids = np.array(list(rs_dict.keys()))[sinds]
 
     for id in ids:
 
         sinds = np.argsort(rs_dict[id])
-        c = scalarMap.to_rgba(total_mass[id])
+        c = scalarMap.to_rgba(np.log10(total_mass[id]))
 
         plot_median_stat(np.array(rs_dict[id])[sinds] * 10**3,
                          np.array(E_dict[id])[sinds], ax, norm=norm,
@@ -391,13 +391,6 @@ def get_main(snap, G, conv):
 
     ax.loglog()
 
-    # Set up colormap
-    # normalize item number values to colormap
-    norm = ml.colors.LogNorm(vmin=10**8, vmax=10**11.5)
-
-    jet = plt.get_cmap('plasma')
-    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
-
     total_masses = list(total_mass.values())
     sinds = np.argsort(total_masses)
     ids = np.array(list(rs_dict.keys()))[sinds]
@@ -405,7 +398,7 @@ def get_main(snap, G, conv):
     for id in ids:
 
         sinds = np.argsort(rs_dict[id])
-        c = scalarMap.to_rgba(total_mass[id])
+        c = scalarMap.to_rgba(np.log10(total_mass[id]))
 
         plot_median_stat(np.array(rs_dict[id])[sinds] * 10**3,
                          np.array(ratio_dict[id])[sinds], ax, norm=norm,
@@ -438,13 +431,6 @@ def get_main(snap, G, conv):
 
     ax.loglog()
 
-    # Set up colormap
-    # normalize item number values to colormap
-    norm = ml.colors.LogNorm(vmin=10 ** 8, vmax=10 ** 11.5)
-
-    jet = plt.get_cmap('plasma')
-    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
-
     mass_bin_wid = mass_bins[1] - mass_bins[0]
     mass_bin_cents = mass_bins[1:] - mass_bin_wid
 
@@ -454,7 +440,7 @@ def get_main(snap, G, conv):
             sinds = np.argsort(binned_rs_dict[bin])
         except KeyError:
             continue
-        c = scalarMap.to_rgba(m)
+        c = scalarMap.to_rgba(np.log10(m))
         print(np.log10(m), c, bin)
 
         plot_median_stat(np.array(binned_rs_dict[bin])[sinds] * 10**3,
@@ -481,20 +467,13 @@ def get_main(snap, G, conv):
 
     ax.loglog()
 
-    # Set up colormap
-    # normalize item number values to colormap
-    norm = ml.colors.LogNorm(vmin=10 ** 8, vmax=10 ** 11.5)
-
-    jet = plt.get_cmap('plasma')
-    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
-
     total_masses = list(total_mass.values())
     sinds = np.argsort(total_masses)
     ids = np.array(list(rs_dict.keys()))[sinds]
 
     for id in ids:
         sinds = np.argsort(rs_dict[id])
-        c = scalarMap.to_rgba(total_mass[id])
+        c = scalarMap.to_rgba(np.log10(total_mass[id]))
 
         plot_median_stat(np.array(rs_dict[id])[sinds] * 10 ** 3,
                          np.cumsum(np.array(GEs_dict[id])[sinds]) - np.cumsum(np.array(KEs_dict[id])[sinds]), ax, norm=norm,
@@ -518,20 +497,13 @@ def get_main(snap, G, conv):
 
     ax.loglog()
 
-    # Set up colormap
-    # normalize item number values to colormap
-    norm = ml.colors.LogNorm(vmin=10 ** 8, vmax=10 ** 11.5)
-
-    jet = plt.get_cmap('plasma')
-    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
-
     total_masses = list(total_mass.values())
     sinds = np.argsort(total_masses)
     ids = np.array(list(rs_dict.keys()))[sinds]
 
     for id in ids:
         sinds = np.argsort(rs_dict[id])
-        c = scalarMap.to_rgba(total_mass[id])
+        c = scalarMap.to_rgba(np.log10(total_mass[id]))
 
         plot_median_stat(np.array(rs_dict[id])[sinds] * 10 ** 3,
                          np.cumsum(np.array(GEs_dict[id])[sinds]) / np.cumsum(np.array(KEs_dict[id])[sinds]), ax, norm=norm,
@@ -565,13 +537,6 @@ def get_main(snap, G, conv):
 
     ax.loglog()
 
-    # Set up colormap
-    # normalize item number values to colormap
-    norm = ml.colors.LogNorm(vmin=10 ** 8, vmax=10 ** 11.5)
-
-    jet = plt.get_cmap('plasma')
-    scalarMap = ml.cm.ScalarMappable(norm=norm, cmap=jet)
-
     mass_bin_wid = mass_bins[1] - mass_bins[0]
     mass_bin_cents = mass_bins[1:] - mass_bin_wid
 
@@ -581,7 +546,7 @@ def get_main(snap, G, conv):
             sinds = np.argsort(binned_rs_dict[bin])
         except KeyError:
             continue
-        c = scalarMap.to_rgba(m)
+        c = scalarMap.to_rgba(np.log10(m))
         print(np.log10(m), c, bin)
 
         plot_median_stat(np.array(binned_rs_dict[bin])[sinds] * 10 ** 3,
