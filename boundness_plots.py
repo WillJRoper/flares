@@ -325,11 +325,11 @@ def get_main(snap, G, conv):
             masses = masses[okinds]
 
             # Calculate potential
-            E, GE, KE = halo_energy_calc_exact(gal_part_poss, gal_part_vel,
+            En, GE, KE = halo_energy_calc_exact(gal_part_poss, gal_part_vel,
                                                masses, G, csoft, conv)
 
             rs_dict.setdefault(id, []).extend(gal_rs)
-            E_dict.setdefault(id, []).extend(E)
+            E_dict.setdefault(id, []).extend(En)
             ratio_dict.setdefault(id, []).extend(GE / KE)
             total_mass[id] = gal_ms[id]
 
