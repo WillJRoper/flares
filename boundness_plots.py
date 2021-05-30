@@ -250,24 +250,31 @@ def get_main(snap, G, conv):
             print(part_type)
 
             # Get gas particle information
-            poss = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
-                                physicalUnits=True, numThreads=8)
-            vels = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Velocity', noH=True,
-                                physicalUnits=True, numThreads=8)
-            if part_type != 1:
-                masses = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Mass', noH=True,
-                                      physicalUnits=True, numThreads=8) * 10 ** 10
-            else:
-                masses = np.full(poss.shape[0], dm_mass)
+            try:
+                poss = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Coordinates', noH=True,
+                                    physicalUnits=True, numThreads=8)
+                vels = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Velocity', noH=True,
+                                    physicalUnits=True, numThreads=8)
+                if part_type != 1:
+                    masses = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/Mass', noH=True,
+                                          physicalUnits=True, numThreads=8) * 10 ** 10
+                else:
+                    masses = np.full(poss.shape[0], dm_mass)
 
-            grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', noH=True,
-                                   physicalUnits=True, verbose=False, numThreads=8)
+                grp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/GroupNumber', noH=True,
+                                       physicalUnits=True, verbose=False, numThreads=8)
 
-            subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', noH=True,
-                                      physicalUnits=True, verbose=False, numThreads=8)
+                subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', noH=True,
+                                          physicalUnits=True, verbose=False, numThreads=8)
 
-            part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', noH=True,
-                                    physicalUnits=True, verbose=False, numThreads=8)
+                part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', noH=True,
+                                        physicalUnits=True, verbose=False, numThreads=8)
+            except ValueError:
+                continue
+            except OSError:
+                continue
+            except KeyError:
+                continue
 
             # A copy of this array is needed for the extraction method
             group_part_ids = np.copy(part_ids)
