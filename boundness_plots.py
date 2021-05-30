@@ -451,7 +451,7 @@ def get_main(snap, G, conv):
                 bbox_inches="tight")
 
 G = (const.G.to(u.Mpc ** 3 * u.M_sun ** -1 * u.s ** -2)).value
-conv = (u.M_sun * u.km**2 * u.s ** -2).to().value
+conv = (u.M_sun * u.Mpc**2 * u.s ** -2).to(u.M_sun * u.km**2 * u.s ** -2).value
 
 snap = '009_z006p000'
 
