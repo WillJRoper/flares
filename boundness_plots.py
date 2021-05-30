@@ -122,7 +122,7 @@ def grav(pos, soft, masses, G, conv):
 
     GE = np.zeros(pos.shape[0])
 
-    dist, ind_lst = tree.query(pos, k=100, workers=16)
+    dist, ind_lst = tree.query(pos, k=1000, workers=16)
 
     # Get separations
     for (i, ds), inds, m in zip(enumerate(dist), ind_lst, masses):
@@ -161,7 +161,7 @@ def get_main(snap, G, conv):
     mass_bins = np.logspace(8, 11.5, 15)
 
     regions = []
-    for reg in range(30, 40):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
