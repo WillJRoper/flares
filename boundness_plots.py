@@ -124,8 +124,6 @@ def grav(pos, soft, masses, G, conv):
 
     dist, ind_lst = tree.query(pos, k=1000, workers=16)
 
-    print(len(ind_lst), len(dist), len(masses), pos.shape)
-
     # Get separations
     for (i, ds), inds, m in zip(enumerate(dist), ind_lst, masses):
 
@@ -171,7 +169,7 @@ def get_main(snap, G, conv):
     mass_bins = np.logspace(8, 11.5, 15)
 
     regions = []
-    for reg in range(0, 1):
+    for reg in range(0, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
@@ -325,8 +323,6 @@ def get_main(snap, G, conv):
 
         for id, bin in zip(test_gals, bin_inds):
 
-            print(id)
-
             # Get the luminosities
             gal_part_poss = all_poss[id] - means[id]
             gal_part_vel = all_vels[id] - np.mean(all_vels[id], axis=0)
@@ -339,8 +335,6 @@ def get_main(snap, G, conv):
             gal_part_poss = gal_part_poss[okinds]
             gal_part_vel = gal_part_vel[okinds]
             masses = masses[okinds]
-
-            print(gal_rs.size, masses.size)
 
             # Calculate potential
             En, GE, KE = halo_energy_calc_exact(gal_part_poss, gal_part_vel,
