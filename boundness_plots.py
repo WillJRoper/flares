@@ -107,13 +107,10 @@ def upper_tri_masking(A):
     return A[mask]
 
 
-def kinetic(halo_vels, masses):
+def kinetic(vels, masses):
 
     # Compute kinetic energy of the halo
-    vel_disp = np.zeros(3, dtype=np.float32)
-    for ixyz in [0, 1, 2]:
-        vel_disp[ixyz] = np.var(halo_vels[:, ixyz])
-    KE = 0.5 * masses * vel_disp
+    KE = 0.5 * masses * (vels[:, 0]**2 + vels[:, 1]**2 + vels[:, 2]**2)
 
     return KE
 
@@ -124,7 +121,7 @@ def grav(pos, soft, masses, G, conv):
     tree = cKDTree(pos)
 
     # Get separations
-    dists, ind_lst = tree.query(pos, k=pos.shape[0], workers=-1)
+    dists, ind_lst = tree.query(pos, k=pos.shape[0], workers=16)
 
     # Combine distance lists
     seps = np.concatenate(dists)
