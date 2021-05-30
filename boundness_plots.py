@@ -120,19 +120,19 @@ def grav(pos, soft, masses, G, conv):
     # Build tree
     tree = cKDTree(pos)
 
+    GE = np.zeros(pos.shape[0])
+
     # Get separations
-    dists, ind_lst = tree.query(pos, k=pos.shape[0], workers=16)
+    for (i, p), m in zip(enumerate(pos), masses):
 
-    # Combine distance lists
-    seps = np.concatenate(dists)
+        seps, ind_lst = tree.query(p, k=pos.shape[0], workers=16)
 
-    # Get masses
-    sep_masses = np.concatenate([m * masses[i]
-                                 for m, i in zip(masses, ind_lst)])
+        # Get masses
+        sep_masses = m * masses[ind_lst]
 
-    # Compute the sum of the gravitational energy of each particle from
-    # GE = G*Sum_i(m_i*Sum_{j<i}(m_j/sqrt(r_{ij}**2+s**2)))
-    GE = G * sep_masses / np.sqrt(seps**2 + soft ** 2) * conv
+        # Compute the sum of the gravitational energy of each particle from
+        # GE = G*Sum_i(m_i*Sum_{j<i}(m_j/sqrt(r_{ij}**2+s**2)))
+        GE[i] = G * np.sum(sep_masses / np.sqrt(seps**2 + soft ** 2)) * conv
 
     return GE
 
@@ -307,6 +307,8 @@ def get_main(snap, G, conv):
         bin_inds = np.digitize(test_masses, mass_bins) - 1
 
         for id, bin in zip(test_gals, bin_inds):
+
+            print(id, end="\r")
 
             # Get the luminosities
             gal_part_poss = all_poss[id] - means[id]
