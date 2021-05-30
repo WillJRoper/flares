@@ -129,7 +129,9 @@ def grav(pos, soft, masses, G, conv):
     # Get separations
     for (i, ds), inds, m in zip(enumerate(dist), ind_lst, masses):
 
-        print(len(inds), np.max(inds))
+        okinds = inds < masses.size
+        ds = np.array(ds)[okinds]
+        inds = np.array(inds)[okinds]
 
         # Get masses
         sep_masses = m * masses[inds]
