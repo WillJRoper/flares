@@ -165,6 +165,8 @@ def get_main(snap, G, conv):
     ratio_dict = {}
     total_mass = {}
 
+    idkey = 0
+
     # Calculate bins
     mass_bins = np.logspace(8, 11.5, 15)
 
@@ -344,12 +346,14 @@ def get_main(snap, G, conv):
             En, GE, KE = halo_energy_calc_exact(gal_part_poss, gal_part_vel,
                                                masses, G, csoft, conv)
 
-            rs_dict.setdefault(id, []).extend(gal_rs)
-            E_dict.setdefault(id, []).extend(En)
-            GEs_dict.setdefault(id, []).extend(GE)
-            KEs_dict.setdefault(id, []).extend(KE)
-            ratio_dict.setdefault(id, []).extend(GE / KE)
-            total_mass[id] = gal_ms[id]
+            rs_dict.setdefault(idkey, []).extend(gal_rs)
+            E_dict.setdefault(idkey, []).extend(En)
+            GEs_dict.setdefault(idkey, []).extend(GE)
+            KEs_dict.setdefault(idkey, []).extend(KE)
+            ratio_dict.setdefault(idkey, []).extend(GE / KE)
+            total_mass[idkey] = gal_ms[id]
+
+            idkey += 1
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
