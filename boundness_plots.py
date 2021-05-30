@@ -122,17 +122,17 @@ def grav(pos, soft, masses, G, conv):
 
     GE = np.zeros(pos.shape[0])
 
-    # Get separations
-    for (i, p), m in zip(enumerate(pos), masses):
+    dist, ind_lst = tree.query(pos, k=100, workers=16)
 
-        seps, ind_lst = tree.query(p, k=pos.shape[0], workers=16)
+    # Get separations
+    for ds, inds, m in zip(dist, ind_lst, masses):
 
         # Get masses
-        sep_masses = m * masses[ind_lst]
+        sep_masses = m * masses[inds]
 
         # Compute the sum of the gravitational energy of each particle from
         # GE = G*Sum_i(m_i*Sum_{j<i}(m_j/sqrt(r_{ij}**2+s**2)))
-        GE[i] = G * np.sum(sep_masses / np.sqrt(seps**2 + soft ** 2)) * conv
+        GE[i] = G * np.sum(sep_masses / np.sqrt(ds**2 + soft ** 2)) * conv
 
     return GE
 
