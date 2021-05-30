@@ -308,7 +308,7 @@ def get_main(snap, G, conv):
 
         for id, bin in zip(test_gals, bin_inds):
 
-            print(id, end="\r")
+            print(id)
 
             # Get the luminosities
             gal_part_poss = all_poss[id] - means[id]
