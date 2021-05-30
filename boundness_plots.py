@@ -124,8 +124,12 @@ def grav(pos, soft, masses, G, conv):
 
     dist, ind_lst = tree.query(pos, k=1000, workers=16)
 
+    print(len(ind_lst), len(dist), len(masses), pos.shape)
+
     # Get separations
     for (i, ds), inds, m in zip(enumerate(dist), ind_lst, masses):
+
+        print(len(inds), np.max(inds))
 
         # Get masses
         sep_masses = m * masses[inds]
