@@ -161,7 +161,7 @@ def get_main(snap, G, conv):
     mass_bins = np.logspace(8, 11.5, 15)
 
     regions = []
-    for reg in range(0, 40):
+    for reg in range(30, 40):
         if reg < 10:
             regions.append('0' + str(reg))
         else:
