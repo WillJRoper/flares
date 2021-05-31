@@ -307,7 +307,10 @@ def get_main(snap, G, conv):
             cops[ind] = means[hid]
 
         # Build tree
-        tree = cKDTree(all_poss)
+        if all_poss.shape[0] > 0:
+            tree = cKDTree(all_poss)
+        else:
+            continue
 
         # Get the luminosities
         gal_part_poss = all_poss - cops
