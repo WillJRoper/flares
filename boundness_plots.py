@@ -333,11 +333,11 @@ def get_main(snap, G, conv):
 
         for r, En, GE, KE, hid in zip(gal_rs, Ens, GEs, KEs, part_ids):
 
-            rs_dict.setdefault(idkey, []).extend(gal_rs)
-            E_dict.setdefault(idkey, []).extend(En)
-            GEs_dict.setdefault(idkey, []).extend(GE)
-            KEs_dict.setdefault(idkey, []).extend(KE)
-            ratio_dict.setdefault(idkey, []).extend(GE / KE)
+            rs_dict.setdefault(idkey, []).append(gal_rs)
+            E_dict.setdefault(idkey, []).append(En)
+            GEs_dict.setdefault(idkey, []).append(GE)
+            KEs_dict.setdefault(idkey, []).append(KE)
+            ratio_dict.setdefault(idkey, []).append(GE / KE)
             total_mass[idkey] = gal_ms[hid]
 
             idkey += 1
