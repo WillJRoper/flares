@@ -302,9 +302,9 @@ def get_main(snap, G, conv):
         print(all_poss.shape)
 
         # Get cops for each particle
-        cops = np.zeros(len(masses))
+        cops = np.zeros((len(masses), 3))
         for ind, hid in enumerate(part_ids):
-            cops[ind] = means[hid]
+            cops[ind, :] = means[hid]
 
         # Build tree
         if all_poss.shape[0] > 0:
