@@ -110,7 +110,6 @@ def upper_tri_masking(A):
 def kinetic(vels, masses):
 
     # Compute kinetic energy of the halo
-    print(masses.size, vels.shape)
     KE = 0.5 * masses * (vels[:, 0]**2 + vels[:, 1]**2 + vels[:, 2]**2)
 
     return KE
@@ -282,6 +281,7 @@ def get_main(snap, G, conv):
             okinds = np.isin(part_halo_ids, test_gals)
             part_halo_ids = part_halo_ids[okinds]
             poss = poss[okinds, :]
+            vels = vels[okinds, :]
             masses = masses[okinds]
 
             print("There are", len(masses), "particles")
