@@ -110,6 +110,7 @@ def upper_tri_masking(A):
 def kinetic(vels, masses):
 
     # Compute kinetic energy of the halo
+    print(masses.size, vels.shape)
     KE = 0.5 * masses * (vels[:, 0]**2 + vels[:, 1]**2 + vels[:, 2]**2)
 
     return KE
@@ -299,7 +300,7 @@ def get_main(snap, G, conv):
         part_ms = np.array(part_ms)
         part_ids = np.array(part_ids)
 
-        print(all_poss.shape)
+        print(all_poss.shape, all_vels.shape, part_ms.shape)
 
         # Get cops for each particle
         cops = np.zeros((len(part_ms), 3))
