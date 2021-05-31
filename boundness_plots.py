@@ -115,21 +115,20 @@ def kinetic(vels, masses):
     return KE
 
 
-def grav(pos, soft, masses, G, conv):
-
-    # Build tree
-    tree = cKDTree(pos)
+def grav(pos, soft, masses, G, conv, tree):
 
     GE = np.zeros(pos.shape[0])
 
-    dist, ind_lst = tree.query(pos, k=1000, workers=16)
+    ks = tree.query_ball_point(pos, r=0.03, return_length=True, workers=16)
+
+    dist, ind_lst = tree.query(pos, k=ks, workers=16)
 
     # Get separations
     for (i, ds), inds, m in zip(enumerate(dist), ind_lst, masses):
 
-        okinds = inds < masses.size
-        ds = np.array(ds)[okinds]
-        inds = np.array(inds)[okinds]
+        # okinds = inds < masses.size
+        # ds = np.array(ds)[okinds]
+        # inds = np.array(inds)[okinds]
 
         # Get masses
         sep_masses = m * masses[inds]
@@ -141,12 +140,12 @@ def grav(pos, soft, masses, G, conv):
     return GE
 
 
-def halo_energy_calc_exact(pos, vels, masses, G, soft, conv):
+def halo_energy_calc_exact(pos, vels, masses, G, soft, conv, tree):
 
     # Compute kinetic energy of the halo
     KE = kinetic(vels, masses)
 
-    GE = grav(pos, soft, masses, G, conv)
+    GE = grav(pos, soft, masses, G, conv, tree)
 
     # Compute halo's energy
     halo_energy = KE - GE
@@ -234,11 +233,12 @@ def get_main(snap, G, conv):
         test_masses = all_gal_ms[:, 4]
 
         # Set up dictionaries to store results
-        part_ms = {}
         gal_ms = {}
         means = {}
-        all_poss = {}
-        all_vels = {}
+        all_poss = []
+        all_vels = []
+        part_ms = []
+        part_ids = []
 
         # Store the stellar mass of the galaxy and cop
         for id, cop, m in zip(test_gals, test_cops, test_masses):
@@ -266,20 +266,12 @@ def get_main(snap, G, conv):
 
                 subgrp_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/SubGroupNumber', noH=True,
                                           physicalUnits=True, verbose=False, numThreads=8)
-
-                part_ids = E.read_array('PARTDATA', path, snap, 'PartType' + str(part_type) + '/ParticleIDs', noH=True,
-                                        physicalUnits=True, verbose=False, numThreads=8)
             except ValueError:
                 continue
             except OSError:
                 continue
             except KeyError:
                 continue
-
-            # A copy of this array is needed for the extraction method
-            group_part_ids = np.copy(part_ids)
-
-            print("There are", len(subgrp_ids), "particles")
 
             # Convert IDs to float(groupNumber.SubGroupNumber) format, i.e. group 1 subgroup 11 = 1.00011
             part_halo_ids = np.zeros(grp_ids.size, dtype=float)
@@ -288,64 +280,58 @@ def get_main(snap, G, conv):
 
             okinds = np.isin(part_halo_ids, test_gals)
             part_halo_ids = part_halo_ids[okinds]
-            part_ids = part_ids[okinds]
-            group_part_ids = group_part_ids[okinds]
             poss = poss[okinds]
             masses = masses[okinds]
 
-            print("There are", len(part_halo_ids), "particles")
+            print("There are", len(masses), "particles")
 
-            print("Got halo IDs")
-
-            parts_in_groups, part_groups = get_part_inds(part_halo_ids, part_ids, group_part_ids, False)
-
-            # Produce a dictionary containing the index of particles in each halo
-            halo_part_inds = {}
-            for ind, grp in zip(parts_in_groups, part_groups):
-                halo_part_inds.setdefault(grp, set()).update({ind})
-
-            # Now the dictionary is fully populated convert values from sets to arrays for indexing
-            for key, val in halo_part_inds.items():
-                halo_part_inds[key] = np.array(list(val))
-
-            # Store the stellar mass of the galaxy and cop
-            for id in test_gals:
-                mask = halo_part_inds[id]
-                all_poss.setdefault(id, []).extend(poss[mask, :])
-                all_vels.setdefault(id, []).extend(vels[mask, :])
-                part_ms.setdefault(id, []).extend(masses[mask])
+            all_poss.extend(poss)
+            all_vels.extend(vels)
+            part_ms.extend(masses)
+            part_ids.extend(part_halo_ids)
 
         print('Got particle IDs')
 
         print(test_gals.size)
 
-        bin_inds = np.digitize(test_masses, mass_bins) - 1
+        all_poss = np.array(all_poss)
+        all_vels = np.array(all_vels)
+        part_ms = np.array(part_ms)
+        part_ids = np.array(part_ids)
 
-        for id, bin in zip(test_gals, bin_inds):
+        # Get cops for each particle
+        cops = np.zeros(len(masses))
+        for ind, hid in enumerate(part_ids):
+            cops[ind] = means[hid]
 
-            # Get the luminosities
-            gal_part_poss = all_poss[id] - means[id]
-            gal_part_vel = all_vels[id] - np.mean(all_vels[id], axis=0)
-            masses = np.array(part_ms[id])
-            gal_rs = calc_3drad(gal_part_poss)
+        # Build tree
+        tree = cKDTree(all_poss)
 
-            # Limit to 30pkpc aperture
-            okinds = gal_rs <= 30
-            gal_rs = gal_rs[okinds]
-            gal_part_poss = gal_part_poss[okinds]
-            gal_part_vel = gal_part_vel[okinds]
-            masses = masses[okinds]
+        # Get the luminosities
+        gal_part_poss = all_poss - cops
+        gal_rs = calc_3drad(gal_part_poss)
 
-            # Calculate potential
-            En, GE, KE = halo_energy_calc_exact(gal_part_poss, gal_part_vel,
-                                               masses, G, csoft, conv)
+        # # Limit to 30pkpc aperture
+        # okinds = gal_rs <= 30
+        # gal_rs = gal_rs[okinds]
+        # gal_part_poss = gal_part_poss[okinds]
+        # gal_part_vel = gal_part_vel[okinds]
+        # part_ms = part_ms[okinds]
+
+        # Calculate potential
+        Ens, GEs, KEs = halo_energy_calc_exact(gal_part_poss, all_vels,
+                                               part_ms, G, csoft, conv, tree)
+
+        idkey = 0
+
+        for r, En, GE, KE, hid in zip(gal_rs, Ens, GEs, KEs, part_ids):
 
             rs_dict.setdefault(idkey, []).extend(gal_rs)
             E_dict.setdefault(idkey, []).extend(En)
             GEs_dict.setdefault(idkey, []).extend(GE)
             KEs_dict.setdefault(idkey, []).extend(KE)
             ratio_dict.setdefault(idkey, []).extend(GE / KE)
-            total_mass[idkey] = gal_ms[id]
+            total_mass[idkey] = gal_ms[hid]
 
             idkey += 1
 
@@ -476,7 +462,7 @@ def get_main(snap, G, conv):
         c = scalarMap.to_rgba(np.log10(total_mass[id]))
 
         plot_median_stat(np.array(rs_dict[id])[sinds] * 10 ** 3,
-                         np.cumsum(np.array(GEs_dict[id])[sinds]) - np.cumsum(np.array(KEs_dict[id])[sinds]), ax, norm=norm,
+                         np.cumsum(-np.array(GEs_dict[id])[sinds]) + np.cumsum(np.array(KEs_dict[id])[sinds]), ax, norm=norm,
                          color=c, alpha=0.1)
 
     ax.axvline(csoft, linestyle="--", color='k')
