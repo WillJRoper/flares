@@ -363,10 +363,12 @@ def get_main(snap, G, conv):
         sinds = np.argsort(rs_dict[id])
         c = scalarMap.to_rgba(np.log10(total_mass[id]))
 
-        if sinds.size > 0:
+        try:
             plot_median_stat(np.array(rs_dict[id])[sinds] * 10**3,
                              np.array(E_dict[id])[sinds], ax, norm=norm,
                              color=c, alpha=0.1)
+        except ValueError:
+            pass
 
     ax.axvline(csoft, linestyle="--", color='k')
 
@@ -394,10 +396,12 @@ def get_main(snap, G, conv):
         sinds = np.argsort(rs_dict[id])
         c = scalarMap.to_rgba(np.log10(total_mass[id]))
 
-        if sinds.size > 0:
+        try:
             plot_median_stat(np.array(rs_dict[id])[sinds] * 10**3,
                              np.array(ratio_dict[id])[sinds], ax, norm=norm,
                              color=c, alpha=0.1)
+        except ValueError:
+            pass
 
     ax.axvline(csoft, linestyle="--", color='k')
 
@@ -438,10 +442,12 @@ def get_main(snap, G, conv):
         c = scalarMap.to_rgba(np.log10(m))
         print(np.log10(m), c, bin)
 
-        if sinds.size > 0:
+        try:
             plot_median_stat(np.array(binned_rs_dict[bin])[sinds] * 10**3,
                              np.array(binned_ratio_dict[bin])[sinds], ax, norm=norm,
                              color=c, alpha=1)
+        except ValueError:
+            pass
 
     ax.axvline(csoft, linestyle="--", color='k')
 
@@ -470,10 +476,12 @@ def get_main(snap, G, conv):
     for id in ids:
         sinds = np.argsort(rs_dict[id])
         c = scalarMap.to_rgba(np.log10(total_mass[id]))
-        if sinds.size > 0:
+        try:
             plot_median_stat(np.array(rs_dict[id])[sinds] * 10 ** 3,
                              np.cumsum(-np.array(GEs_dict[id])[sinds]) + np.cumsum(np.array(KEs_dict[id])[sinds]), ax, norm=norm,
                              color=c, alpha=0.1)
+        except ValueError:
+            pass
 
     ax.axvline(csoft, linestyle="--", color='k')
 
@@ -501,10 +509,12 @@ def get_main(snap, G, conv):
         sinds = np.argsort(rs_dict[id])
         c = scalarMap.to_rgba(np.log10(total_mass[id]))
 
-        if sinds.size > 0:
+        try:
             plot_median_stat(np.array(rs_dict[id])[sinds] * 10 ** 3,
                              np.cumsum(np.array(GEs_dict[id])[sinds]) / np.cumsum(np.array(KEs_dict[id])[sinds]), ax, norm=norm,
                              color=c, alpha=0.1)
+        except ValueError:
+            pass
 
     ax.axvline(csoft, linestyle="--", color='k')
 
@@ -545,11 +555,13 @@ def get_main(snap, G, conv):
             continue
         c = scalarMap.to_rgba(np.log10(m))
         print(np.log10(m), c, bin)
-        if sinds.size > 0:
+        try:
             plot_median_stat(np.array(binned_rs_dict[bin])[sinds] * 10 ** 3,
                              np.array(binned_ratio_dict[bin])[sinds], ax,
                              norm=norm,
                              color=c, alpha=1)
+        except ValueError:
+            pass
 
     ax.axvline(csoft, linestyle="--", color='k')
 
