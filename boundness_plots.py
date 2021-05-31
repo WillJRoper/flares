@@ -333,7 +333,7 @@ def get_main(snap, G, conv):
 
         for r, En, GE, KE, hid in zip(gal_rs, Ens, GEs, KEs, part_ids):
 
-            rs_dict.setdefault(idkey, []).append(gal_rs)
+            rs_dict.setdefault(idkey, []).append(r)
             E_dict.setdefault(idkey, []).append(En)
             GEs_dict.setdefault(idkey, []).append(GE)
             KEs_dict.setdefault(idkey, []).append(KE)
