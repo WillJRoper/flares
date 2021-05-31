@@ -140,12 +140,12 @@ def grav(pos, soft, masses, G, conv, tree):
     return GE
 
 
-def halo_energy_calc_exact(pos, vels, masses, G, soft, conv, tree):
+def halo_energy_calc_exact(pos, vels, part_ms, G, soft, conv, tree):
 
     # Compute kinetic energy of the halo
-    KE = kinetic(vels, masses)
+    KE = kinetic(vels, part_ms)
 
-    GE = grav(pos, soft, masses, G, conv, tree)
+    GE = grav(pos, soft, part_ms, G, conv, tree)
 
     # Compute halo's energy
     halo_energy = KE - GE
@@ -324,8 +324,9 @@ def get_main(snap, G, conv):
         # part_ms = part_ms[okinds]
 
         # Calculate potential
-        Ens, GEs, KEs = halo_energy_calc_exact(gal_part_poss, all_vels,
-                                               part_ms, G, csoft, conv, tree)
+        Ens, GEs, KEs = halo_energy_calc_exact(all_poss, all_vels,
+                                               part_ms, G, csoft,
+                                               conv, tree)
 
         idkey = 0
 
