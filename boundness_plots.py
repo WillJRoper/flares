@@ -280,7 +280,7 @@ def get_main(snap, G, conv):
 
             okinds = np.isin(part_halo_ids, test_gals)
             part_halo_ids = part_halo_ids[okinds]
-            poss = poss[okinds]
+            poss = poss[okinds, :]
             masses = masses[okinds]
 
             print("There are", len(masses), "particles")
@@ -298,6 +298,8 @@ def get_main(snap, G, conv):
         all_vels = np.array(all_vels)
         part_ms = np.array(part_ms)
         part_ids = np.array(part_ids)
+
+        print(all_poss.shape)
 
         # Get cops for each particle
         cops = np.zeros(len(masses))
